@@ -214,7 +214,7 @@ else ()
 endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wpedantic -Wall -Wextra -Wno-implicit-fallthrough \
-    -Wcast-align -Wno-cast-qual -Wno-conversion -Wno-double-promotion -Wduplicated-branches -Wduplicated-cond -Wno-float-equal -Wlogical-op \
+    -Wcast-align -Wno-cast-qual -Wno-conversion -Wdouble-promotion -Wduplicated-branches -Wduplicated-cond -Wno-float-equal -Wlogical-op \
     -Wmissing-format-attribute -Wpacked -Wredundant-decls -Wno-shadow")
 
 if (APPLE OR WIN32 OR HAIKU)
