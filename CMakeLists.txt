@@ -213,7 +213,9 @@ else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 endif ()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wpedantic -Wall -Wno-sign-compare -Wextra -Wno-implicit-fallthrough")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wpedantic -Wall -Wextra -Wno-implicit-fallthrough \
+    -Wcast-align -Wno-cast-qual -Wno-conversion -Wno-double-promotion -Wduplicated-branches -Wduplicated-cond -Wno-float-equal -Wlogical-op \
+    -Wmissing-format-attribute -Wpacked -Wredundant-decls -Wno-shadow")
 
 if (APPLE OR WIN32 OR HAIKU)
     get_target_property(QT_QMAKE_EXECUTABLE Qt5::qmake IMPORTED_LOCATION)
