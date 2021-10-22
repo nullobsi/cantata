@@ -178,6 +178,7 @@ QVariant MusicLibraryModel::data(const QModelIndex &index, int role) const
         if (MusicLibraryItem::Type_Album==item->itemType()) {
             return item->data();
         }
+        break;
     case Cantata::Role_MainText:
     case Qt::DisplayRole:
         if (MusicLibraryItem::Type_Song==item->itemType()) {

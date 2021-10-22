@@ -488,6 +488,7 @@ QVariant PlaylistsModel::data(const QModelIndex &index, int role) const
             if (s->isInvalid()) {
                 return MonoIcon::constRed;
             }
+            break;
         default:
             return ActionModel::data(index, role);
         }

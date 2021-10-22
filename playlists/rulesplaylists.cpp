@@ -166,6 +166,7 @@ QVariant RulesPlaylists::data(const QModelIndex &index, int role) const
         if (!Settings::self()->infoTooltips()) {
             return QVariant();
         }
+        return entryList.at(index.row()).name;
     case Qt::DisplayRole:
         return entryList.at(index.row()).name;
     case Cantata::Role_SubText: {

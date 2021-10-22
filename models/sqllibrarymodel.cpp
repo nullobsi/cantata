@@ -413,6 +413,7 @@ QVariant SqlLibraryModel::data(const QModelIndex &index, int role) const
         if (T_Album==item->getType()) {
             return item->getText();
         }
+        break;
     case Cantata::Role_MainText:
     case Qt::DisplayRole:
         if (T_Track==item->getType()) {
@@ -437,6 +438,7 @@ QVariant SqlLibraryModel::data(const QModelIndex &index, int role) const
         if (T_Album==tl && T_Album==item->getType()) {
             return static_cast<AlbumItem *>(item)->getTitleSub();
         }
+        break;
     case Cantata::Role_SubText:
         return item->getSubText();
     case Cantata::Role_ListImage:
