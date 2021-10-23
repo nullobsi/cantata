@@ -86,7 +86,6 @@ public:
     static QStringList decode(const QMimeData &mimeData, const QString &mime);
     static QList<quint32> decodeInts(const QMimeData &mimeData, const QString &mime);
     static QString headerText(int col);
-    static void setSimpleSort(bool simple);
 
     static PlayQueueModel * self();
 

@@ -64,9 +64,11 @@
 #include <QMenu>
 #include <QXmlStreamReader>
 #include <QRandomGenerator>
+#include <QCollator>
 #include <algorithm>
 
 GLOBAL_STATIC(PlayQueueModel, instance)
+static QCollator collator = QCollator();
 
 const QLatin1String PlayQueueModel::constMoveMimeType("cantata/move");
 const QLatin1String PlayQueueModel::constFileNameMimeType("cantata/filename");
@@ -391,12 +393,6 @@ QString PlayQueueModel::headerText(int col)
     }
 }
 
-static bool simpleSort = false;
-void PlayQueueModel::setSimpleSort(bool simple)
-{
-    simpleSort = simple;
-}
-
 PlayQueueModel::PlayQueueModel(QObject *parent)
     : QAbstractItemModel(parent)
     , currentSongId(-1)
@@ -410,6 +406,8 @@ PlayQueueModel::PlayQueueModel(QObject *parent)
     , lastCommand(Cmd_Other)
     , dropAdjust(0)
 {
+    collator.setNumericMode(true);
+    collator.setIgnorePunctuation(true);
     fetcher=new StreamFetcher(this);
     connect(this, SIGNAL(modelReset()), this, SLOT(stats()));
     connect(fetcher, SIGNAL(result(const QStringList &, int, int, quint8, bool)), SLOT(addFiles(const QStringList &, int, int, quint8, bool)));
@@ -1416,7 +1414,7 @@ static bool otherSort(const Song *s1, const Song *s2, quint32 other)
     const QString v1=s1->hasExtraField(other) ? s1->extraField(other) : QString();
     const QString v2=s2->hasExtraField(other) ? s2->extraField(other) : QString();
     int c=Utils::compare(v1, v2);
-    if (simpleSort) {
+    if (Settings::self()->playQueueSimpleSort()) {
         return c<0;
     }
     return c<0 || (c==0 && (*s1)<(*s2));
@@ -1441,8 +1439,8 @@ static bool artistSort(const Song *s1, const Song *s2)
 {
     const QString v1=s1->hasArtistSort() ? s1->artistSort() : s1->artist;
     const QString v2=s2->hasArtistSort() ? s2->artistSort() : s2->artist;
-    int c=Utils::compare(v1, v2);
-    if (simpleSort) {
+    int c=v1.localeAwareCompare(v2);
+    if (Settings::self()->playQueueSimpleSort()) {
         return c<0;
     }
     return c<0 || (c==0 && (*s1)<(*s2));
@@ -1452,8 +1450,8 @@ static bool albumArtistSort(const Song *s1, const Song *s2)
 {
     const QString v1=s1->hasAlbumArtistSort() ? s1->albumArtistSort() : s1->albumArtistOrComposer();
     const QString v2=s2->hasAlbumArtistSort() ? s2->albumArtistSort() : s2->albumArtistOrComposer();
-    int c=Utils::compare(v1, v2);
-    if (simpleSort) {
+    int c=v1.localeAwareCompare(v2);
+    if (Settings::self()->playQueueSimpleSort()) {
         return c<0;
     }
     return c<0 || (c==0 && (*s1)<(*s2));
@@ -1463,8 +1461,8 @@ static bool albumSort(const Song *s1, const Song *s2)
 {
     const QString v1=s1->hasAlbumSort() ? s1->albumSort() : s1->album;
     const QString v2=s2->hasAlbumSort() ? s2->albumSort() : s2->album;
-    int c=Utils::compare(v1, v2);
-    if (simpleSort) {
+    int c=v1.localeAwareCompare(v2);
+    if (Settings::self()->playQueueSimpleSort()) {
         return c<0;
     }
     return c<0 || (c==0 && (*s1)<(*s2));
@@ -1473,7 +1471,7 @@ static bool albumSort(const Song *s1, const Song *s2)
 static bool genreSort(const Song *s1, const Song *s2)
 {
     int c=s1->compareGenres(*s2);
-    if (simpleSort) {
+    if (Settings::self()->playQueueSimpleSort()) {
         return c<0;
     }
     return c<0 || (c==0 && (*s1)<(*s2));
@@ -1481,8 +1479,8 @@ static bool genreSort(const Song *s1, const Song *s2)
 
 static bool yearSort(const Song *s1, const Song *s2)
 {
-    bool c = s1->year<s2->year;
-    if (simpleSort) {
+    bool c=s1->year<s2->year;
+    if (Settings::self()->playQueueSimpleSort()) {
         return c;
     }
     return c || (s1->year==s2->year && (*s1)<(*s2));
@@ -1490,8 +1488,8 @@ static bool yearSort(const Song *s1, const Song *s2)
 
 static bool titleSort(const Song *s1, const Song *s2)
 {
-    int c=Utils::compare(s1->title, s2->title);
-    if (simpleSort) {
+    int c=collator.compare(s1->title, s2->title);
+    if (Settings::self()->playQueueSimpleSort()) {
         return c<0;
     }
     return c<0 || (c==0 && (*s1)<(*s2));
@@ -1500,7 +1498,7 @@ static bool titleSort(const Song *s1, const Song *s2)
 static bool trackSort(const Song *s1, const Song *s2)
 {
     bool c = s1->track<s2->track;
-    if (simpleSort) {
+    if (Settings::self()->playQueueSimpleSort()) {
         return c;
     }
     return c || (s1->track==s2->track && (*s1)<(*s2));
@@ -1508,9 +1506,9 @@ static bool trackSort(const Song *s1, const Song *s2)
 
 static bool pathSort(const Song *s1, const Song *s2)
 {
-    int c=Utils::compare(s1->file, s2->file);
-    if (simpleSort) {
-        return c<0;
+    int c=collator.compare(s1->file, s2->file);
+    if (Settings::self()->playQueueSimpleSort()) {
+        return c;
     }
     return c<0 || (c==0 && (*s1)<(*s2));
 }

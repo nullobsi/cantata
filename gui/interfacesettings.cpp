@@ -254,6 +254,7 @@ void InterfaceSettings::load()
 
     playQueueConfirmClear->setChecked(Settings::self()->playQueueConfirmClear());
     playQueueSearch->setChecked(Settings::self()->playQueueSearch());
+    playQueueSimpleSort->setChecked(Settings::self()->playQueueSimpleSort());
     playQueueViewChanged();
     forceSingleClick->setChecked(Settings::self()->forceSingleClick());
     infoTooltips->setChecked(Settings::self()->infoTooltips());
@@ -343,6 +344,7 @@ void InterfaceSettings::save()
 
     Settings::self()->savePlayQueueConfirmClear(playQueueConfirmClear->isChecked());
     Settings::self()->savePlayQueueSearch(playQueueSearch->isChecked());
+    Settings::self()->savePlayQueueSimpleSort(playQueueSimpleSort->isChecked());
     Settings::self()->saveForceSingleClick(forceSingleClick->isChecked());
     Settings::self()->saveInfoTooltips(infoTooltips->isChecked());
     Settings::self()->saveShowStopButton(showStopButton->isChecked());

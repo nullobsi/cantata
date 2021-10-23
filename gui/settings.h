@@ -102,6 +102,7 @@ public:
     QString playQueueBackgroundFile();
     bool playQueueConfirmClear();
     bool playQueueSearch();
+    bool playQueueSimpleSort();
     bool playListsStartClosed();
     #ifdef ENABLE_HTTP_STREAM_PLAYBACK
     bool playStream();
@@ -208,6 +209,7 @@ public:
     void savePlayQueueBackgroundFile(const QString &v);
     void savePlayQueueConfirmClear(bool v);
     void savePlayQueueSearch(bool v);
+    void savePlayQueueSimpleSort(bool v);
     void savePlayListsStartClosed(bool v);
     #ifdef ENABLE_HTTP_STREAM_PLAYBACK
     void savePlayStream(bool v);

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>500</height>
+    <width>1245</width>
+    <height>504</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -26,7 +26,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="movable">
       <bool>false</bool>
@@ -118,11 +118,11 @@
             </item>
             <item row="4" column="0" colspan="2">
              <widget class="QCheckBox" name="responsiveSidebar">
-              <property name="text">
-               <string>Automatically change style when insufficient space</string>
-              </property>
               <property name="toolTip">
                <string>&lt;p&gt;Change to a small top bar (containing all views) when the window is narrow.&lt;/p&gt;</string>
+              </property>
+              <property name="text">
+               <string>Automatically change style when insufficient space</string>
               </property>
              </widget>
             </item>
@@ -189,7 +189,14 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
+       <item row="6" column="0" colspan="2">
+        <widget class="QCheckBox" name="playQueueSimpleSort">
+         <property name="text">
+          <string>Simple sort (don't sort on auxiliary tags)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
         <spacer name="macSpacerHack">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -205,7 +212,7 @@
          </property>
         </spacer>
        </item>
-       <item row="7" column="0" colspan="2">
+       <item row="8" column="0" colspan="2">
         <widget class="QGroupBox" name="playQueueBackgroundOptions">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -415,13 +422,13 @@
        <string>External</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
-      <item>
-       <widget class="QCheckBox" name="enableMpris">
-        <property name="text">
-         <string>Enable MPRIS D-BUS interface</string>
-        </property>
-       </widget>
-      </item>
+       <item>
+        <widget class="QCheckBox" name="enableMpris">
+         <property name="text">
+          <string>Enable MPRIS D-BUS interface</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QCheckBox" name="systemTrayPopup">
          <property name="text">
