@@ -214,8 +214,14 @@ else ()
 endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wpedantic -Wall -Wextra \
-    -Wcast-align -Wno-cast-qual -Wdouble-promotion -Wduplicated-branches -Wduplicated-cond -Wno-float-equal -Wlogical-op \
+    -Wno-cast-qual -Wdouble-promotion -Wno-float-equal \
     -Wmissing-format-attribute -Wpacked -Wredundant-decls")
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wduplicated-branches -Wduplicated-cond -Wlogical-op")
+    # flags that are hard to fix under Clang
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcast-align")
+endif()
 
 if (APPLE OR WIN32 OR HAIKU)
     get_target_property(QT_QMAKE_EXECUTABLE Qt5::qmake IMPORTED_LOCATION)
