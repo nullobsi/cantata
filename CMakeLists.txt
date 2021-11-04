@@ -214,13 +214,14 @@ else ()
 endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wpedantic -Wall -Wextra \
-    -Wno-cast-qual -Wdouble-promotion -Wno-float-equal \
+    -Wno-cast-qual -Wno-float-equal \
     -Wmissing-format-attribute -Wpacked -Wredundant-decls")
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    # flags unique to GCC
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wduplicated-branches -Wduplicated-cond -Wlogical-op")
     # flags that are hard to fix under Clang
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcast-align")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcast-align -Wdouble-promotion")
 endif()
 
 if (APPLE OR WIN32 OR HAIKU)
