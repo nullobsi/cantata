@@ -281,7 +281,7 @@ size_t FfmpegInput::totalFrames() const
 
 unsigned int FfmpegInput::channels() const
 {
-    return handle ? handle->codecContext->channels : 0;
+    return handle ? handle->codecContext->ch_layout.nb_channels : 0;
 }
 
 unsigned long FfmpegInput::sampleRate() const
@@ -296,11 +296,11 @@ float * FfmpegInput::buffer() const
 
 bool FfmpegInput::setChannelMap(int *st) const
 {
-    if (handle && handle->codecContext->channel_layout) {
+    if (handle && handle->codecContext->ch_layout.u.mask) {
         unsigned int mapIndex = 0;
         int bitCounter = 0;
-        while (mapIndex < (unsigned) handle->codecContext->channels) {
-            if (handle->codecContext->channel_layout & (1 << bitCounter)) {
+        while (mapIndex < (unsigned) handle->codecContext->ch_layout.nb_channels) {
+            if (handle->codecContext->ch_layout.u.mask & (1 << bitCounter)) {
                 switch (1 << bitCounter) {
                 #if LIBAVFORMAT_VERSION_MAJOR >= 54
                 case AV_CH_FRONT_LEFT:
@@ -357,15 +357,15 @@ size_t FfmpegInput::readFrames()
         return 0;
     }
 
-    size_t bufferPosition=0, numberRead=0;
+    size_t bufferPosition=0;
 
     while (handle->currentBytes < BUFFER_SIZE) {
-        numberRead = readOnePacket();
+        size_t numberRead = readOnePacket();
         if (!numberRead) {
             break;
         }
         size_t bufferSize=numberRead * channels() * sizeof(float);
-        handle->bufferList.append(QByteArray((const char *)(handle->buffer), bufferSize));
+        handle->bufferList.append(QByteArray(reinterpret_cast<const char *>(handle->buffer), bufferSize));
         handle->currentBytes += bufferSize;
     }
 
@@ -470,7 +470,7 @@ free_packet:
 write_to_buffer: ;
     size_t numberRead=handle->frame->nb_samples;
     /* TODO: fix this */
-    int numChannels = handle->codecContext->channels;
+    int numChannels = handle->codecContext->ch_layout.nb_channels;
     // channels = handle->frame->channels;
 
     if (handle->frame->nb_samples * numChannels > (int)sizeof handle->buffer) {

@@ -1,7 +1,8 @@
 Cantata
 =======
 
-**NOTE** After 10 years, development of Cantata has now ceased, and this repository is read-only. v2.5.0 is the last released version.
+**NOTE** This is my personal fork of
+[CDrummond/cantata](https://github.com/CDrummond/cantata), which is now archived.
 
 ![ScreenShot](screenshots/mainwindow.png)
 
