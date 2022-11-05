@@ -1372,12 +1372,15 @@ void MPDConnection::goToPrevious()
 {
     toggleStopAfterCurrent(false);
     stopVolumeFade();
-    Response status=sendCommand("status");
-    if (status.ok) {
-        MPDStatusValues sv=MPDParseUtils::parseStatus(status.data);
-        if (sv.timeElapsed>4) {
-            setSeekId(sv.songId, 0);
-            return;
+    int prevSeekDuration = Settings::self()->prevSeekDuration();
+    if (prevSeekDuration > 0) {
+        Response status=sendCommand("status");
+        if (status.ok) {
+            MPDStatusValues sv=MPDParseUtils::parseStatus(status.data);
+            if (sv.timeElapsed>prevSeekDuration) {
+                setSeekId(sv.songId, 0);
+                return;
+            }
         }
     }
     sendCommand("previous");

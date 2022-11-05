@@ -455,6 +455,11 @@ int Settings::stopFadeDuration()
     return cfg.get("stopFadeDuration", (int)MPDConnection::DefaultFade, (int)MPDConnection::MinFade, (int)MPDConnection::MaxFade);
 }
 
+int Settings::prevSeekDuration()
+{
+    return cfg.get("prevSeekDuration", 0, 0, INT_MAX);
+}
+
 int Settings::httpAllocatedPort()
 {
     return cfg.get("httpAllocatedPort", 0);
@@ -956,6 +961,11 @@ void Settings::saveShowDeleteAction(bool v)
 void Settings::saveStopFadeDuration(int v)
 {
     cfg.set("stopFadeDuration", v);
+}
+
+void Settings::savePrevSeekDuration(int v)
+{
+    cfg.set("prevSeekDuration", v);
 }
 
 void Settings::saveHttpAllocatedPort(int v)

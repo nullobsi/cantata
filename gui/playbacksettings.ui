@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1487</width>
-    <height>495</height>
+    <height>639</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="mainLayout">
@@ -52,24 +52,47 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="stopOnExit">
         <property name="text">
          <string>Stop playback on exit</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="3" column="0" colspan="2">
        <widget class="QCheckBox" name="inhibitSuspend">
         <property name="text">
          <string>Inhibit suspend whilst playing</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="4" column="0" colspan="2">
        <widget class="NoteLabel" name="noteLabel">
         <property name="text">
          <string>If you press and hold the stop button, then a menu will be shown allowing you to choose whether to stop playback now, or after the current track. (The stop button can be enabled in the Interface/Toolbar section)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Prev button seeks to start when played more than</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="prevSeekDuration">
+        <property name="specialValueText">
+         <string>None</string>
+        </property>
+        <property name="suffix">
+         <string> s</string>
+        </property>
+        <property name="maximum">
+         <number>9000</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
         </property>
        </widget>
       </item>
@@ -183,24 +206,24 @@
         </item>
         <item row="2" column="1">
          <widget class="QCheckBox" name="applyReplayGain">
-          <property name="text">
-           <string>Apply setting on connect</string>
-          </property>
           <property name="toolTip">
            <string>&lt;p&gt;MPD resets (to the value in its config file) the replaygain mode setting each time it is restarted. Cantata can work-around this by setting MPD to use the value defined here each time Cantata connects to MPD.&lt;/p&gt;</string>
+          </property>
+          <property name="text">
+           <string>Apply setting on connect</string>
           </property>
          </widget>
         </item>
         <item row="3" column="0">
          <widget class="BuddyLabel" name="volumeStepLabel">
+          <property name="toolTip">
+           <string>&lt;p&gt;Amount to change volume by when using either the volume control keyboard shortcuts, or the mouse wheel over the toolbar volume control.&lt;/p&gt;</string>
+          </property>
           <property name="text">
            <string>Volume step:</string>
           </property>
           <property name="buddy">
            <cstring>volumeStep</cstring>
-          </property>
-          <property name="toolTip">
-           <string>&lt;p&gt;Amount to change volume by when using either the volume control keyboard shortcuts, or the mouse wheel over the toolbar volume control.&lt;/p&gt;</string>
           </property>
          </widget>
         </item>

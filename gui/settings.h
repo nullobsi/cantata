@@ -90,6 +90,7 @@ public:
     #endif
     int version();
     int stopFadeDuration();
+    int prevSeekDuration();
     int httpAllocatedPort();
     QString httpInterface();
     int playQueueView();
@@ -197,6 +198,7 @@ public:
     void saveShowDeleteAction(bool v);
     #endif
     void saveStopFadeDuration(int v);
+    void savePrevSeekDuration(int v);
     void saveHttpAllocatedPort(int v);
     void saveHttpInterface(const QString &v);
     void savePlayQueueView(int v);

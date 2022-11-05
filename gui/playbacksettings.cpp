@@ -75,6 +75,7 @@ void PlaybackSettings::load()
 {
     stopOnExit->setChecked(Settings::self()->stopOnExit());
     stopFadeDuration->setValue(Settings::self()->stopFadeDuration());
+    prevSeekDuration->setValue(Settings::self()->prevSeekDuration());
     #if (defined Q_OS_LINUX && defined QT_QTDBUS_FOUND) || (defined Q_OS_MAC && defined IOKIT_FOUND)
     inhibitSuspend->setChecked(Settings::self()->inhibitSuspend());
     #endif
@@ -92,6 +93,7 @@ void PlaybackSettings::save()
 {
     Settings::self()->saveStopOnExit(stopOnExit->isChecked());
     Settings::self()->saveStopFadeDuration(stopFadeDuration->value());
+    Settings::self()->savePrevSeekDuration(prevSeekDuration->value());
     #if (defined Q_OS_LINUX && defined QT_QTDBUS_FOUND) || (defined Q_OS_MAC && defined IOKIT_FOUND)
     Settings::self()->saveInhibitSuspend(inhibitSuspend->isChecked());
     #endif
