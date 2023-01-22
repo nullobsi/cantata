@@ -1965,7 +1965,10 @@ void MainWindow::updateCurrentSong(Song song, bool wasEmpty)
     }
     nowPlaying->setEnabled(-1!=current.id && !current.isCdda() && (!currentIsStream() || current.time>5));
     nowPlaying->update(current);
-    bool isPlaying=MPDState_Playing==MPDStatus::self()->state();
+    auto mpdStatus = MPDStatus::self()->state();
+    // MPDState_Paused is a workaround for owntone mpd server; on forcing next
+    // track, MPD state in changed to pause, resulting in no notification
+    bool isPlaying=MPDState_Playing==mpdStatus || MPDState_Paused == mpdStatus;
     PlayQueueModel::self()->updateCurrentSong(current.id);
     QModelIndex idx=playQueueProxyModel.mapFromSource(PlayQueueModel::self()->index(PlayQueueModel::self()->currentSongRow(), 0));
     playQueue->updateRows(idx.row(), current.key, autoScrollPlayQueue && playQueueProxyModel.isEmpty() && isPlaying, wasEmpty);
