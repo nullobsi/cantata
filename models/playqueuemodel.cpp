@@ -1558,9 +1558,17 @@ void PlayQueueModel::sortBy()
 
 void PlayQueueModel::removeDuplicates()
 {
+    bool simpleSort = Settings::self()->playQueueSimpleSort();
     QMap<QString, QList<Song> > map;
     for (const Song &song: songs) {
-        map[song.albumKey()+"-"+song.artistSong()+"-"+song.track].append(song);
+
+        QString key = nullptr;
+        if (simpleSort) {
+            key = song.title.trimmed().toLower();
+        } else {
+            key = song.albumKey()+"-"+song.artistSong()+"-"+song.track;
+        }
+        map[key].append(song);
     }
 
     QList<qint32> toRemove;
