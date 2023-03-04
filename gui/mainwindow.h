@@ -233,6 +233,8 @@ public Q_SLOTS:
     void locateTracks(const QList<Song> &songs);
     void locateTrack();
     void moveSelectionAfterCurrentSong();
+    void moveSelectionAtQueueStart();
+    void moveSelectionAtQueueEnd();
     void locateArtist(const QString &artist);
     void locateAlbum(const QString &artist, const QString &album);
     void editTags();
@@ -274,6 +276,7 @@ private:
     int calcCollapsedSize();
     void setCollapsedSize();
     void controlView(bool forceUpdate=false);
+    void moveSelection(int position);
 
 private Q_SLOTS:
     void controlPlayQueueButtons();
@@ -326,6 +329,8 @@ private:
     Action *locateAlbumAction;
     Action *locateArtistAction;
     Action *playNextAction;
+    Action *moveToBeginning;
+    Action *moveToEnd;
     #ifdef TAGLIB_FOUND
     Action *editPlayQueueTagsAction;
     #endif

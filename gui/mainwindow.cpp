@@ -355,6 +355,8 @@ MainWindow::MainWindow(QWidget *parent)
     locateAction->setMenu(locateMenu);
 
     playNextAction = ActionCollection::get()->createAction("playnext", tr("Play Next"));
+    moveToBeginning = ActionCollection::get()->createAction("movetobeginning", tr("Move To Beginning"));
+    moveToEnd = ActionCollection::get()->createAction("movetoend", tr("Move To End"));
     #ifdef TAGLIB_FOUND
     editPlayQueueTagsAction = ActionCollection::get()->createAction("editpqtags", Utils::strippedText(StdActions::self()->editTagsAction->text()), StdActions::self()->editTagsAction->icon());
     editPlayQueueTagsAction->setSettingsText(tr("Edit Track Information (Play Queue)"));
@@ -748,6 +750,8 @@ MainWindow::MainWindow(QWidget *parent)
     playQueue->addAction(editPlayQueueTagsAction);
     #endif
     playQueue->addAction(playNextAction);
+    playQueue->addAction(moveToBeginning);
+    playQueue->addAction(moveToEnd);
     Action *sep=new Action(this);
     sep->setSeparator(true);
     playQueue->addAction(sep);
@@ -878,6 +882,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(locateArtistAction, SIGNAL(triggered()), this, SLOT(locateTrack()));
     connect(this, SIGNAL(playNext(QList<quint32>,quint32,quint32)), MPDConnection::self(), SLOT(move(QList<quint32>,quint32,quint32)));
     connect(playNextAction, SIGNAL(triggered()), this, SLOT(moveSelectionAfterCurrentSong()));
+    connect(moveToBeginning, SIGNAL(triggered()), this, SLOT(moveSelectionAtQueueStart()));
+    connect(moveToEnd, SIGNAL(triggered()), this, SLOT(moveSelectionAtQueueEnd()));
     connect(qApp, SIGNAL(paletteChanged(const QPalette &)), this, SLOT(paletteChanged()));
 
     connect(StdActions::self()->searchAction, SIGNAL(triggered()), SLOT(showSearch()));
@@ -2507,6 +2513,32 @@ void MainWindow::moveSelectionAfterCurrentSong()
     if( !selectedSongIds.empty() ) {
         emit playNext(selectedSongIds, currentSongIdx+1, PlayQueueModel::self()->rowCount());
     }
+}
+
+void MainWindow::moveSelection(int position) {
+    QList<int> selectedRows = playQueueProxyModel.mapToSourceRows(playQueue->selectedIndexes());
+    QList<quint32> selectedSongIds;
+
+    for (int row: selectedRows) {
+        if (position!=row) {
+            selectedSongIds.append( (quint32) row);
+        }
+    }
+
+    if( !selectedSongIds.empty() ) {
+        emit playNext(selectedSongIds, position, PlayQueueModel::self()->rowCount());
+    }
+}
+
+void MainWindow::moveSelectionAtQueueStart()
+{
+    moveSelection(0);
+}
+
+void MainWindow::moveSelectionAtQueueEnd()
+{
+    int newPosition = PlayQueueModel::self()->rowCount();
+    moveSelection(newPosition);
 }
 
 void MainWindow::locateArtist(const QString &artist)
