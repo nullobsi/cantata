@@ -2137,6 +2137,10 @@ Não será possível desfazer esta escolha.</translation>
         <source>If no setting is specified for &apos;Filename&apos;, then Cantata will use a default of &lt;code&gt;cover&lt;/code&gt;. This filename is used when downloading covers. This should be specified &lt;b&gt;without&lt;/b&gt; an extension.</source>
         <translation>Se algo não for especificado para o &apos;Nome do arquivo&apos;, será usado pelo Cantata &lt;code&gt;cover&lt;/code&gt; por padrão. Esse nome de arquivo é usado ao baixar capas. Isso deve ser especificado &lt;b&gt;sem&lt;/b&gt; uma extenção.</translation>
     </message>
+    <message>
+        <source>Simple sort (don&apos;t sort on auxiliary tags)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ItemView</name>
@@ -2964,6 +2968,14 @@ This cannot be undone.</source>
         <source>Cantata [%1]</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Move To Beginning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move To End</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MenuButton</name>
@@ -3612,6 +3624,10 @@ Não será possível desfazer esta escolha.</translation>
     </message>
     <message>
         <source>&lt;p&gt;MPD resets (to the value in its config file) the replaygain mode setting each time it is restarted. Cantata can work-around this by setting MPD to use the value defined here each time Cantata connects to MPD.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prev button seeks to start when played more than</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

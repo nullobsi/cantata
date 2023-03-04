@@ -2075,7 +2075,7 @@ Det kan ikke fortrydes.</translation>
     <message>
         <location filename="../gui/interfacesettings.ui" line="82"/>
         <location filename="../gui/interfacesettings.ui" line="147"/>
-        <location filename="../gui/interfacesettings.ui" line="746"/>
+        <location filename="../gui/interfacesettings.ui" line="753"/>
         <source>Style:</source>
         <translation>Stil:</translation>
     </message>
@@ -2095,12 +2095,12 @@ Det kan ikke fortrydes.</translation>
         <translation>Skjul automatisk</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="122"/>
+        <location filename="../gui/interfacesettings.ui" line="125"/>
         <source>Automatically change style when insufficient space</source>
         <translation>Skift automatisk stil når der ikke er plads nok</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="125"/>
+        <location filename="../gui/interfacesettings.ui" line="122"/>
         <source>&lt;p&gt;Change to a small top bar (containing all views) when the window is narrow.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Skift til en lille toplinje (med alle visninger) når vinduet er smalt.&lt;/p&gt;</translation>
     </message>
@@ -2136,252 +2136,257 @@ Det kan ikke fortrydes.</translation>
         <translation>Separat handling (og genvej) til søgning i afspilningskø</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="217"/>
+        <location filename="../gui/interfacesettings.ui" line="195"/>
+        <source>Simple sort (don&apos;t sort on auxiliary tags)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/interfacesettings.ui" line="224"/>
         <source>Background Image</source>
         <translation>Baggrundsbillede</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="223"/>
+        <location filename="../gui/interfacesettings.ui" line="230"/>
         <source>None</source>
         <translation>Intet</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="230"/>
+        <location filename="../gui/interfacesettings.ui" line="237"/>
         <source>Current album cover</source>
         <translation>Nuværende albumcover</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="237"/>
+        <location filename="../gui/interfacesettings.ui" line="244"/>
         <source>Custom image:</source>
         <translation>Brugerdefineret billede:</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="257"/>
+        <location filename="../gui/interfacesettings.ui" line="264"/>
         <source>Blur:</source>
         <translation>Sløring:</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="303"/>
+        <location filename="../gui/interfacesettings.ui" line="310"/>
         <source>10px</source>
         <translation>10px</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="315"/>
+        <location filename="../gui/interfacesettings.ui" line="322"/>
         <source>Opacity:</source>
         <translation>Opacity:</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="361"/>
+        <location filename="../gui/interfacesettings.ui" line="368"/>
         <source>40%</source>
         <translation>40%</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="377"/>
+        <location filename="../gui/interfacesettings.ui" line="384"/>
         <source>Toolbar</source>
         <translation>Værktøjslinje</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="386"/>
+        <location filename="../gui/interfacesettings.ui" line="393"/>
         <source>Show stop button</source>
         <translation>Vis stop-knap</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="393"/>
+        <location filename="../gui/interfacesettings.ui" line="400"/>
         <source>Show cover of current track</source>
         <translation>Vis cover for nuværende spor</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="400"/>
+        <location filename="../gui/interfacesettings.ui" line="407"/>
         <source>Show track rating</source>
         <translation>Vis sporbedømmelse</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="407"/>
+        <location filename="../gui/interfacesettings.ui" line="414"/>
         <source>Show technical info</source>
         <translation>Vis teknisk information</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="415"/>
+        <location filename="../gui/interfacesettings.ui" line="422"/>
         <source>External</source>
         <translation>Eksterne</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="421"/>
+        <location filename="../gui/interfacesettings.ui" line="428"/>
         <source>Enable MPRIS D-BUS interface</source>
         <translation>Aktivér MPRIS D-BUS-grænseflade</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="428"/>
+        <location filename="../gui/interfacesettings.ui" line="435"/>
         <source>Show popup messages when changing tracks</source>
         <translation>Vis pop op-meddelelser når der skiftes spor</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="438"/>
+        <location filename="../gui/interfacesettings.ui" line="445"/>
         <source>Show icon in notification area</source>
         <translation>Vis ikon i notifikationsområde</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="448"/>
+        <location filename="../gui/interfacesettings.ui" line="455"/>
         <source>Minimize to notification area when closed</source>
         <translation>Minimer til notifikationsområde når lukket</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="455"/>
+        <location filename="../gui/interfacesettings.ui" line="462"/>
         <source>On Start-up</source>
         <translation>Ved opstart</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="461"/>
+        <location filename="../gui/interfacesettings.ui" line="468"/>
         <source>Show main window</source>
         <translation>Vis hovedvindue</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="468"/>
+        <location filename="../gui/interfacesettings.ui" line="475"/>
         <source>Hide main window</source>
         <translation>Skjul hovedvindue</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="475"/>
+        <location filename="../gui/interfacesettings.ui" line="482"/>
         <source>Restore previous state</source>
         <translation>Gendan forrige tilstand</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="499"/>
+        <location filename="../gui/interfacesettings.ui" line="506"/>
         <source>Tweaks</source>
         <translation>Finjusteringer</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="505"/>
+        <location filename="../gui/interfacesettings.ui" line="512"/>
         <source>Artist &amp;&amp; Album Sorting</source>
         <translation>Sortering af kunstner og album</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="511"/>
+        <location filename="../gui/interfacesettings.ui" line="518"/>
         <source>Enter a (comma separated) list of prefixes to ignore when sorting artist and albums. e.g. if set to &apos;The&apos; then &apos;The Beatles&apos; would be sorted by &apos;Beatles&apos;</source>
         <translation>Indtast en (kommasepareret) liste med præfikser som skal ignoreres når kunstner og albummer sorteres. Hvis den f.eks. er sat til &apos;The&apos;, så vil &apos;The Raveonettes&apos; blive sorteret som &apos;Raveonettes&apos;</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="521"/>
+        <location filename="../gui/interfacesettings.ui" line="528"/>
         <source>Enter comma separated list of prefixes...</source>
         <translation>Indtast kommasepareret liste af præfikser...</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="531"/>
+        <location filename="../gui/interfacesettings.ui" line="538"/>
         <source>Composer Support</source>
         <translation>Understøttelse af komponist</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="537"/>
+        <location filename="../gui/interfacesettings.ui" line="544"/>
         <source>By default, Cantata uses the &apos;Album Artist&apos; tag (or &apos;Artist&apos; tag if a song has no &apos;Album Artist&apos;) to group songs and albums. For certain genres, e.g &apos;Classical&apos;, it may be preferable to use the &apos;Composer&apos; tag (if set) to perform this grouping. Please enter a (comma separated) list of the genres with which you would like Cantata to use the &apos;Composer&apos; tag.</source>
         <translation>Som standard bruger Cantata &apos;Albumkunstner&apos;-mærkatet (eller &apos;Kunstner&apos;-mærkatet hvis en sang ikke har nogen &apos;Albumkunstner&apos;) til at gruppere sange og albummer. Til bestemte genre, som f.eks. &apos;Classical&apos;, kan det være ønsket at bruge &apos;Komponist&apos;-mærkatet (hvis det er sat) til at udføre grupperingen. Indtast venligst en (kommasepareret) liste med genre hvor Cantata skal bruge &apos;Komponist&apos;-mærkatet.</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="547"/>
+        <location filename="../gui/interfacesettings.ui" line="554"/>
         <source>Enter comma separated list of genres...</source>
         <translation>Indtast kommasepareret liste af genre...</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="557"/>
+        <location filename="../gui/interfacesettings.ui" line="564"/>
         <source>Single Tracks</source>
         <translation>Ét spor</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="563"/>
+        <location filename="../gui/interfacesettings.ui" line="570"/>
         <source>If you have a lot of artists in your collection that only contain a single track, then it can be cumbersome for each of these to have their own entry in the list of artists. As a work-around for this, if you place these tracks into a separate folder, and enter this folder name below, then Cantata will group these under an album named &apos;Single Tracks&apos; with an album artist of &apos;Various Artists&apos;. You may enter a comma separated list of folder names (without leading or trailing path separators) below.</source>
         <translation>Hvis du har mange kunstnere i din samling som kun indeholder ét spor, så kan det være omstændigt at hver af dem har deres egen post i listen med kunstnere. Som en løsning på det kan du placere sporene i en separat mappe og indtaste mappenavnet nedenfor, så grupperer Cantata dem under et album ved navn &apos;Ét spor&apos; med albumkunstneren &apos;Diverse kunstnere&apos;. Du kan indtaste en kommasepareret liste med mappenavne nedenfor (uden foranstillede eller efterstillede sti-separatorer).</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="573"/>
+        <location filename="../gui/interfacesettings.ui" line="580"/>
         <source>Comma separated list of folders that contain single track files...</source>
         <translation>Indtast kommasepareret liste af mapper som indeholder ét spor-filer...</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="583"/>
+        <location filename="../gui/interfacesettings.ui" line="590"/>
         <source>Miscellaneous</source>
         <translation>Diverse</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="589"/>
+        <location filename="../gui/interfacesettings.ui" line="596"/>
         <source>CUE files:</source>
         <translation>CUE-filer:</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="599"/>
+        <location filename="../gui/interfacesettings.ui" line="606"/>
         <source>Year tag:</source>
         <translation>Year-mærkat:</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="612"/>
+        <location filename="../gui/interfacesettings.ui" line="619"/>
         <source>Changing &apos;Artist &amp; Album Sorting&apos;, &apos;Single Tracks&apos;, or &apos;CUE files&apos; will require a DB refresh in order to take effect. Changing &apos;Composer Support&apos; or &apos;Year tag&apos; will require restarting Cantata.</source>
         <translation>Ændring af &apos;Sortering af kunstner og album&apos;, &apos;Ét spor&apos; eller &apos;CUE-filer&apos; kræver en genopfriskning af databasen for at træde i kraft. Ændring af &apos;Understøttelse af komponist&apos; eller &apos;Year-mærkat&apos; kræver at Cantata genstartes.</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="633"/>
+        <location filename="../gui/interfacesettings.ui" line="640"/>
         <source>Covers</source>
         <translation>Covers</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="644"/>
+        <location filename="../gui/interfacesettings.ui" line="651"/>
         <source>Fetch missing covers</source>
         <translation>Hent manglende covers</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="651"/>
+        <location filename="../gui/interfacesettings.ui" line="658"/>
         <source>Save downloaded covers into music folder</source>
         <translation>Gem downloadede covers i musikmappe</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="658"/>
+        <location filename="../gui/interfacesettings.ui" line="665"/>
         <source>Filename:</source>
         <translation>Filnavn:</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="668"/>
+        <location filename="../gui/interfacesettings.ui" line="675"/>
         <source>&lt;p&gt;Filename (without extension) to save downloaded covers as.&lt;br/&gt;If left blank &apos;cover&apos; will be used.&lt;br/&gt;&lt;br/&gt;&lt;i&gt;%artist% will be replaced with album artist of the current song, and %album% will be replaced with the album name.&lt;/i&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Filnavnet (uden endelse) som downloadede covers skal gemmes som.&lt;br/&gt;Hvis det er tomt, så bruges &apos;cover&apos;.&lt;br/&gt;&lt;br/&gt;&lt;i&gt;%kunstner% erstattes med albumkunstneren af den nuværende sang, og %album% erstattes med albummets navn.&lt;/i&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="677"/>
+        <location filename="../gui/interfacesettings.ui" line="684"/>
         <source>If you enable &apos;Save downloaded covers into music folder&apos; you may need to clear the cache of any previous covers to force downloading of new covers. See &apos;Cache&apos; settings page for further details.</source>
         <translation>Hvis du aktivere &apos;Gem downloadede covers i musikmappe&apos;, så kan det være du skal rydde mellemlageret af tidligere covers for at tvinge download af nye covers. Se &apos;Mellemlager&apos;-indstillingssiden for yderligere detaljer.</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="701"/>
+        <location filename="../gui/interfacesettings.ui" line="708"/>
         <source>General</source>
         <translation>Generelt</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="712"/>
+        <location filename="../gui/interfacesettings.ui" line="719"/>
         <source>Show delete action in context menus</source>
         <translation>Vis slet-handling i genvejsmenuer</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="719"/>
+        <location filename="../gui/interfacesettings.ui" line="726"/>
         <source>Enforce single-click activation of items</source>
         <translation>Aktivér poster med ét klik</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="726"/>
+        <location filename="../gui/interfacesettings.ui" line="733"/>
         <source>Show song information tooltips</source>
         <translation>Vis værktøjstips med information om sangen</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="733"/>
+        <location filename="../gui/interfacesettings.ui" line="740"/>
         <source>Language:</source>
         <translation>Sprog:</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="761"/>
+        <location filename="../gui/interfacesettings.ui" line="768"/>
         <source>Changing the &apos;Enforce single-click activation of items&apos; setting will require a re-start of Cantata.</source>
         <translation>Cantata skal genstartes for at skifte &apos;Aktivér poster med ét klik&apos;-indstillingen.</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="768"/>
+        <location filename="../gui/interfacesettings.ui" line="775"/>
         <source>Changing the language setting will require a re-start of Cantata.</source>
         <translation>Cantata skal genstartes for at skifte sprogindstillingen.</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.ui" line="775"/>
+        <location filename="../gui/interfacesettings.ui" line="782"/>
         <source>Changing the style setting will require a re-start of Cantata.</source>
         <translation>Cantata skal genstartes for at skifte stilindstillingen.</translation>
     </message>
@@ -2492,24 +2497,24 @@ Det kan ikke fortrydes.</translation>
         <translation>Hvis ikke der er angivet nogen indstilling til &apos;Filnavn&apos;, så bruger Cantata &lt;code&gt;cover&lt;/code&gt; som standard. Filnavnet bruges ved download af covers. Den skal angives &lt;b&gt;uden&lt;/b&gt; en endelse.</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.cpp" line="433"/>
+        <location filename="../gui/interfacesettings.cpp" line="435"/>
         <source>English (en)</source>
         <translation>Engelsk (en)</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.cpp" line="438"/>
-        <location filename="../gui/interfacesettings.cpp" line="455"/>
+        <location filename="../gui/interfacesettings.cpp" line="440"/>
+        <location filename="../gui/interfacesettings.cpp" line="457"/>
         <source>System default</source>
         <translation>Systemets standard</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.cpp" line="565"/>
+        <location filename="../gui/interfacesettings.cpp" line="567"/>
         <source>%1%</source>
         <comment>value%</comment>
         <translation>%1%</translation>
     </message>
     <message>
-        <location filename="../gui/interfacesettings.cpp" line="570"/>
+        <location filename="../gui/interfacesettings.cpp" line="572"/>
         <source>%1 px</source>
         <comment>pixels</comment>
         <translation>%1 px</translation>
@@ -2883,33 +2888,33 @@ Hvis søgningen ikke finder nye sangtekster, vil de stadig være tilknyttet den 
         <translation>Kunne ikke sende kommando. Ikke forbundet til %1</translation>
     </message>
     <message>
-        <location filename="../mpd-interface/mpdconnection.cpp" line="1917"/>
+        <location filename="../mpd-interface/mpdconnection.cpp" line="1920"/>
         <source>Failed to rename &lt;b&gt;%1&lt;/b&gt; to &lt;b&gt;%2&lt;/b&gt;</source>
         <translation>Kunne ikke omdøbe &lt;b&gt;%1&lt;/b&gt; til &lt;b&gt;%2&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../mpd-interface/mpdconnection.cpp" line="1932"/>
+        <location filename="../mpd-interface/mpdconnection.cpp" line="1935"/>
         <source>Failed to save &lt;b&gt;%1&lt;/b&gt;</source>
         <translation>Kunne ikke gemme &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../mpd-interface/mpdconnection.cpp" line="1945"/>
+        <location filename="../mpd-interface/mpdconnection.cpp" line="1948"/>
         <source>You cannot add parts of a cue sheet to a playlist!</source>
         <translation>Du kan ikke tilføje dele af et cue sheet til en afspilningsliste!</translation>
     </message>
     <message>
-        <location filename="../mpd-interface/mpdconnection.cpp" line="1948"/>
+        <location filename="../mpd-interface/mpdconnection.cpp" line="1951"/>
         <source>You cannot add a playlist to another playlist!</source>
         <translation>Du kan ikke tilføje en afspilningsliste til en afspilningsliste!</translation>
     </message>
     <message>
-        <location filename="../mpd-interface/mpdconnection.cpp" line="2203"/>
+        <location filename="../mpd-interface/mpdconnection.cpp" line="2206"/>
         <source>Failed to send &apos;%1&apos; to %2. Please check %2 is registered with MPD.</source>
         <translation>Kunne ikke sende &apos;%1&apos; til %2. Tjek venligst at %2 er registreret med MPD.</translation>
     </message>
     <message>
-        <location filename="../mpd-interface/mpdconnection.cpp" line="2492"/>
-        <location filename="../mpd-interface/mpdconnection.cpp" line="2519"/>
+        <location filename="../mpd-interface/mpdconnection.cpp" line="2495"/>
+        <location filename="../mpd-interface/mpdconnection.cpp" line="2522"/>
         <source>Cannot store ratings, as the &apos;sticker&apos; MPD command is not supported.</source>
         <translation>Kan ikke lagre bedømmelser eftersom MPD&apos;s &apos;sticker&apos;-kommando ikke understøttes.</translation>
     </message>
@@ -2998,355 +3003,365 @@ Hvis søgningen ikke finder nye sangtekster, vil de stadig være tilknyttet den 
         <translation>Afslut fuldskærm</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="258"/>
+        <location filename="../gui/mainwindow.cpp" line="261"/>
         <source>Configure Cantata...</source>
         <translation>Konfigurer Cantata...</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="258"/>
+        <location filename="../gui/mainwindow.cpp" line="261"/>
         <source>Preferences...</source>
         <translation>Præferencer...</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="261"/>
+        <location filename="../gui/mainwindow.cpp" line="264"/>
         <source>Quit</source>
         <translation>Afslut</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="264"/>
+        <location filename="../gui/mainwindow.cpp" line="267"/>
         <source>About Cantata...</source>
         <translation>Om Cantata...</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="271"/>
+        <location filename="../gui/mainwindow.cpp" line="274"/>
         <source>Show Window</source>
         <translation>Vis vindue</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="274"/>
+        <location filename="../gui/mainwindow.cpp" line="277"/>
         <source>Server information...</source>
         <translation>Serverinformation...</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="277"/>
+        <location filename="../gui/mainwindow.cpp" line="280"/>
         <source>Refresh Database</source>
         <translation>Genopfrisk database</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="278"/>
+        <location filename="../gui/mainwindow.cpp" line="281"/>
         <source>Refresh</source>
         <translation>Genopfrisk</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="280"/>
+        <location filename="../gui/mainwindow.cpp" line="283"/>
         <source>Connect</source>
         <translation>Opret forbindelse</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="281"/>
+        <location filename="../gui/mainwindow.cpp" line="284"/>
         <source>Collection</source>
         <translation>Samling</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="283"/>
-        <location filename="../gui/mainwindow.cpp" line="1480"/>
-        <location filename="../gui/mainwindow.cpp" line="1484"/>
-        <location filename="../gui/mainwindow.cpp" line="1490"/>
+        <location filename="../gui/mainwindow.cpp" line="286"/>
+        <location filename="../gui/mainwindow.cpp" line="1493"/>
+        <location filename="../gui/mainwindow.cpp" line="1497"/>
+        <location filename="../gui/mainwindow.cpp" line="1503"/>
         <source>Outputs</source>
         <translation>Outputs</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="284"/>
+        <location filename="../gui/mainwindow.cpp" line="287"/>
         <source>Stop After Track</source>
         <translation>Stop efter spor</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="290"/>
+        <location filename="../gui/mainwindow.cpp" line="293"/>
         <source>Seek forward (%1 seconds)</source>
         <translation>Søg fremad (%1 sekunder)</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="291"/>
+        <location filename="../gui/mainwindow.cpp" line="294"/>
         <source>Seek backward (%1 seconds)</source>
         <translation>Søg baglæns (%1 sekunder)</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="304"/>
+        <location filename="../gui/mainwindow.cpp" line="307"/>
         <source>Add To Stored Playlist</source>
         <translation>Tilføj til gemt afspilningsliste</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="309"/>
+        <location filename="../gui/mainwindow.cpp" line="312"/>
         <source>Crop Others</source>
         <translation>Beskær andre</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="310"/>
+        <location filename="../gui/mainwindow.cpp" line="313"/>
         <source>Add Stream URL</source>
         <translation>Tilføj strøm-URL</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="311"/>
+        <location filename="../gui/mainwindow.cpp" line="314"/>
         <source>Add Local Files</source>
         <translation>Tilføj lokale filer</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="313"/>
+        <location filename="../gui/mainwindow.cpp" line="316"/>
         <source>Clear</source>
         <translation>Ryd</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="315"/>
+        <location filename="../gui/mainwindow.cpp" line="318"/>
         <source>Center On Current Track</source>
         <translation>Centrér på nuværende spor</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="316"/>
+        <location filename="../gui/mainwindow.cpp" line="319"/>
         <source>Expanded Interface</source>
         <translation>Udfoldet brugerflade</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="318"/>
+        <location filename="../gui/mainwindow.cpp" line="321"/>
         <source>Show Current Song Information</source>
         <translation>Vis information om nuværende sang</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="321"/>
+        <location filename="../gui/mainwindow.cpp" line="324"/>
         <source>Full Screen</source>
         <translation>Fuldskærm</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="325"/>
+        <location filename="../gui/mainwindow.cpp" line="328"/>
         <source>Random</source>
         <translation>Tilfældig</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="326"/>
+        <location filename="../gui/mainwindow.cpp" line="329"/>
         <source>Repeat</source>
         <translation>Gentag</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="327"/>
+        <location filename="../gui/mainwindow.cpp" line="330"/>
         <source>Single</source>
         <translation>Én</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="327"/>
+        <location filename="../gui/mainwindow.cpp" line="330"/>
         <source>When &apos;Single&apos; is activated, playback is stopped after current song, or song is repeated if &apos;Repeat&apos; is enabled.</source>
         <translation>Når &apos;Én&apos; er aktiveret, stoppes afspilning efter nuværende sang, eller sangen gentages hvis &apos;Gentag&apos; er aktiveret.</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="328"/>
+        <location filename="../gui/mainwindow.cpp" line="331"/>
         <source>Consume</source>
         <translation>Spis</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="328"/>
+        <location filename="../gui/mainwindow.cpp" line="331"/>
         <source>When consume is activated, a song is removed from the play queue after it has been played.</source>
         <translation>Når spis er aktiveret, så fjernes sangen fra afspilningskøen efter den er blevet afspillet.</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="329"/>
+        <location filename="../gui/mainwindow.cpp" line="332"/>
         <source>Find in Play Queue</source>
         <translation>Find i afspilningskø</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="339"/>
+        <location filename="../gui/mainwindow.cpp" line="342"/>
         <source>Locate In Library</source>
         <translation>Find i bibliotek</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="340"/>
+        <location filename="../gui/mainwindow.cpp" line="343"/>
         <source>Artist</source>
         <translation>Kunstner</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="341"/>
+        <location filename="../gui/mainwindow.cpp" line="344"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="342"/>
+        <location filename="../gui/mainwindow.cpp" line="345"/>
         <source>Track</source>
         <translation>Spor</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="333"/>
+        <location filename="../gui/mainwindow.cpp" line="336"/>
         <source>Play HTTP Output Stream</source>
         <translation>Afspil HTTP-outputstrøm</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="282"/>
+        <location filename="../gui/mainwindow.cpp" line="285"/>
         <source>Partitions</source>
         <translation>Partitioner</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="354"/>
+        <location filename="../gui/mainwindow.cpp" line="357"/>
         <source>Play Next</source>
         <translation>Afspil næste</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="357"/>
+        <location filename="../gui/mainwindow.cpp" line="358"/>
+        <source>Move To Beginning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/mainwindow.cpp" line="359"/>
+        <source>Move To End</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/mainwindow.cpp" line="362"/>
         <source>Edit Track Information (Play Queue)</source>
         <translation>Rediger sporinformation (afspilningskø)</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="359"/>
+        <location filename="../gui/mainwindow.cpp" line="364"/>
         <source>Expand All</source>
         <translation>Udfold alle</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="361"/>
+        <location filename="../gui/mainwindow.cpp" line="366"/>
         <source>Collapse All</source>
         <translation>Sammenfold alle</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="363"/>
+        <location filename="../gui/mainwindow.cpp" line="368"/>
         <source>Cancel</source>
         <translation>Annuller</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="419"/>
+        <location filename="../gui/mainwindow.cpp" line="424"/>
         <source>Play Queue</source>
         <translation>Afspilningskø</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="424"/>
+        <location filename="../gui/mainwindow.cpp" line="429"/>
         <source>Library</source>
         <translation>Bibliotek</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="429"/>
+        <location filename="../gui/mainwindow.cpp" line="434"/>
         <source>Folders</source>
         <translation>Mapper</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="435"/>
+        <location filename="../gui/mainwindow.cpp" line="440"/>
         <source>Playlists</source>
         <translation>Afspilningslister</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="445"/>
+        <location filename="../gui/mainwindow.cpp" line="450"/>
         <source>Internet</source>
         <translation>Internet</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="454"/>
+        <location filename="../gui/mainwindow.cpp" line="459"/>
         <source>Devices</source>
         <translation>Enheder</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="461"/>
+        <location filename="../gui/mainwindow.cpp" line="466"/>
         <source>Search</source>
         <translation>Søg</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="466"/>
+        <location filename="../gui/mainwindow.cpp" line="471"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="501"/>
+        <location filename="../gui/mainwindow.cpp" line="506"/>
         <source>&lt;p&gt;Enter a string to search artist, album, title, etc. To filter based on year, add &lt;i&gt;#year-range&lt;/i&gt; to search string - e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;&lt;i&gt;#2000&lt;/i&gt;&lt;/b&gt; return tracks from 2000&lt;/li&gt;&lt;li&gt;&lt;b&gt;&lt;i&gt;#1980-1989&lt;/i&gt;&lt;/b&gt; return tracks from the 80&apos;s&lt;/li&gt;&lt;li&gt;&lt;b&gt;&lt;i&gt;Blah #2000&lt;/i&gt;&lt;/b&gt; to search for string &lt;i&gt;Blah&lt;/i&gt; and only return tracks from 2000&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;Indtast en streng for at søge efter kunstner, album, titel, osv. Tilføj &lt;i&gt;#år-område&lt;/i&gt; til søgestrengen, for at filtrerer baseret på år - f.eks.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;&lt;i&gt;#2000&lt;/i&gt;&lt;/b&gt; returnerer spor fra 2000&lt;/li&gt;&lt;li&gt;&lt;b&gt;&lt;i&gt;#1980-1989&lt;/i&gt;&lt;/b&gt; returnerer spor fra 80&apos;erne&lt;/li&gt;&lt;li&gt;&lt;b&gt;&lt;i&gt;Noget #2000&lt;/i&gt;&lt;/b&gt; for at søge efter strengen &lt;i&gt;Noget&lt;/i&gt; og kun returnere spor fra 2000&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="608"/>
+        <location filename="../gui/mainwindow.cpp" line="613"/>
         <source>Show Menubar</source>
         <translation>Vis menulinje</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="614"/>
+        <location filename="../gui/mainwindow.cpp" line="619"/>
         <source>&amp;Music</source>
         <translation>&amp;Musik</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="626"/>
+        <location filename="../gui/mainwindow.cpp" line="631"/>
         <source>&amp;Edit</source>
         <translation>&amp;Rediger</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="638"/>
+        <location filename="../gui/mainwindow.cpp" line="643"/>
         <source>&amp;View</source>
         <translation>&amp;Vis</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="650"/>
+        <location filename="../gui/mainwindow.cpp" line="655"/>
         <source>&amp;Queue</source>
         <translation>&amp;Kø</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="660"/>
+        <location filename="../gui/mainwindow.cpp" line="665"/>
         <source>&amp;Settings</source>
         <translation>&amp;Indstillinger</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="676"/>
+        <location filename="../gui/mainwindow.cpp" line="681"/>
         <source>&amp;Help</source>
         <translation>&amp;Hjælp</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="722"/>
+        <location filename="../gui/mainwindow.cpp" line="727"/>
         <source>Set Rating</source>
         <translation>Sæt bedømmelse</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="727"/>
+        <location filename="../gui/mainwindow.cpp" line="732"/>
         <source>No Rating</source>
         <translation>Ingen bedømmelse</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1064"/>
+        <location filename="../gui/mainwindow.cpp" line="1077"/>
         <source>Failed to locate any songs matching the dynamic playlist rules.</source>
         <translation>Kunne ikke finde nogen sange som matcher de dynamiske afspilningslisteregler.</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1197"/>
+        <location filename="../gui/mainwindow.cpp" line="1210"/>
         <source>Connecting to %1</source>
         <translation>Opretter forbindelse til %1</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1231"/>
+        <location filename="../gui/mainwindow.cpp" line="1244"/>
         <source>Refresh MPD Database?</source>
         <translation>Genopfrisk MPD-database?</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1237"/>
+        <location filename="../gui/mainwindow.cpp" line="1250"/>
         <source>About Cantata</source>
         <translation>Om Cantata</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1238"/>
+        <location filename="../gui/mainwindow.cpp" line="1251"/>
         <source>&lt;b&gt;Cantata %1&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;MPD client.&lt;br/&gt;&lt;br/&gt;&amp;copy; 2011-2022 Craig Drummond&lt;br/&gt;Released under the &lt;a href=&quot;http://www.gnu.org/licenses/gpl.html&quot;&gt;GPLv3&lt;/a&gt;</source>
         <translation>&lt;b&gt;Cantata %1&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;MPD-klient.&lt;br/&gt;&lt;br/&gt;&amp;copy; 2011-2022 Craig Drummond&lt;br/&gt;Udgivet under &lt;a href=&quot;http://www.gnu.org/licenses/gpl.html&quot;&gt;GPLv3&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1241"/>
+        <location filename="../gui/mainwindow.cpp" line="1254"/>
         <source>Please refer to &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
         <translation>Besøg venligst &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s problemsporer&lt;/a&gt; for en liste over kendte problemer og for at rapportere nye problemer.</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1243"/>
+        <location filename="../gui/mainwindow.cpp" line="1256"/>
         <source>Based upon &lt;a href=&quot;http://lowblog.nl&quot;&gt;QtMPC&lt;/a&gt; - &amp;copy; 2007-2010 The QtMPC Authors&lt;br/&gt;</source>
         <translation>Baseret på &lt;a href=&quot;http://lowblog.nl&quot;&gt;QtMPC&lt;/a&gt; - &amp;copy; 2007-2010 QtMPC-forfatterne&lt;br/&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1244"/>
+        <location filename="../gui/mainwindow.cpp" line="1257"/>
         <source>Context view backdrops courtesy of &lt;a href=&quot;http://www.fanart.tv&quot;&gt;FanArt.tv&lt;/a&gt;</source>
         <translation>Backdrops til sammenhængsvisning leveres af &lt;a href=&quot;http://www.fanart.tv&quot;&gt;FanArt.tv&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1245"/>
+        <location filename="../gui/mainwindow.cpp" line="1258"/>
         <source>Context view metadata courtesy of &lt;a href=&quot;http://www.wikipedia.org&quot;&gt;Wikipedia&lt;/a&gt; and &lt;a href=&quot;http://www.last.fm&quot;&gt;Last.fm&lt;/a&gt;</source>
         <translation>Metadata til sammenhængsvisning leveres af &lt;a href=&quot;http://www.wikipedia.org&quot;&gt;Wikipedia&lt;/a&gt; og &lt;a href=&quot;http://www.last.fm&quot;&gt;Last.fm&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1246"/>
+        <location filename="../gui/mainwindow.cpp" line="1259"/>
         <source>Please consider uploading your own music fan-art to &lt;a href=&quot;http://www.fanart.tv&quot;&gt;FanArt.tv&lt;/a&gt;</source>
         <translation>Overvej venligst at uploade din egen musik-fan-art til &lt;a href=&quot;http://www.fanart.tv&quot;&gt;FanArt.tv&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1253"/>
+        <location filename="../gui/mainwindow.cpp" line="1266"/>
         <source>A Podcast is currently being downloaded
 
 Quitting now will abort the download.</source>
@@ -3355,54 +3370,54 @@ Quitting now will abort the download.</source>
 Hvis der afsluttes nu, så afbrydes downloaden.</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1254"/>
+        <location filename="../gui/mainwindow.cpp" line="1267"/>
         <source>Abort download and quit</source>
         <translation>Afbryd download og afslut</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1282"/>
+        <location filename="../gui/mainwindow.cpp" line="1295"/>
         <source>Please close other dialogs first.</source>
         <translation>Luk venligst andre dialoger først.</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1379"/>
+        <location filename="../gui/mainwindow.cpp" line="1392"/>
         <source>Create new partition</source>
         <translation>Opret ny partition</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1380"/>
+        <location filename="../gui/mainwindow.cpp" line="1393"/>
         <source>Remove partition</source>
         <translation>Fjern partition</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1449"/>
+        <location filename="../gui/mainwindow.cpp" line="1462"/>
         <source>Move output to this partition</source>
         <translation>Flyt output til partitionen</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1480"/>
-        <location filename="../gui/mainwindow.cpp" line="1491"/>
+        <location filename="../gui/mainwindow.cpp" line="1493"/>
+        <location filename="../gui/mainwindow.cpp" line="1504"/>
         <source>Enabled: %1</source>
         <translation>Aktiveret: %1</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1484"/>
-        <location filename="../gui/mainwindow.cpp" line="1492"/>
+        <location filename="../gui/mainwindow.cpp" line="1497"/>
+        <location filename="../gui/mainwindow.cpp" line="1505"/>
         <source>Disabled: %1</source>
         <translation>Deaktiveret: %1</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1712"/>
+        <location filename="../gui/mainwindow.cpp" line="1725"/>
         <source>Partition Name</source>
         <translation>Partitionsnavn</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1712"/>
+        <location filename="../gui/mainwindow.cpp" line="1725"/>
         <source>Enter a name for the partition:</source>
         <translation>Indtast et navn til partitionen:</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1724"/>
+        <location filename="../gui/mainwindow.cpp" line="1737"/>
         <source>Are you sure you wish to remove partition &quot;%1&quot;?
 
 This cannot be undone.</source>
@@ -3411,93 +3426,93 @@ This cannot be undone.</source>
 Det kan ikke fortrydes.</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1725"/>
+        <location filename="../gui/mainwindow.cpp" line="1738"/>
         <source>Remove Partition</source>
         <translation>Fjern partition</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1751"/>
-        <location filename="../gui/mainwindow.cpp" line="1774"/>
+        <location filename="../gui/mainwindow.cpp" line="1764"/>
+        <location filename="../gui/mainwindow.cpp" line="1787"/>
         <source>Server Information</source>
         <translation>Serverinformation</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1754"/>
+        <location filename="../gui/mainwindow.cpp" line="1767"/>
         <source>&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&lt;b&gt;Server&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Protocol:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%1.%2.%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Uptime:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Playing:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%5&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Handlers:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%6&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Tags:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%7&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&lt;b&gt;Server&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Protokol:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%1.%2.%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Oppetid:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Afspilning:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%5&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Handlers:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%6&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Mærkater:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%7&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1765"/>
+        <location filename="../gui/mainwindow.cpp" line="1778"/>
         <source>&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&lt;b&gt;Database&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Artists:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Albums:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Songs:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Duration:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Updated:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%5&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;&lt;b&gt;Database&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Kunstnere:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Albummer:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Sange:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Varighed:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=&quot;right&quot;&gt;Opdateret:&amp;nbsp;&lt;/td&gt;&lt;td&gt;%5&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1924"/>
+        <location filename="../gui/mainwindow.cpp" line="1937"/>
         <source>Cantata (%1) [%2]</source>
         <translation>Cantata (%1) [%2]</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1926"/>
+        <location filename="../gui/mainwindow.cpp" line="1939"/>
         <source>Cantata (%1)</source>
         <translation>Cantata (%1)</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="1928"/>
+        <location filename="../gui/mainwindow.cpp" line="1941"/>
         <source>Cantata [%1]</source>
         <translation>Cantata [%1]</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2004"/>
+        <location filename="../gui/mainwindow.cpp" line="2020"/>
         <source>MPD reported the following error: %1</source>
         <translation>MPD rapporterede følgende fejl: %1</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2094"/>
+        <location filename="../gui/mainwindow.cpp" line="2110"/>
         <source>Cantata</source>
         <translation>Cantata</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2094"/>
+        <location filename="../gui/mainwindow.cpp" line="2110"/>
         <source>Playback stopped</source>
         <translation>Afspilning stoppede</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2148"/>
+        <location filename="../gui/mainwindow.cpp" line="2164"/>
         <source>Remove all songs from play queue?</source>
         <translation>Fjern alle sange fra afspilningskø?</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2199"/>
+        <location filename="../gui/mainwindow.cpp" line="2215"/>
         <source>Priority</source>
         <translation>Prioritet</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2199"/>
+        <location filename="../gui/mainwindow.cpp" line="2215"/>
         <source>Enter priority (0..255):</source>
         <translation>Indtast prioritet (0..255):</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2200"/>
+        <location filename="../gui/mainwindow.cpp" line="2216"/>
         <source>Decrease priority for each subsequent track</source>
         <translation>Reducer prioriteten af hvert efterfølgende spor</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2227"/>
+        <location filename="../gui/mainwindow.cpp" line="2243"/>
         <source>Playlist Name</source>
         <translation>Afspilningslistenavn</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2227"/>
+        <location filename="../gui/mainwindow.cpp" line="2243"/>
         <source>Enter a name for the playlist:</source>
         <translation>Indtast et navn til afspilningslisten:</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2233"/>
+        <location filename="../gui/mainwindow.cpp" line="2249"/>
         <source>&apos;%1&apos; is used to store favorite streams, please choose another name.</source>
         <translation>&apos;%1&apos; bruges til at lagre favoritstrømme. Vælg venligst et andet navn.</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2237"/>
+        <location filename="../gui/mainwindow.cpp" line="2253"/>
         <source>A playlist named &apos;%1&apos; already exists!
 
 Add to that playlist?</source>
@@ -3506,22 +3521,22 @@ Add to that playlist?</source>
 Tilføj til afspilningslisten?</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2238"/>
+        <location filename="../gui/mainwindow.cpp" line="2254"/>
         <source>Existing Playlist</source>
         <translation>Eksisterende afspilningsliste</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2299"/>
+        <location filename="../gui/mainwindow.cpp" line="2315"/>
         <source>Select Music Files</source>
         <translation>Vælg musikfiler</translation>
     </message>
     <message>
-        <location filename="../gui/mainwindow.cpp" line="2299"/>
+        <location filename="../gui/mainwindow.cpp" line="2315"/>
         <source>Music Files </source>
         <translation>Musikfiler </translation>
     </message>
     <message numerus="yes">
-        <location filename="../gui/mainwindow.cpp" line="2328"/>
+        <location filename="../gui/mainwindow.cpp" line="2344"/>
         <source>%n Track(s)</source>
         <translation>
             <numerusform>%n spor</numerusform>
@@ -3529,7 +3544,7 @@ Tilføj til afspilningslisten?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../gui/mainwindow.cpp" line="2330"/>
+        <location filename="../gui/mainwindow.cpp" line="2346"/>
         <source>%n Tracks (%1)</source>
         <translation>
             <numerusform>%n spor (%1)</numerusform>
@@ -3661,17 +3676,17 @@ Det kan ikke fortrydes.</translation>
 <context>
     <name>MusicLibraryModel</name>
     <message>
-        <location filename="../models/musiclibrarymodel.cpp" line="186"/>
+        <location filename="../models/musiclibrarymodel.cpp" line="187"/>
         <source>Cue Sheet</source>
         <translation>Cue sheet</translation>
     </message>
     <message>
-        <location filename="../models/musiclibrarymodel.cpp" line="186"/>
+        <location filename="../models/musiclibrarymodel.cpp" line="187"/>
         <source>Playlist</source>
         <translation>Afspilningsliste</translation>
     </message>
     <message numerus="yes">
-        <location filename="../models/musiclibrarymodel.cpp" line="212"/>
+        <location filename="../models/musiclibrarymodel.cpp" line="213"/>
         <source>%n Track(s)</source>
         <translation>
             <numerusform>%n spor</numerusform>
@@ -3679,7 +3694,7 @@ Det kan ikke fortrydes.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../models/musiclibrarymodel.cpp" line="214"/>
+        <location filename="../models/musiclibrarymodel.cpp" line="215"/>
         <source>%n Artist(s)</source>
         <translation>
             <numerusform>%n kunstner</numerusform>
@@ -3687,7 +3702,7 @@ Det kan ikke fortrydes.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../models/musiclibrarymodel.cpp" line="217"/>
+        <location filename="../models/musiclibrarymodel.cpp" line="218"/>
         <source>%n Album(s)</source>
         <translation>
             <numerusform>%n album</numerusform>
@@ -3695,7 +3710,7 @@ Det kan ikke fortrydes.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../models/musiclibrarymodel.cpp" line="221"/>
+        <location filename="../models/musiclibrarymodel.cpp" line="222"/>
         <source>%n Tracks (%1)</source>
         <translation>
             <numerusform>%n spor (%1)</numerusform>
@@ -3703,7 +3718,7 @@ Det kan ikke fortrydes.</translation>
         </translation>
     </message>
     <message>
-        <location filename="../models/musiclibrarymodel.cpp" line="248"/>
+        <location filename="../models/musiclibrarymodel.cpp" line="249"/>
         <source>%1 by %2</source>
         <comment>Album by Artist</comment>
         <translation>%1 af %2</translation>
@@ -4045,161 +4060,161 @@ Det kan ikke fortrydes.</translation>
 <context>
     <name>PlayQueueModel</name>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="301"/>
+        <location filename="../models/playqueuemodel.cpp" line="303"/>
         <source>Cannot add local files. Please enable in-built HTTP server, or configure MPD for local file playback.</source>
         <translation>Kan ikke tilføje lokale filer. Aktivér venligst den indbyggede HTTP-server eller konfigurer MPD til lokal filafspilning.</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="303"/>
+        <location filename="../models/playqueuemodel.cpp" line="305"/>
         <source>Cannot add local files. Please configure MPD for local file playback.</source>
         <translation>Kan ikke tilføje lokale filer. Konfigurer venligst MPD til lokal filafspilning.</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="318"/>
+        <location filename="../models/playqueuemodel.cpp" line="320"/>
         <source>Unable to add local files. No suitable files found.</source>
         <translation>Kan ikke tilføje lokale filer. Ingen egnede filer fundet.</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="374"/>
+        <location filename="../models/playqueuemodel.cpp" line="376"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="375"/>
-        <location filename="../models/playqueuemodel.cpp" line="462"/>
+        <location filename="../models/playqueuemodel.cpp" line="377"/>
+        <location filename="../models/playqueuemodel.cpp" line="460"/>
         <source>Artist</source>
         <translation>Kunstner</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="376"/>
-        <location filename="../models/playqueuemodel.cpp" line="464"/>
+        <location filename="../models/playqueuemodel.cpp" line="378"/>
+        <location filename="../models/playqueuemodel.cpp" line="462"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="377"/>
+        <location filename="../models/playqueuemodel.cpp" line="379"/>
         <source>#</source>
         <comment>Track number</comment>
         <translation>Nr.</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="378"/>
+        <location filename="../models/playqueuemodel.cpp" line="380"/>
         <source>Length</source>
         <translation>Længde</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="379"/>
+        <location filename="../models/playqueuemodel.cpp" line="381"/>
         <source>Disc</source>
         <translation>Disk</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="380"/>
-        <location filename="../models/playqueuemodel.cpp" line="468"/>
+        <location filename="../models/playqueuemodel.cpp" line="382"/>
+        <location filename="../models/playqueuemodel.cpp" line="466"/>
         <source>Year</source>
         <translation>År</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="381"/>
+        <location filename="../models/playqueuemodel.cpp" line="383"/>
         <source>Original Year</source>
         <translation>Oprindeligt år</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="382"/>
-        <location filename="../models/playqueuemodel.cpp" line="467"/>
+        <location filename="../models/playqueuemodel.cpp" line="384"/>
+        <location filename="../models/playqueuemodel.cpp" line="465"/>
         <source>Genre</source>
         <translation>Genre</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="383"/>
+        <location filename="../models/playqueuemodel.cpp" line="385"/>
         <source>Priority</source>
         <translation>Prioritet</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="384"/>
-        <location filename="../models/playqueuemodel.cpp" line="469"/>
+        <location filename="../models/playqueuemodel.cpp" line="386"/>
+        <location filename="../models/playqueuemodel.cpp" line="467"/>
         <source>Composer</source>
         <translation>Komponist</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="385"/>
-        <location filename="../models/playqueuemodel.cpp" line="470"/>
+        <location filename="../models/playqueuemodel.cpp" line="387"/>
+        <location filename="../models/playqueuemodel.cpp" line="468"/>
         <source>Performer</source>
         <translation>Optræder</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="386"/>
-        <location filename="../models/playqueuemodel.cpp" line="472"/>
+        <location filename="../models/playqueuemodel.cpp" line="388"/>
+        <location filename="../models/playqueuemodel.cpp" line="470"/>
         <source>Grouping</source>
         <translation>Gruppering</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="387"/>
+        <location filename="../models/playqueuemodel.cpp" line="389"/>
         <source>Rating</source>
         <translation>Bedømmelse</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="388"/>
+        <location filename="../models/playqueuemodel.cpp" line="390"/>
         <source>Filename</source>
         <translation>Filnavn</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="389"/>
-        <location filename="../models/playqueuemodel.cpp" line="471"/>
+        <location filename="../models/playqueuemodel.cpp" line="391"/>
+        <location filename="../models/playqueuemodel.cpp" line="469"/>
         <source>Path</source>
         <translation>Sti</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="440"/>
+        <location filename="../models/playqueuemodel.cpp" line="438"/>
         <source>Remove Duplicates</source>
         <translation>Fjern duplikater</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="443"/>
+        <location filename="../models/playqueuemodel.cpp" line="441"/>
         <source>Undo</source>
         <translation>Fortryd</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="445"/>
+        <location filename="../models/playqueuemodel.cpp" line="443"/>
         <source>Redo</source>
         <translation>Omgør</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="451"/>
+        <location filename="../models/playqueuemodel.cpp" line="449"/>
         <source>Shuffle</source>
         <translation>Bland</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="453"/>
+        <location filename="../models/playqueuemodel.cpp" line="451"/>
         <source>Tracks</source>
         <translation>Spor</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="454"/>
+        <location filename="../models/playqueuemodel.cpp" line="452"/>
         <source>Albums</source>
         <translation>Albummer</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="460"/>
+        <location filename="../models/playqueuemodel.cpp" line="458"/>
         <source>Sort By</source>
         <translation>Sortér efter</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="463"/>
+        <location filename="../models/playqueuemodel.cpp" line="461"/>
         <source>Album Artist</source>
         <translation>Albumkunstner</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="465"/>
+        <location filename="../models/playqueuemodel.cpp" line="463"/>
         <source>Track Title</source>
         <translation>Sportitel</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="466"/>
+        <location filename="../models/playqueuemodel.cpp" line="464"/>
         <source>Track Number</source>
         <translation>Spornummer</translation>
     </message>
     <message>
-        <location filename="../models/playqueuemodel.cpp" line="532"/>
+        <location filename="../models/playqueuemodel.cpp" line="530"/>
         <source># (Track Number)</source>
         <translation>Nr. (spornummer)</translation>
     </message>
@@ -4226,7 +4241,8 @@ Det kan ikke fortrydes.</translation>
     </message>
     <message>
         <location filename="../gui/playbacksettings.ui" line="48"/>
-        <location filename="../gui/playbacksettings.ui" line="122"/>
+        <location filename="../gui/playbacksettings.ui" line="86"/>
+        <location filename="../gui/playbacksettings.ui" line="145"/>
         <location filename="../gui/playbacksettings.cpp" line="46"/>
         <source>None</source>
         <translation>Ingen</translation>
@@ -4252,63 +4268,69 @@ Det kan ikke fortrydes.</translation>
         <translation>Hvis du trykker og holder på stop-knappen, så vises en menu som giver dig mulighed for at vælge om afspilningen skal stoppe nu, eller efter det nuværende spor. (Stop-knappen kan aktiveres i Brugerflade/Værktøjslinje-afsnittet)</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="88"/>
+        <location filename="../gui/playbacksettings.ui" line="79"/>
+        <source>Prev button seeks to start when played more than</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../gui/playbacksettings.ui" line="111"/>
         <source>Output</source>
         <translation>Output</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="94"/>
-        <location filename="../gui/playbacksettings.cpp" line="177"/>
+        <location filename="../gui/playbacksettings.ui" line="117"/>
+        <location filename="../gui/playbacksettings.cpp" line="179"/>
         <source>&lt;i&gt;Not Connected!&lt;br/&gt;The entries below cannot be modified, as Cantata is not connected to MPD.&lt;/i&gt;</source>
         <translation>&lt;i&gt;Ikke forbundet!&lt;br/&gt;Posterne nedenfor kan ikke ændres, eftersom Cantata ikke er forbundet til MPD.&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="112"/>
+        <location filename="../gui/playbacksettings.ui" line="135"/>
         <source>Crossfade between tracks:</source>
         <translation>Crossfade mellem spor:</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="125"/>
+        <location filename="../gui/playbacksettings.ui" line="89"/>
+        <location filename="../gui/playbacksettings.ui" line="148"/>
         <source> s</source>
         <translation> s</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="135"/>
+        <location filename="../gui/playbacksettings.ui" line="158"/>
         <source>Replay gain:</source>
         <translation>Replay gain:</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="178"/>
+        <location filename="../gui/playbacksettings.ui" line="201"/>
         <source>About replay gain</source>
         <translation>Om replay gain</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="187"/>
+        <location filename="../gui/playbacksettings.ui" line="213"/>
         <source>Apply setting on connect</source>
         <translation>Anvend indstilling når der oprettes forbindelse</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="190"/>
+        <location filename="../gui/playbacksettings.ui" line="210"/>
         <source>&lt;p&gt;MPD resets (to the value in its config file) the replaygain mode setting each time it is restarted. Cantata can work-around this by setting MPD to use the value defined here each time Cantata connects to MPD.&lt;/p&gt;</source>
         <translation>&lt;p&gt;MPD nulstiller indstillignen af replaygain-tilstanden (til værdien i dens konfigurationsfil) hver gang den genstartes. Cantata kan omgå det ved at indstille MPD til at bruge værdien som er defineret her, hver gang Cantata opretter forbindelse til MPD.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="197"/>
+        <location filename="../gui/playbacksettings.ui" line="223"/>
         <source>Volume step:</source>
         <translation>Lydstyrketrin:</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="203"/>
+        <location filename="../gui/playbacksettings.ui" line="220"/>
         <source>&lt;p&gt;Amount to change volume by when using either the volume control keyboard shortcuts, or the mouse wheel over the toolbar volume control.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Mængden som lydstyrken skal ændres med når man enten bruger lydstyrkestyringens tastaturgenvej eller musehjulet over værktøjslinjens lydstyrkestyring.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="210"/>
+        <location filename="../gui/playbacksettings.ui" line="233"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.ui" line="223"/>
+        <location filename="../gui/playbacksettings.ui" line="246"/>
         <source>Use the checkboxes below to control the active outputs.</source>
         <translation>Brug afkrydsningsboksene nedenfor til at styre de aktive outputs.</translation>
     </message>
@@ -4328,12 +4350,12 @@ Det kan ikke fortrydes.</translation>
         <translation>Automatisk</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.cpp" line="174"/>
+        <location filename="../gui/playbacksettings.cpp" line="176"/>
         <source>&lt;i&gt;Connected to %1&lt;br/&gt;The entries below apply to the currently connected MPD collection.&lt;/i&gt;</source>
         <translation>&lt;i&gt;Forbundet til %1&lt;br/&gt;Posterne nedenfor gælder den MPD-samling som er forbundet på nuværende tidspunkt.&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../gui/playbacksettings.cpp" line="184"/>
+        <location filename="../gui/playbacksettings.cpp" line="186"/>
         <source>Replay Gain is a proposed standard published in 2001 to normalize the perceived loudness of computer audio formats such as MP3 and Ogg Vorbis. It works on a track/album basis, and is now supported in a growing number of players.&lt;br/&gt;&lt;br/&gt;The following ReplayGain settings may be used:&lt;ul&gt;&lt;li&gt;&lt;i&gt;None&lt;/i&gt; - No ReplayGain is applied.&lt;/li&gt;&lt;li&gt;&lt;i&gt;Track&lt;/i&gt; - Volume will be adjusted using the track&apos;s ReplayGain tags.&lt;/li&gt;&lt;li&gt;&lt;i&gt;Album&lt;/i&gt; - Volume will be adjusted using the albums&apos;s ReplayGain tags.&lt;/li&gt;&lt;li&gt;&lt;i&gt;Auto&lt;/i&gt; - Volume will be adjusted using the track&apos;s ReplayGain tags if random play is activated, otherwise the album&apos;s tags will be used.&lt;/li&gt;&lt;/ul&gt;</source>
         <translation>Replay Gain er en foreslået standard som blev udgivet i 2001 til at normalisere den opfattede &quot;loudness&quot; af computer-lydformater såsom MP3 og Ogg Vorbis. Det virker på et spor/album, og understøtter nu et voksende antal afspillere.&lt;br/&gt;&lt;br/&gt;Følgende ReplayGain-indstillinger kan bruges:&lt;ul&gt;&lt;li&gt;&lt;i&gt;Ingen&lt;/i&gt; - Bruger ikke ReplayGain.&lt;/li&gt;&lt;li&gt;&lt;i&gt;Spor&lt;/i&gt; - Lydstyrken justes med sporets ReplayGain-mærkater.&lt;/li&gt;&lt;li&gt;&lt;i&gt;Album&lt;/i&gt; - Lydstyrken justeres med albummets ReplayGain-mærkater.&lt;/li&gt;&lt;li&gt;&lt;i&gt;Automatisk&lt;/i&gt; - Lydstyrken justes med sporets ReplayGain-mærkater, hvis tilfældig afspilning er aktiveret, ellers bruges albummets mærkater.&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
@@ -4361,78 +4383,78 @@ Det kan ikke fortrydes.</translation>
         <translation>Kunstner:</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="63"/>
+        <location filename="../playlists/playlistrule.ui" line="67"/>
         <source>Artists similar to:</source>
         <translation>Kunstnere i stil med:</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="76"/>
+        <location filename="../playlists/playlistrule.ui" line="80"/>
         <source>Album Artist:</source>
         <translation>Albumkunstner:</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="89"/>
+        <location filename="../playlists/playlistrule.ui" line="93"/>
         <source>Composer:</source>
         <translation>Komponist:</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="102"/>
+        <location filename="../playlists/playlistrule.ui" line="110"/>
         <source>Album:</source>
         <translation>Album:</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="115"/>
+        <location filename="../playlists/playlistrule.ui" line="123"/>
         <source>Title:</source>
         <translation>Titel:</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="128"/>
+        <location filename="../playlists/playlistrule.ui" line="136"/>
         <source>Genre</source>
         <translation>Genre</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="141"/>
+        <location filename="../playlists/playlistrule.ui" line="149"/>
         <source>From Year:</source>
         <translation>Fra år:</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="157"/>
-        <location filename="../playlists/playlistrule.ui" line="180"/>
+        <location filename="../playlists/playlistrule.ui" line="165"/>
+        <location filename="../playlists/playlistrule.ui" line="188"/>
         <source>Any</source>
         <translation>Alle</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="164"/>
+        <location filename="../playlists/playlistrule.ui" line="172"/>
         <source>To Year:</source>
         <translation>Til år:</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="187"/>
+        <location filename="../playlists/playlistrule.ui" line="195"/>
         <source>Comment:</source>
         <translation>Kommentar:</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="200"/>
+        <location filename="../playlists/playlistrule.ui" line="208"/>
         <source>Filename / path:</source>
         <translation>Filnavn/sti:</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="213"/>
+        <location filename="../playlists/playlistrule.ui" line="221"/>
         <source>Exact match</source>
         <translation>Præcist match</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="241"/>
+        <location filename="../playlists/playlistrule.ui" line="249"/>
         <source>Only enter values for the tags you wish to be search on.</source>
         <translation>Indtast kun værdier for de mærkater du vil søge på.</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="248"/>
+        <location filename="../playlists/playlistrule.ui" line="256"/>
         <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be inclued. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
         <translation>Hvis &apos;Præcist match&apos; er tilvalgt, så vil strengværdier blive matchet for præcise værdier. Ellers inkluderes også delvise match, f.eks. vil &apos;AB&apos; matche &apos;ABBA&apos;.</translation>
     </message>
     <message>
-        <location filename="../playlists/playlistrule.ui" line="255"/>
+        <location filename="../playlists/playlistrule.ui" line="263"/>
         <source>For genre, end string with an asterisk to match various genres. e.g &apos;rock*&apos; matches &apos;Hard Rock&apos; and &apos;Rock and Roll&apos;.</source>
         <translation>Afslut strengen med en stjerne, ved genre, for at matche diverse genre. F.eks. vil &apos;rock*&apos; matche &apos;Hard Rock&apos; og &apos;Rock and Roll&apos;.</translation>
     </message>
@@ -5816,7 +5838,7 @@ width x height</comment>
         <translation>Ét spor</translation>
     </message>
     <message>
-        <location filename="../mpd-interface/mpduser.cpp" line="49"/>
+        <location filename="../mpd-interface/mpduser.cpp" line="50"/>
         <source>Personal</source>
         <translation>Personlig</translation>
     </message>
@@ -6686,7 +6708,7 @@ Vælg venligst et andet navn.</translation>
         <translation>Tilfældig</translation>
     </message>
     <message numerus="yes">
-        <location filename="../playlists/rulesplaylists.cpp" line="173"/>
+        <location filename="../playlists/rulesplaylists.cpp" line="174"/>
         <source>%n Rule(s)</source>
         <translation>
             <numerusform>%n regel</numerusform>
@@ -6694,17 +6716,17 @@ Vælg venligst et andet navn.</translation>
         </translation>
     </message>
     <message>
-        <location filename="../playlists/rulesplaylists.cpp" line="173"/>
+        <location filename="../playlists/rulesplaylists.cpp" line="174"/>
         <source>, Rating: %1..%2</source>
         <translation>, bedømmelse: %1..%2</translation>
     </message>
     <message>
-        <location filename="../playlists/rulesplaylists.cpp" line="176"/>
+        <location filename="../playlists/rulesplaylists.cpp" line="177"/>
         <source>Ascending</source>
         <translation>Stigende</translation>
     </message>
     <message>
-        <location filename="../playlists/rulesplaylists.cpp" line="176"/>
+        <location filename="../playlists/rulesplaylists.cpp" line="177"/>
         <source>Descending</source>
         <translation>Faldende</translation>
     </message>
@@ -7694,17 +7716,17 @@ Genindlæs fra disk, eller slet kopien på disken og download?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../models/sqllibrarymodel.cpp" line="421"/>
+        <location filename="../models/sqllibrarymodel.cpp" line="422"/>
         <source>Cue Sheet</source>
         <translation>Cue sheet</translation>
     </message>
     <message>
-        <location filename="../models/sqllibrarymodel.cpp" line="421"/>
+        <location filename="../models/sqllibrarymodel.cpp" line="422"/>
         <source>Playlist</source>
         <translation>Afspilningsliste</translation>
     </message>
     <message>
-        <location filename="../models/sqllibrarymodel.cpp" line="446"/>
+        <location filename="../models/sqllibrarymodel.cpp" line="448"/>
         <source>%1 by %2</source>
         <translation>%1 af %2</translation>
     </message>
