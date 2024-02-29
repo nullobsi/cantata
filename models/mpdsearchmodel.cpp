@@ -60,7 +60,7 @@ QVariant MpdSearchModel::data(const QModelIndex &index, int role) const
             emit getRating(song->file);
             song->rating=Song::Rating_Requested;
         }
-        var.setValue<Song>(*song);
+        var.setValue(*song);
         return var;
     }
     default:

@@ -175,7 +175,7 @@ QVariant DynamicPlaylists::data(const QModelIndex &index, int role) const
         return IS_ACTIVE(entryList.at(index.row()).name) ? Icons::self()->replacePlayQueueIcon : icn;
     case Cantata::Role_Actions: {
         QVariant v;
-        v.setValue<QList<Action *> >(QList<Action *>() << (IS_ACTIVE(entryList.at(index.row()).name) ? stopAction : startAction));
+        v.setValue(QList<Action *>() << (IS_ACTIVE(entryList.at(index.row()).name) ? stopAction : startAction));
         return v;
     }
     default:

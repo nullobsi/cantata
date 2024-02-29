@@ -378,9 +378,9 @@ QVariant DevicesModel::data(const QModelIndex &index, int role) const
                 actions << editAction;
             }
             #endif
-            v.setValue<QList<Action *> >(actions);
+            v.setValue(actions);
         } else if (root(item)->canPlaySongs() && HttpServer::self()->isAlive()) {
-            v.setValue<QList<Action *> >(QList<Action *>() << StdActions::self()->replacePlayQueueAction << StdActions::self()->appendToPlayQueueAction);
+            v.setValue(QList<Action *>() << StdActions::self()->replacePlayQueueAction << StdActions::self()->appendToPlayQueueAction);
         }
         return v;
     }

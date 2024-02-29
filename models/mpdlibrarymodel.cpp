@@ -78,7 +78,7 @@ QVariant MpdLibraryModel::data(const QModelIndex &index, int role) const
                     song.addGenre(item->getParent()->getParent()->getId());
                 }
             }
-            v.setValue<Song>(item->getSong());
+            v.setValue(item->getSong());
             break;
         case T_Artist:
             if (!showArtistImages && Cantata::Role_CoverSong==role) {
@@ -102,7 +102,7 @@ QVariant MpdLibraryModel::data(const QModelIndex &index, int role) const
                 }
                 item->setSong(song);
             }
-            v.setValue<Song>(item->getSong());
+            v.setValue(item->getSong());
             break;
         default:
             break;

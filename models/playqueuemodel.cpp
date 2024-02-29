@@ -601,13 +601,13 @@ QVariant PlayQueueModel::data(const QModelIndex &index, int role) const
         return songs.at(index.row()).id;
     case Cantata::Role_SongWithRating:
     case Cantata::Role_Song: {
-        QVariant var;
         const Song &s=songs.at(index.row());
         if (Cantata::Role_SongWithRating==role && Song::Standard==s.type && Song::Rating_Null==s.rating) {
             emit getRating(s.file);
             s.rating=Song::Rating_Requested;
         }
-        var.setValue<Song>(s);
+        QVariant var;
+        var.setValue(s);
         return var;
     }
     case Cantata::Role_AlbumDuration: {

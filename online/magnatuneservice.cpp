@@ -186,7 +186,7 @@ QVariant MagnatuneService::data(const QModelIndex &index, int role) const
                     song.setExtraField(Song::OnlineImageUrl, url);
                     item->setSong(song);
                 }
-                v.setValue<Song>(item->getSong());
+                v.setValue(item->getSong());
                 break;
             case T_Artist:
                 break;

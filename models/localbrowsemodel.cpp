@@ -104,7 +104,7 @@ QVariant LocalBrowseModel::data(const QModelIndex &index, int role) const
     }
     case Cantata::Role_Actions: {
         QVariant v;
-        v.setValue<QList<Action *> >(QList<Action *>() << StdActions::self()->replacePlayQueueAction << StdActions::self()->appendToPlayQueueAction);
+        v.setValue(QList<Action *>() << StdActions::self()->replacePlayQueueAction << StdActions::self()->appendToPlayQueueAction);
         return v;
     }
     default:

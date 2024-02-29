@@ -581,14 +581,14 @@ QVariant PodcastService::data(const QModelIndex &index, int role) const
         switch(role) {
         case Cantata::Role_Actions: {
             QVariant v;
-            v.setValue<QList<Action *> >(QList<Action *>() << StdActions::self()->replacePlayQueueAction << StdActions::self()->appendToPlayQueueAction << refreshAction);
+            v.setValue(QList<Action *>() << StdActions::self()->replacePlayQueueAction << StdActions::self()->appendToPlayQueueAction << refreshAction);
             return v;
         }
         case Cantata::Role_ListImage:
             return true;
         case Cantata::Role_CoverSong: {
             QVariant v;
-            v.setValue<Song>(podcast->coverSong());
+            v.setValue(podcast->coverSong());
             return v;
         }
         case Qt::DecorationRole:

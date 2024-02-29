@@ -30,13 +30,16 @@ QVariant ActionModel::data(const QModelIndex &index, int role) const
     QVariant v;
     Q_UNUSED(index)
     switch(role) {
-    case Cantata::Role_Actions:
-        v.setValue<QList<Action *> >(QList<Action *>() << StdActions::self()->replacePlayQueueAction << StdActions::self()->appendToPlayQueueAction);
+    case Cantata::Role_Actions: {
+        v.setValue(QList<Action *>() << StdActions::self()->replacePlayQueueAction << StdActions::self()->appendToPlayQueueAction);
+        }
         break;
     case Cantata::Role_RatingCol:
         return -1;
+        break;
     case Cantata::Role_TitleText:
         return data(index, Qt::DisplayRole);
+        break;
     default:
         break;
     }
