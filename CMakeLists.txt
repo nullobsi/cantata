@@ -215,6 +215,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wpedantic -Wall -Wextra \
     -Wno-cast-qual -Wno-float-equal \
     -Wmissing-format-attribute -Wpacked -Wredundant-decls")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     # flags unique to GCC
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wduplicated-branches -Wduplicated-cond -Wlogical-op")
