@@ -31,6 +31,7 @@
 #endif
 #include <QTcpSocket>
 #include <QStringList>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QFile>
 #include <QUrl>
@@ -264,9 +265,9 @@ void HttpSocket::readClient()
     }
 
     if (socket->canReadLine()) {
-        QList<QByteArray> tokens = split(socket->readLine()); // QRegExp("[ \r\n][ \r\n]*"));
+        QList<QByteArray> tokens = split(socket->readLine()); // QRegularExpression("[ \r\n][ \r\n]*"));
         if (tokens.length()>=2 && "GET"==tokens[0]) {
-            QStringList params = QString(socket->readAll()).split(QRegExp("[\r\n][\r\n]*"));
+            QStringList params = QString(socket->readAll()).split(QRegularExpression("[\r\n][\r\n]*"));
 
             DBUG << "params" << params << "tokens" << tokens;
             QUrl url(QUrl::fromEncoded(tokens[1]));

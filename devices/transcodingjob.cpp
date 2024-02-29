@@ -23,6 +23,7 @@
 #include "transcodingjob.h"
 #include "device.h"
 #include <QStringList>
+#include <QRegularExpression>
 
 TranscodingJob::TranscodingJob(const Encoders::Encoder &enc, int val, const QString &src, const QString &dest, const DeviceOptions &d, int co, const Song &s)
     : CopyJob(src, dest, d, co, s)
@@ -127,14 +128,14 @@ void TranscodingJob::processOutput()
 inline qint64 TranscodingJob::computeDuration(const QString &output)
 {
     //We match something like "Duration: 00:04:33.60"
-    QRegExp matchDuration("Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})");
-
-    if(output.contains(matchDuration)) {
+    QRegularExpression durationRegexp("Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})");
+    QRegularExpressionMatch match;
+    if(output.contains(durationRegexp, &match)) {
         //duration is in csec
-        return matchDuration.cap(1).toLong() * 60 * 60 * 100 +
-               matchDuration.cap(2).toInt()  * 60 * 100 +
-               matchDuration.cap(3).toInt()  * 100 +
-               matchDuration.cap(4).toInt();
+        return match.captured(1).toLong() * 60 * 60 * 100 +
+               match.captured(2).toInt()  * 60 * 100 +
+               match.captured(3).toInt()  * 100 +
+               match.captured(4).toInt();
     } else {
         return -1;
     }
@@ -144,11 +145,12 @@ inline qint64 TranscodingJob::computeProgress(const QString &output)
 {
     //Output is like size=     323kB time=18.10 bitrate= 146.0kbits/s
     //We're going to use the "time" column, which counts the elapsed time in seconds.
-    QRegExp matchTime("time=(\\d+)\\.(\\d{2})");
+    QRegularExpression timeRegexp("time=(\\d+)\\.(\\d{2})");
+    QRegularExpressionMatch match;
 
-    if(output.contains(matchTime)) {
-        return matchTime.cap(1).toLong() * 100 +
-               matchTime.cap(2).toInt();
+    if(output.contains(timeRegexp, &match)) {
+        return match.captured(1).toLong() * 100 +
+               match.captured(2).toInt();
     } else {
         return -1;
     }

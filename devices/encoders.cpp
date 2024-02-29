@@ -25,7 +25,7 @@
 #include "config.h"
 #include "encoders.h"
 #include "support/utils.h"
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QProcess>
 #include <algorithm>
 
@@ -352,7 +352,7 @@ static void init()
 
             QStringList lines=output.split('\n', CANTATA_SKIP_EMPTY);
             for (const QString &line: lines) {
-                int pos=line.indexOf(QRegExp(QLatin1String("[\\. D]EA")));
+                int pos=line.indexOf(QRegularExpression(QLatin1String("[\\. D]EA")));
                 if (0==pos || 1==pos) {
                     QList<Encoder>::Iterator it(initial.begin());
                     QList<Encoder>::Iterator end(initial.end());

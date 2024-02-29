@@ -39,7 +39,7 @@
 #include <musicbrainz5/Artist.h>
 #include <musicbrainz5/NameCredit.h>
 #include <QList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include "config.h"
 #include "support/thread.h"
 #include <fcntl.h>
@@ -303,9 +303,10 @@ void MusicBrainz::lookup(bool full)
                             album.genre=Song::unknown();
 
                             QString date = QString::fromUtf8(fullRelease->Date().c_str());
-                            QRegExp yearRe("^(\\d{4,4})(-\\d{1,2}-\\d{1,2})?$");
-                            if (yearRe.indexIn(date) > -1) {
-                                QString yearString = yearRe.cap(1);
+                            QRegularExpression yearRe("^(\\d{4,4})(-\\d{1,2}-\\d{1,2})?$");
+                            QRegularExpressionMatch yearMatch = yearRe.match(date);
+                            if (yearMatch.hasMatch()) {
+                                QString yearString = yearMatch.captured(1);
                                 bool ok;
                                 album.year=yearString.toInt(&ok);
                                 if (!ok) {

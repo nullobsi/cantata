@@ -23,11 +23,11 @@
 
 #include "ultimatelyricsprovider.h"
 #include "network/networkaccessmanager.h"
-#include <QTextCodec>
 #include <QXmlStreamReader>
 #include <QUrl>
 #include <QUrlQuery>
 #include <QDebug>
+#include <QRegularExpression>
 static bool debugEnabled=false;
 #define DBUG if (debugEnabled) qWarning() << "Lyrics" << __FUNCTION__
 void UltimateLyricsProvider::enableDebug()
@@ -124,14 +124,15 @@ static QString extract(const QString &source, const QString &begin, const QStrin
 static QString extractXmlTag(const QString &source, const QString &tag)
 {
     DBUG << "Looking for" << tag;
-    QRegExp re("<(\\w+).*>"); // ಠ_ಠ
-    if (-1==re.indexIn(tag)) {
+    QRegularExpression re("<(\\w+).*>"); // ಠ_ಠ
+    QRegularExpressionMatch reMatch = re.match(tag);
+    if (! reMatch.hasMatch()) {
         DBUG << "Failed to find tag";
         return QString();
     }
 
     DBUG << "Found match";
-    return extract(source, tag, "</" + re.cap(1) + ">", true);
+    return extract(source, tag, "</" + reMatch.captured(1) + ">", true);
 }
 
 static QString exclude(const QString &source, const QString &begin, const QString &end)
@@ -151,12 +152,13 @@ static QString exclude(const QString &source, const QString &begin, const QStrin
 
 static QString excludeXmlTag(const QString &source, const QString &tag)
 {
-    QRegExp re("<(\\w+).*>"); // ಠ_ಠ
-    if (-1==re.indexIn(tag)) {
+    QRegularExpression re("<(\\w+).*>"); // ಠ_ಠ
+    QRegularExpressionMatch reMatch = re.match(tag);
+    if (! reMatch.hasMatch()) {
         return source;
     }
 
-    return exclude(source, tag, "</" + re.cap(1) + ">");
+    return exclude(source, tag, "</" + reMatch.captured(1) + ">");
 }
 
 static void applyExtractRule(const UltimateLyricsProvider::Rule &rule, QString &content, const Song &song)
@@ -447,7 +449,7 @@ void UltimateLyricsProvider::doUrlReplace(const QString &tag, const QString &val
     // Apply URL character replacement
     QString valueCopy(value);
     for (const UltimateLyricsProvider::UrlFormat& format: urlFormats) {
-        QRegExp re("[" + QRegExp::escape(format.first) + "]");
+        QRegularExpression re("[" + QRegularExpression::escape(format.first) + "]");
         valueCopy.replace(re, format.second);
     }
     u.replace(tag, urlEncode(valueCopy), Qt::CaseInsensitive);

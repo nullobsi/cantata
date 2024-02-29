@@ -28,7 +28,7 @@
 #include "config.h"
 #include <QUrlQuery>
 #include <QXmlStreamReader>
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include <QDebug>
 static bool debugEnabled=false;
@@ -133,7 +133,7 @@ void LastFmEngine::parseResponse()
     }
 
     if (!text.isEmpty()) {
-        static const QRegExp constLicense("User-contributed text is available.*");
+        static const QRegularExpression constLicense("User-contributed text is available.*");
         text.remove(constLicense);
         text.replace("\n", "<br>");
         text=text.simplified();

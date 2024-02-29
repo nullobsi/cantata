@@ -24,6 +24,7 @@
 #include <QMultiHash>
 #include <QObject>
 #include <QProcess>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QElapsedTimer>
 
@@ -167,7 +168,7 @@ QProcess *Solid::Backends::Hal::FstabHandling::callSystemCommand(const QString &
                                                                  QObject *obj, const char *slot)
 {
     QStringList env = QProcess::systemEnvironment();
-    env.replaceInStrings(QRegExp("^PATH=(.*)", Qt::CaseInsensitive), "PATH=/sbin:/bin:/usr/sbin/:/usr/bin");
+    env.replaceInStrings(QRegularExpression("^PATH=(.*)", QRegularExpression::CaseInsensitiveOption), "PATH=/sbin:/bin:/usr/sbin/:/usr/bin");
 
     QProcess *process = new QProcess(obj);
 

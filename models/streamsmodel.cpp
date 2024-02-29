@@ -1236,11 +1236,11 @@ static QStringList fixGenres(const QString &genre)
     for (const QString &genre: allGenres) {
         if (genre.length() < 2 ||
             genre.contains("ÃÂ") ||  // Broken unicode.
-            genre.contains(QRegExp("^#x[0-9a-f][0-9a-f]"))) { // Broken XML entities.
+            genre.contains(QRegularExpression("^#x[0-9a-f][0-9a-f]"))) { // Broken XML entities.
             continue;
         }
         // Convert 80 -> 80s.
-        if (genre.contains(QRegExp("^[0-9]0$"))) {
+        if (genre.contains(QRegularExpression("^[0-9]0$"))) {
             fixed << genre + 's';
         } else {
             fixed << genre;

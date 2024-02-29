@@ -28,7 +28,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QFile>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QRandomGenerator>
 #include <QDebug>
 #include <algorithm>
@@ -1173,7 +1173,7 @@ bool LibraryDb::setFilter(const QString &f, const QString &genre)
     QString newFilter=f.trimmed().toLower();
     QString year;
     if (!f.isEmpty()) {
-        QStringList strings(newFilter.split(QRegExp("\\s+")));
+        QStringList strings(newFilter.split(QRegularExpression("\\s+")));
         static QList<QLatin1Char> replaceChars=QList<QLatin1Char>() << QLatin1Char('(') << QLatin1Char(')') << QLatin1Char('"')
                                                                     << QLatin1Char(':') << QLatin1Char('-') << QLatin1Char('#');
         QStringList tokens;
