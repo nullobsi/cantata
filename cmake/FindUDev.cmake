@@ -12,7 +12,7 @@
 
 # use pkg-config to get the directories and then use these values
 # in the find_path() and find_library() calls
-include(FindPkgConfig)
+find_package(PkgConfig)
 pkg_check_modules(_UDEV libudev)
 
 find_path(UDEV_INCLUDE_DIR libudev.h
@@ -24,7 +24,7 @@ find_library(UDEV_LIBS NAMES udev
     ${_UDEV_LIBRARY_DIRS}
 )
 
-include(FindPackageHandleStandardArgs)
+find_package(PackageHandleStandardArgs)
 find_package_handle_standard_args(UDev DEFAULT_MSG UDEV_INCLUDE_DIR UDEV_LIBS)
 
 mark_as_advanced(UDEV_INCLUDE_DIR UDEV_LIBS)

@@ -17,6 +17,6 @@ if (Foundation_FRAMEWORKS)
    set(FOUNDATION_FOUND 1)
 endif (Foundation_FRAMEWORKS)
 
-include(FindPackageHandleStandardArgs)
+find_pacakge(PackageHandleStandardArgs)
 find_package_handle_standard_args(Foundation DEFAULT_MSG FOUNDATION_LIBRARY)
 

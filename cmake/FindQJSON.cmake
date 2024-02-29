@@ -8,7 +8,7 @@
 find_path(QJSON_INCLUDE_DIR qjson/parser.h)
 find_library(QJSON_LIBRARIES qjson)
 
-include(FindPackageHandleStandardArgs)
+find_package(PackageHandleStandardArgs)
 find_package_handle_standard_args(QJSON DEFAULT_MSG QJSON_INCLUDE_DIR QJSON_LIBRARIES)
 
 mark_as_advanced(QJSON_INCLUDE_DIR QJSON_LIBRARIES)

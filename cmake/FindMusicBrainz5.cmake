@@ -32,7 +32,7 @@ ELSE (NOT WIN32)
 
 ENDIF (NOT WIN32)
 
-include(FindPackageHandleStandardArgs)
+find_package(PackageHandleStandardArgs)
 find_package_handle_standard_args( MUSICBRAINZ5 DEFAULT_MSG
                                    MUSICBRAINZ5_INCLUDE_DIRS MUSICBRAINZ5_LIBRARIES)
 

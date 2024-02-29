@@ -16,7 +16,7 @@ else (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY)
   if(NOT WIN32)
     # use pkg-config to get the directories and then use these values
     # in the FIND_PATH() and FIND_LIBRARY() calls
-    INCLUDE(FindPkgConfig)
+    find_package(PkgConfig)
   
     pkg_check_modules(_MTP libmtp)
   
@@ -31,7 +31,7 @@ else (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY)
     ${_MTP_LIBRARY_DIRS}
   )
 
-  exec_program(${PKG_CONFIG_EXECUTABLE} ARGS --atleast-version=1.1.0 libmtp OUTPUT_VARIABLE _pkgconfigDevNull RETURN_VALUE MTP_VERSION_OKAY)
+  execute_process(COMMAND ${PKG_CONFIG_EXECUTABLE} --atleast-version=1.1.0 libmtp OUTPUT_VARIABLE _pkgconfigDevNull RESULT_VARIABLE MTP_VERSION_OKAY)
   
   if (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY STREQUAL "0")
      set(MTP_FOUND TRUE)

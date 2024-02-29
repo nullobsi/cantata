@@ -58,7 +58,7 @@ find_library(SQLITE_LIBRARIES NAMES sqlite3
     ${PC_SQLITE_LIBRARY_DIRS}
 )
 
-include(FindPackageHandleStandardArgs)
+find_package(PackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(Sqlite DEFAULT_MSG SQLITE_INCLUDE_DIR SQLITE_LIBRARIES)
 
 # show the SQLITE_INCLUDE_DIR and SQLITE_LIBRARIES variables only in the advanced view

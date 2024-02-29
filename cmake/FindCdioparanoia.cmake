@@ -8,7 +8,7 @@
 cmake_policy(SET CMP0075 NEW)
 cmake_policy(SET CMP0011 NEW)
 
-include(FindPkgConfig)
+find_package(PkgConfig)
 include(CheckIncludeFiles)
 
 if(PKG_CONFIG_FOUND)
