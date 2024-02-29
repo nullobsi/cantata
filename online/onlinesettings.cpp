@@ -39,7 +39,7 @@ OnlineSettings::OnlineSettings(QWidget *p)
     setupUi(this);
     providers->setItemDelegate(new BasicItemDelegate(providers));
     providers->setSortingEnabled(true);
-    int iSize=Icon::stdSize(QApplication::fontMetrics().height()*1.25);
+    int iSize=Icon::stdSize(QFontMetricsF(QApplication::font()).height()*1.25);
     providers->setIconSize(QSize(iSize, iSize));    
     connect(providers, SIGNAL(currentRowChanged(int)), SLOT(currentProviderChanged(int)));
     connect(configureButton, SIGNAL(clicked()), this, SLOT(configure()));

@@ -62,7 +62,7 @@ int Icon::dlgIconSize()
         box->ensurePolished();
         QPixmap pix=box->iconPixmap();
         if (pix.isNull() || pix.width()<16) {
-            size=stdSize(QApplication::fontMetrics().height()*3.5);
+            size=stdSize(QFontMetricsF(QApplication::font()).height()*3.5);
         } else {
             size=pix.width();
         }
@@ -76,7 +76,7 @@ void Icon::init(QToolButton *btn, bool setFlat)
     static int size=-1;
 
     if (-1==size) {
-        size=QApplication::fontMetrics().height();
+        size=QFontMetricsF(QApplication::font()).height();
         if (size>22) {
             size=stdSize(size*1.1);
         } else {

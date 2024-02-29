@@ -111,7 +111,7 @@ void RatingPainter::setColor(const QColor &c)
 
 RatingWidget::RatingWidget(QWidget *parent)
     : QWidget(parent)
-    , rp(Icon::stdSize(QApplication::fontMetrics().height()*0.9))
+    , rp(Icon::stdSize(QFontMetricsF(QApplication::font()).height()*0.9))
     , val(0)
     , hoverVal(-1)
     , showZeroForNull(false)

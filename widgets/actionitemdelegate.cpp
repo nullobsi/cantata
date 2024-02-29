@@ -43,7 +43,7 @@ int ActionItemDelegate::constLargeActionIconSize = 22;
 
 void ActionItemDelegate::setup()
 {
-    int height=QApplication::fontMetrics().height();
+    int height=QFontMetricsF(QApplication::font()).height();
 
     if (height>17) {
         constActionIconSize=Icon::stdSize(((int)(height/4))*4);

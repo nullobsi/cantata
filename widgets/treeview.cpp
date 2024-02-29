@@ -61,7 +61,7 @@ QPixmap TreeView::createBgndPixmap(const QIcon &icon)
     }
     static int bgndSize=0;
     if (0==bgndSize) {
-        bgndSize=QApplication::fontMetrics().height()*16;
+        bgndSize=QFontMetricsF(QApplication::font()).height()*16;
     }
 
     QImage img=icon.pixmap(bgndSize, bgndSize).toImage();

@@ -75,7 +75,7 @@ static inline int adjust(int v)
 
 void ItemView::setup()
 {
-    int height=QApplication::fontMetrics().height();
+    int height=QFontMetricsF(QApplication::font()).height();
 
     if (height>22) {
         detailedViewDecorationSize=Icon::stdSize(height*1.4);
@@ -228,17 +228,17 @@ public:
             double textSpace = !isCategorizedView || view->model()->data(QModelIndex(), Cantata::Role_CatergizedHasSubText).toBool() ? 2.5 : 1.75;
             #ifdef RESPONSIVE_LAYOUT
             if (!isCategorizedView) {
-                return QSize(calcItemWidth(), zoomedSize(view, gridCoverSize)+(QApplication::fontMetrics().height()*textSpace));
+                return QSize(calcItemWidth(), zoomedSize(view, gridCoverSize)+(QFontMetricsF(QApplication::font()).height()*textSpace));
             }
             #endif
-            return QSize(zoomedSize(view, gridCoverSize)+8, zoomedSize(view, gridCoverSize)+(QApplication::fontMetrics().height()*textSpace));
+            return QSize(zoomedSize(view, gridCoverSize)+8, zoomedSize(view, gridCoverSize)+(QFontMetricsF(QApplication::font()).height()*textSpace));
         } else {
             int imageSize = index.data(Cantata::Role_ListImage).toBool() ? listCoverSize : 0;
             // TODO: Any point to checking one-line here? All models return sub-text...
             //       Things will be quicker if we dont call SubText here...
             bool oneLine = false ; // index.data(Cantata::Role_SubText).toString().isEmpty();
             bool showCapacity = !index.data(Cantata::Role_CapacityText).toString().isEmpty();
-            int textHeight = QApplication::fontMetrics().height()*(oneLine ? 1 : 2);
+            int textHeight = QFontMetricsF(QApplication::font()).height()*(oneLine ? 1 : 2);
 
             if (showCapacity) {
                 imageSize=constDevImageSize;
@@ -515,7 +515,7 @@ public:
         if (index.data(Cantata::Role_ListImage).toBool()) {
             sz.setHeight(qMax(sz.height(), listCoverSize));
         }
-        int textHeight = QApplication::fontMetrics().height()*1.25;
+        int textHeight = QFontMetricsF(QApplication::font()).height()*1.25;
         sz.setHeight(qMax(sz.height(), textHeight)+(constBorder*2));
         return sz;
     }
