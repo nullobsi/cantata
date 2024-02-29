@@ -107,7 +107,7 @@ void CustomActions::set(QList<Command> cmds)
         cfg.removeGroup(metaObject()->className());
         if (!commands.isEmpty()) {
             cfg.beginGroup(metaObject()->className());
-            cfg.set("count", commands.count());
+            cfg.set("count", static_cast<int>(commands.count()));
             for (int i=0; i<commands.count(); ++i) {
                 cfg.set(QString::number(i)+QLatin1String("_name"), commands[i].name);
                 cfg.set(QString::number(i)+QLatin1String("_cmd"), commands[i].cmd);

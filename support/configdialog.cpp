@@ -47,7 +47,7 @@
 #include <QTimer>
 #include <QPropertyAnimation>
 #include <QOperatingSystemVersion>
-#include <QDesktopWidget>
+#include <QScreen>
 #include "icon.h"
 #include "osxstyle.h"
 #include "windowmanager.h"
@@ -415,9 +415,9 @@ void ConfigDialog::showEvent(QShowEvent *e)
         shown=true;
         ensurePolished();
 
-        QDesktopWidget *dw=QApplication::desktop();
+        QScreen *dw=QApplication::primaryScreen();
         if (dw) {
-            move(QPoint((dw->availableGeometry(this).size().width()-width())/2, 86));
+            move(QPoint((dw->availableGeometry().size().width()-width())/2, 86));
         }
     }
     OSXStyle::self()->addWindow(this);

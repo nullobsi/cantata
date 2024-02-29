@@ -32,7 +32,7 @@
 #include <QTime>
 #include <QWidget>
 #include <QStyle>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QEventLoop>
 #include <QStandardPaths>
 #include <QSystemTrayIcon>
@@ -907,25 +907,26 @@ double Utils::screenDpiScale()
 {
     static double scaleFactor=-1.0;
     if (scaleFactor<0) {
-        QWidget *dw=QApplication::desktop();
+        QScreen *dw=QApplication::primaryScreen();
         if (!dw) {
             return 1.0;
         }
-        scaleFactor=dw->logicalDpiX()>120 ? qMin(qMax(dw->logicalDpiX()/96.0, 1.0), 4.0) : 1.0;
+        scaleFactor=dw->logicalDotsPerInchX()>120 ? qMin(qMax(dw->logicalDotsPerInchX()/96.0, 1.0), 4.0) : 1.0;
     }
     return scaleFactor;
 }
 
 bool Utils::limitedHeight(QWidget *w)
 {
+    Q_UNUSED(w)
     static bool init=false;
     static bool limited=false;
     if (!init) {
         limited=!qgetenv("CANTATA_NETBOOK").isEmpty();
         if (!limited) {
-            QDesktopWidget *dw=QApplication::desktop();
+            QScreen *dw=QApplication::primaryScreen();
             if (dw) {
-                limited=dw->availableGeometry(w).size().height()<=800;
+                limited=dw->availableGeometry().size().height()<=800;
             }
         }
     }

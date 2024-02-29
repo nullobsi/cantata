@@ -54,10 +54,10 @@
 #include <QFont>
 #include <QXmlStreamReader>
 #include <QTimer>
+#include <QScreen>
 #include <QApplication>
 #include <QJsonParseError>
 #include <QJsonDocument>
-#include <QDesktopWidget>
 
 GLOBAL_STATIC(Covers, instance)
 
@@ -1251,10 +1251,9 @@ Covers::Covers()
 
     // Use screen size to calculate max cost - Issue #1498
     int maxCost = 0;
-    QDesktopWidget *dw=QApplication::desktop();
+    QScreen *dw=QApplication::primaryScreen();
     if (dw) {
-        QWidget w;
-        QSize sz = dw->availableGeometry(&w).size();
+        QSize sz = dw->availableGeometry().size();
         maxCost = sz.width() * sz.height() * 5; // *5 as 32-bit pixmap (so 4 bytes), + some wiggle rooom :-)
     }
     cache.setMaxCost(qMax(static_cast<int>(15*1024*1024*devicePixelRatio), maxCost)); // Ensure at least 15M

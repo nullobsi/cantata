@@ -25,7 +25,7 @@
 #include "lineedit.h"
 #include "utils.h"
 #include <QAbstractItemView>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QApplication>
 #include <QStyleOptionComboBox>
 
@@ -38,8 +38,8 @@ ComboBox::ComboBox(QWidget *p)
 {
     #if !defined Q_OS_WIN && !defined Q_OS_MAC
     if (-1==maxPopupItemCount) {
-        if (QApplication::desktop()) {
-            maxPopupItemCount=((QApplication::desktop()->height()/(QApplication::fontMetrics().height()*1.5))*0.75)+0.5;
+        if (QApplication::primaryScreen()) {
+            maxPopupItemCount=((QApplication::primaryScreen()->availableGeometry().height()/(QFontMetricsF(QApplication::font()).height()*1.5))*0.75)+0.5;
         } else {
             maxPopupItemCount=32;
         }

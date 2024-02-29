@@ -44,7 +44,6 @@
 #include <QApplication>
 #include <QProgressBar>
 #include <QScrollArea>
-#include <QDesktopWidget>
 #include <QWheelEvent>
 #include <QScrollBar>
 #include <QMenu>
@@ -259,7 +258,7 @@ void CoverPreview::showImage(const QImage &img, const QString &u)
             fw=2;
         }
         fw*=2;
-        QRect desktop = qApp->desktop()->screenGeometry(this);
+        QRect desktop = qApp->primaryScreen()->availableGeometry();
         int maxWidth=desktop.width()*0.75;
         int maxHeight=desktop.height()*0.75;
         int lrPad=width()-mainWidget()->width();

@@ -28,7 +28,7 @@
 #include <QMenu>
 #include <QEvent>
 #include <QApplication>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QProxyStyle>
 
 #ifdef Q_OS_WIN
@@ -106,9 +106,9 @@ bool MenuButton::eventFilter(QObject *o, QEvent *e)
             if (newPos<0) {
                 newPos=0;
             } else {
-                QDesktopWidget *dw=QApplication::desktop();
+                QScreen *dw=QApplication::primaryScreen();
                 if (dw) {
-                    QRect geo=dw->availableGeometry(this);
+                    QRect geo=dw->availableGeometry();
                     int maxWidth=geo.x()+geo.width();
                     if (maxWidth>0 && (newPos+mnu->width())>maxWidth) {
                         newPos=maxWidth-mnu->width();
