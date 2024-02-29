@@ -103,7 +103,7 @@ DevicePropertiesWidget::DevicePropertiesWidget(QWidget *parent)
                               "the contents of the device re-scanned.</p>"));
 
     if (qobject_cast<QTabWidget *>(parent)) {
-        verticalLayout->setMargin(4);
+        verticalLayout->setContentsMargins(4, 4, 4, 4);
     }
 }
 

@@ -236,7 +236,7 @@ CoverPreview::CoverPreview(QWidget *p)
     layout->addWidget(loadingLabel);
     layout->addWidget(pbar);
     layout->addWidget(scrollArea);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     setMainWidget(mw);
 }
 

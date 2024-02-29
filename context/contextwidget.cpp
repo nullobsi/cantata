@@ -131,7 +131,7 @@ void ViewSelector::addItem(const QString &label, const QVariant &data)
     QHBoxLayout *l;
     if (buttons.isEmpty()) {
         l = new QHBoxLayout(this);
-        l->setMargin(0);
+        l->setContentsMargins(0, 0, 0, 0);
         l->setSpacing(0);
     } else {
         l=static_cast<QHBoxLayout *>(layout());
@@ -260,7 +260,7 @@ ContextWidget::ContextWidget(QWidget *parent)
     mainStack=new QStackedWidget(this);
     standardContext=new QWidget(mainStack);
     mainStack->addWidget(standardContext);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(mainStack);
     animator.setPropertyName("fade");
     animator.setTargetObject(this);
@@ -295,8 +295,8 @@ void ContextWidget::setWide(bool w)
         }
         QHBoxLayout *l=new QHBoxLayout(standardContext);
         standardContext->setLayout(l);
-        int m=l->margin()/2;
-        l->setMargin(0);
+        int m=l->contentsMargins().top()/2;
+        l->setContentsMargins(0, 0, 0, 0);
         if (stack) {
             stack->setVisible(false);
             viewSelector->setVisible(false);
@@ -336,8 +336,8 @@ void ContextWidget::setWide(bool w)
         }
         QGridLayout *l=new QGridLayout(standardContext);
         standardContext->setLayout(l);
-        int m=l->margin()/2;
-        l->setMargin(0);
+        int m=l->contentsMargins().top()/2;
+        l->setContentsMargins(0, 0, 0, 0);
         l->setSpacing(0);
         if (!stack) {
             stack=new QStackedWidget(standardContext);
@@ -623,8 +623,8 @@ void ContextWidget::update(const Song &s)
         if (!onlineContext) {
             QWidget *onlinePage=new QWidget(mainStack);
             QHBoxLayout *onlineLayout=new QHBoxLayout(onlinePage);
-            int m=onlineLayout->margin()/2;
-            onlineLayout->setMargin(0);
+            int m=onlineLayout->contentsMargins().top()/2;
+            onlineLayout->setContentsMargins(0, 0, 0, 0);
             onlineLayout->addItem(new QSpacerItem(m, m, QSizePolicy::Fixed, QSizePolicy::Fixed));
             onlineContext=new OnlineView(onlinePage);
             onlineLayout->addWidget(onlineContext);

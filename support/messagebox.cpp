@@ -171,7 +171,7 @@ MessageBox::ButtonCode MessageBox::msgListEx(QWidget *parent, Type type, const Q
     lay->addWidget(msgLabel, 0, 1, 1, 1);
     QListWidget *list=new QListWidget(wid);
     lay->addWidget(list, 1, 0, 1, 2);
-    lay->setMargin(0);
+    lay->setContentsMargins(0, 0, 0, 0);
     list->insertItems(0, strlist);
     dlg->setMainWidget(wid);
     #ifdef Q_OS_MAC

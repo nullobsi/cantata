@@ -294,8 +294,8 @@ NowPlayingWidget::NowPlayingWidget(QWidget *p)
     layout->setContentsMargins(pad, space, pad, space);
     #endif
     layout->setSpacing(space/2);
-    topLayout->setMargin(0);
-    botLayout->setMargin(0);
+    topLayout->setContentsMargins(0, 0, 0, 0);
+    botLayout->setContentsMargins(0, 0, 0, 0);
     topLayout->setSpacing(space/2);
     botLayout->setSpacing(space/2);
     topLayout->addWidget(track);

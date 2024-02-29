@@ -95,7 +95,7 @@ void KMsgWidgetPrivate::createLayout()
     if (wordWrap) {
         QGridLayout* layout = new QGridLayout(content);
         layout->addWidget(textLabel, 0, 1);
-        layout->setMargin(4);
+        layout->setContentsMargins(4, 4, 4, 4);
 
         QHBoxLayout* buttonLayout = new QHBoxLayout;
         buttonLayout->addStretch();
@@ -117,7 +117,7 @@ void KMsgWidgetPrivate::createLayout()
         }
 
         layout->addWidget(closeButton);
-        layout->setMargin(4);
+        layout->setContentsMargins(4, 4, 4, 4);
     };
 
     if (q->isVisible()) {

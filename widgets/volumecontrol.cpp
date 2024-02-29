@@ -50,7 +50,7 @@ VolumeControl::VolumeControl(QWidget *p)
     label->addItem("HTTP", "http");
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setSpacing(0);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addItem(new QSpacerItem(0, size, QSizePolicy::Fixed, QSizePolicy::Fixed));
     layout->addWidget(stack);
     layout->addWidget(label);

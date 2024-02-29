@@ -32,7 +32,7 @@ SizeGrip::SizeGrip(QWidget *parent)
     l->addItem(new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::Preferred));
     QSizeGrip *grip=new QSizeGrip(this);
     l->addWidget(grip);
-    l->setMargin(0);
+    l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
     l->setAlignment(Qt::AlignBottom|Qt::AlignRight);
 }

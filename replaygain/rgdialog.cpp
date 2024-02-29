@@ -119,7 +119,7 @@ RgDialog::RgDialog(QWidget *parent)
     setResizeMode(hv, COL_TRACKPEAK, QHeaderView::Fixed);
     hv->setStretchLastSection(false);
 
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(combo);
     layout->addWidget(view);
     layout->addWidget(statusLabel);

@@ -411,8 +411,8 @@ void Dialog::showEvent(QShowEvent *e)
                 mwSize=mw->minimumSizeHint();
             }
             if (mwSize.width()>15 && mwSize.height()>15) {
-                setMinimumHeight(qMax(minimumHeight(), buttonBox->height()+layout()->spacing()+mwSize.height()+(2*layout()->margin())));
-                setMinimumWidth(qMax(minimumWidth(), mwSize.width()+(2*layout()->margin())));
+                setMinimumHeight(qMax(minimumHeight(), buttonBox->height()+layout()->spacing()+mwSize.height()+(2*layout()->contentsMargins().top())));
+                setMinimumWidth(qMax(minimumWidth(), mwSize.width()+(2*layout()->contentsMargins().left())));
             }
         }
     }

@@ -59,7 +59,7 @@ SinglePageWidget::SinglePageWidget(QWidget *p)
     Application::fixSize(sizer);
     layout->addWidget(view, 1, 0, 1, 5);
     layout->addWidget(sizer, 2, 2, 1, 1);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     connect(view, SIGNAL(searchItems()), this, SIGNAL(searchItems()));
     connect(view, SIGNAL(itemsSelected(bool)), this, SLOT(controlActions()));
@@ -115,7 +115,7 @@ void SinglePageWidget::init(int flags, const QList<QWidget *> &leftXtra, const Q
 
     if (!left.isEmpty()) {
         QHBoxLayout *ll=new QHBoxLayout();
-        ll->setMargin(0);
+        ll->setContentsMargins(0, 0, 0, 0);
         ll->setSpacing(1);
         for (QWidget *b: left) {
             Application::fixSize(b);
@@ -125,7 +125,7 @@ void SinglePageWidget::init(int flags, const QList<QWidget *> &leftXtra, const Q
     }
     if (!right.isEmpty()) {
         QHBoxLayout *rl=new QHBoxLayout();
-        rl->setMargin(0);
+        rl->setContentsMargins(0, 0, 0, 0);
         rl->setSpacing(1);
         for (QWidget *b: right) {
             Application::fixSize(b);

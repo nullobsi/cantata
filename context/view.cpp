@@ -116,7 +116,7 @@ View::View(QWidget *parent, const QStringList &views)
     header->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     header->setTextInteractionFlags(Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard);
 
-    layout->setMargin(2);
+    layout->setContentsMargins(2, 2, 2, 2);
     layout->addWidget(header);
     if (views.isEmpty()) {
         layout->addWidget(texts.at(0));

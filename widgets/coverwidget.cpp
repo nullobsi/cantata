@@ -171,7 +171,7 @@ CoverWidget::CoverWidget(QWidget *parent)
     : QWidget(parent)
 {
     QBoxLayout *l=new QBoxLayout(QBoxLayout::LeftToRight, this);
-    l->setMargin(0);
+    l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
     l->addItem(new QSpacerItem(qMax(Utils::scaleForDpi(8), Utils::layoutSpacing(this)), 4, QSizePolicy::Fixed, QSizePolicy::Fixed));
     label=new CoverLabel(this);

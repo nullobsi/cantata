@@ -69,7 +69,7 @@ ApiKeysSettings::ApiKeysSettings(QWidget *p)
 {
     int spacing=Utils::layoutSpacing(this);
     QVBoxLayout *layout=new QVBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     QLabel *label=new QLabel(tr("Cantata uses various internet services to provide covers, radio stream listings, etc. "
                                 "Most of these require an application's developer to register with the service, and obtain an API Key. "
                                 "Cantata contains the keys required to access these services. Unfortunately, some of these services have "

@@ -68,7 +68,7 @@ PodcastSettingsDialog::PodcastSettingsDialog(QWidget *p)
     autoDownloadLabel->setBuddy(autoDownloadCombo);
 
     int row=0;
-    lay->setMargin(0);
+    lay->setContentsMargins(0, 0, 0, 0);
     lay->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     lay->setWidget(row, QFormLayout::LabelRole, updateLabel);
     lay->setWidget(row++, QFormLayout::FieldRole, updateCombo);

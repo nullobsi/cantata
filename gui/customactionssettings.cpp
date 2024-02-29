@@ -49,7 +49,7 @@ CustomActionDialog::CustomActionDialog(QWidget *p)
     NoteLabel *note=new NoteLabel(widget);
     note->setText(tr("In the command line above, %f will be replaced with the file list and %d with the folder list. If neither are supplied, the the list of files will be appended to the command."));
     layout->setWidget(2, QFormLayout::SpanningRole, note);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     setButtons(Dialog::Ok|Dialog::Cancel);
     setMainWidget(widget);
     setMinimumWidth(400);
@@ -83,7 +83,7 @@ CustomActionsSettings::CustomActionsSettings(QWidget *parent)
     , dlg(nullptr)
 {
     QGridLayout *layout=new QGridLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     QLabel *label=new QLabel(tr("To have Cantata call external commands (e.g. to edit tags with another application), add an entry for the command below. When at least one command "
                                   "command is defined, a 'Custom Actions' entry will be added to the context menus in the Library, Folders, and Playlists views."), this);
     QFont f(Utils::smallFont(label->font()));

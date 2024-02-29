@@ -169,7 +169,7 @@ KeySequenceWidget::KeySequenceWidget(QWidget *parent)
     _modifierKeys(0)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     _keyButton = new KeySequenceButton(this, this);
     _keyButton->setFocusPolicy(Qt::StrongFocus);

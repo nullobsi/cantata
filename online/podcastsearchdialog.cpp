@@ -353,9 +353,9 @@ PodcastSearchPage::PodcastSearchPage(QWidget *p, const QString &n, int i, const 
     QBoxLayout *searchLayout=new QBoxLayout(QBoxLayout::LeftToRight);
     QBoxLayout *viewLayout=new QBoxLayout(QBoxLayout::LeftToRight);
     QBoxLayout *mainLayout=new QBoxLayout(QBoxLayout::TopToBottom, this);
-    searchLayout->setMargin(0);
-    viewLayout->setMargin(0);
-    mainLayout->setMargin(0);
+    searchLayout->setContentsMargins(0, 0, 0, 0);
+    viewLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     search=new LineEdit(p);
     search->setPlaceholderText(tr("Enter search term..."));
     searchButton=new QPushButton(tr("Search"), p);
@@ -418,7 +418,7 @@ OpmlBrowsePage::OpmlBrowsePage(QWidget *p, const QString &n, const QIcon &i, con
     , url(u)
 {
     QBoxLayout *mainLayout=new QBoxLayout(QBoxLayout::LeftToRight, this);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(tree, 1);
     mainLayout->addWidget(text, 0);
     Action *act=new Action(tr("Reload"), this);
@@ -503,9 +503,9 @@ PodcastUrlPage::PodcastUrlPage(QWidget *p)
     QBoxLayout *searchLayout=new QBoxLayout(QBoxLayout::LeftToRight);
     QBoxLayout *viewLayout=new QBoxLayout(QBoxLayout::LeftToRight);
     QBoxLayout *mainLayout=new QBoxLayout(QBoxLayout::TopToBottom, this);
-    searchLayout->setMargin(0);
-    viewLayout->setMargin(0);
-    mainLayout->setMargin(0);
+    searchLayout->setContentsMargins(0, 0, 0, 0);
+    viewLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     urlEntry=new LineEdit(p);
     urlEntry->setPlaceholderText(tr("Enter podcast URL..."));
     QPushButton *loadButton=new QPushButton(tr("Load"), p);
@@ -626,7 +626,7 @@ PodcastSearchDialog::PodcastSearchDialog(PodcastService *s, QWidget *parent)
     spacer = new QWidget(this);
     spacer->setFixedSize(Utils::layoutSpacing(this), 0);
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::TopToBottom, mainWidget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     pageWidget = new PageWidget(mainWidget);

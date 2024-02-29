@@ -48,8 +48,8 @@ LyricsDialog::LyricsDialog(const Song &s, QWidget *parent)
     int iconSize=Icon::dlgIconSize();
     icn->setFixedSize(iconSize, iconSize);
     icn->setPixmap(style()->standardIcon(QStyle::SP_MessageBoxInformation).pixmap(iconSize, iconSize));
-    mainLayout->setMargin(0);
-    layout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(icn, 0, 0, 1, 1);
     mainLayout->addWidget(lbl, 0, 1, 1, 1);
     mainLayout->addItem(new QSpacerItem(8, 4, QSizePolicy::Fixed, QSizePolicy::Fixed), 1, 0);

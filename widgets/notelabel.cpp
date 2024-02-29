@@ -47,7 +47,7 @@ static QLabel * init(QWidget *p, bool url)
     }
 
     QVBoxLayout *l=new QVBoxLayout(p);
-    l->setMargin(0);
+    l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
     QLabel *label;
     if (url) {

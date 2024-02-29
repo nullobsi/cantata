@@ -247,7 +247,7 @@ CacheSettings::CacheSettings(QWidget *parent)
 {
     int spacing=Utils::layoutSpacing(this);
     QGridLayout *layout=new QGridLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     int row=0;
     int col=0;
     QLabel *label=new QLabel(tr("Cantata caches various pieces of information (covers, lyrics, etc). Below is a summary of Cantata's "

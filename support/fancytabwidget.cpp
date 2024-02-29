@@ -493,18 +493,18 @@ FancyTabWidget::FancyTabWidget(QWidget *parent)
     , proxyStyle(new FancyTabProxyStyle)
 {
     sideLayout->setSpacing(0);
-    sideLayout->setMargin(0);
+    sideLayout->setContentsMargins(0, 0, 0, 0);
     sideLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Fixed, QSizePolicy::Expanding));
 
     sideWidget->setLayout(sideLayout);
     sideWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 
-    topLayout->setMargin(0);
+    topLayout->setContentsMargins(0, 0, 0, 0);
     topLayout->setSpacing(0);
     topLayout->addWidget(stack_);
 
     QHBoxLayout *mainLayout = new QHBoxLayout;
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
     mainLayout->addWidget(sideWidget);
     mainLayout->addLayout(topLayout);

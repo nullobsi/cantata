@@ -96,9 +96,9 @@ TitleWidget::TitleWidget(QWidget *p)
     connect(Covers::self(), SIGNAL(cover(Song,QImage,QString)), this, SLOT(coverRetrieved(Song,QImage,QString)));
     connect(Covers::self(), SIGNAL(coverUpdated(Song,QImage,QString)), this, SLOT(coverRetrieved(Song,QImage,QString)));
     connect(Covers::self(), SIGNAL(artistImage(Song,QImage,QString)), this, SLOT(coverRetrieved(Song,QImage,QString)));
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(2);
-    textLayout->setMargin(0);
+    textLayout->setContentsMargins(0, 0, 0, 0);
     textLayout->setSpacing(2);
     mainText->setAlignment(Qt::AlignBottom);
     subText->setAlignment(Qt::AlignTop);
@@ -124,7 +124,7 @@ void TitleWidget::update(const Song &sng, const QIcon &icon, const QString &text
         if (!controls) {
             controls=new QWidget(this);
             QVBoxLayout *l=new QVBoxLayout(controls);
-            l->setMargin(0);
+            l->setContentsMargins(0, 0, 0, 0);
             l->setSpacing(0);
             ToolButton *add=new ToolButton(this);
             ToolButton *replace=new ToolButton(this);

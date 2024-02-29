@@ -110,7 +110,7 @@ void InputDialog::init(int type, const QString &caption, const QString &labelTex
         break;
     }
     layout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     setCaption(caption);
     setMainWidget(wid);
     setButtons(Ok|Cancel);

@@ -42,7 +42,7 @@ ShortcutsSettingsPage::ShortcutsSettingsPage(QWidget *p)
     : QWidget(p)
 {
     QBoxLayout *lay=new QBoxLayout(QBoxLayout::TopToBottom, this);
-    lay->setMargin(0);
+    lay->setContentsMargins(0, 0, 0, 0);
 
     QHash<QString, ActionCollection *> map;
     map.insert("Cantata", ActionCollection::get());

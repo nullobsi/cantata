@@ -42,7 +42,7 @@ StreamDialog::StreamDialog(QWidget *parent, bool addToPlayQueue)
     QWidget *wid = new QWidget(this);
     QFormLayout *layout = new QFormLayout(wid);
 
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     urlEntry = new LineEdit(wid);
     nameEntry = new LineEdit(wid);
     if (addToPlayQueue) {
