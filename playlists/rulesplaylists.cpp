@@ -246,7 +246,7 @@ bool RulesPlaylists::save(const Entry &e)
     QFile f(Utils::dataDir(rulesDir, true)+e.name+constExtension);
     if (f.open(QIODevice::WriteOnly|QIODevice::Text)) {
         QTextStream out(&f);
-        out.setCodec("UTF-8");
+        out.setEncoding(QStringConverter::Utf8);
         out << string;
         updateEntry(e);
         return true;
@@ -323,7 +323,7 @@ void RulesPlaylists::loadLocal()
                 e.numTracks=defaultNumTracks();
                 Rule r;
                 QTextStream in(&f);
-                in.setCodec("UTF-8");
+                in.setEncoding(QStringConverter::Utf8);
                 QStringList lines = in.readAll().split('\n', CANTATA_SKIP_EMPTY);
                 for (const QString &line: lines) {
                     QString str=line.trimmed();

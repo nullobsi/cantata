@@ -36,12 +36,10 @@
 
 #include <taglib/tstring.h>
 #include <taglib/id3v1genres.h>
-#include <QTextCodec>
 static QString id3Genre(int id)
 {
-    static QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     // Clementine: In theory, genre 0 is "blues"; in practice it's invalid.
-    return 0==id ? QString() : codec->toUnicode(TagLib::ID3v1::genre(id).toCString(true)).trimmed();
+    return 0==id ? QString() : QString::fromUtf8(TagLib::ID3v1::genre(id).toCString(true)).trimmed();
 }
 
 #else // TAGLIB_FOUND

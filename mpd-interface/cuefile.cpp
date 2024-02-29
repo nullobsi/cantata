@@ -85,21 +85,14 @@ QByteArray CueFile::getLoadLine(const QString &str)
     return MPDConnection::encodeName(str);
 }
 
-static const QList<QTextCodec *> & codecList()
+static const QList<QStringConverter::Encoding> & encodingList()
 {
-    static QList<QTextCodec *> codecs;
-    if (codecs.isEmpty()) {
-        codecs.append(QTextCodec::codecForName("UTF-8"));
-        QTextCodec *codec=QTextCodec::codecForLocale();
-        if (codec && !codecs.contains(codec)) {
-            codecs.append(codec);
-        }
-        codec=QTextCodec::codecForName("System");
-        if (codec && !codecs.contains(codec)) {
-            codecs.append(codec);
-        }
+    static QList<QStringConverter::Encoding> encodings;
+    if (encodings.isEmpty()) {
+        encodings.append(QStringConverter::Utf8);
+        encodings.append(QStringConverter::System);
     }
-    return codecs;
+    return encodings;
 }
 
 // Split a raw .cue line into logical parts, returning a list where:
@@ -254,10 +247,10 @@ bool CueFile::parse(const QString &fileName, const QString &dir, QList<Song> &so
     if (f.open(QIODevice::ReadOnly)) {
         // First attempt to use QTextDecoder to decode cue file contents into a QString
         QByteArray contents=f.readAll();
-        for (QTextCodec *codec: codecList()) {
-            QTextDecoder decoder(codec);
-            decoded=decoder.toUnicode(contents);
-            if (!decoder.hasFailure()) {
+        for (QStringConverter::Encoding encoding: encodingList()) {
+            QStringDecoder decoder(encoding);
+            decoded = decoder.decode(contents);
+            if (!decoder.hasError()) {
                 textStream.reset(new QTextStream(&decoded, QIODevice::ReadOnly));
                 break;
             }
@@ -269,7 +262,8 @@ bool CueFile::parse(const QString &fileName, const QString &dir, QList<Song> &so
             // Failed to use text decoders, fall back to old method...
             f.open(QIODevice::ReadOnly|QIODevice::Text);
             textStream.reset(new QTextStream(&f));
-            textStream->setCodec(QTextCodec::codecForUtfText(f.peek(1024), QTextCodec::codecForName("UTF-8")));
+            std::optional<QStringConverter::Encoding> encoding = QStringDecoder::encodingForData(f.peek(1024));
+            textStream->setEncoding(encoding.value_or(QStringConverter::Utf8));
         }
     }
 

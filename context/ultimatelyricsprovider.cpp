@@ -216,12 +216,6 @@ QString UltimateLyricsProvider::displayName() const
 
 void UltimateLyricsProvider::fetchInfo(int id, Song metadata, bool removeThe)
 {
-    const QTextCodec *codec = QTextCodec::codecForName(charset.toLatin1().constData());
-    if (!codec) {
-        emit lyricsReady(id, QString());
-        return;
-    }
-
     QString artistFixed=metadata.basicArtist();
     QString titleFixed=metadata.basicTitle();
     QString urlText(url);
@@ -362,8 +356,7 @@ void UltimateLyricsProvider::wikiMediaLyricsFetched()
         return;
     }
 
-    const QTextCodec *codec = QTextCodec::codecForName(charset.toLatin1().constData());
-    QString contents = codec->toUnicode(reply->readAll()).replace("<br />", "<br/>");
+    QString contents = QString::fromLatin1(reply->readAll()).replace("<br />", "<br/>");
     DBUG << name << "response" << contents;
     emit lyricsReady(id, extract(contents, QLatin1String("&lt;lyrics&gt;"), QLatin1String("&lt;/lyrics&gt;")));
 }
@@ -389,8 +382,7 @@ void UltimateLyricsProvider::lyricsFetched()
         return;
     }
 
-    const QTextCodec *codec = QTextCodec::codecForName(charset.toLatin1().constData());
-    const QString originalContent = codec->toUnicode(reply->readAll()).replace("<br />", "<br/>");
+    const QString originalContent = QString::fromLatin1(reply->readAll()).replace("<br />", "<br/>");
 
     DBUG << name << "response" << originalContent;
     // Check for invalid indicators

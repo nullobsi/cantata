@@ -36,7 +36,6 @@
 #include <QFile>
 #include <QString>
 #include <QStringList>
-#include <QTextCodec>
 #include <QDebug>
 #define TAGLIB_VERSION CANTATA_MAKE_VERSION(TAGLIB_MAJOR_VERSION, TAGLIB_MINOR_VERSION, TAGLIB_PATCH_VERSION)
 
@@ -100,8 +99,7 @@ void enableDebug()
 
 static QString tString2QString(const TagLib::String &str)
 {
-    static QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    return codec->toUnicode(str.toCString(true)).trimmed();
+    return QString::fromUtf8(str.toCString(true)).trimmed();
 }
 
 TagLib::String qString2TString(const QString &str)
@@ -1149,7 +1147,7 @@ static void readASFTags(TagLib::ASF::Tag *tag, Song *song, int *rating)
             song->setComposer(tString2QString(map["WM/Composer"].front().toString()));
         }
         if (map.contains("WM/PartOfSet") && !map["WM/PartOfSet"].isEmpty()) {
-            song->albumartist=map["WM/PartOfSet"].front().toUInt();
+            song->albumartist=tString2QString(map["WM/PartOfSet"].front().toString());
         }
         if (map.contains("WM/Genre") && !map["WM/Genre"].isEmpty()) {
             const TagLib::ASF::AttributeList &genres=map["WM/Genre"];
