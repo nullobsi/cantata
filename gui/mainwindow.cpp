@@ -1761,7 +1761,7 @@ void MainWindow::showServerInfo()
     std::sort(tags.begin(), tags.end());
     long version=MPDConnection::self()->version();
     QDateTime dbUpdate;
-    dbUpdate.setTime_t(MPDStats::self()->dbUpdate());
+    dbUpdate.setSecsSinceEpoch(MPDStats::self()->dbUpdate());
     MessageBox::information(this,
                                   #ifdef Q_OS_MAC
                                   tr("Server Information")+QLatin1String("<br/><br/>")+

@@ -350,7 +350,7 @@ Song MPDParseUtils::parseSong(const QList<QByteArray> &lines, Location location)
         }  else if (line.startsWith(constAlbumId)) {
             song.setMbAlbumId(line.mid(constAlbumId.length()));
         } else if ((Loc_Search==location || Loc_Library==location) && line.startsWith(constLastModifiedKey)) {
-            song.lastModified=QDateTime::fromString(QString::fromUtf8(line.mid(constLastModifiedKey.length())), Qt::ISODate).toTime_t();
+            song.lastModified=QDateTime::fromString(QString::fromUtf8(line.mid(constLastModifiedKey.length())), Qt::ISODate).toSecsSinceEpoch();
         } else if ((Loc_Search==location || Loc_Playlists==location || Loc_PlayQueue==location) && line.startsWith(constPerformerKey)) {
             if (song.hasPerformer()) {
                 song.setPerformer(song.performer()+QLatin1String(", ")+QString::fromUtf8(line.mid(constPerformerKey.length())));

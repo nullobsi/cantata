@@ -2052,7 +2052,7 @@ void MPDConnection::search(const QString &field, const QString &value, int id)
         } else if (QRegularExpression("^((19|20)\\d\\d)[-/](0[1-9]|1[012])[-/](0[1-9]|[12][0-9]|3[01])$").match(value).hasMatch()) {
             QDateTime dt=QDateTime::fromString(QString(value).replace("/", "-"), Qt::ISODate);
             if (dt.isValid()) {
-                v=dt.toTime_t();
+                v=dt.toSecsSinceEpoch();
             }
         }
         if (v>0) {

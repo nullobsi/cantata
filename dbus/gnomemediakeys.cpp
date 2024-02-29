@@ -104,7 +104,7 @@ void GnomeMediaKeys::grabKeys()
                 mk = new OrgGnomeSettingsDaemonMediaKeysInterface(service, constMediaKeysPath, QDBusConnection::sessionBus(), this);
             }
 
-            QDBusPendingReply<> reply = mk->GrabMediaPlayerKeys(QCoreApplication::applicationName(), QDateTime::currentDateTime().toTime_t());
+            QDBusPendingReply<> reply = mk->GrabMediaPlayerKeys(QCoreApplication::applicationName(), QDateTime::currentDateTime().toSecsSinceEpoch());
             QDBusPendingCallWatcher *callWatcher = new QDBusPendingCallWatcher(reply, this);
             connect(callWatcher, SIGNAL(finished(QDBusPendingCallWatcher *)), this, SLOT(registerFinished(QDBusPendingCallWatcher*)));
 
