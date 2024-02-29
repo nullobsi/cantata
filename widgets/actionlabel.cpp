@@ -26,10 +26,10 @@
 #include <QLabel>
 #include <QTimer>
 #include <QPixmap>
-#include <QMatrix>
+#include <QTransform>
 
 // Borrowed from kolourpaint...
-static QTransform transformWithZeroOrigin(const QMatrix &matrix, int width, int height)
+static QTransform transformWithZeroOrigin(const QTransform &matrix, int width, int height)
 {
     QRect newRect(matrix.mapRect(QRect(0, 0, width, height)));
 
@@ -39,7 +39,7 @@ static QTransform transformWithZeroOrigin(const QMatrix &matrix, int width, int 
 
 static QTransform rotateMatrix(int width, int height, double angle)
 {
-    QMatrix matrix;
+    QTransform matrix;
     matrix.translate(width/2, height/2);
     matrix.rotate(angle);
 
