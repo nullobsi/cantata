@@ -1297,7 +1297,7 @@ QList<StreamsModel::Item *> StreamsModel::parseIceCastResponse(QIODevice *dev, C
                 doc.readNext();
 
                 if (QXmlStreamReader::StartElement==doc.tokenType()) {
-                    QStringRef elem = doc.name();
+                    QStringView elem = doc.name();
 
                     if (QLatin1String("server_name")==elem) {
                         name=doc.readElementText().trimmed();

@@ -27,8 +27,8 @@
 #include <QSet>
 #include <QRegularExpression>
 
-static const char * constITunesNameSpace = "http://www.itunes.com/dtds/podcast-1.0.dtd";
-static const char * constMediaNameSpace = "http://search.yahoo.com/mrss/";
+static const QString constITunesNameSpace = QStringLiteral("http://www.itunes.com/dtds/podcast-1.0.dtd");
+static const QString constMediaNameSpace = QStringLiteral("http://search.yahoo.com/mrss/");
 
 using namespace RssParser;
 
@@ -112,7 +112,7 @@ static Episode parseEpisode(QXmlStreamReader &reader)
 
     while (!reader.atEnd()) {
         reader.readNext();
-        const QStringRef name = reader.name();
+        const QStringView name = reader.name();
         if (reader.isStartElement()) {
             if (QLatin1String("title")==name) {
                 ep.name=reader.readElementText().simplified();
@@ -182,7 +182,7 @@ Channel RssParser::parse(QIODevice *dev, bool getEpisodes, bool getDescription)
             reader.readNext();
 
             if (reader.isStartElement()) {
-                const QStringRef name = reader.name();
+                const QStringView name = reader.name();
                 if (ch.name.isEmpty() && QLatin1String("title")==name) {
                     ch.name=reader.readElementText().simplified();
                 } else if (QLatin1String("image")==name && ch.image.isEmpty()) {

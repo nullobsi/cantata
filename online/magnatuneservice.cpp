@@ -62,7 +62,7 @@ Song MagnatuneXmlParser::parseSong(QXmlStreamReader &xml)
         xml.readNext();
 
         if (QXmlStreamReader::StartElement==xml.tokenType()) {
-            QStringRef name = xml.name();
+            QStringView name = xml.name();
             QString value = xml.readElementText(QXmlStreamReader::SkipChildElements);
 
             if (QLatin1String("artist")==name) {

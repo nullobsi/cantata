@@ -56,7 +56,7 @@ static void parseOutline(QXmlStreamReader &reader, Category &cat)
         QXmlStreamReader::TokenType type = reader.readNext();
         switch (type) {
         case QXmlStreamReader::StartElement: {
-            const QStringRef name = reader.name();
+            const QStringView name = reader.name();
             if (name != QLatin1String("outline")) {
                 consumeCurrentElement(reader);
                 continue;
