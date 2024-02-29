@@ -291,7 +291,7 @@ void StreamFetcher::dataReady()
 
     data+=job->readAll();
 
-    if (data.count()>constMaxData) {
+    if (data.length()>constMaxData) {
         NetworkJob *thisJob=job;
         jobFinished(thisJob);
         // If jobFinished did not redirect, then we need to ensure job is cancelled.

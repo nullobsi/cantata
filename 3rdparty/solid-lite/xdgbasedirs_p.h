@@ -26,8 +26,8 @@
 #ifndef SOLID_XDGBASEDIRS_H
 #define SOLID_XDGBASEDIRS_H
 
+#include <QStringList>
 class QString;
-class QStringList;
 
 namespace Solid
 {

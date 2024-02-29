@@ -38,7 +38,6 @@ class CacheSettings;
 #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
 class AudioCdSettings;
 #endif
-class QStringList;
 #ifdef ENABLE_PROXY_CONFIG
 class ProxySettings;
 #endif

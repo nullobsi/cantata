@@ -19,6 +19,7 @@
 //#include "core/logging.h"
 
 #include <QDataStream>
+#include <QIODevice>
 
 #include <algorithm>
 #include <cmath>

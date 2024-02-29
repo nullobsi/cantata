@@ -352,12 +352,6 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(PACKAGE_NAME);
     QCoreApplication::setOrganizationName(ORGANIZATION_NAME);
 
-    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-    // Dont enable AA_EnableHighDpiScaling - messes up fractional scaling? Issue #1257
-    //#if QT_VERSION >= 0x050600 && defined Q_OS_WIN
-    //QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    //#endif
-
     Application app(argc, argv);
     app.setApplicationVersion(PACKAGE_VERSION_STRING);
 
@@ -413,7 +407,7 @@ int main(int argc, char *argv[])
     #if defined Q_OS_WIN || defined Q_OS_MAC
     loadTranslation("qt", CANTATA_SYS_TRANS_DIR, lang);
     #else
-    loadTranslation("qt", QLibraryInfo::location(QLibraryInfo::TranslationsPath), lang);
+    loadTranslation("qt", QLibraryInfo::path(QLibraryInfo::TranslationsPath), lang);
     #endif
     QString local = Utils::fixPath(QCoreApplication::applicationDirPath())+"translations";
     loadTranslation("cantata", QDir(local).exists() ? local : CANTATA_SYS_TRANS_DIR, lang);

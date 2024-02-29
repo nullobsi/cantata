@@ -71,7 +71,7 @@ class DeviceBackend: public QObject {
 
     QDBusInterface *m_device;
 
-    mutable QMultiMap<QString, QVariant> m_propertyCache;
+    mutable QVariantMap m_propertyCache;
     QStringList m_interfaces;
     QString m_udi;
 

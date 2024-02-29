@@ -24,9 +24,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <QtCore/QFile>
-#include <QtCore/QMap>
-#include <QtCore/QMutexLocker>
+#include <QFile>
+#include <QMap>
+#include <QMutexLocker>
 
 #include "udisksopticaldisc.h"
 #include "soliddefs_p.h"

@@ -53,7 +53,7 @@ static QString readMpiValue(QIODevice &file, const QString &group, const QString
         else if (line.startsWith(QChar('[')) && line.endsWith(QChar(']'))) {
             currGroup = line.mid(1, line.length() - 2);  // strip [ and ]
         }
-        else if (line.indexOf(QChar('=') != -1)) {
+        else if (line.indexOf(QChar('=')) != -1) {
             int index = line.indexOf(QChar('='));
             if (currGroup == group && line.left(index) == key) {
                 line = line.right(line.length() - index - 1);

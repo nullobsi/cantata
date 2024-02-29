@@ -37,6 +37,7 @@ class Thread;
 
 struct FileOnlySong : public Song
 {
+    FileOnlySong() { }
     FileOnlySong(const Song &o) : Song(o) { }
     bool operator==(const FileOnlySong &o) const { return file==o.file; }
     bool operator<(const FileOnlySong &o) const { return file.compare(o.file)<0; }

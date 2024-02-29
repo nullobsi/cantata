@@ -157,7 +157,7 @@ void UltimateLyrics::load()
     if (!userDir.isEmpty()) {
         QFileInfoList files=QDir(userDir).entryInfoList(QStringList() << QLatin1String("lyrics_*.xml"), QDir::NoDotAndDotDot|QDir::Files);
         for (const QFileInfo &f: files) {
-            files.append(f.absoluteFilePath());
+            files.append(QFileInfo(f.absoluteFilePath()));
         }
     }
 

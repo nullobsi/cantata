@@ -26,6 +26,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QMetaMethod>
+#include <QWidget>
 
 static const char *constProp="Category";
 static ActionCollection *coll=nullptr;

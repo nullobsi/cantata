@@ -27,6 +27,7 @@
 #include <QDBusArgument>
 #include <QDBusMetaType>
 #include <QDBusVariant>
+#include <QLocale>
 
 #include <solid-lite/genericinterface.h>
 

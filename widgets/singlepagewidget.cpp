@@ -30,6 +30,7 @@
 #include "mpd-interface/mpdconnection.h"
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QActionGroup>
 
 static QString viewTypeString(ItemView::Mode mode)
 {
