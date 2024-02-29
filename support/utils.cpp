@@ -743,13 +743,13 @@ QString Utils::dataDir(const QString &sub, bool create)
 {
     #if defined Q_OS_WIN || defined Q_OS_MAC
 
-    return userDir(QStandardPaths::writableLocation(QStandardPaths::DataLocation)+constDirSep, sub, create);
+    return userDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+constDirSep, sub, create);
 
     #else
 
     static QString location;
     if (location.isEmpty()) {
-        location=QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+        location=QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
         if (QCoreApplication::organizationName()==QCoreApplication::applicationName()) {
             location=location.replace(QCoreApplication::organizationName()+Utils::constDirSep+QCoreApplication::applicationName(),
                                       QCoreApplication::applicationName());
