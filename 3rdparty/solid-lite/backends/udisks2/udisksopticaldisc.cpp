@@ -24,10 +24,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <QFile>
 #include <QMap>
-#include <QMutexLocker>
-#include <QDBusConnection>
+#include <QSharedMemory>
+#include <QSystemSemaphore>
+#include <QThreadStorage>
 
 #include "../shared/udevqt.h"
 
@@ -35,10 +35,7 @@
 #include "udisksdevice.h"
 #include "udisksopticaldisc.h"
 #include "soliddefs_p.h"
-
-typedef QMap<QByteArray, Solid::OpticalDisc::ContentTypes> ContentTypesCache;
-SOLID_GLOBAL_STATIC(ContentTypesCache, cache)
-SOLID_GLOBAL_STATIC(QMutex, cacheLock)
+#include "udisks2.h"
 
 // inspired by http://cgit.freedesktop.org/hal/tree/hald/linux/probing/probe-volume.c
 static Solid::OpticalDisc::ContentType advancedDiscDetect(const QByteArray & device_file)
@@ -173,17 +170,195 @@ out:
 
 using namespace Solid::Backends::UDisks2;
 
+class ContentTypesCache
+{
+public:
+    ContentTypesCache()
+        : m_n(0)
+    {
+    }
+
+    void add(const OpticalDisc::Identity &key, Solid::OpticalDisc::ContentTypes content)
+    {
+        if (!find(key)) {
+            m_n = qMin(m_n + 1, sizeof(m_info) / sizeof(*m_info));
+            moveToFront(m_n - 1);
+            front().first = key;
+        }
+        front().second = content;
+    }
+
+    bool find(const OpticalDisc::Identity &key)
+    {
+        for (size_t i = 0; i < m_n; i++) {
+            if (m_info[i].first == key) {
+                moveToFront(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    QPair<OpticalDisc::Identity, Solid::OpticalDisc::ContentTypes> &front()
+    {
+        return *m_info;
+    }
+
+private:
+    void moveToFront(size_t i)
+    {
+        while (i) {
+            qSwap(m_info[i - 1], m_info[i]);
+            --i;
+        }
+    }
+
+    size_t m_n;
+    QPair<OpticalDisc::Identity, Solid::OpticalDisc::ContentTypes> m_info[100];
+};
+
+class SharedContentTypesCache
+{
+private:
+    ContentTypesCache *m_pointer;
+    QSystemSemaphore m_semaphore;
+    QSharedMemory m_shmem;
+
+    struct Unlocker {
+    public:
+        Unlocker(QSharedMemory *mem)
+            : m_mem(mem)
+        {
+        }
+        ~Unlocker()
+        {
+            m_mem->unlock();
+        }
+        Unlocker(const Unlocker &) = delete;
+        Unlocker &operator=(const Unlocker &) = delete;
+
+    private:
+        QSharedMemory *m_mem;
+    };
+
+    struct Releaser {
+    public:
+        Releaser(QSystemSemaphore *sem)
+            : m_sem(sem)
+        {
+        }
+        ~Releaser()
+        {
+            m_sem->release();
+        }
+        Releaser(const Releaser &) = delete;
+        Releaser &operator=(const Releaser &) = delete;
+
+    private:
+        QSystemSemaphore *m_sem;
+    };
+
+    static QString getKey()
+    {
+        static const QString keyTemplate("solid-disk-info-1-%1-%2");
+        static const QString tableSize(QString::number(sizeof(ContentTypesCache)));
+
+        return keyTemplate.arg(tableSize, QString::number(geteuid()));
+    }
+
+public:
+    SharedContentTypesCache()
+        : m_pointer(nullptr)
+        , m_semaphore(getKey() + "sem", 1)
+        , m_shmem(getKey() + "mem")
+    {
+        if (!m_semaphore.acquire()) {
+            return;
+        }
+        Releaser releaser(&m_semaphore);
+
+        if (m_shmem.attach()) {
+            m_pointer = reinterpret_cast<ContentTypesCache *>(m_shmem.data());
+            return;
+        }
+
+        if (!m_shmem.create(sizeof(ContentTypesCache))) {
+            return;
+        }
+
+        if (!m_shmem.lock()) {
+            m_shmem.detach();
+            return;
+        }
+        Unlocker unlocker(&m_shmem);
+
+        m_pointer = new (m_shmem.data()) ContentTypesCache;
+    }
+
+    Solid::OpticalDisc::ContentTypes getContent(const OpticalDisc::Identity &info, const QByteArray &file)
+    {
+        if (!m_pointer) {
+            return advancedDiscDetect(file);
+        }
+
+        if (!m_semaphore.acquire()) {
+            return advancedDiscDetect(file);
+        }
+        Releaser releaser(&m_semaphore);
+
+        if (!m_shmem.lock()) {
+            return advancedDiscDetect(file);
+        }
+        Unlocker unlocker(&m_shmem);
+
+        if (!m_pointer->find(info)) {
+            m_pointer->add(info, advancedDiscDetect(file));
+        }
+
+        Solid::OpticalDisc::ContentTypes content = m_pointer->front().second;
+        return content;
+    }
+
+    ~SharedContentTypesCache()
+    {
+        m_semaphore.acquire();
+        Releaser releaser(&m_semaphore);
+        m_shmem.detach();
+    }
+};
+
+Q_GLOBAL_STATIC(QThreadStorage<SharedContentTypesCache>, sharedContentTypesCache)
+
+OpticalDisc::Identity::Identity()
+    : m_detectTime(0)
+    , m_size(0)
+    , m_labelHash(0)
+{
+}
+
+OpticalDisc::Identity::Identity(const Device &device, const Device &drive)
+    : m_detectTime(drive.prop("TimeMediaDetected").toLongLong())
+    , m_size(device.prop("Size").toLongLong())
+    , m_labelHash(qHash(device.prop("IdLabel").toString()))
+{
+}
+
+bool OpticalDisc::Identity::operator==(const OpticalDisc::Identity &b) const
+{
+    return m_detectTime == b.m_detectTime
+        && m_size == b.m_size
+        && m_labelHash == b.m_labelHash;
+}
+
 OpticalDisc::OpticalDisc(Device *dev)
-    : StorageVolume(dev), m_needsReprobe(true), m_cachedContent(Solid::OpticalDisc::NoContent)
+    : StorageVolume(dev)
 {
     UdevQt::Client client(this);
     m_udevDevice = client.deviceByDeviceFile(device());
-    //qDebug() << "udev device:" << m_udevDevice.name() << "valid:" << m_udevDevice.isValid();
+    // qDebug() << "udev device:" << m_udevDevice.name() << "valid:" << m_udevDevice.isValid();
     /*qDebug() << "\tProperties:" << */ m_udevDevice.deviceProperties(); // initialize the properties DB so that it doesn't crash further down, #298416
 
     m_drive = new Device(m_device->drivePath());
-    QDBusConnection::systemBus().connect(UD2_DBUS_SERVICE, m_drive->udi(), DBUS_INTERFACE_PROPS, "PropertiesChanged", this,
-                                         SLOT(slotDrivePropertiesChanged(QString,QVariantMap,QStringList)));
 }
 
 OpticalDisc::~OpticalDisc()
@@ -247,49 +422,30 @@ Solid::OpticalDisc::DiscType OpticalDisc::discType() const
 Solid::OpticalDisc::ContentTypes OpticalDisc::availableContent() const
 {
     if (isBlank()) {
-        m_needsReprobe = false;
         return Solid::OpticalDisc::NoContent;
     }
 
-    if (m_needsReprobe) {
-        QMutexLocker lock(cacheLock);
+    Solid::OpticalDisc::ContentTypes content = Solid::OpticalDisc::NoContent;
+    const bool hasData = m_drive->prop("OpticalNumDataTracks").toUInt() > 0;
+    const bool hasAudio = m_drive->prop("OpticalNumAudioTracks").toUInt() > 0;
 
-        const QByteArray deviceFile = m_device->prop("Device").toByteArray();
+    if (hasData) {
+        content |= Solid::OpticalDisc::Data;
 
-        if (cache->contains(deviceFile)) {
-            m_cachedContent = cache->value(deviceFile);
-            m_needsReprobe = false;
-            return m_cachedContent;
+        Identity newIdentity(*m_device, *m_drive);
+        if (!(m_identity == newIdentity)) {
+            QByteArray deviceFile(m_device->prop("Device").toByteArray());
+            m_cachedContent = sharedContentTypesCache->localData().getContent(newIdentity, deviceFile);
+            m_identity = newIdentity;
         }
 
-        m_cachedContent = Solid::OpticalDisc::NoContent;
-        const bool hasData = m_drive->prop("OpticalNumDataTracks").toUInt() > 0;
-        const bool hasAudio = m_drive->prop("OpticalNumAudioTracks").toUInt() > 0;
-
-        if ( hasData ) {
-            m_cachedContent |= Solid::OpticalDisc::Data;
-            m_cachedContent |= advancedDiscDetect(deviceFile);
-        }
-        if ( hasAudio )
-            m_cachedContent |= Solid::OpticalDisc::Audio;
-
-        m_needsReprobe = false;
-        cache->insert(deviceFile, m_cachedContent);
+        content |= m_cachedContent;
+    }
+    if (hasAudio) {
+        content |= Solid::OpticalDisc::Audio;
     }
 
-    return m_cachedContent;
-}
-
-void OpticalDisc::slotDrivePropertiesChanged(const QString &ifaceName, const QVariantMap &changedProps, const QStringList &invalidatedProps)
-{
-    Q_UNUSED(ifaceName);
-
-    if (changedProps.keys().contains("Media") || invalidatedProps.contains("Media")) {
-        QMutexLocker lock(cacheLock);
-        m_needsReprobe = true;
-        m_cachedContent = Solid::OpticalDisc::NoContent;
-        cache->remove(m_device->prop("Device").toByteArray());
-    }
+    return content;
 }
 
 QString OpticalDisc::media() const

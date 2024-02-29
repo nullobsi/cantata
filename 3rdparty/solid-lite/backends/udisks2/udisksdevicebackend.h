@@ -67,6 +67,7 @@ class DeviceBackend: public QObject {
     void initInterfaces();
     QString introspect() const;
     void checkCache(const QString &key) const;
+    void cacheProperty(const QString &key, const QVariant &value) const;
 
     QDBusInterface *m_device;
 

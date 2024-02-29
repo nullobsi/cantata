@@ -144,7 +144,11 @@ QVariantMap DeviceBackend::allProperties() const
         QDBusPendingReply<QVariantMap> reply = QDBusConnection::systemBus().call(call);
 
         if (reply.isValid()) {
-            m_propertyCache.unite(reply.value());
+            auto props = reply.value();
+            // Can not use QMap<>::unite(), as it allows multiple values per key
+            for (auto it = props.cbegin(); it != props.cend(); ++it) {
+                cacheProperty(it.key(), it.value());
+            }
         } else {
             qWarning() << "Error getting props:" << reply.error().name() << reply.error().message();
         }
@@ -240,5 +244,21 @@ void DeviceBackend::slotInterfacesRemoved(const QDBusObjectPath& object_path, co
 
     Q_FOREACH(const QString & iface, interfaces) {
         m_interfaces.removeAll(iface);
+    }
+}
+
+// UDisks2 sends us null terminated strings, make sure to strip the extranous \0 in favor of the implicit \0.
+// Otherwise comparision becomes unnecessarily complicated because 'foo\0' != 'foo'. QByteArrays are implicitly
+// terminated already.
+void DeviceBackend::cacheProperty(const QString &key, const QVariant &value) const
+{
+    if (value.metaType() == QMetaType::fromType<QByteArray>()) {
+        auto blob = value.toByteArray();
+        while (blob.endsWith('\0')) {
+            blob.chop(1);
+        }
+        m_propertyCache.insert(key, blob);
+    } else {
+        m_propertyCache.insert(key, value);
     }
 }
