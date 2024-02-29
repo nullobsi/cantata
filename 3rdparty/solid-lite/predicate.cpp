@@ -209,7 +209,7 @@ bool Solid::Predicate::matches(const Device &device) const
             QVariant value = metaProp.isReadable() ? metaProp.read(iface) : QVariant();
             QVariant expected = d->value;
 
-            if (metaProp.isEnumType() && expected.type()==QVariant::String) {
+            if (metaProp.isEnumType() && expected.typeId()==QMetaType::QString) {
                 QMetaEnum metaEnum = metaProp.enumerator();
                 int value = metaEnum.keysToValue(d->value.toString().toLatin1());
                 if (value>=0) { // No value found for these keys, resetting expected to invalid
@@ -287,9 +287,9 @@ QString Solid::Predicate::toString() const
 
         QString value;
 
-        switch (d->value.type())
+        switch (d->value.typeId())
         {
-        case QVariant::StringList:
+        case QMetaType::QStringList:
         {
             value = '{';
 
@@ -311,13 +311,13 @@ QString Solid::Predicate::toString() const
             value+= '}';
             break;
         }
-        case QVariant::Bool:
+        case QMetaType::Bool:
             value = (d->value.toBool()?"true":"false");
             break;
-        case QVariant::Int:
-        case QVariant::UInt:
-        case QVariant::LongLong:
-        case QVariant::ULongLong:
+        case QMetaType::Int:
+        case QMetaType::UInt:
+        case QMetaType::LongLong:
+        case QMetaType::ULongLong:
             value = d->value.toString();
             break;
         default:

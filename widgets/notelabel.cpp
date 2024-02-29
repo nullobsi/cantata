@@ -76,7 +76,7 @@ NoteLabel::NoteLabel(QWidget *parent)
 
 void NoteLabel::setProperty(const char *name, const QVariant &value)
 {
-    if (name && !strcmp(name, "text") && QVariant::String==value.type()) {
+    if (name && !strcmp(name, "text") && QMetaType::QString==value.typeId()) {
         setText(value.toString());
     }
 }
@@ -90,7 +90,7 @@ UrlNoteLabel::UrlNoteLabel(QWidget *parent)
 
 void UrlNoteLabel::setProperty(const char *name, const QVariant &value)
 {
-    if (name && !strcmp(name, "text") && QVariant::String==value.type()) {
+    if (name && !strcmp(name, "text") && QMetaType::QString==value.typeId()) {
         setText(value.toString());
     }
 }

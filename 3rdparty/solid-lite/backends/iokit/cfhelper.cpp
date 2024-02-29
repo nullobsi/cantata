@@ -109,7 +109,7 @@ static QVariant q_toVariant(const CFTypeRef &obj)
         bool metNonString = false;
         for (CFIndex i = 0; i < size; ++i) {
             QVariant value = q_toVariant(CFArrayGetValueAtIndex(cfarray, i));
-            if (value.type() != QVariant::String)
+            if (value.typeId() != QMetaType::QString)
                 metNonString = true;
             list << value;
         }

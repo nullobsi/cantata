@@ -413,7 +413,7 @@ public:
         } else {
             // Do integers inline - sqlite seems to get confused when you pass integers
             // to bound parameters
-            if (QVariant::Int==value.type()) {
+            if (QMetaType::Int==value.typeId()) {
                 whereClauses << QString("%1 %2 %3").arg(column, op, value.toString());
             } else if ("genre"==column) {
                 QString clause("(");

@@ -43,7 +43,7 @@ void UrlLabel::setText(const QString &t)
 
 void UrlLabel::setProperty(const char *name, const QVariant &value)
 {
-    if (name && !strcmp(name, "text") && QVariant::String==value.type()) {
+    if (name && !strcmp(name, "text") && QMetaType::QString==value.typeId()) {
         setText(value.toString());
     }
 }
