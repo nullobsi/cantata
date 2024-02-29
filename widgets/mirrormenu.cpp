@@ -51,14 +51,14 @@ QAction * MirrorMenu::addAction(const QIcon &icon, const QString &text)
 
 QAction * MirrorMenu::addAction(const QString &text, const QObject *receiver, const char *member, const QKeySequence &shortcut)
 {
-    QAction *act=QMenu::addAction(text, receiver, member, shortcut);
+    QAction *act=QMenu::addAction(text, shortcut, receiver, member);
     updateMenus();
     return act;
 }
 
 QAction * MirrorMenu::addAction(const QIcon &icon, const QString &text, const QObject *receiver, const char *member, const QKeySequence &shortcut)
 {
-    QAction *act=QMenu::addAction(icon, text, receiver, member, shortcut);
+    QAction *act=QMenu::addAction(icon, text, shortcut, receiver, member);
     updateMenus();
     return act;
 }
