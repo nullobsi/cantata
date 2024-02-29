@@ -16,7 +16,7 @@ set(SUPPORT_SRCS ${SUPPORT_SRCS} pathrequester.cpp kmessagewidget.cpp dialog.cpp
     shortcutssettingswidget.cpp keysequencewidget.cpp acceleratormanager.cpp urllabel.cpp)
 set(SUPPORT_UIS shortcutssettingswidget.ui)
 
-qt5_wrap_ui(SUPPORT_UI_HDRS ${SUPPORT_UIS})
-qt5_add_resources(SUPPORT_RC_SRCS support.qrc)
+qt6_wrap_ui(SUPPORT_UI_HDRS ${SUPPORT_UIS})
+qt6_add_resources(SUPPORT_RC_SRCS support.qrc)
 
 add_library(support STATIC ${SUPPORT_SRCS} ${SUPPORT_UI_HDRS} ${SUPPORT_RC_SRCS})

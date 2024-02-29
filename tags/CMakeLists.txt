@@ -15,7 +15,7 @@ else ()
 endif ()
 
 add_definitions(-DCANTATA_TAG_SERVER -DCANTATA_NO_UI_FUNCTIONS)
-target_link_libraries(cantata-tags ${TAGLIB_LIBRARIES} ${QTGUILIBS} ${QTCORELIBS} ${QTNETWORKLIBS})
+target_link_libraries(cantata-tags ${TAGLIB_LIBRARIES} Qt6::Gui Qt6::Core Qt6::Network)
 if (TAGLIB-EXTRAS_FOUND)
     target_link_libraries(cantata-tags ${TAGLIB-EXTRAS_LIBRARIES})
     include_directories(${TAGLIB-EXTRAS_INCLUDES})
