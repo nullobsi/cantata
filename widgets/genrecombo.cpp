@@ -39,7 +39,7 @@ GenreCombo::GenreCombo(QWidget *p)
     setFocusPolicy(Qt::NoFocus);
     if (!action) {
         action=ActionCollection::get()->createAction("genrefilter", tr("Filter On Genre"), nullptr);
-        action->setShortcut(Qt::ControlModifier+Qt::Key_G);
+        action->setShortcut(Qt::ControlModifier|Qt::Key_G);
     }
     addAction(action);
     connect(action, SIGNAL(triggered()), SLOT(showEntries()));

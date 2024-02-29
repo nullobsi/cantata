@@ -714,7 +714,7 @@ ItemView::ItemView(QWidget *p)
     setupUi(this);
     if (!backAction) {
         backAction=ActionCollection::get()->createAction("itemview-goback", tr("Go Back"));
-        backAction->setShortcut(Qt::AltModifier+(Qt::LeftToRight==layoutDirection() ? Qt::Key_Left : Qt::Key_Right));
+        backAction->setShortcut(Qt::AltModifier|(Qt::LeftToRight==layoutDirection() ? Qt::Key_Left : Qt::Key_Right));
     }
     title->addAction(backAction);
     title->setVisible(false);
