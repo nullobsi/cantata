@@ -82,6 +82,7 @@ static QMenu * priorityMenu(bool isSet, Action *parent)
 StdActions::StdActions()
 {
     QColor col=Utils::monoIconColor();
+    Q_UNUSED(col)
     prevTrackAction = ActionCollection::get()->createAction("prevtrack", QObject::tr("Previous Track"), Icons::self()->toolbarPrevIcon);
     nextTrackAction = ActionCollection::get()->createAction("nexttrack", QObject::tr("Next Track"), Icons::self()->toolbarNextIcon);
     playPauseTrackAction = ActionCollection::get()->createAction("playpausetrack", QObject::tr("Play/Pause"), Icons::self()->toolbarPlayIcon);
@@ -109,7 +110,7 @@ StdActions::StdActions()
     addWithPriorityAction->setMenu(priorityMenu(false, addWithPriorityAction));
 
     addToStoredPlaylistAction = ActionCollection::get()->createAction("addtoplaylist", QObject::tr("Add To Playlist"), Icons::self()->playlistListIcon);
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     organiseFilesAction = ActionCollection::get()->createAction("orgfiles", QObject::tr("Organize Files"), MonoIcon::icon(FontAwesome::folderopeno, col));
     editTagsAction = ActionCollection::get()->createAction("edittags", QObject::tr("Edit Track Information"));
     #endif

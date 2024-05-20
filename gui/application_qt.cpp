@@ -38,7 +38,8 @@ Application::Application(int &argc, char **argv)
 
 bool Application::start(const QStringList &files)
 {
-    if (QDBusConnection::sessionBus().registerService(CANTATA_REV_URL)) {
+	// TODO: Add an option to try to run anyway when DBUS binding fails.
+    if (QDBusConnection::sessionBus().registerService(PROJECT_REV_ID)) {
         if (Utils::KDE!=Utils::currentDe()) {
             setAttribute(Qt::AA_DontShowIconsInMenus, true);
         }

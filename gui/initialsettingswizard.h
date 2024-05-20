@@ -51,13 +51,13 @@ private Q_SLOTS:
     void accept() override;
     void reject() override;
     void controlNextButton();
-    #ifdef AVAHI_FOUND
+    #ifdef Avahi_FOUND
     void adoptServerSettings(QString ip, QString port);
     void detectMPDs();
     #endif
 
 private:
-    #ifdef AVAHI_FOUND
+    #ifdef Avahi_FOUND
     QPushButton *discoveryButton;
     #endif
 };

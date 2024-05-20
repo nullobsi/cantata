@@ -21,6 +21,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include "macnotify.h"
 #include "config.h"
 #include <QString>
@@ -80,3 +82,4 @@ void MacNotify::showMessage(const QString &title, const QString &text, const QIm
         [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:userNotification];
     }
 }
+#pragma GCC diagnostic pop

@@ -60,7 +60,7 @@ MpdBrowsePage::MpdBrowsePage(QWidget *p)
 
     view->addAction(StdActions::self()->addToStoredPlaylistAction);
     view->addAction(CustomActions::self());
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     #ifdef ENABLE_DEVICES_SUPPORT
     view->addAction(StdActions::self()->copyToDeviceAction);
     #endif
@@ -68,7 +68,7 @@ MpdBrowsePage::MpdBrowsePage(QWidget *p)
     view->addAction(StdActions::self()->editTagsAction);
     #ifdef ENABLE_REPLAYGAIN_SUPPORT
     view->addAction(StdActions::self()->replaygainAction);
-    #endif // TAGLIB_FOUND
+    #endif // TagLib_FOUND
     #endif
     view->addAction(browseAction);
     #ifdef ENABLE_DEVICES_SUPPORT
@@ -115,7 +115,7 @@ void MpdBrowsePage::controlActions()
     StdActions::self()->addToStoredPlaylistAction->setEnabled(enable);
     bool fileActions = trackSelected && !folderSelected && MPDConnection::self()->getDetails().dirReadable;
     CustomActions::self()->setEnabled(fileActions);
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     StdActions::self()->organiseFilesAction->setEnabled(fileActions);
     StdActions::self()->editTagsAction->setEnabled(StdActions::self()->organiseFilesAction->isEnabled());
     #ifdef ENABLE_REPLAYGAIN_SUPPORT
@@ -125,7 +125,7 @@ void MpdBrowsePage::controlActions()
     StdActions::self()->deleteSongsAction->setEnabled(StdActions::self()->organiseFilesAction->isEnabled());
     StdActions::self()->copyToDeviceAction->setEnabled(StdActions::self()->organiseFilesAction->isEnabled());
     #endif
-    #endif // TAGLIB_FOUND
+    #endif // TagLib_FOUND
 
     browseAction->setEnabled(enable && 1==selected.count() && folderSelected);
 }

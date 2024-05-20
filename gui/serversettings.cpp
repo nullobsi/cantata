@@ -31,7 +31,7 @@
 #include "mpd-interface/mpduser.h"
 #endif
 #include "support/utils.h"
-#ifdef AVAHI_FOUND
+#ifdef Avahi_FOUND
 #include "findmpddialog.h"
 #endif
 #include <QDir>
@@ -116,7 +116,7 @@ ServerSettings::ServerSettings(QWidget *p)
     expandingSpacer->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
     #endif
 
-    #ifdef AVAHI_FOUND
+    #ifdef Avahi_FOUND
     discoveryButton = new QPushButton(tr("Discover..."), this);
     hostLayout->insertWidget(hostLayout->count(), discoveryButton);
     connect(discoveryButton, &QPushButton::clicked, this, &ServerSettings::detectMPDs);
@@ -343,7 +343,7 @@ void ServerSettings::basicDirChanged()
     }
 }
 
-#ifdef AVAHI_FOUND
+#ifdef Avahi_FOUND
 void ServerSettings::adoptServerSettings(QString ip, QString p)
 {
     host->setText(ip);

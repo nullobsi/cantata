@@ -1,54 +1,144 @@
-# Try to find the Avahi libraries and headers
-# Once done this will define:
-#
-#  AVAHI_FOUND          - system has the avahi libraries
-#  AVAHI_INCLUDE_DIRS   - the avahi include directories
-#  AVAHI_LIBRARIES      - The libraries needed to use avahi
+#[===[.rst:
+FindAvahi
+---------
 
-# use pkg-config to get the directories and then use these values
-# in the find_path() and find_library() calls
+Finds the Avahi Client Libraries.
+
+Input Variables
+^^^^^^^^^^^^^^^
+
+The following variables can be set to influence where to search.
+
+``Avahi_COMMON_LIB_DIR``
+  The directory containing the Avahi Common library.
+``Avahi_CLIENT_LIB_DIR``
+  The directory containing the Avahi Client library.
+``Avahi_COMMON_INCLUDE_DIR``
+  The directory containing the avahi common headers.
+``Avahi_CLIENT_INCLUDE_DIR``
+  The directory containing the avahi client headers.
+
+Imported Targets
+^^^^^^^^^^^^^^^^
+
+This module provides the following imported targets, if found:
+
+``Avahi::Common``
+  The Avahi Common library.
+
+``Avahi::Client``
+  The Avahi Client library.
+
+Result Variables
+^^^^^^^^^^^^^^^^
+
+This will define the following variables:
+
+``Avahi_FOUND``
+  True if the system has the Avahi libraries.
+``Avahi_VERSION``
+  The version of Avahi which was found.
+``Avahi_INCLUDE_DIRS``
+  Include directories needed to use Avahi.
+``Avahi_LIBRARIES``
+  Libraries needed to link to Avahi.
+
+Cache Variables
+^^^^^^^^^^^^^^^
+
+The following cache variables may also be set:
+
+``Avahi_COMMON_LIBRARY``
+  The path to the Avahi Common library.
+``Avahi_CLIENT_LIBRARY``
+  The path to the Avahi Client library.
+``Avahi_COMMON_INCLUDE_DIR``
+  The directory containing the avahi common headers.
+``Avahi_CLIENT_INCLUDE_DIR``
+  The directory containing the avahi client headers.
+#]===]
+
+# First use PKG-Config as a starting point.
 find_package(PkgConfig)
-
 if(PKG_CONFIG_FOUND)
-    pkg_check_modules(_AVAHI avahi-client)
-endif(PKG_CONFIG_FOUND)
-
-find_library(AVAHI_COMMON_LIB NAMES avahi-common
-    PATHS
-    ${_AVAHI_LIBRARY_DIRS}
-    ${COMMON_LIB_DIR}
-)
-
-find_library(AVAHI_CLIENT_LIB NAMES avahi-client
-    PATHS
-    ${_AVAHI_LIBRARY_DIRS}
-    ${CLIENT_LIB_DIR}
-)
-
-if(AVAHI_COMMON_LIB AND AVAHI_CLIENT_LIB)
-    set(AVAHI_LIBRARIES ${AVAHI_COMMON_LIB} ${AVAHI_CLIENT_LIB})
-    message(STATUS "Avahi-Libs found: ${AVAHI_LIBRARIES}")
+    pkg_check_modules(PC_Avahi QUIET avahi-client)
 endif()
 
-find_path(COMMON_INCLUDE_DIR watch.h
+# Search for the common library.
+find_library(Avahi_COMMON_LIBRARY
+    NAMES avahi-common
+    PATHS
+        ${PC_Avahi_LIBRARY_DIRS}
+        ${Avahi_COMMON_LIB_DIR}
+)
+
+# Search for the client library.
+find_library(Avahi_CLIENT_LIBRARY
+    NAMES avahi-client
+    PATHS
+        ${PC_Avahi_LIBRARY_DIRS}
+        ${Avahi_CLIENT_LIB_DIR}
+)
+
+# Search for the common include directory.
+find_path(Avahi_COMMON_INCLUDE_DIR
+    NAMES watch.h
     PATH_SUFFIXES avahi-common
     PATHS
-    ${_AVAHI_INCLUDE_DIRS}
-    ${COMMON_INCLUDE_DIR}
+        ${PC_Avahi_INCLUDE_DIRS}
+        ${Avahi_COMMON_INCLUDE_DIR}
 )
 
-find_path(CLIENT_INCLUDE_DIR client.h
+# Search for the client include directory.
+find_path(Avahi_CLIENT_INCLUDE_DIR
+    NAMES client.h
     PATH_SUFFIXES avahi-client
     PATHS
-    ${_AVAHI_INCLUDE_DIRS}
-    ${CLIENT_INCLUDE_DIR}
+        ${PC_Avahi_INCLUDE_DIRS}
+        ${Avahi_CLIENT_INCLUDE_DIR}
 )
 
-if(COMMON_INCLUDE_DIR AND CLIENT_INCLUDE_DIR)
-    set(AVAHI_INCLUDE_DIRS ${COMMON_INCLUDE_DIR} ${CLIENT_INCLUDE_DIR})
-    message(STATUS "Avahi-Include-Dirs found: ${AVAHI_INCLUDE_DIRS}")
+# Set version from PC if applicable.
+set(Avahi_VERSION ${PC_Avahi_VERSION})
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Avahi
+    FOUND_VAR Avahi_FOUND
+    REQUIRED_VARS
+        Avahi_COMMON_LIBRARY
+        Avahi_CLIENT_LIBRARY
+        Avahi_COMMON_INCLUDE_DIR
+        Avahi_CLIENT_INCLUDE_DIR
+    VERSION_VAR Avahi_VERSION
+)
+
+if(Avahi_FOUND)
+    set(Avahi_LIBRARIES ${Avahi_COMMON_LIBRARY} ${Avahi_CLIENT_LIBRARY})
+    set(Avahi_INCLUDE_DIRS ${Avahi_COMMON_INCLUDE_DIR} ${Avahi_CLIENT_INCLUDE_DIR})
+    set(Avahi_DEFINITIONS ${PC_Avahi_CFLAGS_OTHER})
+    if(NOT TARGET Avahi::Client)
+        add_library(Avahi::Client UNKNOWN IMPORTED)
+        set_target_properties(Avahi::Client PROPERTIES
+            IMPORTED_LOCATION "${Avahi_CLIENT_LIBRARY}"
+            INTERFACE_COMPILE_OPTIONS "${PC_Avahi_CFLAGS_OTHER}"
+            INTERFACE_INCLUDE_DIRECTORIES "${Avahi_CLIENT_INCLUDE_DIR}"
+        )
+    endif ()
+    if(NOT TARGET Avahi::Common)
+        add_library(Avahi::Common UNKNOWN IMPORTED)
+        set_target_properties(Avahi::Common PROPERTIES
+            IMPORTED_LOCATION "${Avahi_COMMON_LIBRARY}"
+            INTERFACE_COMPILE_OPTIONS "${PC_Avahi_CFLAGS_OTHER}"
+            INTERFACE_INCLUDE_DIRECTORIES "${Avahi_COMMON_INCLUDE_DIR}"
+        )
+    endif ()
+    target_link_libraries(Avahi::Client INTERFACE Avahi::Common)
 endif()
 
-if(AVAHI_LIBRARIES AND AVAHI_INCLUDE_DIRS)
-    set(AVAHI_FOUND TRUE)
-endif()
+mark_as_advanced(
+    Avahi_CLIENT_LIBRARY
+    Avahi_CLIENT_INCLUDE_DIR
+    Avahi_COMMON_LIBRARY
+    Avahi_COMMON_INCLUDE_DIR
+)
+

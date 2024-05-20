@@ -32,7 +32,7 @@
 #include <QXmlStreamReader>
 #include <QUrl>
 
-#ifdef TAGLIB_FOUND
+#ifdef TagLib_FOUND
 
 #include <taglib/tstring.h>
 #include <taglib/id3v1genres.h>
@@ -42,7 +42,7 @@ static QString id3Genre(int id)
     return 0==id ? QString() : QString::fromUtf8(TagLib::ID3v1::genre(id).toCString(true)).trimmed();
 }
 
-#else // TAGLIB_FOUND
+#else // TagLib_FOUND
 static QString id3Genre(int id)
 {
     // Clementine: In theory, genre 0 is "blues"; in practice it's invalid.

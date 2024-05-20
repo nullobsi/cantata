@@ -110,7 +110,7 @@ protected:
     void resetDrag(void);
 
     //! start drag
-    void startDrag(QWidget *, const QPoint &);
+    void startDrag(QWidget *, const QPointF &);
 
     //! returns true if window manager is used for moving
     /*! right now this is true only for X11 */
@@ -130,7 +130,7 @@ private:
 
     //! drag point
     QPoint _dragPoint;
-    QPoint _globalDragPoint;
+    QPointF _globalDragPoint;
 
     //! drag timer
     QBasicTimer _dragTimer;

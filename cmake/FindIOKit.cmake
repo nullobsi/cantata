@@ -18,6 +18,6 @@ if (IOKit_FRAMEWORKS)
    set(IOKIT_FOUND 1)
 endif (IOKit_FRAMEWORKS)
 
-find_package(PackageHandleStandardArgs)
+include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(IOKit DEFAULT_MSG IOKIT_LIBRARY)
 

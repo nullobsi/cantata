@@ -35,6 +35,7 @@ FlatToolButton::FlatToolButton(QWidget *parent)
 
 void FlatToolButton::paintEvent(QPaintEvent *e)
 {
+    Q_UNUSED(e);
     if (isChecked() || isDown()) {
         QPainter p(this);
         QColor col(palette().color(QPalette::WindowText));

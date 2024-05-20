@@ -400,11 +400,11 @@ static QSet<QString> translationCodes(const QString &dir)
     QSet<QString> codes;
     QDir d(dir);
     QStringList installed(d.entryList(QStringList() << "*.qm"));
-    QRegularExpression langRegExp("^cantata_(.*).qm$");
+    static const QRegularExpression langRegExp("^cantata_(.*).qm$");
     for (const QString &filename: installed) {
-        QRegularExpressionMatch matchResult = langRegExp.match(filename);
-        if (matchResult.hasMatch()) {
-            codes.insert(matchResult.captured(1));
+        auto match = langRegExp.match(filename);
+        if (match.hasMatch()) {
+            codes.insert(match.captured(1));
         }
     }
     return codes;

@@ -102,7 +102,7 @@ LibraryPage::LibraryPage(QWidget *p)
     connect(genreCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(doSearch()));
     view->addAction(StdActions::self()->addToStoredPlaylistAction);
     view->addAction(CustomActions::self());
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     #ifdef ENABLE_DEVICES_SUPPORT
     view->addAction(StdActions::self()->copyToDeviceAction);
     #endif
@@ -116,7 +116,7 @@ LibraryPage::LibraryPage(QWidget *p)
     view->addSeparator();
     view->addAction(StdActions::self()->deleteSongsAction);
     #endif
-    #endif // TAGLIB_FOUND
+    #endif // TagLib_FOUND
     connect(view, SIGNAL(updateToPlayQueue(QModelIndex,bool)), this, SLOT(updateToPlayQueue(QModelIndex,bool)));
     view->setOpenAfterSearch(SqlLibraryModel::T_Album!=MpdLibraryModel::self()->topLevel());
     view->setInfoText(tr("No music? Looks like your MPD is not configured correctly."));
@@ -448,7 +448,7 @@ void LibraryPage::controlActions()
     CustomActions::self()->setEnabled(enable);
     StdActions::self()->enableAddToPlayQueue(enable);
     StdActions::self()->addToStoredPlaylistAction->setEnabled(enable);
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     StdActions::self()->organiseFilesAction->setEnabled(enable && MPDConnection::self()->getDetails().dirReadable);
     StdActions::self()->editTagsAction->setEnabled(StdActions::self()->organiseFilesAction->isEnabled());
     #ifdef ENABLE_REPLAYGAIN_SUPPORT
@@ -458,7 +458,7 @@ void LibraryPage::controlActions()
     StdActions::self()->deleteSongsAction->setEnabled(StdActions::self()->organiseFilesAction->isEnabled());
     StdActions::self()->copyToDeviceAction->setEnabled(StdActions::self()->organiseFilesAction->isEnabled());
     #endif
-    #endif // TAGLIB_FOUND
+    #endif // TagLib_FOUND
 
     if (1==selected.count()) {
         SqlLibraryModel::Item *item=static_cast<SqlLibraryModel::Item *>(selected.at(0).internalPointer());

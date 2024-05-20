@@ -56,6 +56,7 @@ static Solid::OpticalDisc::ContentType advancedDiscDetect(const QByteArray & dev
     int pos = 0;
     /* the path table record we're on */
     int curr_record = 1;
+    Q_UNUSED(curr_record);
 
     Solid::OpticalDisc::ContentType result = Solid::OpticalDisc::NoContent;
 

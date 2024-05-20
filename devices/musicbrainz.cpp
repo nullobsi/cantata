@@ -303,7 +303,7 @@ void MusicBrainz::lookup(bool full)
                             album.genre=Song::unknown();
 
                             QString date = QString::fromUtf8(fullRelease->Date().c_str());
-                            QRegularExpression yearRe("^(\\d{4,4})(-\\d{1,2}-\\d{1,2})?$");
+                            static const QRegularExpression yearRe("^(\\d{4,4})(-\\d{1,2}-\\d{1,2})?$");
                             QRegularExpressionMatch yearMatch = yearRe.match(date);
                             if (yearMatch.hasMatch()) {
                                 QString yearString = yearMatch.captured(1);

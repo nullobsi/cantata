@@ -85,6 +85,7 @@ void ReplayGain::clearScanners()
 void ReplayGain::showProgress()
 {
     int finished=0;
+    Q_UNUSED(finished)
     quint64 totalProgress=0;
     QMap<int, Track>::iterator it=tracks.begin();
     QMap<int, Track>::iterator end=tracks.end();

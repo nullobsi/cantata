@@ -217,12 +217,12 @@ static const QLatin1String constTransIfDiffKey("transcoderWhenDifferent");
 static const QLatin1String constTransIfLosslessKey("transcoderWhenSourceIsLosssless");
 static const QLatin1String constTransWhenKey("transcoderWhen");
 #endif
-static const QLatin1String constUseCacheKey("useCache");
-static const QLatin1String constFixVaKey("fixVariousArtists");
-static const QLatin1String constNameKey("name");
-static const QLatin1String constCvrFileKey("coverFileName");
-static const QLatin1String constCvrMaxKey("coverMaxSize");
-static const QLatin1String constVolKey("volumeId");
+Q_DECL_UNUSED static const QLatin1String constUseCacheKey("useCache");
+Q_DECL_UNUSED static const QLatin1String constFixVaKey("fixVariousArtists");
+Q_DECL_UNUSED static const QLatin1String constNameKey("name");
+Q_DECL_UNUSED static const QLatin1String constCvrFileKey("coverFileName");
+Q_DECL_UNUSED static const QLatin1String constCvrMaxKey("coverMaxSize");
+Q_DECL_UNUSED static const QLatin1String constVolKey("volumeId");
 
 bool DeviceOptions::isConfigured(const QString &group, bool isMpd)
 {
@@ -330,6 +330,7 @@ void DeviceOptions::save(const QString &group, bool isMpd, bool saveTrans, bool 
     #endif
 }
 
+static QRegularExpression stringRegex = QRegularExpression("\\s");
 QString DeviceOptions::clean(const QString &str) const
 {
     QString result(str);
@@ -341,7 +342,7 @@ QString DeviceOptions::clean(const QString &str) const
 
     result=result.simplified();
     if (replaceSpaces) {
-        result.replace(QRegularExpression("\\s"), "_");
+        result.replace(stringRegex, "_");
     }
     if (vfatSafe) {
         result = vfatPath(result);
@@ -387,7 +388,7 @@ QString DeviceOptions::createFilename(const Song &s) const
         path.replace(i, QLatin1String(""));
     }
     if (replaceSpaces) {
-        path.replace(QRegularExpression("\\s"), "_");
+        path.replace(stringRegex, "_");
     }
 
     Song copy=clean(s);

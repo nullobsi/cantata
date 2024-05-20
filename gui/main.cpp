@@ -62,7 +62,7 @@
 #ifdef ENABLE_HTTP_STREAM_PLAYBACK
 #include "mpd-interface/httpstream.h"
 #endif
-#ifdef AVAHI_FOUND
+#ifdef Avahi_FOUND
 #include "avahidiscovery.h"
 #endif
 #include "customactions.h"
@@ -157,7 +157,7 @@ static QString debugAreas()
             +QObject::tr("sql - SQL access")+QLatin1Char('\n')
             +QObject::tr("media-keys - Media-keys")+QLatin1Char('\n')
             +QObject::tr("custom-actions - Custom actions")+QLatin1Char('\n')
-            #ifdef TAGLIB_FOUND
+            #ifdef TagLib_FOUND
             +QObject::tr("tags - Tag reading/writing")+QLatin1Char('\n')
             #endif
             #ifdef ENABLE_DEVICES_SUPPORT
@@ -166,7 +166,7 @@ static QString debugAreas()
             #ifdef ENABLE_HTTP_STREAM_PLAYBACK
             +QObject::tr("http-stream - Playback of MPD output streams")+QLatin1Char('\n')
             #endif
-            #ifdef AVAHI_FOUND
+            #ifdef Avahi_FOUND
             +QObject::tr("avahi - Auto-discovery of MPD servers")+QLatin1Char('\n')
             #endif
             +QObject::tr("all - Enable all debug")+QLatin1Char('\n')
@@ -241,7 +241,7 @@ static void installDebugMessageHandler(const QString &cmdLine)
         if (all || QLatin1String("custom-actions")==area) {
             CustomActions::enableDebug();
         }
-        #ifdef TAGLIB_FOUND
+        #ifdef TagLib_FOUND
         if (all || QLatin1String("tags")==area) {
             TagHelperIface::enableDebug();
         }
@@ -256,7 +256,7 @@ static void installDebugMessageHandler(const QString &cmdLine)
             HttpStream::enableDebug();
         }
         #endif
-        #ifdef AVAHI_FOUND
+        #ifdef Avahi_FOUND
         if (all || QLatin1String("avahi")==area) {
             AvahiDiscovery::enableDebug();
         }

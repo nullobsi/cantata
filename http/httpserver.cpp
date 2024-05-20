@@ -23,7 +23,7 @@
 
 #include "httpserver.h"
 #include "httpsocket.h"
-#ifdef TAGLIB_FOUND
+#ifdef TagLib_FOUND
 #include "tags/tags.h"
 #endif
 #include "gui/settings.h"
@@ -230,13 +230,13 @@ QByteArray HttpServer::encodeUrl(const QString &file)
             DBUG << "converted to share-path" << f;
         }
     }
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     s=Tags::read(f);
     #endif
     s.file=f;
     #else
     DBUG << "file" << file;
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     s=Tags::read(file);
     #endif
     s.file=file;

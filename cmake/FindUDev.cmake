@@ -24,7 +24,7 @@ find_library(UDEV_LIBS NAMES udev
     ${_UDEV_LIBRARY_DIRS}
 )
 
-find_package(PackageHandleStandardArgs)
+include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(UDev DEFAULT_MSG UDEV_INCLUDE_DIR UDEV_LIBS)
 
 mark_as_advanced(UDEV_INCLUDE_DIR UDEV_LIBS)

@@ -439,9 +439,9 @@ PlayQueueModel::PlayQueueModel(QObject *parent)
     removeDuplicatesAction->setEnabled(false);
     QColor col=Utils::monoIconColor();
     undoAction=ActionCollection::get()->createAction("playqueue-undo", tr("Undo"), MonoIcon::icon(FontAwesome::undo, col));
-    undoAction->setShortcut(Qt::ControlModifier|Qt::Key_Z);
+    undoAction->setShortcut( QKeyCombination(Qt::ControlModifier, Qt::Key_Z));
     redoAction=ActionCollection::get()->createAction("playqueue-redo", tr("Redo"), MonoIcon::icon(FontAwesome::repeat, col));
-    redoAction->setShortcut(Qt::ControlModifier|Qt::ShiftModifier|Qt::Key_Z);
+    redoAction->setShortcut(QKeyCombination(Qt::ShiftModifier | Qt::ControlModifier, Qt::Key_Z));
     connect(undoAction, SIGNAL(triggered()), this, SLOT(undo()));
     connect(redoAction, SIGNAL(triggered()), this, SLOT(redo()));
     connect(removeDuplicatesAction, SIGNAL(triggered()), this, SLOT(removeDuplicates()));

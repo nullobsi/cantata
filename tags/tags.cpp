@@ -37,24 +37,15 @@
 #include <QString>
 #include <QStringList>
 #include <QDebug>
-#define TAGLIB_VERSION CANTATA_MAKE_VERSION(TAGLIB_MAJOR_VERSION, TAGLIB_MINOR_VERSION, TAGLIB_PATCH_VERSION)
 
 #include <taglib/taglib.h>
-#if TAGLIB_VERSION >= CANTATA_MAKE_VERSION(1,8,0)
 #include <taglib/tpropertymap.h>
-#endif
 #include <taglib/fileref.h>
 #include <taglib/aifffile.h>
-#ifdef TAGLIB_ASF_FOUND
 #include <taglib/asffile.h>
-#endif
 #include <taglib/flacfile.h>
-#ifdef TAGLIB_MP4_FOUND
 #include <taglib/mp4file.h>
-#endif
-#ifdef TAGLIB_OPUS_FOUND
 #include <taglib/opusfile.h>
-#endif
 #include <taglib/mpcfile.h>
 #include <taglib/mpegfile.h>
 #include <taglib/oggfile.h>
@@ -65,15 +56,11 @@
 #include <taglib/vorbisfile.h>
 #include <taglib/wavfile.h>
 #include <taglib/wavpackfile.h>
-#ifdef TAGLIB_ASF_FOUND
 #include <taglib/asftag.h>
-#endif
 #include <taglib/apetag.h>
 #include <taglib/id3v2tag.h>
 #include <taglib/id3v1genres.h>
-#ifdef TAGLIB_MP4_FOUND
 #include <taglib/mp4tag.h>
-#endif
 #include <taglib/xiphcomment.h>
 #include <taglib/textidentificationframe.h>
 #include <taglib/relativevolumeframe.h>
@@ -719,7 +706,6 @@ static TagLib::String readVorbisTag(TagLib::Ogg::XiphComment *tag, const char *f
     return TagLib::String();
 }
 
-#if TAGLIB_VERSION >= CANTATA_MAKE_VERSION(1,7,0)
 static void readFlacPicture(const TagLib::List<TagLib::FLAC::Picture*> &pics, QImage *img)
 {
     if (!pics.isEmpty() && 1==pics.size()) {
@@ -729,9 +715,7 @@ static void readFlacPicture(const TagLib::List<TagLib::FLAC::Picture*> &pics, QI
         img->loadFromData(data);
     }
 }
-#endif
 
-#ifdef TAGLIB_OPUS_FOUND
 static int16_t toOpusGain(double gain)
 {
     gain = 256 * gain + 0.5;
@@ -752,14 +736,9 @@ static std::string toString(int16_t val)
     return ss.str();
 }
 
-#endif
 
 static void readVorbisCommentTags(TagLib::Ogg::XiphComment *tag, Song *song, ReplayGain *rg, QImage *img, QString *lyrics, int *rating, TagLib::Ogg::File *file=nullptr)
 {
-    #ifndef TAGLIB_OPUS_FOUND
-    Q_UNUSED(file)
-    #endif
-
     DBUG;
     if (song) {
         TagLib::String str=readVorbisTag(tag, "ALBUMARTIST");
@@ -787,7 +766,6 @@ static void readVorbisCommentTags(TagLib::Ogg::XiphComment *tag, Song *song, Rep
     }
 
     if (rg) {
-        #ifdef TAGLIB_OPUS_FOUND
         if (file) {
             TagLib::ByteVector header = static_cast<TagLib::Ogg::Opus::File *>(file)->packet(0);
             int16_t opusHeaderGain = header.toShort(16, false);
@@ -801,7 +779,6 @@ static void readVorbisCommentTags(TagLib::Ogg::XiphComment *tag, Song *song, Rep
             }
             rg->trackPeak=rg->albumPeak=0.0;
         } else
-        #endif
         {
             rg->trackGain=parseRgString(readVorbisTag(tag, "REPLAYGAIN_TRACK_GAIN"));
             rg->trackPeak=parseRgString(readVorbisTag(tag, "REPLAYGAIN_TRACK_PEAK"));
@@ -812,7 +789,6 @@ static void readVorbisCommentTags(TagLib::Ogg::XiphComment *tag, Song *song, Rep
 
     if (img) {
         TagLib::Ogg::FieldListMap map = tag->fieldListMap();
-        #if TAGLIB_VERSION >= CANTATA_MAKE_VERSION(1,7,0)
         // METADATA_BLOCK_PICTURE is the Ogg standard way of encoding a covers.
         // https://wiki.xiph.org/index.php/VorbisComment#Cover_art
         if (map.contains("METADATA_BLOCK_PICTURE")) {
@@ -834,7 +810,6 @@ static void readVorbisCommentTags(TagLib::Ogg::XiphComment *tag, Song *song, Rep
                 }
             }
         }
-        #endif
 
         // COVERART is an older (now deprecated) way of storing covers...
         if (img->isNull() && map.contains("COVERART")) {
@@ -849,11 +824,9 @@ static void readVorbisCommentTags(TagLib::Ogg::XiphComment *tag, Song *song, Rep
                 DBUG << "Use img from COVERART (base64)";
             }
         }
-        #if TAGLIB_VERSION >= CANTATA_MAKE_VERSION(1,11,0)
         if (img && img->isNull()) {
             readFlacPicture(tag->pictureList(), img);
         }
-        #endif
     }
 
     if (lyrics) {
@@ -885,10 +858,6 @@ static bool updateVorbisCommentTag(TagLib::Ogg::XiphComment *tag, const char *ta
 
 static bool writeVorbisCommentTags(TagLib::Ogg::XiphComment *tag, const Song &from, const Song &to, const RgTags &rg, const QByteArray &img, int rating, TagLib::Ogg::File *file=nullptr)
 {
-    #ifndef TAGLIB_OPUS_FOUND
-    Q_UNUSED(file)
-    #endif
-
     DBUG;
     bool changed=false;
 
@@ -919,7 +888,6 @@ static bool writeVorbisCommentTags(TagLib::Ogg::XiphComment *tag, const Song &fr
     }
 
     if (!rg.null) {
-        #ifdef TAGLIB_OPUS_FOUND
         if (file) {
             TagLib::ByteVector header = static_cast<TagLib::Ogg::Opus::File *>(file)->packet(0);
             double opusHeaderGainCurrent = header.toShort(16, false) / 256.0;
@@ -957,7 +925,6 @@ static bool writeVorbisCommentTags(TagLib::Ogg::XiphComment *tag, const Song &fr
             tag->removeFields("REPLAYGAIN_ALBUM_GAIN");
             tag->removeFields("REPLAYGAIN_ALBUM_PEAK");
         } else
-        #endif
         {
             RgTagsStrings rgs(rg);
             tag->addField("REPLAYGAIN_TRACK_GAIN", rgs.trackGain);
@@ -990,7 +957,6 @@ static bool writeVorbisCommentTags(TagLib::Ogg::XiphComment *tag, const Song &fr
     return changed;
 }
 
-#ifdef TAGLIB_MP4_FOUND
 static void readMP4Tags(TagLib::MP4::Tag *tag, Song *song, ReplayGain *rg, QImage *img, QString *lyrics, int *rating)
 {
     DBUG;
@@ -1131,9 +1097,7 @@ static bool writeMP4Tags(TagLib::MP4::Tag *tag, const Song &from, const Song &to
 
     return changed;
 }
-#endif
 
-#ifdef TAGLIB_ASF_FOUND
 static void readASFTags(TagLib::ASF::Tag *tag, Song *song, int *rating)
 {
     DBUG;
@@ -1226,7 +1190,6 @@ static bool writeASFTags(TagLib::ASF::Tag *tag, const Song &from, const Song &to
 
     return changed;
 }
-#endif
 
 static void readTags(const TagLib::FileRef fileref, Song *song, ReplayGain *rg, QImage *img, QString *lyrics, int *rating)
 {
@@ -1261,12 +1224,10 @@ static void readTags(const TagLib::FileRef fileref, Song *song, ReplayGain *rg, 
         if (file->tag()) {
             readVorbisCommentTags(file->tag(), song, rg, img, lyrics, rating);
         }
-    #ifdef TAGLIB_OPUS_FOUND
     } else if (TagLib::Ogg::Opus::File *file = dynamic_cast< TagLib::Ogg::Opus::File * >(fileref.file())) {
         if (file->tag()) {
             readVorbisCommentTags(file->tag(), song, rg, img, lyrics, rating, file);
         }
-    #endif
     } else if (TagLib::FLAC::File *file = dynamic_cast< TagLib::FLAC::File * >(fileref.file())) {
         if (file->xiphComment()) {
             readVorbisCommentTags(file->xiphComment(), song, rg, img, lyrics, rating);
@@ -1275,18 +1236,14 @@ static void readTags(const TagLib::FileRef fileref, Song *song, ReplayGain *rg, 
 //         } else if (file->ID3v1Tag()) {
 //             readID3v1Tags(fileref, song, rg);
         }
-        #if TAGLIB_VERSION >= CANTATA_MAKE_VERSION(1,7,0)
         if (img && img->isNull()) {
             readFlacPicture(file->pictureList(), img);
         }
-        #endif
-    #ifdef TAGLIB_MP4_FOUND
     } else if (TagLib::MP4::File *file = dynamic_cast< TagLib::MP4::File * >(fileref.file())) {
         TagLib::MP4::Tag *tag = dynamic_cast< TagLib::MP4::Tag * >(file->tag());
         if (tag) {
             readMP4Tags(tag, song, rg, img, lyrics, rating);
         }
-    #endif
     } else if (TagLib::MPC::File *file = dynamic_cast< TagLib::MPC::File * >(fileref.file())) {
         if (file->APETag()) {
             readAPETags(file->APETag(), song, rg, img, rating);
@@ -1301,13 +1258,11 @@ static void readTags(const TagLib::FileRef fileref, Song *song, ReplayGain *rg, 
         if (file->tag()) {
             readID3v2Tags(file->ID3v2Tag(), song, rg, img, lyrics, rating);
         }
-    #ifdef TAGLIB_ASF_FOUND
     } else if (TagLib::ASF::File *file = dynamic_cast< TagLib::ASF::File * >(fileref.file())) {
         TagLib::ASF::Tag *tag = dynamic_cast< TagLib::ASF::Tag * >(file->tag());
         if (tag) {
             readASFTags(tag, song, rating);
         }
-    #endif
     } else if (TagLib::TrueAudio::File *file = dynamic_cast< TagLib::TrueAudio::File * >(fileref.file())) {
         if (file->ID3v2Tag(false)) {
             readID3v2Tags(file->ID3v2Tag(false), song, rg, img, lyrics, rating);
@@ -1382,12 +1337,10 @@ static bool writeTags(const TagLib::FileRef fileref, const Song &from, const Son
         if (file->tag()) {
             changed=writeVorbisCommentTags(file->tag(), from, to, rg, img, rating) || changed;
         }
-    #ifdef TAGLIB_OPUS_FOUND
     } else if (TagLib::Ogg::Opus::File *file = dynamic_cast< TagLib::Ogg::Opus::File * >(fileref.file())) {
         if (file->tag()) {
             changed=writeVorbisCommentTags(file->tag(), from, to, rg, img, rating, file) || changed;
         }
-    #endif
     } else if (TagLib::FLAC::File *file = dynamic_cast< TagLib::FLAC::File * >(fileref.file())) {
         if (file->xiphComment()) {
             changed=writeVorbisCommentTags(file->xiphComment(), from, to, rg, img, rating) || changed;
@@ -1398,13 +1351,11 @@ static bool writeTags(const TagLib::FileRef fileref, const Song &from, const Son
         } else if (file->ID3v2Tag(true)) {
             changed=writeID3v2Tags(file->ID3v2Tag(), from, to, rg, img, rating) || changed;
         }
-    #ifdef TAGLIB_MP4_FOUND
     } else if (TagLib::MP4::File *file = dynamic_cast< TagLib::MP4::File * >(fileref.file())) {
         TagLib::MP4::Tag *tag = dynamic_cast<TagLib::MP4::Tag * >(file->tag());
         if (tag) {
             changed=writeMP4Tags(tag, from, to, rg, img, rating) || changed;
         }
-    #endif
     } else if (TagLib::MPC::File *file = dynamic_cast< TagLib::MPC::File * >(fileref.file())) {
         if (file->APETag(true)) {
             changed=writeAPETags(file->APETag(), from, to, rg, rating) || changed;
@@ -1419,13 +1370,11 @@ static bool writeTags(const TagLib::FileRef fileref, const Song &from, const Son
         if (file->tag()) {
             changed=writeID3v2Tags(file->ID3v2Tag(), from, to, rg, img, rating) || changed;
         }
-    #ifdef TAGLIB_ASF_FOUND
     } else if (TagLib::ASF::File *file = dynamic_cast< TagLib::ASF::File * >(fileref.file())) {
         TagLib::ASF::Tag *tag = dynamic_cast< TagLib::ASF::Tag * >(file->tag());
         if (tag) {
             changed=writeASFTags(tag, from, to, rg, rating) || changed;
         }
-    #endif
     } else if (TagLib::TrueAudio::File *file = dynamic_cast< TagLib::TrueAudio::File * >(fileref.file())) {
         if (file->ID3v2Tag(true)) {
             changed=writeID3v2Tags(file->ID3v2Tag(), from, to, rg, img, rating) || changed;
@@ -1492,28 +1441,12 @@ static Update update(const TagLib::FileRef fileref, const Song &from, const Song
     if (writeTags(fileref, from, to, rg, img, rating, saveComment)) {
         TagLib::MPEG::File *mpeg=dynamic_cast<TagLib::MPEG::File *>(fileref.file());
         if (mpeg) {
-            #ifdef TAGLIB_CAN_SAVE_ID3VER
             TagLib::ID3v2::Tag *v2=mpeg->ID3v2Tag(false);
             bool isID3v24=v2 && isId3V24(v2->header());
             int ver=id3Ver==3 ? 3 : (id3Ver==4 ? 4 : (isID3v24 ? 4 : 3));
             DBUG << "isID3v24" << isID3v24 << "reqVer:" << id3Ver << "use:" << ver;
 
-            #if TAGLIB_VERSION>=CANTATA_MAKE_VERSION(1, 12, 0)
             return mpeg->save(TagLib::MPEG::File::ID3v2, TagLib::File::StripOthers, TagLib::ID3v2::Version(ver)) ? Update_Modified : Update_Failed;
-            #else
-            return mpeg->save(TagLib::MPEG::File::ID3v2, true, ver) ? Update_Modified : Update_Failed;
-            #endif
-
-            #else
-            Q_UNUSED(id3Ver)
-
-            #if TAGLIB_VERSION>=CANTATA_MAKE_VERSION(1, 12, 0)
-            return mpeg->save(TagLib::MPEG::File::ID3v2, TagLib::File::StripOthers) ? Update_Modified : Update_Failed;
-            #else
-            return mpeg->save(TagLib::MPEG::File::ID3v2, true) ? Update_Modified : Update_Failed;
-            #endif
-
-            #endif
         }
         return fileref.file()->save() ? Update_Modified : Update_Failed;
     }
@@ -1533,26 +1466,11 @@ Update updateArtistAndTitle(const QString &fileName, const Song &song)
     tag->setArtist(qString2TString(song.artist));
 
     if (mpeg) {
-        #ifdef TAGLIB_CAN_SAVE_ID3VER
         TagLib::ID3v2::Tag *v2=mpeg->ID3v2Tag(false);
         int ver=v2 && isId3V24(v2->header()) ? 4 : 3;
         DBUG << "useId3ver:" << ver;
 
-        #if TAGLIB_VERSION>=CANTATA_MAKE_VERSION(1, 12, 0)
         return mpeg->save(TagLib::MPEG::File::ID3v2, TagLib::File::StripOthers, TagLib::ID3v2::Version(ver)) ? Update_Modified : Update_Failed;
-        #else
-        return mpeg->save(TagLib::MPEG::File::ID3v2, true, ver) ? Update_Modified : Update_Failed;
-        #endif
-
-        #else
-
-        #if TAGLIB_VERSION>=CANTATA_MAKE_VERSION(1, 12, 0)
-        return mpeg->save(TagLib::MPEG::File::ID3v2, TagLib::File::StripOthers) ? Update_Modified : Update_Failed;
-        #else
-        return mpeg->save(TagLib::MPEG::File::ID3v2, true) ? Update_Modified : Update_Failed;
-        #endif
-
-        #endif
     }
     return fileref.file()->save() ? Update_Modified : Update_Failed;
 }
@@ -1610,12 +1528,10 @@ QString oggMimeType(const QString &fileName)
         return QLatin1String("audio/x-speex+ogg");
     }
 
-    #ifdef TAGLIB_OPUS_FOUND
     TagLib::Ogg::Opus::File opus(encodedName, false, TagLib::AudioProperties::Fast);
     if (opus.isValid()) {
         return QLatin1String("audio/x-opus+ogg");
     }
-    #endif
     return QLatin1String("audio/ogg");
 }
 
@@ -1643,7 +1559,6 @@ QMap<QString, QString> readAll(const QString &fileName)
         return allTags;
     }
 
-    #if TAGLIB_VERSION >= CANTATA_MAKE_VERSION(1,8,0)
     TagLib::PropertyMap properties=fileref.file()->properties();
     TagLib::PropertyMap::ConstIterator it = properties.begin();
     TagLib::PropertyMap::ConstIterator end = properties.end();
@@ -1657,7 +1572,6 @@ QMap<QString, QString> readAll(const QString &fileName)
         allTags.insert(QLatin1String("X-AUDIO:SAMPLERATE"), QString("%1 Hz").arg(properties->sampleRate()));
         allTags.insert(QLatin1String("X-AUDIO:CHANNELS"), QString::number(properties->channels()));
     }
-    #endif
     return allTags;
 }
 

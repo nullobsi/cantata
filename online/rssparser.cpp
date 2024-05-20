@@ -70,20 +70,20 @@ static QDateTime parseRfc822DateTime(const QString &text)
     // This sucks but we need it because some podcasts don't quite follow the
     // spec properly - they might have 1-digit hour numbers for example.
 
-    QRegularExpression re("([a-zA-Z]{3}),? (\\d{1,2}) ([a-zA-Z]{3}) (\\d{4}) (\\d{1,2}):(\\d{1,2}):(\\d{1,2})");
-    QRegularExpressionMatch reMatch = re.match(text);
-    if (!reMatch.hasMatch()) {
+    static const QRegularExpression re(R"(([a-zA-Z]{3}),? (\d{1,2}) ([a-zA-Z]{3}) (\d{4}) (\d{1,2}):(\d{1,2}):(\d{1,2}))");
+    auto match = re.match(text);
+    if (match.hasMatch()) {
         return QDateTime();
     }
 
-    QDateTime dt(QDate::fromString(QString("%1 %2 %3 %4").arg(reMatch.captured(1), reMatch.captured(3), reMatch.captured(2), reMatch.captured(4)), Qt::TextDate),
-                 QTime(reMatch.captured(5).toInt(), reMatch.captured(6).toInt(), reMatch.captured(7).toInt()));
+    QDateTime dt(QDate::fromString(QString("%1 %2 %3 %4").arg(match.captured(1), match.captured(3), match.captured(2), match.captured(4)), Qt::TextDate),
+                 QTime(match.captured(5).toInt(), match.captured(6).toInt(), match.captured(7).toInt()));
 
     if (dt.isValid()) {
         return dt;
     }
-    return QDateTime(QDate::fromString(QString("%1 %2 %3 %4").arg(capitaliseWord(reMatch.captured(1)), capitaliseWord(reMatch.captured(3)), reMatch.captured(2), reMatch.captured(4)), Qt::TextDate),
-                     QTime(reMatch.captured(5).toInt(), reMatch.captured(6).toInt(), reMatch.captured(7).toInt()));
+    return QDateTime(QDate::fromString(QString("%1 %2 %3 %4").arg(capitaliseWord(match.captured(1)), capitaliseWord(match.captured(3)), match.captured(2), match.captured(4)), Qt::TextDate),
+                     QTime(match.captured(5).toInt(), match.captured(6).toInt(), match.captured(7).toInt()));
 }
 
 static QUrl parseImage(QXmlStreamReader &reader)

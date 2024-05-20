@@ -46,6 +46,7 @@ void CueFile::enableDebug()
     debugEnabled=true;
 }
 
+static const QRegularExpression longString("\\s+");
 static const QString constCueProtocol = QLatin1String("cue:///");
 static const QString constFile = QLatin1String("file");
 static const QString constAudioTrackType = QLatin1String("audio");
@@ -119,13 +120,13 @@ static const double constMsecPerSec = 1000.0;
 // Seconds in a MSF index (MM:SS:FF)
 static double indexToMarker(const QString &index)
 {
-    QRegularExpression indexRegexp("(\\d{1,3}):(\\d{2}):(\\d{2})");
-    QRegularExpressionMatch indexMatch = indexRegexp.match(index);
-    if (!indexMatch.hasMatch()) {
+    static const QRegularExpression indexRegexp(R"(^(\d{1,3}):(\d{2}):(\d{2})$)");
+    auto match = indexRegexp.match(index);
+    if (!match.hasMatch()) {
         return -1.0;
     }
 
-    QStringList splitted = indexMatch.capturedTexts().mid(1, -1);
+    QStringList splitted = match.capturedTexts().mid(1, -1);
     qlonglong frames = splitted.at(0).toLongLong() * 60 * 75 + splitted.at(1).toLongLong() * 75 + splitted.at(2).toLongLong();
     return (frames * constMsecPerSec) / 75.0;
 }
@@ -342,7 +343,7 @@ bool CueFile::parse(const QString &fileName, const QString &dir, QList<Song> &so
             // get the file type
             if (!cmdVal.isEmpty()) {
                 cmdVal.remove('"').remove("'");
-                QStringList cmdValSplitted = cmdVal.split(QRegularExpression("\\s+"));
+                QStringList cmdValSplitted = cmdVal.split(longString);
                 if (cmdValSplitted.size() == 2) {
                     file = cmdValSplitted[0].remove("\"");  // file audio: name
                     fileType = cmdValSplitted[1];           // file audio: type
@@ -368,7 +369,8 @@ bool CueFile::parse(const QString &fileName, const QString &dir, QList<Song> &so
             // continue parsing the FILE section (header of the CUE file)...
             } else if (cmdCmd == constGenre) {
                 // if GENRE is a list (separated by one of: , ; | \t), then split
-                for (const auto &g: cmdVal.split(QRegularExpression("(,|;|\\t|\\|)"))) {
+                static const QRegularExpression listRegex("(,|;|\\t|\\|)");
+                for (const auto &g: cmdVal.split(listRegex)) {
                     genre.append(g.trimmed());
                 }
             } else if (cmdCmd == constTitle) {
@@ -450,7 +452,7 @@ bool CueFile::parse(const QString &fileName, const QString &dir, QList<Song> &so
                 // here is a new track... get the actual track number and the track type
                 if (!cmdVal.isEmpty()) {
                     cmdVal.remove('"').remove("'");
-                    QStringList cmdValSplitted = cmdVal.split(QRegularExpression("\\s+"));
+                    QStringList cmdValSplitted = cmdVal.split(longString);
                     if (cmdValSplitted.size() == 2) {
                         trackNo = cmdValSplitted[0];
                         trackType = cmdValSplitted[1].toLower();
@@ -463,7 +465,7 @@ bool CueFile::parse(const QString &fileName, const QString &dir, QList<Song> &so
                 //      note: PREGAP and POSTGAP are NOT handled...
                 if (!cmdVal.isEmpty()) {
                     cmdVal.remove('"').remove("'");
-                    QStringList cmdValSplitted = cmdVal.split(QRegularExpression("\\s+"));
+                    QStringList cmdValSplitted = cmdVal.split(longString);
                     // if there's none "01" index, we'll just take the first one
                     // also, we'll take the "01" index even if it's the last one
                     if (cmdValSplitted.size() == 2 && (cmdValSplitted[0]==QLatin1String("01") || cmdValSplitted[0]==QLatin1String("1") || index.isEmpty())) {

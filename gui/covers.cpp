@@ -36,7 +36,7 @@
 #include "devices/device.h"
 #include "models/devicesmodel.h"
 #endif
-#ifdef TAGLIB_FOUND
+#ifdef TagLib_FOUND
 #include "tags/tags.h"
 #endif
 #include "support/globalstatic.h"
@@ -1251,9 +1251,9 @@ Covers::Covers()
 
     // Use screen size to calculate max cost - Issue #1498
     int maxCost = 0;
-    QScreen *dw=QApplication::primaryScreen();
-    if (dw) {
-        QSize sz = dw->availableGeometry().size();
+    QScreen *sc = QGuiApplication::primaryScreen();
+    if (sc) {
+        QSize sz = sc->availableGeometry().size();
         maxCost = sz.width() * sz.height() * 5; // *5 as 32-bit pixmap (so 4 bytes), + some wiggle rooom :-)
     }
     cache.setMaxCost(qMax(static_cast<int>(15*1024*1024*devicePixelRatio), maxCost)); // Ensure at least 15M
@@ -1588,6 +1588,7 @@ Covers::Image Covers::findImage(const Song &song, bool emitResult)
 
 static Covers::Image findCoverInDir(const Song &song, const QString &dirName, const QStringList &coverFileNames, const QString &songFileName=QString())
 {
+    Q_UNUSED(song)
     for (const QString &fileName: coverFileNames) {
         DBUG_CLASS("Covers") << "Checking file" << QString(dirName+fileName);
         if (QFile::exists(dirName+fileName)) {
@@ -1600,7 +1601,7 @@ static Covers::Image findCoverInDir(const Song &song, const QString &dirName, co
     }
 
     if (!songFileName.isEmpty()) {
-        #ifdef TAGLIB_FOUND
+        #ifdef TagLib_FOUND
         DBUG_CLASS("Covers") << "Checking file" << songFileName;
         if (QFile::exists(songFileName)) {
             QImage img(Tags::readImage(songFileName));
@@ -1688,7 +1689,7 @@ Covers::Image Covers::locateImage(const Song &song)
             DBUG_CLASS("Covers") << "No cover";
             return Image(QImage(), constNoCover);
         }
-        #ifdef TAGLIB_FOUND
+        #ifdef TagLib_FOUND
         QImage img;
         if (prevFileName.startsWith(constCoverInTagPrefix)) {
             img=Tags::readImage(prevFileName.mid(constCoverInTagPrefix.length()));

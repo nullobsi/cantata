@@ -52,7 +52,7 @@ Q_SIGNALS:
     void hoverFinished();
 
 protected:
-    void enterEvent(QEvent *) { emit hoverStarted(); }
+    void enterEvent(QEnterEvent *) override { emit hoverStarted(); }
     void leaveEvent(QEvent *) override { emit hoverFinished(); }
 };
 

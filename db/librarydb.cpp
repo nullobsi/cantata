@@ -1167,13 +1167,14 @@ bool LibraryDb::songExists(const Song &song)
 
 static const quint16 constMinYear=1500;
 static const quint16 constMaxYear=2500; // 2500 (bit hopeful here :-) )
+static QRegularExpression longStringRegex = QRegularExpression("\\s+");
 
 bool LibraryDb::setFilter(const QString &f, const QString &genre)
 {
     QString newFilter=f.trimmed().toLower();
     QString year;
     if (!f.isEmpty()) {
-        QStringList strings(newFilter.split(QRegularExpression("\\s+")));
+        QStringList strings(newFilter.split(longStringRegex));
         static QList<QLatin1Char> replaceChars=QList<QLatin1Char>() << QLatin1Char('(') << QLatin1Char(')') << QLatin1Char('"')
                                                                     << QLatin1Char(':') << QLatin1Char('-') << QLatin1Char('#');
         QStringList tokens;

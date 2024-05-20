@@ -28,20 +28,9 @@
 #include "config.h"
 
 extern "C" {
-#ifdef CDIOPARANOIA_FOUND
-
-#ifdef HAVE_CDIO_PARANOIA_H
-#include <cdio/paranoia.h>
-#elif defined HAVE_CDIO_PARANOIA_PARANOIA_H
-#include <cdio/paranoia/paranoia.h>
-#endif
-
-#ifdef HAVE_CDIO_CDDA_H
-#include <cdio/cdda.h>
-#elif defined HAVE_CDIO_PARANOIA_CDDA_H
-#include <cdio/paranoia/cdda.h>
-#endif
-
+#ifdef LibCDIOParanoia_FOUND
+#include <paranoia.h>
+#include <cdda.h>
 #else
 #include <cdda_interface.h>
 #include <cdda_paranoia.h>
@@ -80,7 +69,7 @@ private:
 
 private:
     QString dev;
-    #ifdef CDIOPARANOIA_FOUND
+    #ifdef LibCDIOParanoia_FOUND
     cdrom_drive_t *drive;
     cdrom_paranoia_t *paranoia;
     #else

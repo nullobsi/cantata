@@ -200,6 +200,8 @@ void FancyTabProxyStyle::polish(QPalette &palette)
 
 bool FancyTabProxyStyle::eventFilter(QObject* o, QEvent* e)
 {
+    Q_UNUSED(o)
+    Q_UNUSED(e)
     #ifndef Q_OS_MAC
     QTabBar *bar = qobject_cast<QTabBar*>(o);
     if (bar && (e->type() == QEvent::MouseMove || e->type() == QEvent::Leave)) {
@@ -310,7 +312,7 @@ void FancyTabBar::paintEvent(QPaintEvent *event)
     }
 }
 
-void FancyTab::enterEvent(QEvent*)
+void FancyTab::enterEvent(QEnterEvent*)
 {
     underMouse = true;
 }

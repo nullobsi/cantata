@@ -907,11 +907,11 @@ double Utils::screenDpiScale()
 {
     static double scaleFactor=-1.0;
     if (scaleFactor<0) {
-        QScreen *dw=QApplication::primaryScreen();
-        if (!dw) {
+        QScreen *sc = QGuiApplication::primaryScreen();
+        if (!sc) {
             return 1.0;
         }
-        scaleFactor=dw->logicalDotsPerInchX()>120 ? qMin(qMax(dw->logicalDotsPerInchX()/96.0, 1.0), 4.0) : 1.0;
+        scaleFactor=sc->logicalDotsPerInchX()>120 ? qMin(qMax(sc->logicalDotsPerInchX()/96.0, 1.0), 4.0) : 1.0;
     }
     return scaleFactor;
 }
@@ -924,9 +924,9 @@ bool Utils::limitedHeight(QWidget *w)
     if (!init) {
         limited=!qgetenv("CANTATA_NETBOOK").isEmpty();
         if (!limited) {
-            QScreen *dw=QApplication::primaryScreen();
-            if (dw) {
-                limited=dw->availableGeometry().size().height()<=800;
+            QScreen* qs = QGuiApplication::primaryScreen();
+            if (qs) {
+                limited=qs->availableGeometry().size().height()<=800;
             }
         }
     }
@@ -1044,6 +1044,7 @@ void Utils::raiseWindow(QWidget *w)
     ::SetWindowPos(reinterpret_cast<HWND>(w->effectiveWinId()), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
     #elif !defined Q_OS_WIN
     bool wasHidden=w->isHidden();
+    Q_UNUSED(wasHidden)
     #endif
 
     w->raise();

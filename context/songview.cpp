@@ -32,7 +32,7 @@
 #include "support/utils.h"
 #include "support/messagebox.h"
 #include "support/monoicon.h"
-#ifdef TAGLIB_FOUND
+#ifdef TagLib_FOUND
 #include "tags/tags.h"
 #endif
 #include "widgets/icons.h"
@@ -383,7 +383,7 @@ void SongView::loadLyricsFromFile()
         QString songFile=currentSong.filePath(MPDConnection::self()->getDetails().dir);
         QString mpdLyrics=mpdLyricsFilePath(currentSong);
 
-        #ifdef TAGLIB_FOUND
+        #ifdef TagLib_FOUND
         QString tagLyrics=Tags::readLyrics(songFile);
 
         if (!tagLyrics.isEmpty()) {
@@ -487,7 +487,7 @@ struct MapEntry {
     QString str;
 };
 
-#ifdef TAGLIB_FOUND
+#ifdef TagLib_FOUND
 static QString clean(QString v)
 {
     if (v.length()>1) {
@@ -514,7 +514,7 @@ void SongView::loadMetadata()
 
     QMultiMap<int, QString> tags;
     QMultiMap<int, QString> audioProperties;
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     if (currentSong.isCantataStream() || (!currentSong.isStandardStream() && !MPDConnection::self()->getDetails().dir.startsWith(QLatin1String("http:/")))) {
         QString songFile=currentSong.filePath(MPDConnection::self()->getDetails().dir);
         if (!songFile.isEmpty()) {

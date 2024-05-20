@@ -1,4 +1,3 @@
-include_directories(${QTINCLUDES} ${TAGLIB_INCLUDES} ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 set(CANTATA_TAGS_SRCS main.cpp taghelper.cpp tags.cpp filetyperesolver.cpp ../mpd-interface/song.cpp)
 
 if (WIN32)
@@ -14,9 +13,8 @@ else ()
     install(TARGETS cantata-tags RUNTIME DESTINATION ${LINUX_LIB_DIR}/cantata)
 endif ()
 
+# TODO: Find out where this is used to replace it.
 add_definitions(-DCANTATA_TAG_SERVER -DCANTATA_NO_UI_FUNCTIONS)
-target_link_libraries(cantata-tags ${TAGLIB_LIBRARIES} Qt6::Gui Qt6::Core Qt6::Network)
-if (TAGLIB-EXTRAS_FOUND)
-    target_link_libraries(cantata-tags ${TAGLIB-EXTRAS_LIBRARIES})
-    include_directories(${TAGLIB-EXTRAS_INCLUDES})
-endif ()
+target_link_libraries(cantata-tags
+	Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Core
+	Qt${QT_VERSION_MAJOR}::Network TagLib::TagLib)

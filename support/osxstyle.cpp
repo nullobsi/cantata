@@ -83,8 +83,8 @@ void OSXStyle::initWindowMenu(QMainWindow *mw)
         mw->menuBar()->addMenu(windowMenu);
         actions[mw]->setChecked(true);
         connect(qApp, SIGNAL(focusWindowChanged(QWindow *)), SLOT(focusWindowChanged(QWindow *)));
-        closeAct->setShortcut(Qt::ControlModifier+Qt::Key_W);
-        minAct->setShortcut(Qt::ControlModifier+Qt::Key_M);
+        closeAct->setShortcut(Qt::ControlModifier|Qt::Key_W);
+        minAct->setShortcut(Qt::ControlModifier|Qt::Key_M);
         connect(closeAct, SIGNAL(triggered()), SLOT(closeWindow()));
         connect(minAct, SIGNAL(triggered()), SLOT(minimizeWindow()));
         connect(zoomAct, SIGNAL(triggered()), SLOT(zoomWindow()));

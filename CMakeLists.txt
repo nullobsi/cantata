@@ -1,604 +1,914 @@
-cmake_minimum_required(VERSION 3.5)
-project(cantata)
-cmake_policy(SET CMP0020 NEW)
+cmake_minimum_required(VERSION 3.5...3.29)
+
+project(Cantata
+	VERSION "3.0.0"
+	DESCRIPTION "Graphical MPD Client with Qt."
+	HOMEPAGE_URL "https://github.com/nullobsi/cantata"
+	LANGUAGES CXX C
+)
 
 #  NOTE: If PROJECT_URL, or PROJECT_REV_URL, are changed, then cantata-dynamic, README, and
 #        dbus/mpd.cantata.xml will need renaming/updating.
-set(PROJECT_URL "cantata.mpd")
-set(PROJECT_REV_URL "mpd.cantata")
+set(PROJECT_ID "cantata.mpd")
+set(PROJECT_REV_ID "mpd.cantata")
+set(EXECUTABLE_NAME "cantata")
 
-if (CMAKE_SYSTEM_NAME MATCHES "kOpenBSD.*|OpenBSD.*")
-    set(OPENBSD TRUE)
-endif ()
+message(STATUS "Configuring ${PROJECT_NAME} v${PROJECT_VERSION}")
 
-if (WIN32)
-    # For some reason I chose mpd as the organization name for Windows builds. So, for config compatability, this is
-    # left as mpd for now...
-    set(ORGANIZATION_NAME "mpd")
-else ()
-    # Otherwise its set to the same as the project name. Not sure what else to set it to!!!
-    set(ORGANIZATION_NAME ${CMAKE_PROJECT_NAME})
-endif ()
-
-
-
+# Set module path.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-set (QT_MIN_VERSION 6.5)
 
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
-set(CPACK_GENERATOR "DEB;RPM;TBZ2")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Qt Client for MPD")
-set(CPACK_SOURCE_GENERATOR "TBZ2")
-set(CPACK_PACKAGE_VERSION_MAJOR "2")
-set(CPACK_PACKAGE_VERSION_MINOR "5")
-set(CPACK_PACKAGE_VERSION_PATCH "0")
-set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-set(CPACK_PACKAGE_VERSION_SPIN "")  # Use ".$number" - e.g. ".1"
-set(CPACK_PACKAGE_CONTACT "Craig Drummond <craig.p.drummond@gmail.com>")
-set(CANTATA_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
-set(CANTATA_VERSION_FULL "${CANTATA_VERSION}.${CPACK_PACKAGE_VERSION_PATCH}")
-set(CANTATA_VERSION_WITH_SPIN "${CANTATA_VERSION_FULL}${CPACK_PACKAGE_VERSION_SPIN}")
-set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CANTATA_VERSION_WITH_SPIN}")
-set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CANTATA_VERSION_WITH_SPIN}")
-set(CPACK_SOURCE_IGNORE_FILES  "/.svn/;/.git/;.gitignore;.github/;.project;CMakeLists.txt.user;README.md;/screenshots/")
+# Set CPack variables. Version info & name were given by the project
+# command.
+set(CPACK_PACKAGE_VENDOR ${PROJECT_NAME})
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
+set(CPACK_PACKAGE_EXECUTABLES "${EXECUTABLE_NAME};${PROJECT_NAME}")
+
+# TODO: CPACK_PACKAGE_DESCRIPTION & etc for installers
+
+set(CPACK_SOURCE_PACKAGE_FILE_NAME
+	"${PROJECT_NAME}-${PROJECT_VERSION}"
+)
+
+set(CPACK_SOURCE_IGNORE_FILES
+    "/.svn/;/.git/;.gitignore;.github/;.project;CMakeLists.txt.user;README.md;/screenshots/"
+)
+
+# Now set some variables used in config.h.
+
+set(ORGANIZATION_NAME ${PROJECT_NAME})
+
+# Packaging variables.
+if(WIN32)
+    set(ICON_INSTALL_PREFIX icons)
+elseif(APPLE)
+	# Build as an app bundle.
+	set(CMAKE_MACOSX_BUNDLE TRUE)
+
+	# CPack.
+	set(CPACK_GENERATOR "DRAGNDROP")
+
+	# Set default properties for target.
+	set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
+	set(MACOSX_BUNDLE_VERSION ${PROJECT_VERSION})
+	set(MACOSX_BUNDLE_COPYRIGHT "Copyright © 2024 Cantata Contributors.")
+	set(MACOSX_BUNDLE_GUI_IDENTIFIER ${PROJECT_ID})
+    set(MACOSX_BUNDLE_EXECUTABLE cantata)
+    set(MACOSX_BUNDLE_ICON_FILE cantata.icns)
+	set(MACOSX_BUNDLE_LONG_VERSION_STRING ${PROJECT_VERSION})
+	set(MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION})
+
+	# Bundle installation shenanigans.
+	set(APPS
+		"\${CMAKE_INSTALL_PREFIX}/${MACOSX_BUNDLE_BUNDLE_NAME}.app")
+	set(DIRS ${CMAKE_BINARY_DIR})
+
+	# Extra variables used to install plugins and resources
+	set(APP_BUNDLE_DIR ${PROJECT_NAME}.app)
+	set(APP_CONTENTS_DIR ${APP_BUNDLE_DIR}/Contents)
+	set(APP_RESOURCES_DIR ${APP_CONTENTS_DIR}/Resources)
+	set(APP_MACOS_DIR ${APP_CONTENTS_DIR}/MacOS)
+	set(ICON_INSTALL_PREFIX ${APP_RESOURCES_DIR}/icons/cantata)
+
+	set(CPACK_PACKAGE_EXECUTABLES "${APP_BUNDLE_DIR};Cantata")
+elseif(NOT HAIKU)
+	# TODO: Verify SHARE_INSTALL_PREFIX variable.
+	set(ICON_INSTALL_PREFIX ${SHARE_INSTALL_PREFIX}/icons/hicolor)
+endif()
+
+if(CMAKE_SYSTEM_NAME MATCHES "kOpenBSD.*|OpenBSD.*")
+    set(OPENBSD TRUE)
+endif()
+
+set(QT_MIN_VERSION 5.15)
+
 include(CPack)
 include(MacroLogFeature)
 
-option(ENABLE_TAGLIB "Enable TagLib library (required for tag editing, replaygain calculation, device support, etc)" ON)
-option(ENABLE_HTTP_STREAM_PLAYBACK "Enable playback of MPD HTTP streams (LibVLC or QtMultimedia)" ON)
-option(ENABLE_FFMPEG "Enable ffmpeg/libav libraries (required for replaygain calculation)" ON)
-option(ENABLE_MPG123 "Enable mpg123 libraries (required for replaygain calculation)" ON)
+# Optional feature flags.
+option(
+    ENABLE_TAGLIB
+    "Enable TagLib library (required for tag editing, replaygain calculation, device support, etc)"
+    ON
+)
+option(
+    ENABLE_HTTP_STREAM_PLAYBACK
+    "Enable playback of MPD HTTP streams (LibVLC or QtMultimedia)"
+    ON
+)
+option(
+    ENABLE_FFMPEG
+    "Enable ffmpeg/libav libraries (required for replaygain calculation)"
+    ON
+)
+option(
+    ENABLE_MPG123
+    "Enable mpg123 libraries (required for replaygain calculation)"
+    ON
+)
 option(ENABLE_PROXY_CONFIG "Enable proxy config in settings dialog" ON)
-option(ENABLE_HTTP_SERVER "Enable internal HTTP server to play non-MPD files" ON)
-option(ENABLE_LIBVLC "Use libVLC for MPD HTTP stream playback (if ENABLE_HTTP_STREAM_PLAYBACK=ON)" OFF)
+option(
+    ENABLE_HTTP_SERVER
+    "Enable internal HTTP server to play non-MPD files"
+    ON
+)
+option(
+    ENABLE_LIBVLC
+    "Use libVLC for MPD HTTP stream playback (if ENABLE_HTTP_STREAM_PLAYBACK=ON)"
+    OFF
+)
 option(ENABLE_CATEGORIZED_VIEW "Enable support for categorised view" OFF)
 option(ENABLE_SCROBBLING "Enable scrobbling" ON)
 
-if (WIN32 OR APPLE OR HAIKU)
+if(WIN32 OR APPLE OR HAIKU)
     option(ENABLE_DEVICES_SUPPORT "Enable suport for external devices" OFF)
-else ()
+else()
     option(ENABLE_DEVICES_SUPPORT "Enable suport for external devices" ON)
-    option(ENABLE_REMOTE_DEVICES "Enable support for remote (sshfs, samba) devices" ON)
-    option(ENABLE_SIMPLE_MPD_SUPPORT "Enable support for simple (Cantata controlled) MPD" ON)
-    if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    option(
+        ENABLE_REMOTE_DEVICES
+        "Enable support for remote (sshfs, samba) devices"
+        ON
+    )
+    option(
+        ENABLE_SIMPLE_MPD_SUPPORT
+        "Enable support for simple (Cantata controlled) MPD"
+        ON
+    )
+    if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         option(ENABLE_UDISKS2 "Build UDisks2 backend, and NOT UDisks" ON)
     else()
         option(ENABLE_UDISKS2 "Build UDisks2 backend, and NOT UDisks" OFF)
     endif()
-endif ()
-option(ENABLE_CDPARANOIA "Enable CDParanoia libraries (this or libCDIO_paranoia required for AudioCD support)" ON)
-option(ENABLE_CDIOPARANOIA "Enable libCDIO_paranoia libraries (this or CDParanoia required for AudioCD support)" ON)
-option(ENABLE_CDDB "Enable CDDB libraries (either this or MusicBrianz required for AudioCD support)" ON)
-option(ENABLE_MUSICBRAINZ "Enable MusicBrianz libraries (either this or CDDB required for AudioCD support)" ON)
+endif()
+option(
+    ENABLE_CDPARANOIA
+    "Enable CDParanoia libraries (this or libCDIO_paranoia required for AudioCD support)"
+    ON
+)
+option(
+    ENABLE_CDIOPARANOIA
+    "Enable libCDIO_paranoia libraries (this or CDParanoia required for AudioCD support)"
+    ON
+)
+option(
+    ENABLE_CDDB
+    "Enable CDDB libraries (either this or MusicBrianz required for AudioCD support)"
+    ON
+)
+option(
+    ENABLE_MUSICBRAINZ
+    "Enable MusicBrainz libraries (either this or CDDB required for AudioCD support)"
+    ON
+)
 option(ENABLE_MTP "Enable MTP library (required to support MTP devices)" ON)
 option(ENABLE_AVAHI "Enable automatic mpd server discovery" ${UNIX})
 
 # Build all apps into top-level folder, so that can run dev versions without install
-if (NOT WIN32 AND NOT APPLE)
+if(NOT WIN32 AND NOT APPLE)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
 
 if(ENABLE_AVAHI)
     find_package(Avahi)
-    macro_log_feature(AVAHI_FOUND "Avahi Support" "Automatic MPD-Server Detection" "https://www.avahi.org/" FALSE "" "")
+    macro_log_feature(Avahi_FOUND "Avahi Support" "Automatic MPD-Server Detection" "https://www.avahi.org/" FALSE "" "")
 endif()
 
-if (AVAHI_FOUND)
-    set(CANTATA_SRCS ${CANTATA_SRCS} gui/findmpddialog.cpp gui/avahidiscovery.cpp gui/avahipoll.cpp)
-
-    set(CANTATA_LIBS ${CANTATA_LIBS} ${AVAHI_LIBRARIES})
+if(Avahi_FOUND)
+    set(CANTATA_SRCS
+        ${CANTATA_SRCS}
+        gui/findmpddialog.cpp
+        gui/avahidiscovery.cpp
+        gui/avahipoll.cpp
+    )
+    set(CANTATA_LIBS ${CANTATA_LIBS} Avahi::Client)
 endif()
 
-if (NOT APPLE AND NOT WIN32 AND NOT HAIKU)
-    set(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share"
-        CACHE PATH "Define install directory for read-only architecture-independent data")
-else ()
-    set(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}"
-        CACHE PATH "Define install directory for read-only architecture-independent data")
-endif ()
+if(NOT APPLE AND NOT WIN32 AND NOT HAIKU)
+    set(SHARE_INSTALL_PREFIX
+        "share"
+        CACHE PATH
+        "Define install directory for read-only architecture-independent data"
+    )
+else()
+    set(SHARE_INSTALL_PREFIX
+        ""
+        CACHE PATH
+        "Define install directory for read-only architecture-independent data"
+    )
+endif()
 
-if (WIN32)
-    set(CANTATA_ICON_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/icons/cantata)
-elseif (APPLE)
-    set(MACOSX_BUNDLE_BUNDLE_NAME Cantata)
-    set(MACOSX_BUNDLE_EXECUTABLE cantata)
-    set(MACOSX_BUNDLE_SHORT_VERSION_STRING ${CANTATA_VERSION})
-    set(MACOSX_BUNDLE_VERSION ${CANTATA_VERSION})
-    set(MACOSX_BUNDLE_LONG_VERSION_STRING ${CANTATA_VERSION_WITH_SPIN})
-    set(MACOSX_BUNDLE_ICON_FILE cantata.icns)
-    set(CANTATA_APP_CONTENTS_DIR ${CMAKE_INSTALL_PREFIX}/Cantata.app/Contents)
-    set(MACOSX_BUNDLE_RESOURCES ${CANTATA_APP_CONTENTS_DIR}/Resources)
-    set(MACOSX_BUNDLE_APP_DIR ${CANTATA_APP_CONTENTS_DIR}/MacOS)
-    set(CANTATA_ICON_INSTALL_PREFIX ${MACOSX_BUNDLE_RESOURCES}/icons/cantata)
-elseif (NOT HAIKU)
-    set(CANTATA_ICON_INSTALL_PREFIX ${SHARE_INSTALL_PREFIX}/icons/hicolor)
-endif ()
 
-if (NOT WIN32 AND NOT APPLE AND ENABLE_DEVICES_SUPPORT AND ENABLE_UDISKS2)
+if(NOT WIN32 AND NOT APPLE AND ENABLE_DEVICES_SUPPORT AND ENABLE_UDISKS2)
     set(WITH_SOLID_UDISKS2 ON)
-endif ()
+endif()
 
-if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release")
-    message("-- Set build type to ${CMAKE_BUILD_TYPE}")
-endif ()
-
-if (NOT APPLE AND NOT WIN32)
-    if (CANTATA_HELPERS_LIB_DIR AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+if(NOT APPLE AND NOT WIN32)
+    if(CANTATA_HELPERS_LIB_DIR AND CMAKE_SIZEOF_VOID_P EQUAL 8)
         set(LINUX_LIB_DIR ${CANTATA_HELPERS_LIB_DIR})
-    else ()
+    else()
         set(LINUX_LIB_DIR lib)
-    endif ()
-endif ()
-
-
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND NOT APPLE AND NOT WIN32 AND NOT HAIKU)
-    set(CMAKE_INSTALL_PREFIX "/usr")
-    message("-- Set install prefix to ${CMAKE_INSTALL_PREFIX}")
-endif ()
-
-if (ENABLE_TAGLIB)
-    if (NOT TAGLIB_FOUND)
-        set(TAGLIB_MIN_VERSION "2.0")
-        find_package(Taglib)
     endif()
-    macro_log_feature(TAGLIB_FOUND "TagLib" "Tag editor, file organiser, etc." "http://taglib.github.io/")
-endif ()
+endif()
 
-if (TAGLIB_FOUND)
-    if (ENABLE_DEVICES_SUPPORT AND (ENABLE_CDIOPARANOIA OR ENABLE_CDPARANOIA))
+if(ENABLE_TAGLIB)
+	if(NOT TagLib_FOUND)
+        find_package(TagLib 2.0 QUIET)
+    endif()
+	macro_log_feature(TagLib_FOUND "TagLib" "Tag editor, file organiser, etc." "http://taglib.github.io/")
+endif()
+
+if(TagLib_FOUND)
+    if(ENABLE_DEVICES_SUPPORT AND (ENABLE_CDIOPARANOIA OR ENABLE_CDPARANOIA))
         # Issue 1021 - prefer libcdio_paranoia over plain cdparanoia
-        if (ENABLE_CDIOPARANOIA)
-            find_package(Cdioparanoia)
-            macro_log_feature(CDIOPARANOIA_FOUND "libcdio_paranoia" "CD ripping." "https://www.gnu.org/software/libcdio/")
+        if(ENABLE_CDIOPARANOIA)
+            find_package(LibCDIOParanoia)
+            macro_log_feature(LibCDIOParanoia_FOUND "libcdio_paranoia" "CD ripping." "https://www.gnu.org/software/libcdio/")
         endif()
-        if (NOT CDIOPARANOIA_FOUND)
+        if(NOT LibCDIOParanoia_FOUND)
             find_package(Cdparanoia)
             macro_log_feature(CDPARANOIA_FOUND "libcdda_paranoia" "CD ripping." "http://www.xiph.org/paranoia")
         endif()
-        if (CDIOPARANOIA_FOUND OR CDPARANOIA_FOUND)
-            if (ENABLE_CDDB)
+        if(LibCDIOParanoia_FOUND OR CDPARANOIA_FOUND)
+            if(ENABLE_CDDB)
                 find_package(CDDB)
                 macro_log_feature(CDDB_FOUND "libcddb" "CD info retrieval via CDDB." "http://libcddb.sourceforge.net")
-            endif ()
-            if (ENABLE_MUSICBRAINZ)
+            endif()
+            if(ENABLE_MUSICBRAINZ)
                 find_package(MusicBrainz5)
                 macro_log_feature(MUSICBRAINZ5_FOUND "libmusicbrainz5" "CD info retrieval via MusicBrainz." "http://musicbrainz.org/doc/libmusicbrainz")
-            endif ()
-        endif ()
-    endif ()
+            endif()
+        endif()
+    endif()
 
     set(ENABLE_TAGEDITOR_SUPPORT 1)
     set(ENABLE_TRACKORGANIZER_SUPPORT 1)
 
-    add_definitions(${TAGLIB_CFLAGS})
-
-    if (ENABLE_FFMPEG)
+    if(ENABLE_FFMPEG)
         find_package(FFMPEG)
         macro_log_feature(FFMPEG_FOUND "libavcodec/libavutil/libavformat" "ReplayGain calculation." "http://ffmpeg.org")
-    endif ()
-    if (ENABLE_MPG123)
+    endif()
+    if(ENABLE_MPG123)
         find_package(MPG123)
         macro_log_feature(MPG123_FOUND "libmpg123" "ReplayGain calculation." "http://www.mpg123.de")
-    endif ()
-    if (ENABLE_MTP AND ENABLE_DEVICES_SUPPORT AND NOT WIN32 AND NOT APPLE)
+    endif()
+    if(ENABLE_MTP AND ENABLE_DEVICES_SUPPORT AND NOT WIN32 AND NOT APPLE)
         find_package(Mtp)
         macro_log_feature(MTP_FOUND "libmtp" "MTP Device Support." "http://libmtp.sourceforge.net")
-    endif ()
-else (TAGLIB_FOUND)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable -Wno-unused-parameter")
+    endif()
+else(TagLib_FOUND)
     set(ENABLE_DEVICES_SUPPORT OFF)
-endif ()
+endif()
 
-if (NOT MTP_FOUND)
+if(NOT MTP_FOUND)
     set(ENABLE_UNCACHED_MTP OFF)
-endif ()
+endif()
 
-find_package(Qt6 ${QT_MIN_VERSION} COMPONENTS Core Widgets Xml Network Concurrent Svg Sql REQUIRED)
+set(QT_COMPONENTS
+    Widgets
+    Xml
+    Network
+    Concurrent
+    Svg
+    Sql
+)
+
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS ${QT_COMPONENTS})
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS})
 
 set(CMAKE_AUTOMOC TRUE)
 set(CMAKE_AUTOUIC TRUE)
 set(CMAKE_AUTORCC TRUE)
 set(CMAKE_CXX_STANDARD 17)
 
-set(QTLIBS Qt6::Core Qt6::Widgets Qt6::Network Qt6::Gui Qt6::Xml Qt6::Concurrent Qt6::Svg Qt6::Sql)
-set(QTINCLUDES ${Qt6Widgets_INCLUDE_DIRS} ${Qt6Network_INCLUDE_DIRS} ${Qt6Xml_INCLUDE_DIRS} ${Qt6Core_INCLUDE_DIRS} ${Qt6Concurrent_INCLUDE_DIRS}
-    ${Qt6Svg_INCLUDE_DIRS} ${Qt6Sql_INCLUDE_DIRS})
-add_definitions(${Qt6Widgets_DEFINITIONS} ${Qt6Network_DEFINITIONS} ${Qt6Xml_DEFINITIONS} ${Qt6Concurrent_DEFINITIONS} ${Qt6Svg_DEFINITIONS} ${Qt6Sql_DEFINITIONS})
-if (Qt6_POSITION_INDEPENDENT_CODE)
-    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-else ()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt6Widgets_EXECUTABLE_COMPILE_FLAGS}")
-endif ()
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wpedantic -Wall -Wextra \
-    -Wno-cast-qual -Wno-float-equal \
-    -Wmissing-format-attribute -Wpacked -Wredundant-decls")
+set(CMAKE_CXX_FLAGS
+    "${CMAKE_CXX_FLAGS} -Werror -Wpedantic -Wall -Wextra \
+    -Wno-cast-qual -Wno-float-equal -Wno-gnu-zero-variadic-macro-arguments \
+    -Wmissing-format-attribute -Wpacked -Wredundant-decls"
+)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     # flags unique to GCC
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wduplicated-branches -Wduplicated-cond -Wlogical-op")
+    set(CMAKE_CXX_FLAGS
+        "${CMAKE_CXX_FLAGS} -Wduplicated-branches -Wduplicated-cond -Wlogical-op"
+    )
     # flags that are hard to fix under Clang
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcast-align -Wdouble-promotion")
 endif()
 
-if (APPLE OR WIN32 OR HAIKU)
-    get_target_property(QT_QMAKE_EXECUTABLE Qt6::qmake IMPORTED_LOCATION)
-    execute_process(COMMAND ${QT_QMAKE_EXECUTABLE} -query QT_INSTALL_TRANSLATIONS OUTPUT_VARIABLE QT_TRANSLATIONS_DIR)
-else ()
-    find_package(Qt6DBus REQUIRED)
+if(APPLE OR WIN32 OR HAIKU)
+    get_target_property(
+        QT_QMAKE_EXECUTABLE
+        Qt${QT_VERSION_MAJOR}::qmake
+        IMPORTED_LOCATION
+    )
+    execute_process(
+        COMMAND ${QT_QMAKE_EXECUTABLE} -query QT_INSTALL_TRANSLATIONS
+        OUTPUT_VARIABLE QT_TRANSLATIONS_DIR
+    )
+    get_filename_component(QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}" DIRECTORY)
+    find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS "${QT_BIN_DIR}")
+else()
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS DBus)
     set(QT_QTDBUS_FOUND 1) # required for config.h !!!
-    set(QTLIBS ${QTLIBS} Qt6::DBus)
-    set(QTINCLUDES ${QTINCLUDES} ${Qt6DBus_INCLUDE_DIRS})
-    add_definitions(${Qt6DBus_DEFINITIONS})
-endif ()
+    list(APPEND QT_COMPONENTS DBus)
+endif()
 
-if (ENABLE_HTTP_STREAM_PLAYBACK)
-    if (ENABLE_LIBVLC)
+if(ENABLE_HTTP_STREAM_PLAYBACK)
+    if(ENABLE_LIBVLC)
+        # TODO: VLC as an imported target.
         find_package(LIBVLC REQUIRED)
         macro_log_feature(LIBVLC_FOUND "libVLC" "MPD HTTP stream playback." "http://videolan.org")
         add_definitions(-DLIBVLC_FOUND)
         include_directories(${LIBVLC_INCLUDE_DIR})
         set(CANTATA_LIBS ${CANTATA_LIBS} ${LIBVLC_LIBRARY})
-    else ()
-        find_package(Qt6 ${QT_MIN_VERSION} COMPONENTS Multimedia REQUIRED)
-        macro_log_feature(Qt6Multimedia_FOUND "Qt6Multimedia" "MPD HTTP stream playback." "http://qtproject.org")
-        include_directories(${Qt6Multimedia_INCLUDE_DIRS})
-        add_definitions(${Qt6Multimedia_DEFINITIONS})
-        set(CANTATA_LIBS ${CANTATA_LIBS} Qt6::Multimedia)
-    endif ()
+    else()
+        find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Multimedia)
+        macro_log_feature(Qt${QT_VERSION_MAJOR}Multimedia_FOUND "QtMultimedia" "MPD HTTP stream playback." "http://qtproject.org")
+        list(APPEND QT_COMPONENTS Multimedia)
+    endif()
     set(CANTATA_SRCS ${CANTATA_SRCS} mpd-interface/httpstream.cpp)
-endif ()
+endif()
 
 find_package(ZLIB REQUIRED)
 
-if (APPLE)
+if(APPLE)
     set(CANTATA_SRCS ${CANTATA_SRCS} mac/dockmenu.cpp mac/macnotify.mm)
     find_package(IOKit)
-    if (IOKIT_FOUND)
+    if(IOKIT_FOUND)
         set(CANTATA_LIBS ${CANTATA_LIBS} ${IOKIT_LIBRARY})
         set(CANTATA_SRCS ${CANTATA_SRCS} mac/powermanagement.cpp)
-    endif ()
+    endif()
     find_package(Foundation REQUIRED)
     find_library(MAC_APPKIT_LIBRARY AppKit REQUIRED)
-    set(CANTATA_LIBS ${CANTATA_LIBS} ${FOUNDATION_LIBRARY} ${MAC_APPKIT_LIBRARY})
+    set(CANTATA_LIBS
+        ${CANTATA_LIBS}
+        ${FOUNDATION_LIBRARY}
+        ${MAC_APPKIT_LIBRARY}
+    )
     find_library(MAC_MEDIAPLAYER_LIBRARY MediaPlayer)
-    if (MAC_MEDIAPLAYER_LIBRARY)
+    if(MAC_MEDIAPLAYER_LIBRARY)
         set(CANTATA_SRCS ${CANTATA_SRCS} mac/macnowplaying.mm)
         set(CANTATA_LIBS ${CANTATA_LIBS} ${MAC_MEDIAPLAYER_LIBRARY})
         add_definitions(-DMAC_MEDIAPLAYER_FOUND)
-    endif ()
-elseif (WIN32)
-    find_package(Qt6 COMPONENTS WinExtras REQUIRED)
-    set(QTINCLUDES ${QTINCLUDES} ${Qt6WinExtras_INCLUDE_DIRS})
-    set(QTLIBS ${QTLIBS} Qt6::WinExtras)
-    add_definitions(${Qt6WinExtras_DEFINITIONS})
+    endif()
+elseif(WIN32 AND QT_VERSION_MAJOR EQUAL 5)
+    find_package(Qt5 COMPONENTS WinExtras REQUIRED)
+    list(APPEND QT_COMPONENTS WinExtras)
     set(CANTATA_SRCS ${CANTATA_SRCS} windows/thumbnailtoolbar.cpp)
-endif ()
+endif()
+
+list(
+    TRANSFORM QT_COMPONENTS
+    PREPEND Qt${QT_VERSION_MAJOR}::
+    OUTPUT_VARIABLE QT_LIBS
+)
 
 # MusicBrainz requires exceptions to be enabled!
-if (MUSICBRAINZ5_FOUND)
+if(MUSICBRAINZ5_FOUND)
     message("-- Enabling exceptions")
-    if (CMAKE_COMPILER_IS_GNUCXX)
+    if(CMAKE_COMPILER_IS_GNUCXX)
         add_definitions("-fexceptions -UQT_NO_EXCEPTIONS")
-    endif (CMAKE_COMPILER_IS_GNUCXX)
-    if (CMAKE_C_COMPILER MATCHES "icc")
+    endif(CMAKE_COMPILER_IS_GNUCXX)
+    if(CMAKE_C_COMPILER MATCHES "icc")
         add_definitions(-fexceptions)
-    endif ()
-    if (MSVC)
+    endif()
+    if(MSVC)
         add_definitions(-EHsc)
-    endif ()
-endif ()
+    endif()
+endif()
 
-include_directories(${CMAKE_SOURCE_DIR}/3rdparty ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${QTINCLUDES} ${ZLIB_INCLUDE_DIRS})
+include_directories(
+    ${CMAKE_SOURCE_DIR}/3rdparty
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${QTINCLUDES}
+    ${ZLIB_INCLUDE_DIRS}
+)
 
-set(CANTATA_SRCS ${CANTATA_SRCS}
-    gui/settings.cpp gui/application.cpp gui/initialsettingswizard.cpp gui/mainwindow.cpp gui/preferencesdialog.cpp gui/customactionssettings.cpp
-    gui/interfacesettings.cpp gui/playbacksettings.cpp gui/serversettings.cpp gui/librarypage.cpp gui/customactions.cpp
-    gui/folderpage.cpp gui/trayitem.cpp gui/cachesettings.cpp gui/coverdialog.cpp gui/searchpage.cpp gui/stdactions.cpp
-    gui/main.cpp gui/covers.cpp gui/currentcover.cpp gui/mpdbrowsepage.cpp gui/localfolderpage.cpp gui/multimediakeysinterface.cpp
-    gui/apikeys.cpp gui/apikeyssettings.cpp
+set(CANTATA_SRCS
+    ${CANTATA_SRCS}
+    gui/settings.cpp
+    gui/application.cpp
+    gui/initialsettingswizard.cpp
+    gui/mainwindow.cpp
+    gui/preferencesdialog.cpp
+    gui/customactionssettings.cpp
+    gui/interfacesettings.cpp
+    gui/playbacksettings.cpp
+    gui/serversettings.cpp
+    gui/librarypage.cpp
+    gui/customactions.cpp
+    gui/folderpage.cpp
+    gui/trayitem.cpp
+    gui/cachesettings.cpp
+    gui/coverdialog.cpp
+    gui/searchpage.cpp
+    gui/stdactions.cpp
+    gui/main.cpp
+    gui/covers.cpp
+    gui/currentcover.cpp
+    gui/mpdbrowsepage.cpp
+    gui/localfolderpage.cpp
+    gui/multimediakeysinterface.cpp
+    gui/apikeys.cpp
+    gui/apikeyssettings.cpp
     devices/deviceoptions.cpp
-    db/librarydb.cpp db/mpdlibrarydb.cpp
-    widgets/treeview.cpp widgets/listview.cpp widgets/itemview.cpp widgets/autohidingsplitter.cpp widgets/nowplayingwidget.cpp
-    widgets/actionlabel.cpp widgets/playqueueview.cpp widgets/groupedview.cpp widgets/actionitemdelegate.cpp widgets/textbrowser.cpp
-    widgets/volumeslider.cpp widgets/menubutton.cpp widgets/icons.cpp widgets/toolbutton.cpp widgets/wizardpage.cpp
-    widgets/searchwidget.cpp widgets/messageoverlay.cpp widgets/basicitemdelegate.cpp widgets/sizegrip.cpp
-    widgets/spacerwidget.cpp widgets/songdialog.cpp widgets/stretchheaderview.cpp
-    widgets/tableview.cpp widgets/thinsplitterhandle.cpp widgets/coverwidget.cpp widgets/ratingwidget.cpp widgets/notelabel.cpp
-    widgets/selectorlabel.cpp widgets/titlewidget.cpp widgets/multipagewidget.cpp widgets/singlepagewidget.cpp widgets/stackedpagewidget.cpp
-    widgets/mirrormenu.cpp widgets/genrecombo.cpp widgets/volumecontrol.cpp
-    context/lyricsettings.cpp context/ultimatelyricsprovider.cpp context/ultimatelyrics.cpp context/lyricsdialog.cpp
-    context/contextwidget.cpp context/view.cpp context/artistview.cpp context/albumview.cpp context/songview.cpp context/contextengine.cpp
-    context/wikipediaengine.cpp context/wikipediasettings.cpp context/othersettings.cpp context/contextsettings.cpp context/togglelist.cpp
-    context/lastfmengine.cpp context/metaengine.cpp context/onlineview.cpp
-    streams/streamspage.cpp streams/streamdialog.cpp streams/streamfetcher.cpp
-    models/streamsproxymodel.cpp models/streamsearchmodel.cpp models/musiclibraryitemroot.cpp
-    models/musiclibraryitemartist.cpp models/musiclibraryitemalbum.cpp models/musiclibraryproxymodel.cpp models/playlistsmodel.cpp
-    models/playlistsproxymodel.cpp models/playqueuemodel.cpp models/proxymodel.cpp models/actionmodel.cpp models/musiclibraryitem.cpp
-    models/browsemodel.cpp models/searchmodel.cpp models/streamsmodel.cpp models/searchproxymodel.cpp models/sqllibrarymodel.cpp
-    models/mpdlibrarymodel.cpp models/mpdsearchmodel.cpp models/playqueueproxymodel.cpp models/localbrowsemodel.cpp
-    mpd-interface/mpdconnection.cpp mpd-interface/mpdparseutils.cpp mpd-interface/mpdstats.cpp mpd-interface/mpdstatus.cpp
-    mpd-interface/song.cpp mpd-interface/cuefile.cpp
-    network/networkaccessmanager.cpp network/networkproxyfactory.cpp
-    playlists/dynamicplaylists.cpp playlists/playlistproxymodel.cpp playlists/dynamicplaylistspage.cpp playlists/playlistruledialog.cpp
-    playlists/playlistrulesdialog.cpp playlists/playlistspage.cpp playlists/storedplaylistspage.cpp playlists/rulesplaylists.cpp
-    playlists/smartplaylists.cpp playlists/smartplaylistspage.cpp
-    online/onlineservicespage.cpp online/onlinedbservice.cpp online/jamendoservice.cpp online/onlinedbwidget.cpp online/onlineservice.cpp
-    online/jamendosettingsdialog.cpp online/magnatuneservice.cpp online/magnatunesettingsdialog.cpp
+    db/librarydb.cpp
+    db/mpdlibrarydb.cpp
+    widgets/treeview.cpp
+    widgets/listview.cpp
+    widgets/itemview.cpp
+    widgets/autohidingsplitter.cpp
+    widgets/nowplayingwidget.cpp
+    widgets/actionlabel.cpp
+    widgets/playqueueview.cpp
+    widgets/groupedview.cpp
+    widgets/actionitemdelegate.cpp
+    widgets/textbrowser.cpp
+    widgets/volumeslider.cpp
+    widgets/menubutton.cpp
+    widgets/icons.cpp
+    widgets/toolbutton.cpp
+    widgets/wizardpage.cpp
+    widgets/searchwidget.cpp
+    widgets/messageoverlay.cpp
+    widgets/basicitemdelegate.cpp
+    widgets/sizegrip.cpp
+    widgets/spacerwidget.cpp
+    widgets/songdialog.cpp
+    widgets/stretchheaderview.cpp
+    widgets/tableview.cpp
+    widgets/thinsplitterhandle.cpp
+    widgets/coverwidget.cpp
+    widgets/ratingwidget.cpp
+    widgets/notelabel.cpp
+    widgets/selectorlabel.cpp
+    widgets/titlewidget.cpp
+    widgets/multipagewidget.cpp
+    widgets/singlepagewidget.cpp
+    widgets/stackedpagewidget.cpp
+    widgets/mirrormenu.cpp
+    widgets/genrecombo.cpp
+    widgets/volumecontrol.cpp
+    context/lyricsettings.cpp
+    context/ultimatelyricsprovider.cpp
+    context/ultimatelyrics.cpp
+    context/lyricsdialog.cpp
+    context/contextwidget.cpp
+    context/view.cpp
+    context/artistview.cpp
+    context/albumview.cpp
+    context/songview.cpp
+    context/contextengine.cpp
+    context/wikipediaengine.cpp
+    context/wikipediasettings.cpp
+    context/othersettings.cpp
+    context/contextsettings.cpp
+    context/togglelist.cpp
+    context/lastfmengine.cpp
+    context/metaengine.cpp
+    context/onlineview.cpp
+    streams/streamspage.cpp
+    streams/streamdialog.cpp
+    streams/streamfetcher.cpp
+    models/streamsproxymodel.cpp
+    models/streamsearchmodel.cpp
+    models/musiclibraryitemroot.cpp
+    models/musiclibraryitemartist.cpp
+    models/musiclibraryitemalbum.cpp
+    models/musiclibraryproxymodel.cpp
+    models/playlistsmodel.cpp
+    models/playlistsproxymodel.cpp
+    models/playqueuemodel.cpp
+    models/proxymodel.cpp
+    models/actionmodel.cpp
+    models/musiclibraryitem.cpp
+    models/browsemodel.cpp
+    models/searchmodel.cpp
+    models/streamsmodel.cpp
+    models/searchproxymodel.cpp
+    models/sqllibrarymodel.cpp
+    models/mpdlibrarymodel.cpp
+    models/mpdsearchmodel.cpp
+    models/playqueueproxymodel.cpp
+    models/localbrowsemodel.cpp
+    mpd-interface/mpdconnection.cpp
+    mpd-interface/mpdparseutils.cpp
+    mpd-interface/mpdstats.cpp
+    mpd-interface/mpdstatus.cpp
+    mpd-interface/song.cpp
+    mpd-interface/cuefile.cpp
+    network/networkaccessmanager.cpp
+    network/networkproxyfactory.cpp
+    playlists/dynamicplaylists.cpp
+    playlists/playlistproxymodel.cpp
+    playlists/dynamicplaylistspage.cpp
+    playlists/playlistruledialog.cpp
+    playlists/playlistrulesdialog.cpp
+    playlists/playlistspage.cpp
+    playlists/storedplaylistspage.cpp
+    playlists/rulesplaylists.cpp
+    playlists/smartplaylists.cpp
+    playlists/smartplaylistspage.cpp
+    online/onlineservicespage.cpp
+    online/onlinedbservice.cpp
+    online/jamendoservice.cpp
+    online/onlinedbwidget.cpp
+    online/onlineservice.cpp
+    online/jamendosettingsdialog.cpp
+    online/magnatuneservice.cpp
+    online/magnatunesettingsdialog.cpp
     #online/soundcloudservice.cpp
-    online/onlinesearchwidget.cpp online/podcastservice.cpp online/rssparser.cpp online/opmlparser.cpp online/podcastsearchdialog.cpp
-    online/podcastsettingsdialog.cpp online/podcastwidget.cpp online/onlinesearchservice.cpp
+    online/onlinesearchwidget.cpp
+    online/podcastservice.cpp
+    online/rssparser.cpp
+    online/opmlparser.cpp
+    online/podcastsearchdialog.cpp
+    online/podcastsettingsdialog.cpp
+    online/podcastwidget.cpp
+    online/onlinesearchservice.cpp
     db/onlinedb.cpp
-    http/httpserver.cpp)
+    http/httpserver.cpp
+)
 
-if (ENABLE_CATEGORIZED_VIEW)
+if(ENABLE_CATEGORIZED_VIEW)
     set(CANTATA_SRCS ${CANTATA_SRCS} widgets/categorizedview.cpp)
-endif ()
-if (ENABLE_SIMPLE_MPD_SUPPORT)
+endif()
+if(ENABLE_SIMPLE_MPD_SUPPORT)
     set(CANTATA_SRCS ${CANTATA_SRCS} mpd-interface/mpduser.cpp)
-endif ()
-if (ENABLE_SCROBBLING)
-    set(CANTATA_SRCS ${CANTATA_SRCS} scrobbling/scrobbler.cpp scrobbling/pausabletimer.cpp scrobbling/scrobblingsettings.cpp scrobbling/scrobblinglove.cpp)
+endif()
+if(ENABLE_SCROBBLING)
+    set(CANTATA_SRCS
+        ${CANTATA_SRCS}
+        scrobbling/scrobbler.cpp
+        scrobbling/pausabletimer.cpp
+        scrobbling/scrobblingsettings.cpp
+        scrobbling/scrobblinglove.cpp
+    )
 endif()
 
 set(CANTATA_LIBS ${CANTATA_LIBS} support)
 
-if (WIN32)
+if(WIN32)
     # Not installed for windows - script uses sym-links...
-elseif (APPLE)
-    install(PROGRAMS playlists/cantata-dynamic DESTINATION ${MACOSX_BUNDLE_RESOURCES}/scripts/)
-else ()
-    install(PROGRAMS playlists/cantata-dynamic DESTINATION ${SHARE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME}/scripts)
-endif ()
+elseif(APPLE)
+    install(
+        PROGRAMS playlists/cantata-dynamic
+        DESTINATION ${APP_RESOURCES_DIR}/scripts/
+    )
+else()
+    install(
+        PROGRAMS playlists/cantata-dynamic
+        DESTINATION ${SHARE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME}/scripts
+    )
+endif()
 
-if (ENABLE_HTTP_SERVER)
+if(ENABLE_HTTP_SERVER)
     set(CANTATA_SRCS ${CANTATA_SRCS} http/httpsocket.cpp)
-endif ()
+endif()
 
-if (QT_QTDBUS_FOUND)
+if("DBus" IN_LIST QT_COMPONENTS)
     set(CANTATA_SRCS ${CANTATA_SRCS} dbus/gnomemediakeys.cpp)
-    set_SOURCE_FILES_PROPERTIES(dbus/org.gnome.SettingsDaemon.xml dbus/org.gnome.SettingsDaemon.MediaKeys.xml PROPERTIES NO_NAMESPACE TRUE)
+    set_source_files_properties(
+        dbus/org.gnome.SettingsDaemon.xml
+        dbus/org.gnome.SettingsDaemon.MediaKeys.xml
+        PROPERTIES NO_NAMESPACE TRUE
+    )
     set(CANTATA_SRCS ${CANTATA_SRCS} dbus/mpris.cpp dbus/powermanagement.cpp)
     set(CANTATA_SRCS ${CANTATA_SRCS} dbus/notify.cpp)
 
-    qt6_add_dbus_adaptor(CANTATA_SRCS dbus/org.mpris.MediaPlayer2.Player.xml dbus/mpris.h Mpris)
-    qt6_add_dbus_adaptor(CANTATA_SRCS dbus/org.mpris.MediaPlayer2.root.xml dbus/mpris.h Mpris)
-    qt6_add_dbus_adaptor(CANTATA_SRCS dbus/${PROJECT_REV_URL}.xml gui/mainwindow.h MainWindow)
-    qt6_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.Notifications.xml)
-    qt6_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.UPower.xml)
-    qt6_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.login1.xml)
-    qt6_add_dbus_interfaces(CANTATA_SRCS dbus/org.gnome.SettingsDaemon.xml)
-    qt6_add_dbus_interfaces(CANTATA_SRCS dbus/org.gnome.SettingsDaemon.MediaKeys.xml)
-    qt6_add_dbus_interfaces(CANTATA_SRCS dbus/org.kde.Solid.PowerManagement.PolicyAgent.xml)
-    qt6_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.PowerManagement.Inhibit.xml)
-endif ()
+    qt_add_dbus_adaptor(CANTATA_SRCS dbus/org.mpris.MediaPlayer2.Player.xml dbus/mpris.h Mpris)
+    qt_add_dbus_adaptor(CANTATA_SRCS dbus/org.mpris.MediaPlayer2.root.xml dbus/mpris.h Mpris)
+	qt_add_dbus_adaptor(CANTATA_SRCS dbus/${PROJECT_REV_ID}.xml gui/mainwindow.h MainWindow)
+    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.Notifications.xml)
+    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.UPower.xml)
+    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.login1.xml)
+    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.gnome.SettingsDaemon.xml)
+    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.gnome.SettingsDaemon.MediaKeys.xml)
+    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.kde.Solid.PowerManagement.PolicyAgent.xml)
+    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.PowerManagement.Inhibit.xml)
+endif()
 
-if (NOT WIN32 AND NOT APPLE)
+if(NOT WIN32 AND NOT APPLE)
     set(CANTATA_SRCS ${CANTATA_SRCS} devices/mountpoints.cpp)
-endif ()
+endif()
 
 set(CANTATA_SRCS ${CANTATA_SRCS} cantata.qrc cantata_media.qrc)
 
-if (TAGLIB_FOUND)
-    set(CANTATA_SRCS ${CANTATA_SRCS}  tags/tageditor.cpp tags/trackorganiser.cpp devices/filenameschemedialog.cpp widgets/tagspinbox.cpp)
+if(TagLib_FOUND)
+    set(CANTATA_SRCS
+        ${CANTATA_SRCS}
+        tags/tageditor.cpp
+        tags/trackorganiser.cpp
+        devices/filenameschemedialog.cpp
+        widgets/tagspinbox.cpp
+    )
 
     # Cantata still links to taglib, even if external tag reader/writer is used, because JamendoService uses taglib for ID3 genres.
-    set(CANTATA_LIBS ${CANTATA_LIBS} ${TAGLIB_LIBRARIES})
-    include_directories(${TAGLIB_INCLUDES})
-    if (APPLE OR OPENBSD)
-        # for some reason under osx we get full path no include/taglib?
-        include_directories(${TAGLIB_INCLUDES}/..)
-    endif ()
-    if (ENABLE_DEVICES_SUPPORT)
+	set(CANTATA_LIBS ${CANTATA_LIBS} TagLib::TagLib)
+    if(ENABLE_DEVICES_SUPPORT)
         set(CANTATA_LIBS ${CANTATA_LIBS} solidlite)
-    endif ()
+    endif()
 
-    if (FFMPEG_FOUND OR MPG123_FOUND)
-        set(CANTATA_SRCS ${CANTATA_SRCS} replaygain/albumscanner.cpp replaygain/rgdialog.cpp replaygain/tagreader.cpp replaygain/jobcontroller.cpp)
+    if(FFMPEG_FOUND OR MPG123_FOUND)
+        set(CANTATA_SRCS
+            ${CANTATA_SRCS}
+            replaygain/albumscanner.cpp
+            replaygain/rgdialog.cpp
+            replaygain/tagreader.cpp
+            replaygain/jobcontroller.cpp
+        )
         set(ENABLE_REPLAYGAIN_SUPPORT 1)
         add_subdirectory(replaygain)
-    endif ()
+    endif()
     set(CANTATA_SRCS ${CANTATA_SRCS} tags/taghelperiface.cpp)
     add_subdirectory(tags)
 
-    if (ENABLE_DEVICES_SUPPORT)
+    if(ENABLE_DEVICES_SUPPORT)
         add_subdirectory(3rdparty/solid-lite)
-        if (MTP_FOUND)
+        if(MTP_FOUND)
             set(CANTATA_SRCS ${CANTATA_SRCS} devices/mtpdevice.cpp)
             include_directories(${MTP_INCLUDE_DIR})
             set(CANTATA_LIBS ${CANTATA_LIBS} ${MTP_LIBRARIES})
-        endif ()
-        if (CDDB_FOUND OR MUSICBRAINZ5_FOUND)
-            if (CDDB_FOUND)
+        endif()
+        if(CDDB_FOUND OR MUSICBRAINZ5_FOUND)
+            if(CDDB_FOUND)
                 set(CANTATA_SRCS ${CANTATA_SRCS} devices/cddbinterface.cpp)
-                include_directories(${CDDB_INCLUDE_DIR})
-                set(CANTATA_LIBS ${CANTATA_LIBS} ${CDDB_LIBS})
-            endif ()
-            if (MUSICBRAINZ5_FOUND)
+                set(CANTATA_LIBS ${CANTATA_LIBS} CDDB::CDDB)
+            endif()
+            if(MUSICBRAINZ5_FOUND)
                 set(CANTATA_SRCS ${CANTATA_SRCS} devices/musicbrainz.cpp)
                 include_directories(${MUSICBRAINZ5_INCLUDE_DIRS})
                 set(CANTATA_LIBS ${CANTATA_LIBS} ${MUSICBRAINZ5_LIBRARIES})
-            endif ()
-            set(CANTATA_SRCS ${CANTATA_SRCS} devices/audiocddevice.cpp devices/cddbselectiondialog.cpp
-                 devices/cdparanoia.cpp devices/audiocdsettings.cpp devices/extractjob.cpp devices/albumdetailsdialog.cpp)
+            endif()
+            set(CANTATA_SRCS
+                ${CANTATA_SRCS}
+                devices/audiocddevice.cpp
+                devices/cddbselectiondialog.cpp
+                devices/cdparanoia.cpp
+                devices/audiocdsettings.cpp
+                devices/extractjob.cpp
+                devices/albumdetailsdialog.cpp
+            )
             # If CDDB/MusicBrainz5 found - then CDParanoia must have been!
-            if (CDIOPARANOIA_FOUND)
-                set(CANTATA_LIBS ${CANTATA_LIBS} ${CDIOPARANOIA_LIBRARIES})
-                include_directories(${CDIOPARANOIA_INCLUDE_DIRS})
+            if(LibCDIOParanoia_FOUND)
+                list(APPEND CANTATA_LIBS LibCDIOParanoia::CDParanoia)
             else()
                 set(CANTATA_LIBS ${CANTATA_LIBS} ${CDPARANOIA_LIBRARIES})
                 include_directories(${CDPARANOIA_INCLUDE_DIR})
             endif()
-        endif ()
+        endif()
 
-        set(CANTATA_SRCS ${CANTATA_SRCS} devices/devicespage.cpp devices/filejob.cpp
-                devices/device.cpp devices/fsdevice.cpp devices/umsdevice.cpp devices/splitlabelwidget.cpp
-                models/devicesmodel.cpp devices/actiondialog.cpp devices/devicepropertieswidget.cpp
-                devices/devicepropertiesdialog.cpp devices/encoders.cpp devices/freespaceinfo.cpp
-                devices/transcodingjob.cpp devices/valueslider.cpp devices/syncdialog.cpp
-                devices/synccollectionwidget.cpp
-                models/musiclibrarymodel.cpp)
+        set(CANTATA_SRCS
+            ${CANTATA_SRCS}
+            devices/devicespage.cpp
+            devices/filejob.cpp
+            devices/device.cpp
+            devices/fsdevice.cpp
+            devices/umsdevice.cpp
+            devices/splitlabelwidget.cpp
+            models/devicesmodel.cpp
+            devices/actiondialog.cpp
+            devices/devicepropertieswidget.cpp
+            devices/devicepropertiesdialog.cpp
+            devices/encoders.cpp
+            devices/freespaceinfo.cpp
+            devices/transcodingjob.cpp
+            devices/valueslider.cpp
+            devices/syncdialog.cpp
+            devices/synccollectionwidget.cpp
+            models/musiclibrarymodel.cpp
+        )
 
-        if (ENABLE_REMOTE_DEVICES)
-            set(CANTATA_SRCS ${CANTATA_SRCS} devices/remotefsdevice.cpp devices/remotedevicepropertiesdialog.cpp
-                devices/remotedevicepropertieswidget.cpp)
-        endif ()
-    else (ENABLE_DEVICES_SUPPORT)
+        if(ENABLE_REMOTE_DEVICES)
+            set(CANTATA_SRCS
+                ${CANTATA_SRCS}
+                devices/remotefsdevice.cpp
+                devices/remotedevicepropertiesdialog.cpp
+                devices/remotedevicepropertieswidget.cpp
+            )
+        endif()
+    else(ENABLE_DEVICES_SUPPORT)
         set(CANTATA_SRCS ${CANTATA_SRCS} devices/device.cpp)
-    endif ()
-else (TAGLIB_FOUND)
+    endif()
+else(TagLib_FOUND)
     set(ENABLE_DEVICES_SUPPORT OFF)
     set(ENABLE_REMOTE_DEVICES OFF)
-endif ()
+endif()
 
-if (ENABLE_PROXY_CONFIG)
+if(ENABLE_PROXY_CONFIG)
     set(CANTATA_SRCS ${CANTATA_SRCS} network/proxysettings.cpp)
-endif ()
+endif()
 
-if (WIN32 OR APPLE OR HAIKU)
+if(WIN32 OR APPLE OR HAIKU)
     set(CANTATA_SRCS ${CANTATA_SRCS} gui/singleapplication.cpp)
-endif ()
-if (WIN32)
+endif()
+if(WIN32)
     set(CANTATA_SRCS ${CANTATA_SRCS} gui/application_win.cpp)
-elseif (APPLE)
+elseif(APPLE)
     set(CANTATA_SRCS ${CANTATA_SRCS} gui/application_mac.cpp)
-elseif (HAIKU)
+elseif(HAIKU)
     set(CANTATA_SRCS ${CANTATA_SRCS} gui/application_haiku.cpp)
-else ()
+else()
     set(CANTATA_SRCS ${CANTATA_SRCS} gui/application_qt.cpp)
-endif ()
-if (WIN32)
+endif()
+if(WIN32)
     add_definitions(-DWIN32)
     add_subdirectory(windows)
     set(CANTATA_SRCS ${CANTATA_SRCS} windows/cantataico.rc)
-    if (NOT CANTATA_WINDOWS_INSTALLER_DEST)
+    if(NOT CANTATA_WINDOWS_INSTALLER_DEST)
         set(CANTATA_WINDOWS_INSTALLER_DEST z:\ )
-    endif ()
-elseif (APPLE)
+    endif()
+elseif(APPLE)
     add_definitions(-D__APPLE__)
-endif ()
+endif()
 
-set(CANTATA_SRCS ${CANTATA_SRCS} gui/shortcutssettingspage.cpp gui/mediakeys.cpp)
+set(CANTATA_SRCS
+    ${CANTATA_SRCS}
+    gui/shortcutssettingspage.cpp
+    gui/mediakeys.cpp
+)
 
-if (WIN32 OR APPLE)
+if(WIN32 OR APPLE)
     set(CANTATA_SRCS ${CANTATA_SRCS} cantata_icon.qrc)
 else()
     add_subdirectory(icons)
 endif()
 
-if (WIN32)
+if(WIN32)
     add_definitions(-DQXT_STATIC)
     add_subdirectory(3rdparty/qxt)
     set(CANTATA_SRCS ${CANTATA_SRCS} gui/qxtmediakeys.cpp)
-    set(CMAKE_BUILD_TYPE "Release")
-    ADD_EXECUTABLE(cantata WIN32 ${CANTATA_SRCS} ${CANTATA_PO})
-    install(TARGETS cantata DESTINATION ${CMAKE_INSTALL_PREFIX})
-elseif (APPLE)
-    ADD_EXECUTABLE(cantata MACOSX_BUNDLE ${CANTATA_SRCS} ${CANTATA_PO})
+    add_executable(cantata WIN32 ${CANTATA_SRCS} ${CANTATA_PO})
+    install(TARGETS cantata)
+elseif(APPLE)
+    add_executable(cantata MACOSX_BUNDLE ${CANTATA_SRCS} ${CANTATA_PO})
+    set_target_properties(cantata PROPERTIES
+        MACOSX_BUNDLE TRUE
+        MACOSX_RPATH TRUE
+        OUTPUT_NAME ${MACOSX_BUNDLE_BUNDLE_NAME}
+        XCODE_ATTRIBUTE_EXECUTABLE_NAME ${EXECUTABLE_NAME}
+    )
 
-    set(BREW_OPENSSL_PATH /usr/local/opt/openssl/lib)
-    if (EXISTS ${BREW_OPENSSL_PATH}/libcrypto.1.0.0.dylib AND EXISTS ${BREW_OPENSSL_PATH}/libssl.1.0.0.dylib)
-        install(FILES ${BREW_OPENSSL_PATH}/libcrypto.1.0.0.dylib DESTINATION ${MACOSX_BUNDLE_APP_DIR} RENAME libcrypto.dylib)
-        install(FILES ${BREW_OPENSSL_PATH}/libssl.1.0.0.dylib DESTINATION ${MACOSX_BUNDLE_APP_DIR} RENAME libssl.dylib)
-    endif()
     add_subdirectory(mac)
-    include(DeployQt6)
-    install(PROGRAMS ${CMAKE_BINARY_DIR}/cantata.app/Contents/MacOS/cantata DESTINATION ${MACOSX_BUNDLE_APP_DIR})
-    # Create our own plist file to enable HighDPI support
-    configure_file(mac/Info.plist.cmake ${CMAKE_CURRENT_BINARY_DIR}/mac/Info.plist)
-    configure_file(mac/dmg/create-dmg.sh.in ${CMAKE_CURRENT_BINARY_DIR}/mac/create-dmg.sh)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mac/Info.plist DESTINATION ${CANTATA_APP_CONTENTS_DIR})
-    if (TAGLIB_FOUND)
-        # *NEED* to install cantata-replagain/cantata-tags *before* install_qt6_executable fix'es the bundle
+    install(
+		PROGRAMS ${CMAKE_BINARY_DIR}/${MACOSX_BUNDLE_BUNDLE_NAME}.app/Contents/MacOS/${MACOSX_BUNDLE_BUNDLE_NAME}
+		DESTINATION ${APP_MACOS_DIR}
+    )
+    install(
+        FILES ${CMAKE_BINARY_DIR}/${MACOSX_BUNDLE_BUNDLE_NAME}.app/Contents/Info.plist
+        DESTINATION ${APP_CONTENTS_DIR}
+    )
+	if(TagLib_FOUND)
+        # *NEED* to install cantata-replagain/cantata-tags *before* install_qt5_executable fix'es the bundle
         # If we install from their own CMakeLists.txt then they are installed *after* the fix-up, and so link
         # to the build libs not the packaged ones!
-        if (FFMPEG_FOUND OR MPG123_FOUND)
-            install(PROGRAMS ${CMAKE_BINARY_DIR}/replaygain/cantata-replaygain DESTINATION ${MACOSX_BUNDLE_APP_DIR})
-        endif (FFMPEG_FOUND OR MPG123_FOUND)
-        install(PROGRAMS ${CMAKE_BINARY_DIR}/tags/cantata-tags DESTINATION ${MACOSX_BUNDLE_APP_DIR})
-    endif (TAGLIB_FOUND)
-    if (ENABLE_HTTP_STREAM_PLAYBACK AND NOT ENABLE_LIBVLC)
-        install_qt6_executable(Cantata.app "qjpeg;qsvg;qsvgicon;qcocoa;qmacstyle;qsqlite;qavfmediaplayer")
-    else (ENABLE_HTTP_STREAM_PLAYBACK AND NOT ENABLE_LIBVLC)
-        install_qt6_executable(Cantata.app "qjpeg;qsvg;qsvgicon;qcocoa;qmacstyle;qsqlite")
-    endif (ENABLE_HTTP_STREAM_PLAYBACK AND NOT ENABLE_LIBVLC)
-elseif (HAIKU)
-    ADD_EXECUTABLE(cantata ${CANTATA_SRCS})
-    install(TARGETS cantata DESTINATION ${CMAKE_INSTALL_PREFIX})
-else ()
-    ADD_EXECUTABLE(cantata ${CANTATA_SRCS})
-    install(TARGETS cantata RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
-endif ()
+        if(FFMPEG_FOUND OR MPG123_FOUND)
+            install(
+                PROGRAMS ${CMAKE_BINARY_DIR}/replaygain/cantata-replaygain
+				DESTINATION ${APP_MACOS_DIR}
+            )
+        endif(FFMPEG_FOUND OR MPG123_FOUND)
+        install(
+            PROGRAMS ${CMAKE_BINARY_DIR}/tags/cantata-tags
+			DESTINATION ${APP_MACOS_DIR}
+        )
+	endif(TagLib_FOUND)
+    if(ENABLE_HTTP_STREAM_PLAYBACK AND NOT ENABLE_LIBVLC)
+        #     install_qt_executable(Cantata.app "qjpeg;qsvg;qsvgicon;qcocoa;qmacstyle;qsqlite;qavfmediaplayer")
+    else(ENABLE_HTTP_STREAM_PLAYBACK AND NOT ENABLE_LIBVLC)
+        #    install_qt_executable(Cantata.app "qjpeg;qsvg;qsvgicon;qcocoa;qmacstyle;qsqlite")
+    endif(ENABLE_HTTP_STREAM_PLAYBACK AND NOT ENABLE_LIBVLC)
+elseif(HAIKU)
+    add_executable(cantata ${CANTATA_SRCS})
+	install(TARGETS cantata)
+else()
+    add_executable(cantata ${CANTATA_SRCS})
+    install(TARGETS cantata)
+endif()
 
-if (ENABLE_CATEGORIZED_VIEW)
+if(ENABLE_CATEGORIZED_VIEW)
     add_subdirectory(3rdparty/kcategorizedview)
     target_link_libraries(cantata kcategorizedview)
-endif ()
+endif()
 
-if (WIN32 OR APPLE OR HAIKU)
+if(WIN32 OR APPLE OR HAIKU)
     add_subdirectory(3rdparty/qtsingleapplication)
     target_link_libraries(cantata qtsingleapplication)
-else ()
+else()
     set(XDG_APPS_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/applications")
-endif ()
+endif()
 
-if (WIN32)
+if(WIN32)
     target_link_libraries(cantata qxt)
-endif (WIN32)
+endif(WIN32)
 
 add_subdirectory(translations)
 add_subdirectory(support)
 add_subdirectory(3rdparty/qtiocompressor)
 add_subdirectory(streams/icons)
 add_subdirectory(online/icons)
-target_link_libraries(cantata support-core qtiocompressor ${CANTATA_LIBS} ${QTLIBS} ${ZLIB_LIBRARIES})
+
+target_link_libraries(
+    cantata
+    support-core
+    qtiocompressor
+    ${CANTATA_LIBS}
+    ${QT_LIBS}
+    ${ZLIB_LIBRARIES}
+)
 
 # enable warnings
 add_definitions(-DQT_NO_DEBUG_OUTPUT)
 
-if (UNIX AND NOT APPLE)
-    if (NOT HAIKU)
+if(UNIX AND NOT APPLE)
+    if(NOT HAIKU)
         configure_file(cantata-remote.cmake ${CMAKE_BINARY_DIR}/cantata-remote)
-        install(PROGRAMS ${CMAKE_BINARY_DIR}/cantata-remote DESTINATION ${SHARE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME}/scripts)
+        install(
+            PROGRAMS ${CMAKE_BINARY_DIR}/cantata-remote
+            DESTINATION ${SHARE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME}/scripts
+        )
         install(FILES cantata.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
-    endif ()
+    endif()
     target_link_libraries(cantata -lpthread)
-endif ()
+endif()
 
 configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
 
-if (NOT WIN32 AND NOT APPLE AND NOT HAIKU)
+if(NOT WIN32 AND NOT APPLE AND NOT HAIKU)
     # uninstall target
-    configure_file("${CMAKE_SOURCE_DIR}/cmake_uninstall.cmake.in" "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
+    configure_file(
+        "${CMAKE_SOURCE_DIR}/cmake_uninstall.cmake.in"
+        "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
+        IMMEDIATE
+        @ONLY
+    )
     configure_file(install_dirs.cmake ${CMAKE_BINARY_DIR}/install_dirs)
-    add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake)
+    add_custom_target(
+        uninstall
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
+    )
+endif()
+
+if(APPLE)
+    # TODO: figure out why this is the only thing that works
+    install(CODE "execute_process(COMMAND ${MACDEPLOYQT_EXECUTABLE} \"${APPS}\")")
+    install(CODE "include(BundleUtilities)
+		fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")")
+    install(CODE "execute_process(COMMAND ${MACDEPLOYQT_EXECUTABLE} \"${APPS}\")")
+    install(CODE "execute_process(COMMAND codesign -f -s \"-\" \"${APPS}\")")
 endif ()
 
 macro_display_feature_log()
 
-if ( (NOT WIN32 AND NOT APPLE AND ( (NOT ENABLE_SIMPLE_MPD_SUPPORT)  OR (NOT ENABLE_DEVICES_SUPPORT) OR (ENABLE_DEVICES_SUPPORT AND NOT ENABLE_REMOTE_DEVICES) ) ) OR (NOT ENABLE_HTTP_STREAM_PLAYBACK) OR (NOT ENABLE_PROXY_CONFIG))
-    message("-----------------------------------------------------------------------------")
+if(
+    (
+        NOT WIN32
+        AND NOT APPLE
+        AND (
+            (NOT ENABLE_SIMPLE_MPD_SUPPORT)
+            OR (NOT ENABLE_DEVICES_SUPPORT)
+            OR (ENABLE_DEVICES_SUPPORT AND NOT ENABLE_REMOTE_DEVICES)
+        )
+    )
+    OR (NOT ENABLE_HTTP_STREAM_PLAYBACK)
+    OR (NOT ENABLE_PROXY_CONFIG)
+)
+    message(
+        "-----------------------------------------------------------------------------"
+    )
     message("-- The following STANDARD options have been DISABLED.")
-    message("-----------------------------------------------------------------------------")
-    if (NOT WIN32 AND NOT APPLE)
-        if (NOT ENABLE_SIMPLE_MPD_SUPPORT)
-	        message("    * Simple/Personal (Cantata controlled) MPD instance support")
+    message(
+        "-----------------------------------------------------------------------------"
+    )
+    if(NOT WIN32 AND NOT APPLE)
+        if(NOT ENABLE_SIMPLE_MPD_SUPPORT)
+            message(
+                "    * Simple/Personal (Cantata controlled) MPD instance support"
+            )
         endif()
-        if (NOT ENABLE_DEVICES_SUPPORT)
-            message("    * Devices Tab - Media device support (UMS, MTP, AudioCD).")
-        elseif (NOT ENABLE_REMOTE_DEVICES)
-            message("    * Remote Devices - Access sshfs, Samba, and local folders as devices. (EXPERIMENTAL)")
-        endif ()
+        if(NOT ENABLE_DEVICES_SUPPORT)
+            message(
+                "    * Devices Tab - Media device support (UMS, MTP, AudioCD)."
+            )
+        elseif(NOT ENABLE_REMOTE_DEVICES)
+            message(
+                "    * Remote Devices - Access sshfs, Samba, and local folders as devices. (EXPERIMENTAL)"
+            )
+        endif()
     endif()
-    if (NOT ENABLE_HTTP_STREAM_PLAYBACK)
-        message("    * MPD HTTP Streams - Playback MPD HTTP output stream via libVLC.")
-    endif ()
-    if (NOT ENABLE_PROXY_CONFIG)
+    if(NOT ENABLE_HTTP_STREAM_PLAYBACK)
+        message(
+            "    * MPD HTTP Streams - Playback MPD HTTP output stream via libVLC."
+        )
+    endif()
+    if(NOT ENABLE_PROXY_CONFIG)
         message("    * Proxy Configuration")
-    endif ()
+    endif()
 
     message("")
-endif ()
+endif()

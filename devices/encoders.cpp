@@ -352,7 +352,8 @@ static void init()
 
             QStringList lines=output.split('\n', CANTATA_SKIP_EMPTY);
             for (const QString &line: lines) {
-                int pos=line.indexOf(QRegularExpression(QLatin1String("[\\. D]EA")));
+                static const QRegularExpression lineRegex("[\\. D]EA");
+                int pos=line.indexOf(lineRegex);
                 if (0==pos || 1==pos) {
                     QList<Encoder>::Iterator it(initial.begin());
                     QList<Encoder>::Iterator end(initial.end());

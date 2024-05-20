@@ -29,7 +29,7 @@
 #include "support/monoicon.h"
 #include "support/configuration.h"
 #include "support/utils.h"
-#ifdef TAGLIB_FOUND
+#ifdef TagLib_FOUND
 #include "tags/tags.h"
 #endif
 #include <QDesktopServices>
@@ -57,12 +57,12 @@ LocalFolderBrowsePage::LocalFolderBrowsePage(bool isHome, QWidget *p)
     init(ReplacePlayQueue|AppendToPlayQueue, QList<QWidget *>() << menu);
 
     view->addAction(CustomActions::self());
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     view->addAction(StdActions::self()->editTagsAction);
     #ifdef ENABLE_REPLAYGAIN_SUPPORT
     view->addAction(StdActions::self()->replaygainAction);
     #endif
-    #endif // TAGLIB_FOUND
+    #endif // TagLib_FOUND
     view->addAction(browseAction);
     view->closeSearch();
     view->alwaysShowHeader();
@@ -120,7 +120,7 @@ QList<Song> LocalFolderBrowsePage::selectedSongs(bool allowPlaylists) const
         }
         Song s;
 
-        #ifdef TAGLIB_FOUND
+        #ifdef TagLib_FOUND
         s = Tags::read(path);
         #endif
 
@@ -158,6 +158,7 @@ void LocalFolderBrowsePage::controlActions()
     bool folderSelected=false;
     bool playlistSelected=false;
     int numSelectedTracks=0;
+    Q_UNUSED(playlistSelected)
 
     for (const QModelIndex &idx: selected) {
         QFileInfo info = model->fileInfo(proxy->mapToSource(idx));
@@ -174,12 +175,12 @@ void LocalFolderBrowsePage::controlActions()
 
     browseAction->setEnabled(enable && 1==selected.count() && folderSelected);
     CustomActions::self()->setEnabled(numSelectedTracks>0 && !folderSelected);
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     StdActions::self()->editTagsAction->setEnabled(!playlistSelected && numSelectedTracks>0 && numSelectedTracks<=250 && !folderSelected);
     #ifdef ENABLE_REPLAYGAIN_SUPPORT
     StdActions::self()->replaygainAction->setEnabled(StdActions::self()->editTagsAction->isEnabled());
     #endif
-    #endif // TAGLIB_FOUND
+    #endif // TagLib_FOUND
 }
 
 #include "moc_localfolderpage.cpp"

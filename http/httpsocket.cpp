@@ -267,7 +267,8 @@ void HttpSocket::readClient()
     if (socket->canReadLine()) {
         QList<QByteArray> tokens = split(socket->readLine()); // QRegularExpression("[ \r\n][ \r\n]*"));
         if (tokens.length()>=2 && "GET"==tokens[0]) {
-            QStringList params = QString(socket->readAll()).split(QRegularExpression("[\r\n][\r\n]*"));
+            static const QRegularExpression paramRegex("[\r\n][\r\n]*");
+            QStringList params = QString(socket->readAll()).split(paramRegex);
 
             DBUG << "params" << params << "tokens" << tokens;
             QUrl url(QUrl::fromEncoded(tokens[1]));

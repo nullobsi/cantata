@@ -208,8 +208,7 @@ if ( UDEV_FOUND )
    set(solidlite_OPTIONAL_LIBS ${solidlite_OPTIONAL_LIBS} ${UDEV_LIBS})
 endif ( )
 
-#target_link_libraries(solidlite ${QT_QTCORE_LIBRARY} ${QT_QTDBUS_LIBRARY} ${QT_QTXML_LIBRARY} ${QT_QTGUI_LIBRARY} ${solidlite_OPTIONAL_LIBS} )
-target_link_libraries(solidlite ${QTLIBS} ${solidlite_OPTIONAL_LIBS})
+target_link_libraries(solidlite ${QT_LIBS} ${solidlite_OPTIONAL_LIBS})
 target_link_libraries(solidlite LINK_INTERFACE_LIBRARIES ${QT_CORE_LIBRARY} )
 
 if (WINCE)

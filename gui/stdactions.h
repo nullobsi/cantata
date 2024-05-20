@@ -53,7 +53,7 @@ public:
     Action *setPriorityAction;
     Action *addToPlayQueueMenuAction;
     Action *addRandomAlbumToPlayQueueAction;
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     Action *editTagsAction;
     Action *organiseFilesAction;
     #endif

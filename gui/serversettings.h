@@ -55,7 +55,7 @@ private Q_SLOTS:
     void remove();
     void nameChanged();
     void basicDirChanged();
-    #ifdef AVAHI_FOUND
+    #ifdef Avahi_FOUND
     void detectMPDs();
     void adoptServerSettings(QString ip, QString port);
     #endif
@@ -70,7 +70,7 @@ private:
     Collection prevBasic;
     bool haveBasicCollection;
     int prevIndex;
-    #ifdef AVAHI_FOUND
+    #ifdef Avahi_FOUND
     QPushButton *discoveryButton;
     #endif
 };

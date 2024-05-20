@@ -121,18 +121,18 @@ static QString extract(const QString &source, const QString &begin, const QStrin
     return source.mid(beginIdx, endIdx - beginIdx - 1);
 }
 
+static QRegularExpression xmlTagRegex = QRegularExpression("<(\\w+).*>");
 static QString extractXmlTag(const QString &source, const QString &tag)
 {
     DBUG << "Looking for" << tag;
-    QRegularExpression re("<(\\w+).*>"); // ಠ_ಠ
-    QRegularExpressionMatch reMatch = re.match(tag);
-    if (! reMatch.hasMatch()) {
+    auto match = xmlTagRegex.match(tag);
+    if (!match.hasMatch()) {
         DBUG << "Failed to find tag";
         return QString();
     }
 
     DBUG << "Found match";
-    return extract(source, tag, "</" + reMatch.captured(1) + ">", true);
+    return extract(source, tag, "</" + match.captured(1) + ">", true);
 }
 
 static QString exclude(const QString &source, const QString &begin, const QString &end)
@@ -152,13 +152,12 @@ static QString exclude(const QString &source, const QString &begin, const QStrin
 
 static QString excludeXmlTag(const QString &source, const QString &tag)
 {
-    QRegularExpression re("<(\\w+).*>"); // ಠ_ಠ
-    QRegularExpressionMatch reMatch = re.match(tag);
-    if (! reMatch.hasMatch()) {
+    auto match = xmlTagRegex.match(tag);
+    if (!match.hasMatch()) {
         return source;
     }
 
-    return exclude(source, tag, "</" + reMatch.captured(1) + ">");
+    return exclude(source, tag, "</" + match.captured(1) + ">");
 }
 
 static void applyExtractRule(const UltimateLyricsProvider::Rule &rule, QString &content, const Song &song)
@@ -216,6 +215,13 @@ QString UltimateLyricsProvider::displayName() const
 
 void UltimateLyricsProvider::fetchInfo(int id, Song metadata, bool removeThe)
 {
+    auto converter = QStringDecoder(charset.toLatin1().constData(), QStringConverter::Flag::Default);
+
+    if (!converter.isValid()) {
+        emit lyricsReady(id, QString());
+        return;
+    }
+
     QString artistFixed=metadata.basicArtist();
     QString titleFixed=metadata.basicTitle();
     QString urlText(url);
@@ -356,7 +362,9 @@ void UltimateLyricsProvider::wikiMediaLyricsFetched()
         return;
     }
 
-    QString contents = QString::fromLatin1(reply->readAll()).replace("<br />", "<br/>");
+    auto fromCharset = QStringDecoder(charset.toLatin1().constData(), QStringConverter::Flag::Default);
+    QString contents = fromCharset(reply->readAll());
+    contents = contents.replace("<br />", "<br/>");
     DBUG << name << "response" << contents;
     emit lyricsReady(id, extract(contents, QLatin1String("&lt;lyrics&gt;"), QLatin1String("&lt;/lyrics&gt;")));
 }
@@ -382,7 +390,9 @@ void UltimateLyricsProvider::lyricsFetched()
         return;
     }
 
-    const QString originalContent = QString::fromLatin1(reply->readAll()).replace("<br />", "<br/>");
+    auto decode = QStringDecoder(charset.toLatin1().constData());
+    QString originalContent = decode(reply->readAll());
+    originalContent = originalContent.replace("<br />", "<br/>");
 
     DBUG << name << "response" << originalContent;
     // Check for invalid indicators

@@ -79,7 +79,7 @@ SearchPage::SearchPage(QWidget *p)
 
     view->addAction(StdActions::self()->addToStoredPlaylistAction);
     view->addAction(CustomActions::self());
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     #ifdef ENABLE_DEVICES_SUPPORT
     view->addAction(StdActions::self()->copyToDeviceAction);
     #endif
@@ -92,7 +92,7 @@ SearchPage::SearchPage(QWidget *p)
     view->addSeparator();
     view->addAction(StdActions::self()->deleteSongsAction);
     #endif
-    #endif // TAGLIB_FOUND
+    #endif // TagLib_FOUND
     view->addAction(locateAction);
     view->setInfoText(tr("Use the text field above to search for music in your library via MPD's search mechanism. "
                          "Clicking the label next to the field will produce a menu allowing you to control the search area."));
@@ -211,7 +211,7 @@ void SearchPage::controlActions()
     locateAction->setEnabled(enable);
 
     StdActions::self()->addToStoredPlaylistAction->setEnabled(enable);
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     StdActions::self()->organiseFilesAction->setEnabled(enable && MPDConnection::self()->getDetails().dirReadable);
     StdActions::self()->editTagsAction->setEnabled(StdActions::self()->organiseFilesAction->isEnabled());
     #ifdef ENABLE_REPLAYGAIN_SUPPORT
@@ -221,7 +221,7 @@ void SearchPage::controlActions()
     StdActions::self()->deleteSongsAction->setEnabled(StdActions::self()->organiseFilesAction->isEnabled());
     StdActions::self()->copyToDeviceAction->setEnabled(StdActions::self()->organiseFilesAction->isEnabled());
     #endif
-    #endif // TAGLIB_FOUND
+    #endif // TagLib_FOUND
 }
 
 void SearchPage::setSearchCategory(const QString &cat)

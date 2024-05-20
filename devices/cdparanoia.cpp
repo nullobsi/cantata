@@ -52,7 +52,7 @@ CdParanoia::CdParanoia(const QString &device, bool full, bool noSkip, bool playb
         setFullParanoiaMode(full);
         if (playback) {
             maxRetries=1;
-            #if !defined CDIOPARANOIA_FOUND && defined CDPARANOIA_HAS_CACHEMODEL_SIZE
+            #if !defined LibCDIOParanoia_FOUND && defined CDPARANOIA_HAS_CACHEMODEL_SIZE
             paranoia_cachemodel_size(paranoia, 24);
             #endif
         }
@@ -84,7 +84,7 @@ void CdParanoia::setParanoiaMode(int mode)
     }
 
     if (paranoia) {
-        #ifdef CDIOPARANOIA_FOUND
+        #ifdef LibCDIOParanoia_FOUND
         cdio_paranoia_modeset(paranoia, paranoiaMode);
         #else
         paranoia_modeset(paranoia, paranoiaMode);
@@ -94,7 +94,7 @@ void CdParanoia::setParanoiaMode(int mode)
 
 qint16 * CdParanoia::read()
 {
-    #ifdef CDIOPARANOIA_FOUND
+    #ifdef LibCDIOParanoia_FOUND
     return paranoia ? cdio_paranoia_read_limited(paranoia, 0, maxRetries) : 0;
     #else
     return paranoia ? paranoia_read_limited(paranoia, 0, maxRetries) : 0;
@@ -103,7 +103,7 @@ qint16 * CdParanoia::read()
 
 int CdParanoia::seek(long sector, int mode)
 {
-    #ifdef CDIOPARANOIA_FOUND
+    #ifdef LibCDIOParanoia_FOUND
     return paranoia ? cdio_paranoia_seek(paranoia, sector+seekOffst, mode) : -1;
     #else
     return paranoia ? paranoia_seek(paranoia, sector+seekOffst, mode) : -1;
@@ -112,7 +112,7 @@ int CdParanoia::seek(long sector, int mode)
 
 int CdParanoia::firstSectorOfTrack(int track)
 {
-    #ifdef CDIOPARANOIA_FOUND
+    #ifdef LibCDIOParanoia_FOUND
     return paranoia ? cdio_cddap_track_firstsector(drive, track) : -1;
     #else
     return paranoia ? cdda_track_firstsector(drive, track) : -1;
@@ -121,7 +121,7 @@ int CdParanoia::firstSectorOfTrack(int track)
 
 int CdParanoia::lastSectorOfTrack(int track)
 {
-    #ifdef CDIOPARANOIA_FOUND
+    #ifdef LibCDIOParanoia_FOUND
     return paranoia ? cdio_cddap_track_lastsector(drive, track) : -1;
     #else
     return paranoia ? cdda_track_lastsector(drive, track) : -1;
@@ -131,7 +131,7 @@ int CdParanoia::lastSectorOfTrack(int track)
 bool CdParanoia::init()
 {
     free();
-    #ifdef CDIOPARANOIA_FOUND
+    #ifdef LibCDIOParanoia_FOUND
     drive = cdda_identify(dev.toLatin1().data(), 0, 0);
     #else
     drive = cdda_identify(dev.toLatin1().data(), 0, 0);
@@ -140,7 +140,7 @@ bool CdParanoia::init()
         return false;
     }
 
-    #ifdef CDIOPARANOIA_FOUND
+    #ifdef LibCDIOParanoia_FOUND
     cdio_cddap_open(drive);
     paranoia = cdio_paranoia_init(drive);
     #else
@@ -158,7 +158,7 @@ bool CdParanoia::init()
 void CdParanoia::free()
 {
     if (paranoia) {
-        #ifdef CDIOPARANOIA_FOUND
+        #ifdef LibCDIOParanoia_FOUND
         cdio_paranoia_free(paranoia);
         #else
         paranoia_free(paranoia);
@@ -166,7 +166,7 @@ void CdParanoia::free()
         paranoia = 0;
     }
     if (drive) {
-        #ifdef CDIOPARANOIA_FOUND
+        #ifdef LibCDIOParanoia_FOUND
         cdio_cddap_close(drive);
         #else
         cdda_close(drive);

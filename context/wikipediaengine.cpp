@@ -184,27 +184,33 @@ static QString wikiToHtml(QString answer, bool introOnly, const QUrl &url)
 {
     QString u=fixWikiLink(url);
     int start = answer.indexOf('>', answer.indexOf("<text"))+1;
-    int end = answer.lastIndexOf(QRegularExpression("\\n[^\\n]*\\n\\{\\{reflist", QRegularExpression::CaseInsensitiveOption));
+    static const QRegularExpression endR("\\n[^\\n]*\\n\\{\\{reflist", QRegularExpression::CaseInsensitiveOption);
+    int end = answer.lastIndexOf(endR);
     if (end < start) {
         end = INT_MAX;
     }
-    int e = answer.lastIndexOf(QRegularExpression("\\n[^\\n]*\\n&lt;references", QRegularExpression::CaseInsensitiveOption));
+    static const QRegularExpression refEx("\\n[^\\n]*\\n&lt;references", QRegularExpression::CaseInsensitiveOption);
+    int e = answer.lastIndexOf(refEx);
     if (e > start && e < end) {
         end = e;
     }
-    e = answer.lastIndexOf(QRegularExpression("\n==\\s*Sources\\s*=="));
+    static const QRegularExpression sourceEX("\n==\\s*Sources\\s*==");
+    e = answer.lastIndexOf(sourceEX);
     if (e > start && e < end) {
         end = e;
     }
-    e = answer.lastIndexOf(QRegularExpression("\n==\\s*Notes\\s*=="));
+    static const QRegularExpression notesEX("\n==\\s*Notes\\s*==");
+    e = answer.lastIndexOf(notesEX);
     if (e > start && e < end) {
         end = e;
     }
-    e = answer.lastIndexOf(QRegularExpression("\n==\\s*References\\s*=="));
+    static const QRegularExpression refsEX("\n==\\s*References\\s*==");
+    e = answer.lastIndexOf(refEx);
     if (e > start && e < end) {
         end = e;
     }
-    e = answer.lastIndexOf(QRegularExpression("\n==\\s*External links\\s*=="));
+    static const QRegularExpression externalEX("\n==\\s*External links\\s*==");
+    e = answer.lastIndexOf(externalEX);
     if (e > start && e < end) {
         end = e;
     }
@@ -217,35 +223,41 @@ static QString wikiToHtml(QString answer, bool introOnly, const QUrl &url)
     answer = strip(answer, "{{", "}}"); // strip wiki internal stuff
     answer.replace("&lt;", "<").replace("&gt;", ">");
     answer = strip(answer, "<!--", "-->"); // strip comments
-    answer.remove(QRegularExpression("<ref[^>]*/>")); // strip inline refereces
+    static const QRegularExpression reftagEX("<ref[^>]*/>");
+    answer.remove(reftagEX); // strip inline refereces
     answer = strip(answer, "<ref", "</ref>", "<ref"); // strip refereces
 //     answer = strip(answer, "<ref ", "</ref>", "<ref"); // strip argumented refereces
     answer = strip(answer, "[[File:", "]]", "[["); // strip images etc
     answer = strip(answer, "[[Image:", "]]", "[["); // strip images etc
 
-    answer.replace(QRegularExpression("\\[\\[[^\\[\\]]*\\|([^\\[\\]\\|]*)\\]\\]"), "\\1"); // collapse commented links
+    static const QRegularExpression commLinkEX(R"(\[\[[^\[\]]*\|([^\[\]\|]*)\]\])");
+    answer.replace(commLinkEX, "\\1"); // collapse commented links
     answer.replace("[['", "[["); // Fixes '74 (e.g. 1974) causing errors!
     answer.remove("[[").remove("]]"); // remove wiki link "tags"
     answer = strip(answer, "{| class=&quot;wikitable&quot;", "|}");
 
     answer = answer.trimmed();
 
-//     answer.replace(QRegularExpression("\\n\\{\\|[^\\n]*wikitable[^\\n]*\\n!"), "\n<table><th>");
+//     answer.replace(QRegExp("\\n\\{\\|[^\\n]*wikitable[^\\n]*\\n!"), "\n<table><th>");
 
     answer.replace("\n\n", "<br>");
     answer.replace("(  ; ", "(");
 //     answer.replace("\n\n", "</p><p align=\"justify\">");
-    answer.replace(QRegularExpression("\\n'''([^\\n]*)'''\\n"), "<hr><b>\\1</b>\n");
-    answer.replace(QRegularExpression("\\n\\{\\|[^\\n]*\\n"), "\n");
-    answer.replace(QRegularExpression("\\n\\|[^\\n]*\\n"), "\n");
+    static const QRegularExpression ansOneE(R"(\n'''([^\n]*)'''\n)");
+    answer.replace(ansOneE, "<hr><b>\\1</b>\n");
+    static const QRegularExpression ansTwoE(R"(\n\{\|[^\n]*\n)");
+    answer.replace(ansTwoE, "\n");
+    static const QRegularExpression ansThreeE(R"(\n\|[^\n]*\n)");
+    answer.replace(ansThreeE, "\n");
     answer.replace("\n*", "<br>");
     answer.replace("\n", "");
     answer.replace("'''s ", "'s");
-    answer.replace("'''", "¬").replace(QRegularExpression("¬([^¬]*)¬"), "<b>\\1</b>");
-    answer.replace("''", "¬").replace(QRegularExpression("¬([^¬]*)¬"), "<i>\\1</i>");
+    static const QRegularExpression boldIE("¬([^¬]*)¬");
+    answer.replace("'''", "¬").replace(boldIE, "<b>\\1</b>");
+    answer.replace("''", "¬").replace(boldIE, "<i>\\1</i>");
     if (!introOnly) {
-        answer.replace("===", "¬").replace(QRegularExpression("¬([^¬]*)¬"), "<h3>\\1</h3>");
-        answer.replace("==", "¬").replace(QRegularExpression("¬([^¬]*)¬"), "<h2>\\1</h2>");
+        answer.replace("===", "¬").replace(boldIE, "<h3>\\1</h3>");
+        answer.replace("==", "¬").replace(boldIE, "<h2>\\1</h2>");
     }
     answer.replace("&amp;nbsp;", " ");
     answer.replace("&ndash;", "-");

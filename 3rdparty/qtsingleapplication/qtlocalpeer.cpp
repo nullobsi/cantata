@@ -50,6 +50,7 @@
 #include <QTime>
 #include <QtDebug>
 #include <QDataStream>
+#include <QRegularExpression>
 
 #if defined(Q_OS_WIN)
 #include <QLibrary>
@@ -64,6 +65,8 @@ static PProcessIdToSessionId pProcessIdToSessionId = 0;
 
 const char* QtLocalPeer::ack = "ack";
 
+static QRegularExpression prefixRegex = QRegularExpression("[^a-zA-Z]");
+
 QtLocalPeer::QtLocalPeer(QObject* parent, const QString &appId)
     : QObject(parent), id(appId)
 {
@@ -75,11 +78,11 @@ QtLocalPeer::QtLocalPeer(QObject* parent, const QString &appId)
 #endif
         prefix = id.section(QLatin1Char('/'), -1);
     }
-    prefix.remove(QRegExp("[^a-zA-Z]"));
+    prefix.remove(prefixRegex);
     prefix.truncate(6);
 
     QByteArray idc = id.toUtf8();
-    quint16 idNum = qChecksum(idc.constData(), idc.size());
+    quint16 idNum = qChecksum(idc);
     socketName = QLatin1String("qtsingleapp-") + prefix
                  + QLatin1Char('-') + QString::number(idNum, 16);
 

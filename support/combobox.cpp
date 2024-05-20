@@ -30,7 +30,8 @@
 #include <QStyleOptionComboBox>
 
 // Max number of items before we try to force a scrollbar in popup menu...
-static int maxPopupItemCount=-1;
+Q_DECL_UNUSED static int maxPopupItemCount=-1;
+
 
 ComboBox::ComboBox(QWidget *p)
     : QComboBox(p)

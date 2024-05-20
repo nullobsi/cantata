@@ -44,7 +44,7 @@ Q_SIGNALS:
     void textChanged(const QString &t);
 
 private:
-    bool toggleState;
+    Q_DECL_UNUSED_MEMBER bool toggleState;
 };
 
 #endif

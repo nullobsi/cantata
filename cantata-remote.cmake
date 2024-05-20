@@ -48,7 +48,7 @@ else
     method=$1
 fi
 
-service=@PROJECT_REV_URL@
+service=@PROJECT_REV_ID@
 
 # If we have qdbus use that...
 qt=`which qdbus`

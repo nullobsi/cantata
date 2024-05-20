@@ -1234,13 +1234,15 @@ static QStringList fixGenres(const QString &genre)
     QStringList allGenres=Song::capitalize(genre).split(' ', CANTATA_SKIP_EMPTY);
     QStringList fixed;
     for (const QString &genre: allGenres) {
+        static const QRegularExpression brokenXML("^#x[0-9a-f][0-9a-f]");
         if (genre.length() < 2 ||
             genre.contains("ÃÂ") ||  // Broken unicode.
-            genre.contains(QRegularExpression("^#x[0-9a-f][0-9a-f]"))) { // Broken XML entities.
+            genre.contains(brokenXML)) { // Broken XML entities.
             continue;
         }
         // Convert 80 -> 80s.
-        if (genre.contains(QRegularExpression("^[0-9]0$"))) {
+        static const QRegularExpression decade("^[0-9]0$");
+        if (genre.contains(decade)) {
             fixed << genre + 's';
         } else {
             fixed << genre;

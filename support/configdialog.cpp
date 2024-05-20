@@ -86,6 +86,7 @@ public:
 
     void paintEvent(QPaintEvent *e)
     {
+        Q_UNUSED(e)
         if (isChecked()) {
             QPainter p(this);
             QColor col(Qt::black);
@@ -196,6 +197,7 @@ ConfigDialog::~ConfigDialog()
 
 void ConfigDialog::addPage(const QString &id, QWidget *widget, const QString &name, const QIcon &icon, const QString &header)
 {
+    Q_UNUSED(header)
     #ifdef __APPLE__
 
     Page newPage;
@@ -415,9 +417,9 @@ void ConfigDialog::showEvent(QShowEvent *e)
         shown=true;
         ensurePolished();
 
-        QScreen *dw=QApplication::primaryScreen();
-        if (dw) {
-            move(QPoint((dw->availableGeometry().size().width()-width())/2, 86));
+        QScreen *sc = QApplication::primaryScreen();
+        if (sc) {
+            move(QPoint((sc->availableGeometry().size().width()-width())/2, 86));
         }
     }
     OSXStyle::self()->addWindow(this);

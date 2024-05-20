@@ -128,7 +128,7 @@ void TranscodingJob::processOutput()
 inline qint64 TranscodingJob::computeDuration(const QString &output)
 {
     //We match something like "Duration: 00:04:33.60"
-    QRegularExpression durationRegexp("Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})");
+    static const QRegularExpression durationRegexp("Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})");
     QRegularExpressionMatch match;
     if(output.contains(durationRegexp, &match)) {
         //duration is in csec
@@ -145,7 +145,7 @@ inline qint64 TranscodingJob::computeProgress(const QString &output)
 {
     //Output is like size=     323kB time=18.10 bitrate= 146.0kbits/s
     //We're going to use the "time" column, which counts the elapsed time in seconds.
-    QRegularExpression timeRegexp("time=(\\d+)\\.(\\d{2})");
+    static const QRegularExpression timeRegexp("time=(\\d+)\\.(\\d{2})");
     QRegularExpressionMatch match;
 
     if(output.contains(timeRegexp, &match)) {

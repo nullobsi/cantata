@@ -101,7 +101,7 @@ void TrayItem::showMessage(const QString &title, const QString &text, const QIma
     #endif
 }
 
-static Action * copyAction(Action *orig)
+Q_DECL_UNUSED static Action * copyAction(Action *orig)
 {
     Action *newAction=new Action(orig->parent());
     newAction->setText(Utils::strippedText(orig->text()));
@@ -214,6 +214,7 @@ void TrayItem::trayItemClicked(QSystemTrayIcon::ActivationReason reason)
 
 void TrayItem::songChanged(const Song &song, bool isPlaying)
 {
+    Q_UNUSED(isPlaying)
     #ifdef Q_OS_MAC
     if (Settings::self()->showPopups()) {
         bool useable=song.isStandardStream()

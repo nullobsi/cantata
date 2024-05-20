@@ -106,9 +106,9 @@ bool MenuButton::eventFilter(QObject *o, QEvent *e)
             if (newPos<0) {
                 newPos=0;
             } else {
-                QScreen *dw=QApplication::primaryScreen();
-                if (dw) {
-                    QRect geo=dw->availableGeometry();
+                QScreen *sc = QGuiApplication::primaryScreen();
+                if (sc) {
+                    QRect geo=sc->availableGeometry();
                     int maxWidth=geo.x()+geo.width();
                     if (maxWidth>0 && (newPos+mnu->width())>maxWidth) {
                         newPos=maxWidth-mnu->width();

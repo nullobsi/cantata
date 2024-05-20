@@ -331,7 +331,7 @@ private:
     Action *playNextAction;
     Action *moveToBeginning;
     Action *moveToEnd;
-    #ifdef TAGLIB_FOUND
+    #ifdef TagLib_FOUND
     Action *editPlayQueueTagsAction;
     #endif
     Action *searchTabAction;
