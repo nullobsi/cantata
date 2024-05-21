@@ -3,13 +3,15 @@ Cantata
 
 **NOTE** This is my personal fork of
 [CDrummond/cantata](https://github.com/CDrummond/cantata), which is now archived.
+Includes work from [fenuks/cantata](https://github.com/fenuks/cantata)
+and the Qt6 PR.
 
 ![ScreenShot](screenshots/mainwindow.png)
 
 
-A graphical (Qt5) client for MPD, supporting the following features:
+A graphical (Qt6) client for MPD, supporting the following features:
 
-  1. Supports Linux, macOS, Windows, and Haiku. **NOTE:** Only Linux actively supported as of 2.3.3
+  1. Supports Linux, macOS, Windows, and Haiku. 
   2. Multiple MPD collections.
   3. Highly customisable layout.
   4. Songs (optionally) grouped by album in play queue.
@@ -29,12 +31,4 @@ A graphical (Qt5) client for MPD, supporting the following features:
  18. "Partitions" support.
 
 Cantata started off as a fork of QtMPC, however, the code (and user interface) is now *very* different to that of QtMPC.
-For more detailed information, please refer to the main [README](https://raw.githubusercontent.com/CDrummond/cantata/master/README)
-
-
-## Donations
-
-I develop Cantata purely for fun, so no donations are required. However, seeing as I have been asked about this a few times, here is a link...
-
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2X2CTDUH27V9L&source=url)
-
+For more detailed information, please refer to the main [README](https://raw.githubusercontent.com/nullobsi/cantata/master/README)
