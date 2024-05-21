@@ -115,7 +115,7 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QProcess>
-#ifdef Q_OS_WIN
+#if defined (Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include "windows/thumbnailtoolbar.h"
 #endif
 #include <QActionGroup>
@@ -170,7 +170,7 @@ MainWindow::MainWindow(QWidget *parent)
     , connectedState(CS_Init)
     , stopAfterCurrent(false)
     , responsiveSidebar(false)
-    #if defined Q_OS_WIN
+    #if defined (Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6,0,0)
     , thumbnailTooolbar(0)
     #endif
 {
@@ -1151,7 +1151,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::showEvent(QShowEvent *event)
 {
-    #if defined Q_OS_WIN
+    #if defined (Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6,0,0)
     if (!thumbnailTooolbar) {
         thumbnailTooolbar=new ThumbnailToolBar(this);
     }
@@ -1659,7 +1659,7 @@ void MainWindow::readSettings()
     stopTrackButton->setProperty(constUserSettingProp, Settings::self()->showStopButton());
     responsiveSidebar=Settings::self()->responsiveSidebar();
     controlView(true);
-    #if defined Q_OS_WIN
+    #if defined (Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6,0,0)
     if (thumbnailTooolbar) {
         thumbnailTooolbar->readSettings();
     }
@@ -1992,7 +1992,7 @@ void MainWindow::updateCurrentSong(Song song, bool wasEmpty)
             mpris->updateCurrentSong(current);
         }
         #endif
-        #ifdef Q_OS_WIN
+        #if defined (Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6,0,0)
         if (thumbnailTooolbar) {
             thumbnailTooolbar->updateCurrentSong(current);
         }
@@ -2145,7 +2145,7 @@ void MainWindow::updateStatus(MPDStatus * const status)
         mpris->updateStatus(status);
     }
     #endif
-    #if defined Q_OS_WIN
+    #if defined (Q_OS_WIN) && QT_VERSION < QT_VERSION_CHECK(6,0,0)
     if (thumbnailTooolbar) {
         thumbnailTooolbar->updateStatus(status);
     }

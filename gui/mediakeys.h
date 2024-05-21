@@ -32,7 +32,7 @@ class QxtMediaKeys;
 class MultiMediaKeysInterface;
 
 #if defined Q_OS_WIN
-#define CANTATA_USE_QXT_MEDIAKEYS
+// #define CANTATA_USE_QXT_MEDIAKEYS
 #endif
 
 class MediaKeys

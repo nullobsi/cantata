@@ -863,7 +863,7 @@ bool SongView::saveFile(const QString &fileName)
     if (f.open(QIODevice::WriteOnly)) {
         QTextStream stream(&f);
         #ifdef Q_OS_WIN
-        stream.setCodec("UTF-8");
+        stream.setEncoding(QStringConverter::Utf8);
         stream.setGenerateByteOrderMark(true);
         #endif
         stream << text->toPlainText();

@@ -10,8 +10,6 @@ if (NOT WIN32 AND NOT APPLE)
   include_directories(${X11_INCLUDE_DIR})
 endif ()
 
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${QTINCLUDES} )
-
 if(WIN32)
   set(QXT-SOURCES ${QXT-SOURCES} qxtglobalshortcut_win.cpp)
 elseif(APPLE)
@@ -23,3 +21,5 @@ endif()
 ADD_LIBRARY(qxt STATIC
   ${QXT-SOURCES}
 )
+
+target_link_libraries(qxt PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui)

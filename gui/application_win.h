@@ -34,7 +34,7 @@ public:
     static void fixSize(QWidget *widget);
     Application(int &argc, char **argv);
     virtual ~Application() { }
-    bool nativeEventFilter(const QByteArray &, void *message, long *result);
+    bool nativeEventFilter(const QByteArray &, void *message, qintptr *result);
 };
 
 #endif

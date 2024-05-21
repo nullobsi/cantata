@@ -27,8 +27,8 @@
 #include "widgets/singlepagewidget.h"
 #include "playlistproxymodel.h"
 
-class Action;
-class QLabel;
+#include <QLabel>
+#include <support/action.h>
 
 class DynamicPlaylistsPage : public SinglePageWidget
 {
@@ -66,7 +66,8 @@ private:
     QList<QWidget *> controls;
     #ifdef Q_OS_WIN
     QString infoStr;
-    QLabel *remoteRunningLabel;
+    Q_DECL_UNUSED QLabel *remoteRunningLabel;
+
     #endif
     QIcon server;
 };
