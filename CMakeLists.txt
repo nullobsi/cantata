@@ -244,7 +244,7 @@ if(TagLib_FOUND)
     set(ENABLE_TRACKORGANIZER_SUPPORT 1)
 
     if(ENABLE_FFMPEG)
-        find_package(FFMPEG)
+        find_package(FFMPEG COMPONENTS avcodec avutil avformat)
         macro_log_feature(FFMPEG_FOUND "libavcodec/libavutil/libavformat" "ReplayGain calculation." "http://ffmpeg.org")
     endif()
     if(ENABLE_MPG123)
