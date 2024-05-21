@@ -75,10 +75,12 @@ void MacNotify::showMessage(const QString &title, const QString &text, const QIm
         NSUserNotification *userNotification = [[[NSUserNotification alloc] init] autorelease];
         userNotification.title = title.toNSString();
         userNotification.informativeText = text.toNSString();
-        CGImageRef cg = img.toCGImage();
-        NSImage *image = [[NSImage alloc] initWithCGImage:cg size:NSZeroSize];
-        CFRelease(cg);
-        userNotification.contentImage = image;
+        if (!img.isNull()) {
+            CGImageRef cg = img.toCGImage();
+            NSImage *image = [[NSImage alloc] initWithCGImage:cg size:NSZeroSize];
+            CFRelease(cg);
+            userNotification.contentImage = image;
+        }
         [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:userNotification];
     }
 }
