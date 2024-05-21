@@ -72,7 +72,7 @@ find_package(PkgConfig)
 
 function (_ffmpeg_find component headername)
     if(PKG_CONFIG_FOUND)
-        pkg_check_modules(PC_${component} QUIET ${component})
+        pkg_check_modules(PC_${component} QUIET "lib${component}")
     endif()
     find_path("FFMPEG_${component}_INCLUDE_DIR"
             NAMES
