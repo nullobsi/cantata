@@ -834,11 +834,13 @@ if(NOT WIN32 AND NOT APPLE AND NOT HAIKU)
 endif()
 
 if(APPLE)
-    # TODO: figure out why this is the only thing that works
+    # Using macdeployqt from the official Qt download works.
+    # With homebrew, the libraries are more entangled and it doesn't work.
     install(CODE "execute_process(COMMAND ${MACDEPLOYQT_EXECUTABLE} \"${APPS}\")")
-    install(CODE "include(BundleUtilities)
-		fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")")
-    install(CODE "execute_process(COMMAND ${MACDEPLOYQT_EXECUTABLE} \"${APPS}\")")
+    #install(CODE "include(BundleUtilities)
+	#	fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")")
+    #install(CODE "execute_process(COMMAND ${MACDEPLOYQT_EXECUTABLE} \"${APPS}\")")
+    # We still want to codesign it.
     install(CODE "execute_process(COMMAND codesign -f -s \"-\" \"${APPS}\")")
 endif ()
 
