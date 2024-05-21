@@ -1,8 +1,10 @@
 INCLUDE(MacroOptionalFindPackage)
 INCLUDE(MacroLogFeature)
 
+add_library(solidlite STATIC)
 add_subdirectory( ifaces )
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  ${QTINCLUDES})
+target_include_directories(solidlite PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_SOURCE_DIR}/3rdparty )
 
 file(MAKE_DIRECTORY
    ${CMAKE_CURRENT_BINARY_DIR}/backends/hal
@@ -10,7 +12,7 @@ file(MAKE_DIRECTORY
    ${CMAKE_CURRENT_BINARY_DIR}/backends/wmi
 )
 
-set(solidlite_LIB_SRCS
+target_sources(solidlite PRIVATE
    solidnamespace.cpp
    managerbase.cpp
    device.cpp
@@ -54,7 +56,7 @@ set(solidlite_LIB_SRCS
 
    if ( UDev_FOUND )
       message(STATUS "Building Solid UDev backend." )
-      set(solidlite_LIB_SRCS ${solidlite_LIB_SRCS}
+	  target_sources(solidlite PRIVATE
       backends/udev/udevdevice.cpp
       backends/udev/udevmanager.cpp
       backends/udev/udevdeviceinterface.cpp
@@ -93,7 +95,7 @@ set(solidlite_LIB_SRCS
 
 
    message(STATUS "Building Solid HAL backend." )
-   set(solidlite_LIB_SRCS ${solidlite_LIB_SRCS}
+   target_sources(solidlite PRIVATE
    backends/hal/halblock.cpp
    backends/hal/halcdrom.cpp
    backends/hal/haldeviceinterface.cpp
@@ -113,7 +115,7 @@ set(solidlite_LIB_SRCS
         if ( WITH_SOLID_UDISKS2 )
             message(STATUS "Building Solid UDisks2 backend." )
             add_definitions(-DWITH_SOLID_UDISKS2)
-            set(solidlite_LIB_SRCS ${solidlite_LIB_SRCS}
+            target_sources(solidlite PRIVATE
             backends/udisks2/udisksmanager.cpp
             backends/udisks2/udisksdevice.cpp
             backends/udisks2/udisksdevicebackend.cpp
@@ -127,9 +129,12 @@ set(solidlite_LIB_SRCS
             backends/udisks2/udisksgenericinterface.cpp
             backends/udisks2/dbus/manager.cpp
             )
+			find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS DBus Xml)
+			target_link_libraries(solidlite PRIVATE
+				Qt${QT_VERSION_MAJOR}::DBus Qt${QT_VERSION_MAJOR}::Xml)
         else ( )
             message(STATUS "Building Solid UDisks backend." )
-            set(solidlite_LIB_SRCS ${solidlite_LIB_SRCS}
+            target_sources(solidlite PRIVATE
             backends/udisks/udisksmanager.cpp
             backends/udisks/udisksdevice.cpp
             backends/udisks/udisksblock.cpp
@@ -148,7 +153,7 @@ if(APPLE)
    find_package(IOKit REQUIRED)
 
    message(STATUS "-- Building Solid IOKit backend." )
-   set(solidlite_LIB_SRCS ${solidlite_LIB_SRCS}
+   target_sources(solidlite PRIVATE
    backends/iokit/iokitmanager.cpp
    backends/iokit/iokitdevice.cpp
    backends/iokit/cfhelper.cpp
@@ -171,7 +176,7 @@ if(WIN32)
        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_WBEM")
        message(STATUS "-- Building Solid WMI backend." )
 
-       set(solidlite_LIB_SRCS ${solidlite_LIB_SRCS}
+       target_sources(solidlite PRIVATE
        backends/wmi/wmiblock.cpp
        backends/wmi/wmicdrom.cpp
        backends/wmi/wmideviceinterface.cpp
@@ -202,14 +207,13 @@ if(APPLE)
    set(solidlite_OPTIONAL_LIBS ${IOKIT_LIBRARY})
 endif()
 
-add_library(solidlite STATIC ${solidlite_LIB_SRCS})
 
 if ( UDev_FOUND )
    set(solidlite_OPTIONAL_LIBS ${solidlite_OPTIONAL_LIBS} UDev::UDev)
 endif ( )
 
-target_link_libraries(solidlite ${QT_LIBS} ${solidlite_OPTIONAL_LIBS})
-target_link_libraries(solidlite LINK_INTERFACE_LIBRARIES ${QT_CORE_LIBRARY} )
+target_link_libraries(solidlite PRIVATE Qt${QT_VERSION_MAJOR}::Core
+	Qt${QT_VERSION_MAJOR}::Widgets ${solidlite_OPTIONAL_LIBS})
 
 if (WINCE)
    target_link_libraries(solidlite ${WCECOMPAT_LIBRARIES})

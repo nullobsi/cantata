@@ -1,6 +1,7 @@
 set(SUPPORT_CORE_SRCS utils.cpp thread.cpp)
 
 add_library(support-core STATIC ${SUPPORT_CORE_SRCS})
+target_include_directories(support-core PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 target_link_libraries(support-core PRIVATE ${QT_LIBS})
 
 set (SUPPORT_SRCS icon.cpp fancytabwidget.cpp messagewidget.cpp buddylabel.cpp action.cpp actioncollection.cpp lineedit.cpp
@@ -20,4 +21,5 @@ qt_add_resources(SUPPORT_RC_SRCS support.qrc)
 
 add_library(support STATIC ${SUPPORT_SRCS} ${SUPPORT_UI_HDRS} ${SUPPORT_RC_SRCS})
 target_link_libraries(support PRIVATE ${QT_LIBS})
-target_include_directories(support PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(support PRIVATE ${CMAKE_SOURCE_DIR}
+	${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})

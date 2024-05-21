@@ -168,19 +168,33 @@ if(NOT WIN32 AND NOT APPLE)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
 
+set(CMAKE_AUTOMOC TRUE)
+set(CMAKE_AUTOUIC TRUE)
+set(CMAKE_AUTORCC TRUE)
+
+add_executable(cantata)
+
+set_property(TARGET cantata PROPERTY CXX_STANDARD 17)
+set_property(TARGET cantata PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET cantata PROPERTY COMPILE_WARNING_AS_ERROR ON)
+target_compile_options(cantata PRIVATE
+	$<$<CXX_COMPILER_ID:MSVC>:/W4>
+	$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+)
+#    -Wno-cast-qual -Wno-float-equal -Wno-gnu-zero-variadic-macro-arguments \
+
 if(ENABLE_AVAHI)
     find_package(Avahi)
     macro_log_feature(Avahi_FOUND "Avahi Support" "Automatic MPD-Server Detection" "https://www.avahi.org/" FALSE "" "")
 endif()
 
 if(Avahi_FOUND)
-    set(CANTATA_SRCS
-        ${CANTATA_SRCS}
+	target_sources(cantata PRIVATE
         gui/findmpddialog.cpp
         gui/avahidiscovery.cpp
         gui/avahipoll.cpp
     )
-    set(CANTATA_LIBS ${CANTATA_LIBS} Avahi::Client)
+	target_link_libraries(cantata PRIVATE Avahi::Client)
 endif()
 
 if(NOT APPLE AND NOT WIN32 AND NOT HAIKU)
@@ -271,28 +285,6 @@ set(QT_COMPONENTS
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS ${QT_COMPONENTS})
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS ${QT_COMPONENTS})
 
-set(CMAKE_AUTOMOC TRUE)
-set(CMAKE_AUTOUIC TRUE)
-set(CMAKE_AUTORCC TRUE)
-set(CMAKE_CXX_STANDARD 17)
-
-set(CMAKE_CXX_FLAGS
-    "${CMAKE_CXX_FLAGS} -Werror -Wpedantic -Wall -Wextra \
-    -Wno-cast-qual -Wno-float-equal -Wno-gnu-zero-variadic-macro-arguments \
-    -Wmissing-format-attribute -Wpacked -Wredundant-decls"
-)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    # flags unique to GCC
-    set(CMAKE_CXX_FLAGS
-        "${CMAKE_CXX_FLAGS} -Wduplicated-branches -Wduplicated-cond -Wlogical-op"
-    )
-    # flags that are hard to fix under Clang
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcast-align -Wdouble-promotion")
-endif()
-
 if(APPLE OR WIN32 OR HAIKU)
     get_target_property(
         QT_QMAKE_EXECUTABLE
@@ -303,8 +295,15 @@ if(APPLE OR WIN32 OR HAIKU)
         COMMAND ${QT_QMAKE_EXECUTABLE} -query QT_INSTALL_TRANSLATIONS
         OUTPUT_VARIABLE QT_TRANSLATIONS_DIR
     )
+
+	# Find deployment helpers.
     get_filename_component(QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}" DIRECTORY)
-    find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS "${QT_BIN_DIR}")
+	if (APPLE)
+    	find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS "${QT_BIN_DIR}")
+	endif()
+	if (WIN32)
+		find_program(WINDEPLOYQT_EXECUTABLE windeployqt.exe HINTS "${QT_BIN_DIR}")
+	endif()
 else()
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS DBus)
     set(QT_QTDBUS_FOUND 1) # required for config.h !!!
@@ -316,43 +315,42 @@ if(ENABLE_HTTP_STREAM_PLAYBACK)
         # TODO: VLC as an imported target.
         find_package(LIBVLC REQUIRED)
         macro_log_feature(LIBVLC_FOUND "libVLC" "MPD HTTP stream playback." "http://videolan.org")
-        add_definitions(-DLIBVLC_FOUND)
-        include_directories(${LIBVLC_INCLUDE_DIR})
-        set(CANTATA_LIBS ${CANTATA_LIBS} ${LIBVLC_LIBRARY})
+		target_compile_definitions(cantata PRIVATE LIBVLC_FOUND)
+		target_include_directories(cantata PRIVATE ${LIBVLC_INCLUDE_DIR})
+		target_link_libraries(cantata PRIVATE ${LIBVLC_LIBRARY})
     else()
         find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Multimedia)
         macro_log_feature(Qt${QT_VERSION_MAJOR}Multimedia_FOUND "QtMultimedia" "MPD HTTP stream playback." "http://qtproject.org")
         list(APPEND QT_COMPONENTS Multimedia)
     endif()
-    set(CANTATA_SRCS ${CANTATA_SRCS} mpd-interface/httpstream.cpp)
+	target_sources(cantata PRIVATE mpd-interface/httpstream.cpp)
 endif()
 
 find_package(ZLIB REQUIRED)
 
 if(APPLE)
-    set(CANTATA_SRCS ${CANTATA_SRCS} mac/dockmenu.cpp mac/macnotify.mm)
+	target_sources(cantata PRIVATE mac/dockmenu.cpp mac/macnotify.mm)
     find_package(IOKit)
     if(IOKIT_FOUND)
-        set(CANTATA_LIBS ${CANTATA_LIBS} ${IOKIT_LIBRARY})
-        set(CANTATA_SRCS ${CANTATA_SRCS} mac/powermanagement.cpp)
+		target_link_libraries(cantata PRIVATE ${IOKIT_LIBRARY})
+		target_sources(cantata PRIVATE mac/powermanagement.cpp)
     endif()
     find_package(Foundation REQUIRED)
     find_library(MAC_APPKIT_LIBRARY AppKit REQUIRED)
-    set(CANTATA_LIBS
-        ${CANTATA_LIBS}
+	target_link_libraries(cantata PRIVATE
         ${FOUNDATION_LIBRARY}
         ${MAC_APPKIT_LIBRARY}
     )
     find_library(MAC_MEDIAPLAYER_LIBRARY MediaPlayer)
     if(MAC_MEDIAPLAYER_LIBRARY)
-        set(CANTATA_SRCS ${CANTATA_SRCS} mac/macnowplaying.mm)
-        set(CANTATA_LIBS ${CANTATA_LIBS} ${MAC_MEDIAPLAYER_LIBRARY})
-        add_definitions(-DMAC_MEDIAPLAYER_FOUND)
+		target_sources(cantata PRIVATE mac/macnowplaying.mm)
+		target_link_libraries(cantata PRIVATE ${MAC_MEDIAPLAYER_LIBRARY})
+		target_compile_definitions(cantata PRIVATE MAC_MEDIAPLAYER_FOUND)
     endif()
 elseif(WIN32 AND QT_VERSION_MAJOR EQUAL 5)
     find_package(Qt5 COMPONENTS WinExtras REQUIRED)
     list(APPEND QT_COMPONENTS WinExtras)
-    set(CANTATA_SRCS ${CANTATA_SRCS} windows/thumbnailtoolbar.cpp)
+	target_sources(cantata PRIVATE windows/thumbnailtoolbar.cpp)
 endif()
 
 list(
@@ -360,19 +358,15 @@ list(
     PREPEND Qt${QT_VERSION_MAJOR}::
     OUTPUT_VARIABLE QT_LIBS
 )
+target_link_libraries(cantata PRIVATE ${QT_LIBS})
 
-include_directories(
-    ${CMAKE_SOURCE_DIR}/3rdparty
-    ${CMAKE_SOURCE_DIR}
+target_include_directories(cantata PRIVATE
+	${CMAKE_SOURCE_DIR}/3rdparty
+	${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${QTINCLUDES}
-    ${ZLIB_INCLUDE_DIRS}
 )
 
-set(CANTATA_SRCS
-    ${CANTATA_SRCS}
+target_sources(cantata PRIVATE
     gui/settings.cpp
     gui/application.cpp
     gui/initialsettingswizard.cpp
@@ -515,17 +509,18 @@ set(CANTATA_SRCS
     online/onlinesearchservice.cpp
     db/onlinedb.cpp
     http/httpserver.cpp
+    gui/shortcutssettingspage.cpp
+    gui/mediakeys.cpp
 )
 
 if(ENABLE_CATEGORIZED_VIEW)
-    set(CANTATA_SRCS ${CANTATA_SRCS} widgets/categorizedview.cpp)
+    target_sources(cantata PRIVATE widgets/categorizedview.cpp)
 endif()
 if(ENABLE_SIMPLE_MPD_SUPPORT)
-    set(CANTATA_SRCS ${CANTATA_SRCS} mpd-interface/mpduser.cpp)
+    target_sources(cantata PRIVATE mpd-interface/mpduser.cpp)
 endif()
 if(ENABLE_SCROBBLING)
-    set(CANTATA_SRCS
-        ${CANTATA_SRCS}
+	target_sources(cantata PRIVATE
         scrobbling/scrobbler.cpp
         scrobbling/pausabletimer.cpp
         scrobbling/scrobblingsettings.cpp
@@ -533,7 +528,7 @@ if(ENABLE_SCROBBLING)
     )
 endif()
 
-set(CANTATA_LIBS ${CANTATA_LIBS} support)
+target_link_libraries(cantata PRIVATE support)
 
 if(WIN32)
     # Not installed for windows - script uses sym-links...
@@ -550,55 +545,60 @@ else()
 endif()
 
 if(ENABLE_HTTP_SERVER)
-    set(CANTATA_SRCS ${CANTATA_SRCS} http/httpsocket.cpp)
+    target_sources(cantata PRIVATE http/httpsocket.cpp)
 endif()
 
 if("DBus" IN_LIST QT_COMPONENTS)
-    set(CANTATA_SRCS ${CANTATA_SRCS} dbus/gnomemediakeys.cpp)
+    target_sources(cantata PRIVATE 
+		dbus/gnomemediakeys.cpp
+		dbus/mpris.cpp dbus/powermanagement.cpp
+		dbus/notify.cpp
+	)
     set_source_files_properties(
         dbus/org.gnome.SettingsDaemon.xml
         dbus/org.gnome.SettingsDaemon.MediaKeys.xml
         PROPERTIES NO_NAMESPACE TRUE
     )
-    set(CANTATA_SRCS ${CANTATA_SRCS} dbus/mpris.cpp dbus/powermanagement.cpp)
-    set(CANTATA_SRCS ${CANTATA_SRCS} dbus/notify.cpp)
 
-    qt_add_dbus_adaptor(CANTATA_SRCS dbus/org.mpris.MediaPlayer2.Player.xml dbus/mpris.h Mpris)
-    qt_add_dbus_adaptor(CANTATA_SRCS dbus/org.mpris.MediaPlayer2.root.xml dbus/mpris.h Mpris)
-	qt_add_dbus_adaptor(CANTATA_SRCS dbus/${PROJECT_REV_ID}.xml gui/mainwindow.h MainWindow)
-    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.Notifications.xml)
-    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.UPower.xml)
-    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.login1.xml)
-    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.gnome.SettingsDaemon.xml)
-    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.gnome.SettingsDaemon.MediaKeys.xml)
-    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.kde.Solid.PowerManagement.PolicyAgent.xml)
-    qt_add_dbus_interfaces(CANTATA_SRCS dbus/org.freedesktop.PowerManagement.Inhibit.xml)
+	qt_add_dbus_adaptor(DBUS_GENERATED_SRCS dbus/org.mpris.MediaPlayer2.Player.xml dbus/mpris.h Mpris)
+	qt_add_dbus_adaptor(DBUS_GENERATED_SRCS dbus/org.mpris.MediaPlayer2.root.xml dbus/mpris.h Mpris)
+	qt_add_dbus_adaptor(DBUS_GENERATED_SRCS dbus/${PROJECT_REV_ID}.xml gui/mainwindow.h MainWindow)
+	qt_add_dbus_interfaces(DBUS_GENERATED_SRCS 
+		dbus/org.freedesktop.Notifications.xml
+    	dbus/org.freedesktop.UPower.xml
+    	dbus/org.freedesktop.login1.xml
+    	dbus/org.gnome.SettingsDaemon.xml
+    	dbus/org.gnome.SettingsDaemon.MediaKeys.xml
+    	dbus/org.kde.Solid.PowerManagement.PolicyAgent.xml
+    	dbus/org.freedesktop.PowerManagement.Inhibit.xml
+	)
+
+	target_sources(cantata PRIVATE ${DBUS_GENERATED_SRCS})
 endif()
 
 if(NOT WIN32 AND NOT APPLE)
-    set(CANTATA_SRCS ${CANTATA_SRCS} devices/mountpoints.cpp)
+    target_sources(cantata PRIVATE devices/mountpoints.cpp)
 endif()
 
-set(CANTATA_SRCS ${CANTATA_SRCS} cantata.qrc cantata_media.qrc)
+target_sources(cantata PRIVATE cantata.qrc cantata_media.qrc)
 
 if(TagLib_FOUND)
-    set(CANTATA_SRCS
-        ${CANTATA_SRCS}
+    target_sources(cantata PRIVATE 
         tags/tageditor.cpp
         tags/trackorganiser.cpp
         devices/filenameschemedialog.cpp
         widgets/tagspinbox.cpp
+		tags/taghelperiface.cpp
     )
 
     # Cantata still links to taglib, even if external tag reader/writer is used, because JamendoService uses taglib for ID3 genres.
-	set(CANTATA_LIBS ${CANTATA_LIBS} TagLib::TagLib)
+	target_link_libraries(cantata PRIVATE TagLib::TagLib)
     if(ENABLE_DEVICES_SUPPORT)
-        set(CANTATA_LIBS ${CANTATA_LIBS} solidlite)
+        target_link_libraries(cantata PRIVATE solidlite)
     endif()
 
     if(FFMPEG_FOUND OR MPG123_FOUND)
-        set(CANTATA_SRCS
-            ${CANTATA_SRCS}
+    	target_sources(cantata PRIVATE 
             replaygain/albumscanner.cpp
             replaygain/rgdialog.cpp
             replaygain/tagreader.cpp
@@ -607,26 +607,24 @@ if(TagLib_FOUND)
         set(ENABLE_REPLAYGAIN_SUPPORT 1)
         add_subdirectory(replaygain)
     endif()
-    set(CANTATA_SRCS ${CANTATA_SRCS} tags/taghelperiface.cpp)
     add_subdirectory(tags)
 
     if(ENABLE_DEVICES_SUPPORT)
         add_subdirectory(3rdparty/solid-lite)
         if(MTP_FOUND)
-            set(CANTATA_SRCS ${CANTATA_SRCS} devices/mtpdevice.cpp)
-            set(CANTATA_LIBS ${CANTATA_LIBS} MTP::MTP)
+            target_sources(cantata PRIVATE devices/mtpdevice.cpp)
+            target_link_libraries(cantata PRIVATE MTP::MTP)
         endif()
         if(CDDB_FOUND OR MusicBrainz5_FOUND)
             if(CDDB_FOUND)
-                set(CANTATA_SRCS ${CANTATA_SRCS} devices/cddbinterface.cpp)
-                set(CANTATA_LIBS ${CANTATA_LIBS} CDDB::CDDB)
+                target_sources(cantata PRIVATE devices/cddbinterface.cpp)
+                target_link_libraries(cantata PRIVATE CDDB::CDDB)
             endif()
             if(MusicBrainz5_FOUND)
-                set(CANTATA_SRCS ${CANTATA_SRCS} devices/musicbrainz.cpp)
-                set(CANTATA_LIBS ${CANTATA_LIBS} MusicBrainz5::MusicBrainz)
+                target_sources(cantata PRIVATE devices/musicbrainz.cpp)
+                target_link_libraries(cantata PRIVATE MusicBrainz5::MusicBrainz)
             endif()
-            set(CANTATA_SRCS
-                ${CANTATA_SRCS}
+    		target_sources(cantata PRIVATE 
                 devices/audiocddevice.cpp
                 devices/cddbselectiondialog.cpp
                 devices/cdparanoia.cpp
@@ -636,14 +634,13 @@ if(TagLib_FOUND)
             )
             # If CDDB/MusicBrainz5 found - then CDParanoia must have been!
             if(LibCDIOParanoia_FOUND)
-                list(APPEND CANTATA_LIBS LibCDIOParanoia::CDParanoia)
+				target_link_libraries(cantata PRIVATE LibCDIOParanoia::CDParanoia)
             else()
-                list(APPEND CANTATA_LIBS CDDA::Paranoia)
+				target_link_libraries(cantata PRIVATE CDDA::Paranoia)
             endif()
         endif()
 
-        set(CANTATA_SRCS
-            ${CANTATA_SRCS}
+    	target_sources(cantata PRIVATE 
             devices/devicespage.cpp
             devices/filejob.cpp
             devices/device.cpp
@@ -664,15 +661,14 @@ if(TagLib_FOUND)
         )
 
         if(ENABLE_REMOTE_DEVICES)
-            set(CANTATA_SRCS
-                ${CANTATA_SRCS}
+    		target_sources(cantata PRIVATE 
                 devices/remotefsdevice.cpp
                 devices/remotedevicepropertiesdialog.cpp
                 devices/remotedevicepropertieswidget.cpp
             )
         endif()
     else(ENABLE_DEVICES_SUPPORT)
-        set(CANTATA_SRCS ${CANTATA_SRCS} devices/device.cpp)
+        target_sources(cantata PRIVATE devices/device.cpp)
     endif()
 else(TagLib_FOUND)
     set(ENABLE_DEVICES_SUPPORT OFF)
@@ -680,40 +676,31 @@ else(TagLib_FOUND)
 endif()
 
 if(ENABLE_PROXY_CONFIG)
-    set(CANTATA_SRCS ${CANTATA_SRCS} network/proxysettings.cpp)
+    target_sources(cantata PRIVATE network/proxysettings.cpp)
 endif()
 
 if(WIN32 OR APPLE OR HAIKU)
-    set(CANTATA_SRCS ${CANTATA_SRCS} gui/singleapplication.cpp)
+    target_sources(cantata PRIVATE gui/singleapplication.cpp)
 endif()
 if(WIN32)
-    set(CANTATA_SRCS ${CANTATA_SRCS} gui/application_win.cpp)
+    target_sources(cantata PRIVATE gui/application_win.cpp)
 elseif(APPLE)
-    set(CANTATA_SRCS ${CANTATA_SRCS} gui/application_mac.cpp)
+    target_sources(cantata PRIVATE gui/application_mac.cpp)
 elseif(HAIKU)
-    set(CANTATA_SRCS ${CANTATA_SRCS} gui/application_haiku.cpp)
+    target_sources(cantata PRIVATE gui/application_haiku.cpp)
 else()
-    set(CANTATA_SRCS ${CANTATA_SRCS} gui/application_qt.cpp)
+    target_sources(cantata PRIVATE gui/application_qt.cpp)
 endif()
 if(WIN32)
-    add_definitions(-DWIN32)
+	target_compile_definitions(cantata PRIVATE WIN32)
     add_subdirectory(windows)
-    set(CANTATA_SRCS ${CANTATA_SRCS} windows/cantataico.rc)
-    if(NOT CANTATA_WINDOWS_INSTALLER_DEST)
-        set(CANTATA_WINDOWS_INSTALLER_DEST z:\ )
-    endif()
+    target_sources(cantata PRIVATE windows/cantataico.rc)
 elseif(APPLE)
-    add_definitions(-D__APPLE__)
+	target_compile_definitions(cantata PRIVATE __APPLE__)
 endif()
-
-set(CANTATA_SRCS
-    ${CANTATA_SRCS}
-    gui/shortcutssettingspage.cpp
-    gui/mediakeys.cpp
-)
 
 if(WIN32 OR APPLE)
-    set(CANTATA_SRCS ${CANTATA_SRCS} cantata_icon.qrc)
+    target_sources(cantata PRIVATE cantata_icon.qrc)
 else()
     add_subdirectory(icons)
 endif()
@@ -721,11 +708,12 @@ endif()
 if(WIN32)
     #add_definitions(-DQXT_STATIC)
     #add_subdirectory(3rdparty/qxt)
-    #set(CANTATA_SRCS ${CANTATA_SRCS} gui/qxtmediakeys.cpp)
-    add_executable(cantata WIN32 ${CANTATA_SRCS} ${CANTATA_PO})
+    #target_sources(cantata PRIVATE gui/qxtmediakeys.cpp)
+    set_target_properties(cantata PROPERTIES
+		WIN32_EXECUTABLE TRUE
+	)
     install(TARGETS cantata)
 elseif(APPLE)
-    add_executable(cantata MACOSX_BUNDLE ${CANTATA_SRCS} ${CANTATA_PO})
     set_target_properties(cantata PROPERTIES
         MACOSX_BUNDLE TRUE
         MACOSX_RPATH TRUE
@@ -757,27 +745,18 @@ elseif(APPLE)
 			DESTINATION ${APP_MACOS_DIR}
         )
 	endif(TagLib_FOUND)
-    if(ENABLE_HTTP_STREAM_PLAYBACK AND NOT ENABLE_LIBVLC)
-        #     install_qt_executable(Cantata.app "qjpeg;qsvg;qsvgicon;qcocoa;qmacstyle;qsqlite;qavfmediaplayer")
-    else(ENABLE_HTTP_STREAM_PLAYBACK AND NOT ENABLE_LIBVLC)
-        #    install_qt_executable(Cantata.app "qjpeg;qsvg;qsvgicon;qcocoa;qmacstyle;qsqlite")
-    endif(ENABLE_HTTP_STREAM_PLAYBACK AND NOT ENABLE_LIBVLC)
-elseif(HAIKU)
-    add_executable(cantata ${CANTATA_SRCS})
-	install(TARGETS cantata)
 else()
-    add_executable(cantata ${CANTATA_SRCS})
     install(TARGETS cantata)
 endif()
 
 if(ENABLE_CATEGORIZED_VIEW)
     add_subdirectory(3rdparty/kcategorizedview)
-    target_link_libraries(cantata kcategorizedview)
+	target_link_libraries(cantata PRIVATE kcategorizedview)
 endif()
 
 if(WIN32 OR APPLE OR HAIKU)
     add_subdirectory(3rdparty/qtsingleapplication)
-    target_link_libraries(cantata qtsingleapplication)
+	target_link_libraries(cantata PRIVATE qtsingleapplication)
 else()
     set(XDG_APPS_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/applications")
 endif()
@@ -792,13 +771,9 @@ add_subdirectory(3rdparty/qtiocompressor)
 add_subdirectory(streams/icons)
 add_subdirectory(online/icons)
 
-target_link_libraries(
-    cantata
+target_link_libraries(cantata PRIVATE
     support-core
     qtiocompressor
-    ${CANTATA_LIBS}
-    ${QT_LIBS}
-    ${ZLIB_LIBRARIES}
 )
 
 # enable warnings
@@ -813,7 +788,7 @@ if(UNIX AND NOT APPLE)
         )
         install(FILES cantata.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
     endif()
-    target_link_libraries(cantata -lpthread)
+	target_link_libraries(cantata PRIVATE pthread)
 endif()
 
 configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
