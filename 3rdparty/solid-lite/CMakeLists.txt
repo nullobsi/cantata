@@ -47,12 +47,12 @@ set(solidlite_LIB_SRCS
 
    if (NOT WIN32 AND NOT APPLE AND WITH_SOLID_UDISKS2)
      find_package( UDev REQUIRED)
-     macro_log_feature( UDEV_FOUND "UDev" "UDev support for Solid" "http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html" FALSE "" "Allows Solid to use UDev to provide information about devices on Linux" )
+     macro_log_feature( UDev_FOUND "UDev" "UDev support for Solid" "http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html" FALSE "" "Allows Solid to use UDev to provide information about devices on Linux" )
    endif()
    configure_file( config-solid.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-solid.h )
 
 
-   if ( UDEV_FOUND )
+   if ( UDev_FOUND )
       message(STATUS "Building Solid UDev backend." )
       set(solidlite_LIB_SRCS ${solidlite_LIB_SRCS}
       backends/udev/udevdevice.cpp
@@ -204,8 +204,8 @@ endif()
 
 add_library(solidlite STATIC ${solidlite_LIB_SRCS})
 
-if ( UDEV_FOUND )
-   set(solidlite_OPTIONAL_LIBS ${solidlite_OPTIONAL_LIBS} ${UDEV_LIBS})
+if ( UDev_FOUND )
+   set(solidlite_OPTIONAL_LIBS ${solidlite_OPTIONAL_LIBS} UDev::UDev)
 endif ( )
 
 target_link_libraries(solidlite ${QT_LIBS} ${solidlite_OPTIONAL_LIBS})
