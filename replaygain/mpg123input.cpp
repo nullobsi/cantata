@@ -18,7 +18,7 @@ extern "C" {
 #include <QFile>
 #include <QString>
 #include <QByteArray>
-#include "ebur128/ebur128.h"
+#include "ebur128.h"
 #include "mpg123input.h"
 
 struct Mpg123Input::Handle {
