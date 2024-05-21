@@ -540,7 +540,7 @@ bool Settings::playStream()
 }
 #endif
 
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 bool Settings::cdAuto()
 {
     return cfg.get("cdAuto", true);
@@ -562,7 +562,7 @@ int Settings::paranoiaOffset()
 }
 #endif
 
-#if defined CDDB_FOUND && defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND && defined MusicBrainz5_FOUND
 bool Settings::useCddb()
 {
     return cfg.get("useCddb", true);
@@ -1045,7 +1045,7 @@ void Settings::savePlayStream(bool v)
 }
 #endif
 
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 void Settings::saveCdAuto(bool v)
 {
     cfg.set("cdAuto", v);
@@ -1067,7 +1067,7 @@ void Settings::saveParanoiaOffset(int v)
 }
 #endif
 
-#if defined CDDB_FOUND && defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND && defined MusicBrainz5_FOUND
 void Settings::saveUseCddb(bool v)
 {
     cfg.set("useCddb", v);

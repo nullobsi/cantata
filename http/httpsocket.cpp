@@ -25,7 +25,7 @@
 #include "httpsocket.h"
 #include "httpserver.h"
 #include "gui/settings.h"
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 #include "devices/cdparanoia.h"
 #include "devices/extractjob.h"
 #endif
@@ -290,7 +290,7 @@ void HttpSocket::readClient()
                 }
 
                 if (song.isCdda()) {
-                    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+                    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
                     QStringList parts=song.file.split("/", CANTATA_SKIP_EMPTY);
                     if (parts.length()>=3) {
                         QString dev=QLatin1Char('/')+parts.at(1)+QLatin1Char('/')+parts.at(2);

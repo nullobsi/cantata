@@ -1288,7 +1288,7 @@ void Covers::stop()
         loader->stop();
         loader=nullptr;
     }
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     cleanCdda();
     #endif
 }
@@ -1986,7 +1986,7 @@ void Covers::updateCover(const Song &song, const QImage &img, const QString &fil
     emit coverUpdated(song, img, file);
 }
 
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 void Covers::cleanCdda()
 {
     QString dir = Utils::cacheDir(Covers::constCddaCoverDir, false);

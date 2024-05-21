@@ -235,7 +235,7 @@ public:
     Image requestImage(const Song &song, bool urgent=false);
     void updateCover(const Song &song, const QImage &img, const QString &file);
 
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     void cleanCdda();
     #endif
 

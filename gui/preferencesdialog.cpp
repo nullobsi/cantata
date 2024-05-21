@@ -35,7 +35,7 @@
 #include "network/proxysettings.h"
 #endif
 #include "shortcutssettingspage.h"
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 #include "devices/audiocdsettings.h"
 #endif
 #include "shortcutssettingspage.h"
@@ -85,7 +85,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     #ifdef ENABLE_SCROBBLING
     addPage(QLatin1String("scrobbling"), scrobbling, tr("Scrobbling"), MonoIcon::icon(FontAwesome::lastfm, iconColor), tr("Scrobbling Settings"));
     #endif
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     audiocd = new AudioCdSettings(0);
     audiocd->load();
     addPage(QLatin1String("cd"), audiocd, tr("Audio CD"), Icons::self()->albumMonoIcon, tr("Audio CD Settings"));
@@ -141,7 +141,7 @@ void PreferencesDialog::writeSettings()
     proxy->save();
     #endif
     shortcuts->save();
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     audiocd->save();
     #endif
     context->save();

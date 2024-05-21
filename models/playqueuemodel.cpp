@@ -45,7 +45,7 @@
 #include "roles.h"
 #ifdef ENABLE_DEVICES_SUPPORT
 #include "devicesmodel.h"
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 #include "devices/audiocddevice.h"
 #endif
 #endif
@@ -267,7 +267,7 @@ QStringList PlayQueueModel::parseUrls(const QStringList &urls)
 
     for (const auto &path: urls) {
         QUrl u=path.indexOf("://")>2 ? QUrl(path) : QUrl::fromLocalFile(path);
-        #if defined ENABLE_DEVICES_SUPPORT && (defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND)
+        #if defined ENABLE_DEVICES_SUPPORT && (defined CDDB_FOUND || defined MusicBrainz5_FOUND)
         QString cdDevice=AudioCdDevice::getDevice(u);
         if (!cdDevice.isEmpty()) {
             DevicesModel::self()->playCd(cdDevice);

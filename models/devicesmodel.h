@@ -76,7 +76,7 @@ public:
     Action * refreshAct() const { return refreshAction; }
     Action * connectAct() const { return connectAction; }
     Action * disconnectAct() const { return disconnectAction; }
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     Action * editAct() const { return editAction; }
     void playCd(const QString &dev);
     #endif
@@ -127,7 +127,7 @@ private:
     Action *refreshAction;
     Action *connectAction;
     Action *disconnectAction;
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     QString autoplayCd;
     Action *editAction;
     #endif

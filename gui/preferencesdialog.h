@@ -35,7 +35,7 @@ class InterfaceSettings;
 class ContextSettings;
 struct MPDConnectionDetails;
 class CacheSettings;
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 class AudioCdSettings;
 #endif
 #ifdef ENABLE_PROXY_CONFIG
@@ -80,7 +80,7 @@ private:
     #endif
     ShortcutsSettingsPage *shortcuts;
     CacheSettings *cache;
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     AudioCdSettings *audiocd;
     #endif
     #ifdef ENABLE_SCROBBLING

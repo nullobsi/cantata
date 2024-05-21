@@ -39,7 +39,7 @@
 #include "gui/stdactions.h"
 #include "support/action.h"
 #include "config.h"
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 #include "devices/audiocddevice.h"
 #endif
 #include "support/globalstatic.h"
@@ -96,7 +96,7 @@ DevicesModel::DevicesModel(QObject *parent)
     refreshAction = new Action(Icons::self()->reloadIcon, tr("Refresh Device"), this);
     connectAction = new Action(Icons::self()->connectIcon, tr("Connect Device"), this);
     disconnectAction = new Action(Icons::self()->disconnectIcon, tr("Disconnect Device"), this);
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     editAction = new Action(Icons::self()->editIcon, tr("Edit CD Details"), this);
     #endif
     updateItemMenu();
@@ -292,7 +292,7 @@ bool DevicesModel::setData(const QModelIndex &index, const QVariant &value, int 
         return false;
     }
 
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     if (Cantata::Role_Image==role) {
         MusicLibraryItem *item = static_cast<MusicLibraryItem *>(index.internalPointer());
 
@@ -325,7 +325,7 @@ QVariant DevicesModel::data(const QModelIndex &index, int role) const
             }
         }
         break;
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     case Cantata::Role_Image:
         if (MusicLibraryItem::Type_Root==item->itemType()) {
             Device *dev=static_cast<Device *>(item);
@@ -373,7 +373,7 @@ QVariant DevicesModel::data(const QModelIndex &index, int role) const
             if (static_cast<Device *>(item)->supportsDisconnect()) {
                 actions << (static_cast<Device *>(item)->isConnected() ? disconnectAction : connectAction);
             }
-            #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+            #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
             if (Device::AudioCd==static_cast<Device *>(item)->devType()) {
                 actions << editAction;
             }
@@ -433,7 +433,7 @@ void DevicesModel::setEnabled(bool e)
     if (enabled) {
         connect(Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(const QString &)), this, SLOT(deviceAdded(const QString &)));
         connect(Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(const QString &)), this, SLOT(deviceRemoved(const QString &)));
-        #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+        #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
         connect(Covers::self(), SIGNAL(cover(const Song &, const QImage &, const QString &)),
                 this, SLOT(setCover(const Song &, const QImage &, const QString &)));
         #endif
@@ -459,7 +459,7 @@ void DevicesModel::stop()
 
     disconnect(Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(const QString &)), this, SLOT(deviceAdded(const QString &)));
     disconnect(Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(const QString &)), this, SLOT(deviceRemoved(const QString &)));
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     disconnect(Covers::self(), SIGNAL(cover(const Song &, const QImage &, const QString &)),
                this, SLOT(setCover(const Song &, const QImage &, const QString &)));
     #endif
@@ -477,7 +477,7 @@ Device * DevicesModel::device(const QString &udi)
 
 void DevicesModel::setCover(const Song &song, const QImage &img, const QString &file)
 {
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     DBUG << "Set CDDA cover" << song.file << img.isNull() << file << song.isCdda();
     if (song.isCdda()) {
         int idx=indexOf(song.title);
@@ -583,7 +583,7 @@ void DevicesModel::deviceAdded(const QString &udi)
     Solid::Device device(udi);
     DBUG << "Solid device added udi:" << device.udi() << "product:" << device.product() << "vendor:" << device.vendor();
     Solid::StorageAccess *ssa =nullptr;
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
 
     if (opt && (opt->availableContent()&Solid::OpticalDisc::Audio)) {
@@ -628,7 +628,7 @@ void DevicesModel::addLocalDevice(const QString &udi)
         connect(dev, SIGNAL(updatedDetails(QList<Song>)), SIGNAL(updatedDetails(QList<Song>)));
         connect(dev, SIGNAL(play(QList<Song>)), SLOT(play(QList<Song>)));
         connect(dev, SIGNAL(renamed()), this, SLOT(updateItemMenu()));
-        #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+        #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
         if (Device::AudioCd==dev->devType()) {
             connect(static_cast<AudioCdDevice *>(dev), SIGNAL(matches(const QString &, const QList<CdAlbum> &)),
                     SIGNAL(matches(const QString &, const QList<CdAlbum> &)));
@@ -659,7 +659,7 @@ void DevicesModel::deviceRemoved(const QString &udi)
         beginRemoveRows(QModelIndex(), idx, idx);
         Device *dev=static_cast<Device *>(collections.takeAt(idx));
         dev->deleteLater();
-        #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+        #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
         if (Device::AudioCd==dev->devType()) {
             static_cast<AudioCdDevice *>(dev)->dequeue();
         }
@@ -809,7 +809,7 @@ void DevicesModel::loadLocal()
         }
     }
 
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     deviceList = Solid::Device::listFromType(Solid::DeviceInterface::OpticalDisc);
     for (const Solid::Device &device: deviceList) {
         if (existingUdis.contains(device.udi())) {
@@ -864,7 +864,7 @@ void DevicesModel::unmountRemote()
 }
 #endif
 
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 void DevicesModel::playCd(const QString &dev)
 {
     for (MusicLibraryItemRoot *col: collections) {

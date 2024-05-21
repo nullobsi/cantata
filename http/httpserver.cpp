@@ -297,7 +297,7 @@ Song HttpServer::decodeUrl(const QUrl &url) const
         s.file=url.path();
         #endif
         s.type=Song::CantataStream;
-        #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+        #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
         if (s.file.startsWith(Song::constCddaProtocol)) {
             s.type=Song::Cdda;
         }

@@ -108,13 +108,13 @@ public:
     #ifdef ENABLE_HTTP_STREAM_PLAYBACK
     bool playStream();
     #endif
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     bool cdAuto();
     bool paranoiaFull();
     bool paranoiaNeverSkip();
     int paranoiaOffset();
     #endif
-    #if defined CDDB_FOUND && defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
     bool useCddb();
     #endif
     #ifdef CDDB_FOUND
@@ -216,13 +216,13 @@ public:
     #ifdef ENABLE_HTTP_STREAM_PLAYBACK
     void savePlayStream(bool v);
     #endif
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     void saveCdAuto(bool v);
     void saveParanoiaFull(bool v);
     void saveParanoiaNeverSkip(bool v);
     void saveParanoiaOffset(int v);
     #endif
-    #if defined CDDB_FOUND && defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
     void saveUseCddb(bool v);
     #endif
     #ifdef CDDB_FOUND

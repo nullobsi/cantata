@@ -59,7 +59,7 @@
 #include "models/devicesmodel.h"
 #include "devices/actiondialog.h"
 #include "devices/syncdialog.h"
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 #include "devices/audiocddevice.h"
 #endif
 #endif
@@ -1025,7 +1025,7 @@ MainWindow::~MainWindow()
     }
     #ifdef ENABLE_DEVICES_SUPPORT
     DevicesModel::self()->stop();
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     Covers::self()->cleanCdda();
     #endif
     #endif
