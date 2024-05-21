@@ -46,7 +46,7 @@ elseif(APPLE)
 	set(CMAKE_MACOSX_BUNDLE TRUE)
 
 	# CPack.
-	set(CPACK_GENERATOR "DRAGNDROP")
+	set(CPACK_GENERATOR "DragNDrop")
 
 	# Set default properties for target.
 	set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
