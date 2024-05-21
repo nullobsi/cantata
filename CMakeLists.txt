@@ -235,7 +235,7 @@ if(TagLib_FOUND)
             endif()
             if(ENABLE_MUSICBRAINZ)
                 find_package(MusicBrainz5)
-                macro_log_feature(MUSICBRAINZ5_FOUND "libmusicbrainz5" "CD info retrieval via MusicBrainz." "http://musicbrainz.org/doc/libmusicbrainz")
+                macro_log_feature(MusicBrainz5_FOUND "libmusicbrainz5" "CD info retrieval via MusicBrainz." "http://musicbrainz.org/doc/libmusicbrainz")
             endif()
         endif()
     endif()
@@ -360,20 +360,6 @@ list(
     PREPEND Qt${QT_VERSION_MAJOR}::
     OUTPUT_VARIABLE QT_LIBS
 )
-
-# MusicBrainz requires exceptions to be enabled!
-if(MUSICBRAINZ5_FOUND)
-    message("-- Enabling exceptions")
-    if(CMAKE_COMPILER_IS_GNUCXX)
-        add_definitions("-fexceptions -UQT_NO_EXCEPTIONS")
-    endif(CMAKE_COMPILER_IS_GNUCXX)
-    if(CMAKE_C_COMPILER MATCHES "icc")
-        add_definitions(-fexceptions)
-    endif()
-    if(MSVC)
-        add_definitions(-EHsc)
-    endif()
-endif()
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/3rdparty
@@ -630,15 +616,14 @@ if(TagLib_FOUND)
             set(CANTATA_SRCS ${CANTATA_SRCS} devices/mtpdevice.cpp)
             set(CANTATA_LIBS ${CANTATA_LIBS} MTP::MTP)
         endif()
-        if(CDDB_FOUND OR MUSICBRAINZ5_FOUND)
+        if(CDDB_FOUND OR MusicBrainz5_FOUND)
             if(CDDB_FOUND)
                 set(CANTATA_SRCS ${CANTATA_SRCS} devices/cddbinterface.cpp)
                 set(CANTATA_LIBS ${CANTATA_LIBS} CDDB::CDDB)
             endif()
-            if(MUSICBRAINZ5_FOUND)
+            if(MusicBrainz5_FOUND)
                 set(CANTATA_SRCS ${CANTATA_SRCS} devices/musicbrainz.cpp)
-                include_directories(${MUSICBRAINZ5_INCLUDE_DIRS})
-                set(CANTATA_LIBS ${CANTATA_LIBS} ${MUSICBRAINZ5_LIBRARIES})
+                set(CANTATA_LIBS ${CANTATA_LIBS} MusicBrainz5::MusicBrainz)
             endif()
             set(CANTATA_SRCS
                 ${CANTATA_SRCS}

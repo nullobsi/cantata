@@ -28,7 +28,7 @@
 #cmakedefine FFMPEG_FOUND 1
 #cmakedefine MPG123_FOUND 1
 #cmakedefine CDDB_FOUND 1
-#cmakedefine MUSICBRAINZ5_FOUND 1
+#cmakedefine MusicBrainz5_FOUND 1
 #cmakedefine ENABLE_REPLAYGAIN_SUPPORT 1
 #cmakedefine ENABLE_PROXY_CONFIG 1
 #cmakedefine CDPARANOIA_HAS_CACHEMODEL_SIZE 1

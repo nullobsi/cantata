@@ -36,9 +36,9 @@
 #ifdef MTP_FOUND
 #include "mtpdevice.h"
 #endif // MTP_FOUND
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 #include "audiocddevice.h"
-#endif // defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#endif // defined CDDB_FOUND || defined MusicBrainz5_FOUND
 #include "encoders.h"
 #include "tags/tags.h"
 #include "mpd-interface/song.h"
@@ -146,7 +146,7 @@ Device * Device::create(MusicLibraryModel *m, const QString &udi)
 
     DBUG_CLASS("Device") << udi;
     if (device.is<Solid::OpticalDisc>()) {
-        #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+        #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
         DBUG_CLASS("Device") << "AudioCD";
         return Encoders::getAvailable().isEmpty() ? 0 : new AudioCdDevice(m, device);
         #endif

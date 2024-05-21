@@ -49,7 +49,7 @@
 #include "gui/preferencesdialog.h"
 #include "gui/coverdialog.h"
 #include "mpd-interface/mpdconnection.h"
-#if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+#if defined CDDB_FOUND || defined MusicBrainz5_FOUND
 #include "audiocddevice.h"
 #include "albumdetailsdialog.h"
 #include "cddbselectiondialog.h"
@@ -78,7 +78,7 @@ DevicesPage::DevicesPage(QWidget *p)
     connect(copyAction, SIGNAL(triggered()), this, SLOT(copyToLibrary()));
     connect(DevicesModel::self()->configureAct(), SIGNAL(triggered()), this, SLOT(configureDevice()));
     connect(DevicesModel::self()->refreshAct(), SIGNAL(triggered()), this, SLOT(refreshDevice()));
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     connect(DevicesModel::self()->editAct(), SIGNAL(triggered()), this, SLOT(editDetails()));
     connect(DevicesModel::self(), SIGNAL(matches(const QString &, const QList<CdAlbum> &)),
             SLOT(cdMatches(const QString &, const QList<CdAlbum> &)));
@@ -334,7 +334,7 @@ void DevicesPage::controlActions()
     #ifdef ENABLE_REMOTE_DEVICES
     forgetDeviceAction->setEnabled(singleUdi && remoteDev);
     #endif
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     DevicesModel::self()->editAct()->setEnabled(!AlbumDetailsDialog::instanceCount() && !busyDevice && 1==selected.count() && audioCd && haveTracks && deviceSelected);
     #endif
 }
@@ -405,7 +405,7 @@ void DevicesPage::refreshDevice()
 
         if (Device::AudioCd==dev->devType()) {
             // Bit hacky - we use 'full' to determine CDDB/MusicBrainz!
-            #if defined CDDB_FOUND && defined MUSICBRAINZ5_FOUND
+            #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
             switch (MessageBox::questionYesNoCancel(this, tr("Lookup album and track details?"),
                                                     tr("Refresh"), GuiItem(tr("Via CDDB")), GuiItem(tr("Via MusicBrainz")))) {
             case MessageBox::Yes:
@@ -571,7 +571,7 @@ void DevicesPage::updated(const QModelIndex &idx)
 
 void DevicesPage::cdMatches(const QString &udi, const QList<CdAlbum> &albums)
 {
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     int chosen=0;
     Device *dev=DevicesModel::self()->device(udi);
     if (dev && Device::AudioCd==dev->devType()) {
@@ -595,7 +595,7 @@ void DevicesPage::cdMatches(const QString &udi, const QList<CdAlbum> &albums)
 
 void DevicesPage::editDetails()
 {
-    #if defined CDDB_FOUND || defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND || defined MusicBrainz5_FOUND
     if (AlbumDetailsDialog::instanceCount()) {
         return;
     }

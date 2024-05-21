@@ -33,7 +33,7 @@ AudioCdSettings::AudioCdSettings(QWidget *p)
     : QWidget(p)
 {
     setupUi(this);
-    #if defined CDDB_FOUND && defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
     cdLookup->addItem(tr("CDDB"), true);
     cdLookup->addItem(tr("MusicBrainz"), false);
     #else
@@ -58,7 +58,7 @@ void AudioCdSettings::load()
     #endif
     paranoiaFull->setChecked(Settings::self()->paranoiaFull());
     paranoiaNeverSkip->setChecked(Settings::self()->paranoiaNeverSkip());
-    #if defined CDDB_FOUND && defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
     for (int i=0; i<cdLookup->count(); ++i) {
         if (cdLookup->itemData(i).toBool()==Settings::self()->useCddb()) {
             cdLookup->setCurrentIndex(i);
@@ -78,7 +78,7 @@ void AudioCdSettings::save()
     #endif
     Settings::self()->saveParanoiaFull(paranoiaFull->isChecked());
     Settings::self()->saveParanoiaNeverSkip(paranoiaNeverSkip->isChecked());
-    #if defined CDDB_FOUND && defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
     Settings::self()->saveUseCddb(cdLookup->itemData(cdLookup->currentIndex()).toBool());
     #endif
     Settings::self()->saveParanoiaOffset(paranoiaOffset->value());

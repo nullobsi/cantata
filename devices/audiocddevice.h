@@ -108,7 +108,7 @@ private:
     #ifdef CDDB_FOUND
     CddbInterface *cddb;
     #endif
-    #ifdef MUSICBRAINZ5_FOUND
+    #ifdef MusicBrainz5_FOUND
     MusicBrainz *mb;
     #endif
     QString detailsString;

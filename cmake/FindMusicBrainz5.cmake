@@ -1,40 +1,86 @@
-# Module to find the musicbrainz-4 library
-#
-# It defines
-#  MUSICBRAINZ5_INCLUDE_DIRS - the include dir
-#  MUSICBRAINZ5_LIBRARIES - the required libraries
-#  MUSICBRAINZ5_FOUND - true if both of the above have been found
+#[===[.rst:
+FindMusicBrainz5
+----------------
 
-# Copyright (c) 2006,2007 Laurent Montel, <montel@kde.org>
-#
-# Redistribution and use is allowed according to the terms of the BSD license.
-# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+Finds the MusicBrainz Libraries.
 
-if(MUSICBRAINZ5_INCLUDE_DIRS AND MUSICBRAINZ5_LIBRARIES)
-   set(MUSICBRAINZ5_FIND_QUIETLY TRUE)
-endif(MUSICBRAINZ5_INCLUDE_DIRS AND MUSICBRAINZ5_LIBRARIES)
+Imported Targets
+^^^^^^^^^^^^^^^^
 
-IF (NOT WIN32)
-   find_package(PkgConfig)
+This module provides the following imported targets, if found:
 
-   PKG_SEARCH_MODULE( MUSICBRAINZ5 libmusicbrainz5cc )
-   if (NOT MUSICBRAINZ5_FOUND)
-      PKG_SEARCH_MODULE( MUSICBRAINZ5 libmusicbrainz5 )
-   endif (NOT MUSICBRAINZ5_FOUND)
+``MusicBrainz5::MusicBrainz``
+  The MusicBrainz library.
 
-ELSE (NOT WIN32)
-  FIND_PATH( MUSICBRAINZ5_INCLUDE_DIRS musicbrainz5/Disc.h )
+Result Variables
+^^^^^^^^^^^^^^^^
 
-  FIND_LIBRARY( MUSICBRAINZ5_LIBRARIES NAMES musicbrainz5cc )
-  if (NOT MUSICBRAINZ5_LIBRARIES)
-     FIND_LIBRARY( MUSICBRAINZ5_LIBRARIES NAMES musicbrainz5 )
-  endif (NOT MUSICBRAINZ5_LIBRARIES)
+This will define the following variables:
 
-ENDIF (NOT WIN32)
+``MusicBrainz5_FOUND``
+  True if the system has the MusicBrainz libraries.
+``MusicBrainz5_VERSION``
+  The version of MusicBrainz which was found.
+``MusicBrainz5_INCLUDE_DIRS``
+  Include directories needed to use MusicBrainz.
+``MusicBrainz5_LIBRARIES``
+  Libraries needed to link to MusicBrainz.
+
+Cache Variables
+^^^^^^^^^^^^^^^
+
+The following cache variables may also be set:
+
+``MusicBrainz5_LIBRARY``
+  The path to the MusicBrainz library.
+``MusicBrainz5_INCLUDE_DIR``
+  The directory containing ``Disc.h``.
+#]===]
+
+# First use PKG-Config as a starting point.
+find_package(PkgConfig)
+if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_MusicBrainz5 QUIET libmusicbrainz5)
+endif(PKG_CONFIG_FOUND)
+
+find_path(MusicBrainz5_INCLUDE_DIR
+    NAMES Disc.h
+    PATHS ${PC_MusicBrainz5_INCLUDE_DIRS}
+    PATH_SUFFIXES "musicbrainz5"
+)
+
+find_library(MusicBrainz5_LIBRARY
+    NAMES musicbrainz5
+    PATHS ${PC_MusicBrainz5_LIBRARY_DIRS}
+)
+
+# Set version from PC if applicable.
+set(MusicBrainz5_VERSION ${PC_MusicBrainz5_VERSION})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args( MUSICBRAINZ5 DEFAULT_MSG
-                                   MUSICBRAINZ5_INCLUDE_DIRS MUSICBRAINZ5_LIBRARIES)
+find_package_handle_standard_args(MusicBrainz5
+    FOUND_VAR MusicBrainz5_FOUND
+    REQUIRED_VARS
+        MusicBrainz5_INCLUDE_DIR
+        MusicBrainz5_LIBRARY
+    VERSION_VAR MusicBrainz5_VERSION
+)
 
-MARK_AS_ADVANCED(MUSICBRAINZ5_INCLUDE_DIRS MUSICBRAINZ5_LIBRARIES)
+if(MusicBrainz5_FOUND)
+    set(MusicBrainz5_LIBRARIES ${MusicBrainz5_LIBRARY})
+    set(MusicBrainz5_INCLUDE_DIRS ${MusicBrainz5_INCLUDE_DIR})
+    set(MusicBrainz5_DEFINITIONS ${PC_MusicBrainz5_CFLAGS_OTHER})
+    if(NOT TARGET MusicBrainz5::MusicBrainz)
+        add_library(MusicBrainz5::MusicBrainz UNKNOWN IMPORTED)
+        set_target_properties(MusicBrainz5::MusicBrainz PROPERTIES
+            IMPORTED_LOCATION "${MusicBrainz5_LIBRARY}"
+            INTERFACE_COMPILE_OPTIONS "${PC_MusicBrainz5_CFLAGS_OTHER}"
+            INTERFACE_INCLUDE_DIRECTORIES "${MusicBrainz5_INCLUDE_DIR}"
+        )
+    endif ()
+endif()
 
+mark_as_advanced(
+        MusicBrainz5_INCLUDE_DIR
+        MusicBrainz5_LIBRARY
+)

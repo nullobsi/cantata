@@ -25,7 +25,7 @@
 #ifdef CDDB_FOUND
 #include "cddbinterface.h"
 #endif
-#ifdef MUSICBRAINZ5_FOUND
+#ifdef MusicBrainz5_FOUND
 #include "musicbrainz.h"
 #endif
 #include "models/musiclibraryitemsong.h"
@@ -80,7 +80,7 @@ AudioCdDevice::AudioCdDevice(MusicLibraryModel *m, Solid::Device &dev)
     #ifdef CDDB_FOUND
     , cddb(0)
     #endif
-    #ifdef MUSICBRAINZ5_FOUND
+    #ifdef MusicBrainz5_FOUND
     , mb(0)
     #endif
     , year(0)
@@ -111,7 +111,7 @@ AudioCdDevice::AudioCdDevice(MusicLibraryModel *m, Solid::Device &dev)
             registeredTypes=true;
         }
         devPath=Song::constCddaProtocol+device+QChar('/');
-        #if defined CDDB_FOUND && defined MUSICBRAINZ5_FOUND
+        #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
         connectService(Settings::self()->useCddb());
         #else
         connectService(true);
@@ -133,7 +133,7 @@ AudioCdDevice::~AudioCdDevice()
         cddb=0;
     }
     #endif
-    #ifdef MUSICBRAINZ5_FOUND
+    #ifdef MusicBrainz5_FOUND
     if (mb) {
         mb->deleteLater();
         mb=0;
@@ -168,7 +168,7 @@ bool AudioCdDevice::isAudioDevice(const QString &dev) const
 
 void AudioCdDevice::connectService(bool useCddb)
 {
-    #if defined CDDB_FOUND && defined MUSICBRAINZ5_FOUND
+    #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
     if (cddb && !useCddb) {
         cddb->deleteLater();
         cddb=0;
@@ -183,7 +183,7 @@ void AudioCdDevice::connectService(bool useCddb)
 
     #ifdef CDDB_FOUND
     if (!cddb
-            #ifdef MUSICBRAINZ5_FOUND
+            #ifdef MusicBrainz5_FOUND
             && useCddb
             #endif
             ) {
@@ -195,7 +195,7 @@ void AudioCdDevice::connectService(bool useCddb)
     }
     #endif
 
-    #ifdef MUSICBRAINZ5_FOUND
+    #ifdef MusicBrainz5_FOUND
     if (!mb
             #ifdef CDDB_FOUND
             && !useCddb
