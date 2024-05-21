@@ -8,13 +8,11 @@ set(SINGLEAPP-SOURCES
 )
 
 if(WIN32)
-  set(SINGLEAPP-SOURCES ${SINGLEAPP-SOURCES} qtlockedfile_win.cpp)
+    set(SINGLEAPP-SOURCES ${SINGLEAPP-SOURCES} qtlockedfile_win.cpp)
 else()
-  set(SINGLEAPP-SOURCES ${SINGLEAPP-SOURCES} qtlockedfile_unix.cpp)
+    set(SINGLEAPP-SOURCES ${SINGLEAPP-SOURCES} qtlockedfile_unix.cpp)
 endif()
 
-ADD_LIBRARY(qtsingleapplication STATIC
-    ${SINGLEAPP-SOURCES}
-)
+add_library(qtsingleapplication STATIC ${SINGLEAPP-SOURCES})
 
 target_link_libraries(qtsingleapplication PRIVATE ${QT_LIBS} ZLIB::ZLIB)
