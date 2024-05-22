@@ -25,10 +25,6 @@
 
 #include <QFile>
 #include <QFileInfo>
-#ifdef TAGLIB_EXTRAS_FOUND
-#include <taglib-extras/audiblefile.h>
-#include <taglib-extras/realmediafile.h>
-#endif
 #include <taglib/aifffile.h>
 #include <taglib/apefile.h>
 #include <taglib/asffile.h>
@@ -43,9 +39,7 @@
 #include <taglib/vorbisfile.h>
 #include <taglib/wavfile.h>
 #include <taglib/wavpackfile.h>
-#ifdef TAGLIB_OPUS_FOUND
 #include <taglib/opusfile.h>
-#endif
 
 TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,
@@ -53,7 +47,12 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
 {
     TagLib::File* result = nullptr;
 
-    QString fn = QFile::decodeName(fileName);
+#ifdef Q_OS_WIN
+    QString fn = QString::fromWCharArray(fileName);
+#else
+	QString fn = QFile::decodeName(fileName);
+#endif
+
     QString suffix = QFileInfo(fn).suffix();
 
     if (suffix == QLatin1String("mp3")) {
@@ -66,12 +65,10 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
             delete result;
             result = new TagLib::Ogg::FLAC::File(fileName, readProperties, propertiesStyle);
         }
-        #ifdef TAGLIB_OPUS_FOUND
         if (!result->isValid()) {
             delete result;
             result = new TagLib::Ogg::Opus::File(fileName, readProperties, propertiesStyle);
         }
-        #endif
         if (!result->isValid()) {
             delete result;
             result = new TagLib::TrueAudio::File(fileName, readProperties, propertiesStyle);
@@ -96,12 +93,9 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
         result = new TagLib::RIFF::AIFF::File(fileName, readProperties, propertiesStyle);
     } else if (suffix == QLatin1String("mpc") || suffix == QLatin1String("mpp") || suffix == QLatin1String("mp+")) {
         result = new TagLib::MPC::File(fileName, readProperties, propertiesStyle);
-    }
-    #ifdef TAGLIB_OPUS_FOUND
-    else if (suffix == QLatin1String("opus")) {
+    } else if (suffix == QLatin1String("opus")) {
         result = new TagLib::Ogg::Opus::File(fileName, readProperties, propertiesStyle);
     }
-    #endif
 
     if (result && !result->isValid()) {
         delete result;
