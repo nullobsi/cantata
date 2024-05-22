@@ -38,6 +38,9 @@ set(CPACK_SOURCE_IGNORE_FILES
 
 set(ORGANIZATION_NAME ${PROJECT_NAME})
 
+# Install dirs
+include(GNUInstallDirs)
+
 # Packaging variables.
 if(WIN32)
     set(ICON_INSTALL_PREFIX icons)
@@ -82,8 +85,7 @@ elseif(APPLE)
 
     set(CPACK_PACKAGE_EXECUTABLES "${APP_BUNDLE_DIR};Cantata")
 elseif(NOT HAIKU)
-    # TODO: Verify SHARE_INSTALL_PREFIX variable.
-    set(ICON_INSTALL_PREFIX ${SHARE_INSTALL_PREFIX}/icons/hicolor)
+	set(ICON_INSTALL_PREFIX ${CMAKE_INSTALL_DATADIR}/icons/hicolor)
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "kOpenBSD.*|OpenBSD.*")
@@ -208,20 +210,6 @@ if(Avahi_FOUND)
         PRIVATE gui/findmpddialog.cpp gui/avahidiscovery.cpp gui/avahipoll.cpp
     )
     target_link_libraries(cantata PRIVATE Avahi::Client)
-endif()
-
-if(NOT APPLE AND NOT WIN32 AND NOT HAIKU)
-    set(SHARE_INSTALL_PREFIX
-        "share"
-        CACHE PATH
-        "Define install directory for read-only architecture-independent data"
-    )
-else()
-    set(SHARE_INSTALL_PREFIX
-        ""
-        CACHE PATH
-        "Define install directory for read-only architecture-independent data"
-    )
 endif()
 
 if(NOT WIN32 AND NOT APPLE AND ENABLE_DEVICES_SUPPORT AND ENABLE_UDISKS2)

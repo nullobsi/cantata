@@ -17,11 +17,11 @@ if(NOT HAIKU AND NOT WIN32 AND NOT APPLE)
 
     install(
         FILES cantata.svg
-        DESTINATION ${CANTATA_ICON_INSTALL_PREFIX}/scalable/apps
+		DESTINATION ${ICON_INSTALL_PREFIX}/scalable/apps
     )
     install(
         FILES cantata-symbolic.svg
-        DESTINATION ${CANTATA_ICON_INSTALL_PREFIX}/symbolic/apps
+		DESTINATION ${ICON_INSTALL_PREFIX}/symbolic/apps
     )
     foreach(
         SIZE
@@ -37,7 +37,7 @@ if(NOT HAIKU AND NOT WIN32 AND NOT APPLE)
     )
         install(
             FILES cantata${SIZE}.png
-            DESTINATION ${CANTATA_ICON_INSTALL_PREFIX}/${SIZE}x${SIZE}/apps
+			DESTINATION ${ICON_INSTALL_PREFIX}/${SIZE}x${SIZE}/apps
             RENAME cantata.png
         )
     endforeach()
