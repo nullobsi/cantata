@@ -846,6 +846,28 @@ if(APPLE)
     install(CODE "execute_process(COMMAND codesign -f -s \"-\" \"${APPS}\")")
 endif()
 
+if(WIN32)
+	# Copy libraries.
+	install(
+		CODE "execute_process(COMMAND ${WINDEPLOYQT_EXECUTABLE}
+		--no-translations --compiler-runtime --no-system-d3d-compiler
+		--no-angle --no-webkit2 --no-quick-import
+		\"\${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.exe\")"
+	)
+	# Might be dangerous.
+	if(MINGW AND NOT NO_MSYS2_BUNDLEDLLS)
+		install(
+			CODE "file(GLOB_RECURSE BUNDLED_DLLS
+			\"\${CMAKE_INSTALL_PREFIX}/*.dll\")
+			foreach(BUNDLE_DLL IN LISTS BUNDLED_DLLS)
+				execute_process(COMMAND bash
+					\"${CMAKE_SOURCE_DIR}/bundledlls\"
+					\"\${BUNDLE_DLL}\" \"\${CMAKE_INSTALL_PREFIX}\")
+			endforeach()"
+		)
+	endif()
+endif()
+
 macro_display_feature_log()
 
 if(
