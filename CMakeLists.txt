@@ -46,24 +46,30 @@ if(WIN32)
     set(ICON_INSTALL_PREFIX icons)
 
     # CPack.
-	set(CPACK_GENERATOR WIX ZIP)
+    set(CPACK_GENERATOR WIX ZIP)
 
-	# WIX .msi generator
-	set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/windows/cantata.ico")
-	set(CPACK_WIX_PROPERTY_APPHELPLINK "${PROJECT_HOMEPAGE_URL}")
-	set(CPACK_WIX_PROPERTY_APPURLINFOABOUT "${PROJECT_HOMEPAGE_URL}")
-	set(CPACK_WIX_ROOT_FEATURE_DESCRIPTION "${PROJECT_DESCRIPTION}")
+    # WIX .msi generator
+    set(CPACK_WIX_PRODUCT_ICON "${CMAKE_SOURCE_DIR}/windows/cantata.ico")
+    set(CPACK_WIX_PROPERTY_APPHELPLINK "${PROJECT_HOMEPAGE_URL}")
+    set(CPACK_WIX_PROPERTY_APPURLINFOABOUT "${PROJECT_HOMEPAGE_URL}")
+    set(CPACK_WIX_ROOT_FEATURE_DESCRIPTION "${PROJECT_DESCRIPTION}")
 
-	set(CPACK_WIX_UPGRADE_GUID "5a353104-c90b-4467-a48c-2204681a5383")
+    set(CPACK_WIX_UPGRADE_GUID "5a353104-c90b-4467-a48c-2204681a5383")
 
-	# WiX doesn't like files without extensions.
-	configure_file("${CMAKE_SOURCE_DIR}/LICENSE"
-		"${CMAKE_BINARY_DIR}/LICENSE.txt" COPYONLY)
-	configure_file("${CMAKE_SOURCE_DIR}/README"
-		"${CMAKE_BINARY_DIR}/README.txt" COPYONLY)
+    # WiX doesn't like files without extensions.
+    configure_file(
+        "${CMAKE_SOURCE_DIR}/LICENSE"
+        "${CMAKE_BINARY_DIR}/LICENSE.txt"
+        COPYONLY
+    )
+    configure_file(
+        "${CMAKE_SOURCE_DIR}/README"
+        "${CMAKE_BINARY_DIR}/README.txt"
+        COPYONLY
+    )
 
-	set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/LICENSE.txt")
-	set(CPACK_RESOURCE_FILE_README "${CMAKE_BINARY_DIR}/README.txt")
+    set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/LICENSE.txt")
+    set(CPACK_RESOURCE_FILE_README "${CMAKE_BINARY_DIR}/README.txt")
 elseif(APPLE)
     # Build as an app bundle.
     set(CMAKE_MACOSX_BUNDLE TRUE)
@@ -94,9 +100,9 @@ elseif(APPLE)
 
     set(CPACK_PACKAGE_EXECUTABLES "${APP_BUNDLE_DIR};Cantata")
 elseif(NOT HAIKU)
-	set(ICON_INSTALL_PREFIX ${CMAKE_INSTALL_DATADIR}/icons/hicolor)
+    set(ICON_INSTALL_PREFIX ${CMAKE_INSTALL_DATADIR}/icons/hicolor)
 
-	set(CPACK_GENERATOR TGZ)
+    set(CPACK_GENERATOR TGZ)
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "kOpenBSD.*|OpenBSD.*")
@@ -302,13 +308,16 @@ if(APPLE OR WIN32 OR HAIKU)
     # Find deployment helpers.
     get_filename_component(QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}" DIRECTORY)
     if(APPLE)
-		find_program(MACDEPLOYQT_EXECUTABLE
-			"macdeployqt${QT_VERSION_MAJOR}" HINTS "${QT_BIN_DIR}")
+        find_program(
+            MACDEPLOYQT_EXECUTABLE
+            "macdeployqt${QT_VERSION_MAJOR}"
+            HINTS "${QT_BIN_DIR}"
+        )
     endif()
     if(WIN32)
         find_program(
             WINDEPLOYQT_EXECUTABLE
-			"windeployqt${QT_VERSION_MAJOR}.exe"
+            "windeployqt${QT_VERSION_MAJOR}.exe"
             HINTS "${QT_BIN_DIR}"
         )
     endif()
@@ -541,20 +550,23 @@ endif()
 
 target_link_libraries(cantata PRIVATE support)
 
-configure_file(playlists/cantata-dynamic.cmake
-	${CMAKE_BINARY_DIR}/cantata-dynamic @ONLY)
+configure_file(
+    playlists/cantata-dynamic.cmake
+    ${CMAKE_BINARY_DIR}/cantata-dynamic
+    @ONLY
+)
 
 if(WIN32)
     # Not installed for windows - script uses sym-links...
 elseif(APPLE)
     install(
-		PROGRAMS ${CMAKE_BINARY_DIR}/cantata-dynamic
+        PROGRAMS ${CMAKE_BINARY_DIR}/cantata-dynamic
         DESTINATION ${APP_RESOURCES_DIR}/scripts/
     )
 else()
     install(
-		PROGRAMS ${CMAKE_BINARY_DIR}/cantata-dynamic
-		DESTINATION ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME}/scripts
+        PROGRAMS ${CMAKE_BINARY_DIR}/cantata-dynamic
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME}/scripts
     )
 endif()
 
@@ -577,12 +589,14 @@ if("DBus" IN_LIST QT_COMPONENTS)
         PROPERTIES NO_NAMESPACE TRUE
     )
 
-	configure_file(dbus/cantata.xml.cmake
-		${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.xml)
+    configure_file(
+        dbus/cantata.xml.cmake
+        ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.xml
+    )
 
     qt_add_dbus_adaptor(DBUS_GENERATED_SRCS dbus/org.mpris.MediaPlayer2.Player.xml dbus/mpris.h Mpris)
     qt_add_dbus_adaptor(DBUS_GENERATED_SRCS dbus/org.mpris.MediaPlayer2.root.xml dbus/mpris.h Mpris)
-	qt_add_dbus_adaptor(DBUS_GENERATED_SRCS ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.xml gui/mainwindow.h MainWindow)
+    qt_add_dbus_adaptor(DBUS_GENERATED_SRCS ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.xml gui/mainwindow.h MainWindow)
     qt_add_dbus_interfaces(DBUS_GENERATED_SRCS 
     		dbus/org.freedesktop.Notifications.xml
         	dbus/org.freedesktop.UPower.xml
@@ -743,8 +757,8 @@ if(WIN32)
     #add_subdirectory(3rdparty/qxt)
     #target_sources(cantata PRIVATE gui/qxtmediakeys.cpp)
     set_target_properties(cantata PROPERTIES WIN32_EXECUTABLE TRUE)
-	# Install to root of prefix.
-	install(TARGETS cantata RUNTIME DESTINATION ".")
+    # Install to root of prefix.
+    install(TARGETS cantata RUNTIME DESTINATION ".")
 elseif(APPLE)
     set_target_properties(
         cantata
@@ -794,7 +808,7 @@ if(WIN32 OR APPLE OR HAIKU)
     add_subdirectory(3rdparty/qtsingleapplication)
     target_link_libraries(cantata PRIVATE qtsingleapplication)
 else()
-	set(XDG_APPS_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/applications")
+    set(XDG_APPS_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/applications")
 endif()
 
 if(WIN32)
@@ -814,19 +828,33 @@ add_definitions(-DQT_NO_DEBUG_OUTPUT)
 
 if(UNIX AND NOT APPLE)
     if(NOT HAIKU)
-        configure_file(cantata-remote.cmake
-			${CMAKE_BINARY_DIR}/cantata-remote @ONLY)
-		configure_file(cantata.desktop.cmake
-			${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.desktop @ONLY)
-		configure_file(cantata.metainfo.xml.cmake
-			${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.metainfo.xml @ONLY)
+        configure_file(
+            cantata-remote.cmake
+            ${CMAKE_BINARY_DIR}/cantata-remote
+            @ONLY
+        )
+        configure_file(
+            cantata.desktop.cmake
+            ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.desktop
+            @ONLY
+        )
+        configure_file(
+            cantata.metainfo.xml.cmake
+            ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.metainfo.xml
+            @ONLY
+        )
         install(
             PROGRAMS ${CMAKE_BINARY_DIR}/cantata-remote
-			DESTINATION ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME}/scripts
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME}/scripts
         )
-		install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
-		install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.metainfo.xml
-			DESTINATION "${CMAKE_INSTALL_DATADIR}/metainfo")
+        install(
+            FILES ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.desktop
+            DESTINATION ${XDG_APPS_INSTALL_DIR}
+        )
+        install(
+            FILES ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.metainfo.xml
+            DESTINATION "${CMAKE_INSTALL_DATADIR}/metainfo"
+        )
     endif()
     target_link_libraries(cantata PRIVATE pthread)
 endif()
@@ -862,17 +890,19 @@ if(APPLE)
 endif()
 
 if(WIN32)
-	# Copy libraries.
-	install(
-		CODE "execute_process(COMMAND ${WINDEPLOYQT_EXECUTABLE}
+    # Copy libraries.
+    install(
+        CODE
+            "execute_process(COMMAND ${WINDEPLOYQT_EXECUTABLE}
 		--no-translations --compiler-runtime --no-system-d3d-compiler
 		--no-system-dxc-compiler --no-quick-import
 		\"\${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.exe\")"
-	)
-	# Might be dangerous.
-	if(MINGW AND NOT NO_MSYS2_BUNDLEDLLS)
-		install(
-			CODE "file(GLOB_RECURSE BUNDLED_DLLS
+    )
+    # Might be dangerous.
+    if(MINGW AND NOT NO_MSYS2_BUNDLEDLLS)
+        install(
+            CODE
+                "file(GLOB_RECURSE BUNDLED_DLLS
 			\"\${CMAKE_INSTALL_PREFIX}/*.dll\"
 			\"\${CMAKE_INSTALL_PREFIX}/cantata.exe\"
 			\"\${CMAKE_INSTALL_PREFIX}/cantata-replaygain.exe\"
@@ -882,8 +912,8 @@ if(WIN32)
 					\"${CMAKE_SOURCE_DIR}/windows/bundledlls\"
 					\"\${BUNDLE_DLL}\" \"\${CMAKE_INSTALL_PREFIX}\")
 			endforeach()"
-		)
-	endif()
+        )
+    endif()
 endif()
 
 macro_display_feature_log()

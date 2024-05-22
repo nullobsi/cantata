@@ -10,10 +10,7 @@ if(Qt${QT_VERSION_MAJOR}LinguistTools_FOUND)
             QM_FILES_OUTPUT_VARIABLE QM_FILES
     )
     if(WIN32)
-        install(
-            FILES ${QM_FILES}
-            DESTINATION translations/
-        )
+        install(FILES ${QM_FILES} DESTINATION translations/)
     elseif(APPLE)
         install(
             FILES ${QM_FILES}
@@ -22,7 +19,7 @@ if(Qt${QT_VERSION_MAJOR}LinguistTools_FOUND)
     else()
         install(
             FILES ${QM_FILES}
-			DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/translations/
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/translations/
         )
     endif()
     add_dependencies(cantata translations)

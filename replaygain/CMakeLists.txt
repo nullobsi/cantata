@@ -54,14 +54,14 @@ if(FFMPEG_FOUND OR MPG123_FOUND)
 
     if(WIN32)
         set_property(TARGET cantata-replaygain PROPERTY WIN32_EXECUTABLE true)
-		# Install to root of prefix.
-		install(TARGETS cantata-replaygain RUNTIME DESTINATION ".")
+        # Install to root of prefix.
+        install(TARGETS cantata-replaygain RUNTIME DESTINATION ".")
     elseif(APPLE)
         install(TARGETS cantata-replaygain RUNTIME DESTINATION ${APP_MACOS_DIR})
     else()
         install(
             TARGETS cantata-replaygain
-			RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/${PROJECT_NAME}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/${PROJECT_NAME}
         )
     endif()
 endif()

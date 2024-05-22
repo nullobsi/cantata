@@ -15,14 +15,14 @@ target_include_directories(
 
 if(WIN32)
     set_property(TARGET cantata-tags PROPERTY WIN32_EXECUTABLE true)
-	# Install to root of prefix.
-	install(TARGETS cantata-tags RUNTIME DESTINATION ".")
+    # Install to root of prefix.
+    install(TARGETS cantata-tags RUNTIME DESTINATION ".")
 elseif(APPLE)
     install(TARGETS cantata-tags RUNTIME DESTINATION ${APP_MACOS_DIR})
 else()
     install(
         TARGETS cantata-tags
-		RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/${PROJECT_NAME}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/${PROJECT_NAME}
     )
 endif()
 

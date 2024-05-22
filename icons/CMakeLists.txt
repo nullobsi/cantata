@@ -1,13 +1,13 @@
 if(NOT HAIKU AND NOT WIN32 AND NOT APPLE)
     install(
         FILES cantata.svg
-		DESTINATION ${ICON_INSTALL_PREFIX}/scalable/apps
-		RENAME ${PROJECT_REV_ID}.svg
+        DESTINATION ${ICON_INSTALL_PREFIX}/scalable/apps
+        RENAME ${PROJECT_REV_ID}.svg
     )
     install(
         FILES cantata-symbolic.svg
-		DESTINATION ${ICON_INSTALL_PREFIX}/symbolic/apps
-		RENAME ${PROJECT_REV_ID}-symbolic.svg
+        DESTINATION ${ICON_INSTALL_PREFIX}/symbolic/apps
+        RENAME ${PROJECT_REV_ID}-symbolic.svg
     )
     foreach(
         SIZE
@@ -23,8 +23,8 @@ if(NOT HAIKU AND NOT WIN32 AND NOT APPLE)
     )
         install(
             FILES cantata${SIZE}.png
-			DESTINATION ${ICON_INSTALL_PREFIX}/${SIZE}x${SIZE}/apps
-			RENAME ${PROJECT_REV_ID}.png
+            DESTINATION ${ICON_INSTALL_PREFIX}/${SIZE}x${SIZE}/apps
+            RENAME ${PROJECT_REV_ID}.png
         )
     endforeach()
 
