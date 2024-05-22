@@ -851,7 +851,7 @@ if(WIN32)
 	install(
 		CODE "execute_process(COMMAND ${WINDEPLOYQT_EXECUTABLE}
 		--no-translations --compiler-runtime --no-system-d3d-compiler
-		--no-angle --no-webkit2 --no-quick-import
+		--no-system-dxc-compiler --no-quick-import
 		\"\${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.exe\")"
 	)
 	# Might be dangerous.
