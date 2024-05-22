@@ -781,7 +781,6 @@ QString Utils::cacheDir(const QString &sub, bool create)
     #endif
 }
 
-// TODO: make this relocatable
 QString Utils::systemDir(const QString &sub)
 {
     #if defined Q_OS_WIN
@@ -789,7 +788,12 @@ QString Utils::systemDir(const QString &sub)
     #elif defined Q_OS_MAC
     return fixPath(QCoreApplication::applicationDirPath()+QLatin1String("/../Resources/")+(sub.isEmpty() ? QString() : (sub+constDirSep)));
     #else
-    return fixPath(QString(SHARE_INSTALL_PREFIX"/")+QCoreApplication::applicationName()+constDirSep+(sub.isEmpty() ? QString() : (sub+constDirSep)));
+	// bin/../share/appname
+	return fixPath(
+		QCoreApplication::applicationDirPath()+constDirSep+"../"+INSTALL_DATADIR+ 
+			constDirSep+QCoreApplication::applicationName()+constDirSep+
+			(sub.isEmpty() ? QString() : (sub+constDirSep))
+	);
     #endif
 }
 
@@ -805,7 +809,10 @@ QString Utils::helper(const QString &app)
     if (QFile::exists(local)) {
         return local;
     }
-    return fixPath(QString(INSTALL_PREFIX "/" LINUX_LIB_DIR "/")+QCoreApplication::applicationName()+constDirSep)+app;
+	return fixPath(
+		QCoreApplication::applicationDirPath()+constDirSep+"../"+INSTALL_LIBEXECDIR+ 
+			constDirSep+QCoreApplication::applicationName()+constDirSep
+	) + app;
     #endif
 }
 

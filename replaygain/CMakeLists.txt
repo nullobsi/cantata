@@ -61,7 +61,7 @@ if(FFMPEG_FOUND OR MPG123_FOUND)
     else()
         install(
             TARGETS cantata-replaygain
-            RUNTIME DESTINATION ${LINUX_LIB_DIR}/${PROJECT_NAME}
+			RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/${PROJECT_NAME}
         )
     endif()
 endif()

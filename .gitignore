@@ -1,6 +1,8 @@
 /.project
 build/
 CMakeLists.txt.user
+.cache
+build*/
 
 compile_commands.json
 

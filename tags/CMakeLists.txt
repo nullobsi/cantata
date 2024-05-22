@@ -22,7 +22,7 @@ elseif(APPLE)
 else()
     install(
         TARGETS cantata-tags
-        RUNTIME DESTINATION ${LINUX_LIB_DIR}/${PROJECT_NAME}
+		RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/${PROJECT_NAME}
     )
 endif()
 
