@@ -818,11 +818,15 @@ if(UNIX AND NOT APPLE)
 			${CMAKE_BINARY_DIR}/cantata-remote @ONLY)
 		configure_file(cantata.desktop.cmake
 			${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.desktop @ONLY)
+		configure_file(cantata.metainfo.xml.cmake
+			${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.metainfo.xml @ONLY)
         install(
             PROGRAMS ${CMAKE_BINARY_DIR}/cantata-remote
 			DESTINATION ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME}/scripts
         )
 		install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+		install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.metainfo.xml
+			DESTINATION "${CMAKE_INSTALL_DATADIR}/metainfo")
     endif()
     target_link_libraries(cantata PRIVATE pthread)
 endif()
