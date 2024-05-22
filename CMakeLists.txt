@@ -299,12 +299,13 @@ if(APPLE OR WIN32 OR HAIKU)
     # Find deployment helpers.
     get_filename_component(QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}" DIRECTORY)
     if(APPLE)
-        find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS "${QT_BIN_DIR}")
+		find_program(MACDEPLOYQT_EXECUTABLE
+			"macdeployqt${QT_VERSION_MAJOR}" HINTS "${QT_BIN_DIR}")
     endif()
     if(WIN32)
         find_program(
             WINDEPLOYQT_EXECUTABLE
-            windeployqt.exe
+			"windeployqt${QT_VERSION_MAJOR}.exe"
             HINTS "${QT_BIN_DIR}"
         )
     endif()
