@@ -2,7 +2,7 @@
 "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 
 <node>
-  <interface name="mpd.cantata">
+  <interface name="@PROJECT_REV_ID@">
     <method name="showError">
         <arg type="s" name="error" direction="in"/>
     </method>

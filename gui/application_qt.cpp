@@ -32,7 +32,7 @@ Application::Application(int &argc, char **argv)
 {
     setApplicationDisplayName(QLatin1String("Cantata"));
     #if QT_VERSION >= 0x050700
-    setDesktopFileName(QLatin1String("cantata"));
+    setDesktopFileName(QLatin1String(PROJECT_REV_ID ".desktop"));
     #endif
 }
 
@@ -47,14 +47,14 @@ bool Application::start(const QStringList &files)
     }
     loadFiles(files);
     // ...and activate window!
-    QDBusConnection::sessionBus().send(QDBusMessage::createMethodCall("mpd.cantata", "/org/mpris/MediaPlayer2", "", "Raise"));
+    QDBusConnection::sessionBus().send(QDBusMessage::createMethodCall(PROJECT_REV_ID, "/org/mpris/MediaPlayer2", "", "Raise"));
     return false;
 }
 
 void Application::loadFiles(const QStringList &files)
 {
     if (!files.isEmpty()) {
-        QDBusMessage m = QDBusMessage::createMethodCall("mpd.cantata", "/cantata", "", "load");
+        QDBusMessage m = QDBusMessage::createMethodCall(PROJECT_REV_ID, "/cantata", "", "load");
         QList<QVariant> a;
         a.append(files);
         m.setArguments(a);

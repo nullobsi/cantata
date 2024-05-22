@@ -1,6 +1,11 @@
 [Desktop Entry]
+Version=1.0
 Type=Application
-Name=Cantata
+
+Name=@PROJECT_NAME@
+Comment=Listen to and manage your music collection
+Categories=Qt;KDE;AudioVideo;Player;
+
 GenericName=Music Player Client
 GenericName[bs]=Muzički player klijent
 GenericName[da]=Musikafspiller-klient
@@ -22,10 +27,12 @@ GenericName[pt_BR]=Reprodutor Multimídia
 GenericName[ru]=Клиент музыкального проигрывателя
 GenericName[sq]=Clienti player muzike
 GenericName[tr]=Muzik Çalıcı İstemcisi
-Comment=Listen and manage music collection
-Icon=cantata
-Exec=cantata %U
-Categories=Qt;KDE;AudioVideo;Player;
+
+
+Icon=@EXECUTABLE_NAME@
+Exec=@EXECUTABLE_NAME@ %U
+Terminal=false
+
 X-DBUS-StartupType=Unique
-X-DBUS-ServiceName=mpd.cantata
+X-DBUS-ServiceName=@PROJECT_REV_ID@
 Keywords=Music;MPD;

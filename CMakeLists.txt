@@ -10,8 +10,8 @@ project(
 
 #  NOTE: If PROJECT_URL, or PROJECT_REV_URL, are changed, then cantata-dynamic, README, and
 #        dbus/mpd.cantata.xml will need renaming/updating.
-set(PROJECT_ID "cantata.mpd")
-set(PROJECT_REV_ID "mpd.cantata")
+set(PROJECT_ID "cantata.nullobsi.unix.dog")
+set(PROJECT_REV_ID "dog.unix.nullobsi.cantata")
 set(EXECUTABLE_NAME "cantata")
 
 message(STATUS "Configuring ${PROJECT_NAME} v${PROJECT_VERSION}")
@@ -549,17 +549,20 @@ endif()
 
 target_link_libraries(cantata PRIVATE support)
 
+configure_file(playlists/cantata-dynamic.cmake
+	${CMAKE_BINARY_DIR}/cantata-dynamic @ONLY)
+
 if(WIN32)
     # Not installed for windows - script uses sym-links...
 elseif(APPLE)
     install(
-        PROGRAMS playlists/cantata-dynamic
+		PROGRAMS ${CMAKE_BINARY_DIR}/cantata-dynamic
         DESTINATION ${APP_RESOURCES_DIR}/scripts/
     )
 else()
     install(
-        PROGRAMS playlists/cantata-dynamic
-        DESTINATION ${SHARE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME}/scripts
+		PROGRAMS ${CMAKE_BINARY_DIR}/cantata-dynamic
+		DESTINATION ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME}/scripts
     )
 endif()
 
@@ -582,9 +585,12 @@ if("DBus" IN_LIST QT_COMPONENTS)
         PROPERTIES NO_NAMESPACE TRUE
     )
 
+	configure_file(dbus/cantata.xml.cmake
+		${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.xml)
+
     qt_add_dbus_adaptor(DBUS_GENERATED_SRCS dbus/org.mpris.MediaPlayer2.Player.xml dbus/mpris.h Mpris)
     qt_add_dbus_adaptor(DBUS_GENERATED_SRCS dbus/org.mpris.MediaPlayer2.root.xml dbus/mpris.h Mpris)
-    qt_add_dbus_adaptor(DBUS_GENERATED_SRCS dbus/${PROJECT_REV_ID}.xml gui/mainwindow.h MainWindow)
+	qt_add_dbus_adaptor(DBUS_GENERATED_SRCS ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.xml gui/mainwindow.h MainWindow)
     qt_add_dbus_interfaces(DBUS_GENERATED_SRCS 
     		dbus/org.freedesktop.Notifications.xml
         	dbus/org.freedesktop.UPower.xml
@@ -796,7 +802,7 @@ if(WIN32 OR APPLE OR HAIKU)
     add_subdirectory(3rdparty/qtsingleapplication)
     target_link_libraries(cantata PRIVATE qtsingleapplication)
 else()
-    set(XDG_APPS_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/applications")
+	set(XDG_APPS_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/applications")
 endif()
 
 if(WIN32)
@@ -816,12 +822,15 @@ add_definitions(-DQT_NO_DEBUG_OUTPUT)
 
 if(UNIX AND NOT APPLE)
     if(NOT HAIKU)
-        configure_file(cantata-remote.cmake ${CMAKE_BINARY_DIR}/cantata-remote)
+        configure_file(cantata-remote.cmake
+			${CMAKE_BINARY_DIR}/cantata-remote @ONLY)
+		configure_file(cantata.desktop.cmake
+			${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.desktop @ONLY)
         install(
             PROGRAMS ${CMAKE_BINARY_DIR}/cantata-remote
-            DESTINATION ${SHARE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME}/scripts
+			DESTINATION ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME}/scripts
         )
-        install(FILES cantata.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+		install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
     endif()
     target_link_libraries(cantata PRIVATE pthread)
 endif()

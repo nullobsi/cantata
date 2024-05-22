@@ -39,7 +39,7 @@ fi
 
 if [ $1 = "cantata" ] ; then
     path="/cantata"
-    methodPrefix=mpd.cantata
+	methodPrefix=@PROJECT_REV_ID@
     method="triggerAction"
     methodArgument=$2
 else

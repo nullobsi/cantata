@@ -605,10 +605,10 @@ sub sendMessage() {
             # TODO: How to send a dbus (or other) message to Cantata application????
         } else {
             # Linux
-            system("qdbus mpd.cantata /cantata ${method} ${argument}");
+			system("qdbus @PROJECT_REV_ID@ /cantata ${method} ${argument}");
             if ( $? == -1 ) {
                 # Maybe qdbus is not installed? Try dbus-send...
-                system("dbus-send --type=method_call --session --dest=mpd.cantata /cantata mpd.cantata.${method} string:${argument}");
+				system("dbus-send --type=method_call --session --dest=@PROJECT_REV_ID@ /cantata @PROJECT_REV_ID@.${method} string:${argument}");
             }
         }
     } else {

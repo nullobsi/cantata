@@ -781,6 +781,7 @@ QString Utils::cacheDir(const QString &sub, bool create)
     #endif
 }
 
+// TODO: make this relocatable
 QString Utils::systemDir(const QString &sub)
 {
     #if defined Q_OS_WIN
