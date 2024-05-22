@@ -736,7 +736,8 @@ if(WIN32)
     #add_subdirectory(3rdparty/qxt)
     #target_sources(cantata PRIVATE gui/qxtmediakeys.cpp)
     set_target_properties(cantata PROPERTIES WIN32_EXECUTABLE TRUE)
-    install(TARGETS cantata)
+	# Install to root of prefix.
+	install(TARGETS cantata RUNTIME DESTINATION ".")
 elseif(APPLE)
     set_target_properties(
         cantata

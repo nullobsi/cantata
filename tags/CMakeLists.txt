@@ -15,7 +15,8 @@ target_include_directories(
 
 if(WIN32)
     set_property(TARGET cantata-tags PROPERTY WIN32_EXECUTABLE true)
-    install(TARGETS cantata-tags)
+	# Install to root of prefix.
+	install(TARGETS cantata-tags RUNTIME DESTINATION ".")
 elseif(APPLE)
     install(TARGETS cantata-tags RUNTIME DESTINATION ${APP_MACOS_DIR})
 else()
