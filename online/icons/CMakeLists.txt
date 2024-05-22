@@ -3,7 +3,7 @@ set(CANTATA_INSTALL_ONLINE_ICONS podcasts.png soundcloud.png)
 if(WIN32)
     install(
         FILES ${CANTATA_INSTALL_ONLINE_ICONS}
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/icons/
+        DESTINATION icons/
     )
 elseif(APPLE)
     install(

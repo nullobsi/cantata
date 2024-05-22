@@ -3,7 +3,7 @@ set(CANTATA_INSTALL_STREAM_ICONS stream.png)
 if(WIN32)
     install(
         FILES ${CANTATA_INSTALL_STREAM_ICONS}
-        DESTINATION ${CMAKE_INSTALL_PREFIX}/icons/
+        DESTINATION icons/
     )
 elseif(APPLE)
     install(
