@@ -29,6 +29,7 @@
 #include <QStringList>
 #include <QVariantMap>
 #include <QApplication>
+#include "config.h"
 #include "mpd-interface/song.h"
 #include "mpd-interface/mpdstatus.h"
 #include "gui/stdactions.h"
@@ -104,8 +105,8 @@ public:
     bool CanQuit() const { return true; }
     bool CanRaise() const { return true; }
     bool HasTrackList() const { return false; }
-    QString Identity() const { return QLatin1String("Cantata"); }
-    QString DesktopEntry() const { return QLatin1String("cantata"); }
+    QString Identity() const { return QLatin1String(PACKAGE_NAME); }
+    QString DesktopEntry() const { return QLatin1String(PROJECT_REV_ID ".desktop"); }
     QStringList SupportedUriSchemes() const { return QStringList(); }
     QStringList SupportedMimeTypes() const { return QStringList(); }
 

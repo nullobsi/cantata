@@ -30,7 +30,7 @@ GenericName[tr]=Muzik Çalıcı İstemcisi
 
 
 Icon=@PROJECT_REV_ID@
-Exec=@EXECUTABLE_NAME@ %U
+Exec=@EXECUTABLE_NAME@
 Terminal=false
 
 X-DBUS-StartupType=Unique

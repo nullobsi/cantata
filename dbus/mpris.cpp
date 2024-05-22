@@ -36,7 +36,7 @@ static inline qlonglong convertTime(qlonglong t)
 Mpris::Mpris(QObject *p)
     : QObject(p)
 {
-    QDBusConnection::sessionBus().registerService("org.mpris.MediaPlayer2.cantata");
+    QDBusConnection::sessionBus().registerService("org.mpris.MediaPlayer2." PROJECT_REV_ID);
 
     new PlayerAdaptor(this);
     new MediaPlayer2Adaptor(this);
@@ -56,7 +56,7 @@ Mpris::Mpris(QObject *p)
 
 Mpris::~Mpris()
 {
-    QDBusConnection::sessionBus().unregisterService("org.mpris.MediaPlayer2.cantata");
+    QDBusConnection::sessionBus().unregisterService("org.mpris.MediaPlayer2." PROJECT_REV_ID);
 }
 
 void Mpris::Pause()
