@@ -859,10 +859,13 @@ if(WIN32)
 	if(MINGW AND NOT NO_MSYS2_BUNDLEDLLS)
 		install(
 			CODE "file(GLOB_RECURSE BUNDLED_DLLS
-			\"\${CMAKE_INSTALL_PREFIX}/*.dll\")
+			\"\${CMAKE_INSTALL_PREFIX}/*.dll\"
+			\"\${CMAKE_INSTALL_PREFIX}/cantata.exe\"
+			\"\${CMAKE_INSTALL_PREFIX}/cantata-replaygain.exe\"
+			\"\${CMAKE_INSTALL_PREFIX}/cantata-tags.exe\")
 			foreach(BUNDLE_DLL IN LISTS BUNDLED_DLLS)
 				execute_process(COMMAND bash
-					\"${CMAKE_SOURCE_DIR}/bundledlls\"
+					\"${CMAKE_SOURCE_DIR}/windows/bundledlls\"
 					\"\${BUNDLE_DLL}\" \"\${CMAKE_INSTALL_PREFIX}\")
 			endforeach()"
 		)
