@@ -12,7 +12,7 @@ if(Qt${QT_VERSION_MAJOR}LinguistTools_FOUND)
     if(WIN32)
         install(
             FILES ${QM_FILES}
-            DESTINATION ${CMAKE_INSTALL_PREFIX}/translations/
+            DESTINATION translations/
         )
     elseif(APPLE)
         install(
