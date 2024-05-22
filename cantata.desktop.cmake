@@ -29,7 +29,7 @@ GenericName[sq]=Clienti player muzike
 GenericName[tr]=Muzik Çalıcı İstemcisi
 
 
-Icon=@EXECUTABLE_NAME@
+Icon=@PROJECT_REV_ID@
 Exec=@EXECUTABLE_NAME@ %U
 Terminal=false
 
