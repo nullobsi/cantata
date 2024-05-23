@@ -19,6 +19,9 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: 'Install Ninja'
+      run: brew install ninja
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
@@ -28,7 +31,6 @@ jobs:
         target: 'desktop'
         arch: 'clang_64'
         modules: 'qtconnectivity qthttpserver qtimageformats qtmultimedia'
-        tools: 'tools_cmake tools_ninja'
         archives: 'qttranslations qttools qtsvg qtbase'
 
 # TODO: Can we build TagLib and use it here?
