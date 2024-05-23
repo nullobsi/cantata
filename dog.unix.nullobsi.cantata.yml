@@ -10,6 +10,8 @@ finish-args:
   - --socket=wayland
   - --device=dri
   - --filesystem=xdg-music
+  - --filesystem=/run/mpd
+  - --filesystem=xdg-run/mpd
 modules:
   - name: cantata
     buildsystem: cmake-ninja
