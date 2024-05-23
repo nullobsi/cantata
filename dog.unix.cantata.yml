@@ -1,4 +1,4 @@
-id: dog.unix.nullobsi.cantata
+id: dog.unix.cantata
 runtime: org.kde.Platform
 runtime-version: '6.7'
 sdk: org.kde.Sdk

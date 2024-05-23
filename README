@@ -491,7 +491,7 @@ playback:
 The list of action names maybe obtained by calling the listActions DBUS method,
 e.g.:
 
-    qdbus dog.unix.nullobsi.cantata /cantata listActions
+    qdbus dog.unix.cantata /cantata listActions
 
 
 11. Dynamic Helper Script - Local Mode

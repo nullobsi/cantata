@@ -10,8 +10,8 @@ project(
 
 #  NOTE: If PROJECT_URL, or PROJECT_REV_URL, are changed, then cantata-dynamic, README, and
 #        dbus/mpd.cantata.xml will need renaming/updating.
-set(PROJECT_ID "cantata.nullobsi.unix.dog")
-set(PROJECT_REV_ID "dog.unix.nullobsi.cantata")
+set(PROJECT_ID "cantata.unix.dog")
+set(PROJECT_REV_ID "dog.unix.cantata")
 set(EXECUTABLE_NAME "cantata")
 
 message(STATUS "Configuring ${PROJECT_NAME} v${PROJECT_VERSION}")

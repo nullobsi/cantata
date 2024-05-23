@@ -21,7 +21,7 @@
 	</ul>
   </description>
 
-  <developer id="dog.unix.nullobsi">
+  <developer id="dog.unix.www.nullobsi">
   	<name>Citlali del Rey</name>
   </developer>
   
