@@ -38,3 +38,13 @@ jobs:
       run: |
         cmake -S. -G Ninja -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
         cmake --build build
+
+    - name: '📦 Package Cantata'
+      run: cpack -G DragNDrop -B package --config build/CPackConfig.cmake
+
+    - name: '⏫ Upload Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-dmg
+        path: package/*.dmg
+        if-no-files-found: error

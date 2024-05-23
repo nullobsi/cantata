@@ -53,3 +53,13 @@ jobs:
       run: |
         cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Release
         cmake --build build
+
+    - name: '📦 Package Cantata'
+      run: cmake --install build --prefix $PWD/package
+
+    - name: '⏫ Upload Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-standalone
+        path: package/
+        if-no-files-found: error
