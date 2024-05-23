@@ -60,6 +60,6 @@ jobs:
     - name: '⏫ Upload Artifact'
       uses: actions/upload-artifact@v4
       with:
-        name: windows-standalone
+        name: windows-standalone-${{ matrix.sys }}
         path: package/
         if-no-files-found: error
