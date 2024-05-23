@@ -27,6 +27,7 @@
 #include "rootadaptor.h"
 #include "config.h"
 #include "gui/currentcover.h"
+#include <QDBusObjectPath>
 
 static inline qlonglong convertTime(qlonglong t)
 {
@@ -202,7 +203,7 @@ void Mpris::updateCurrentSong(const Song &song)
 QVariantMap Mpris::Metadata() const {
     QVariantMap metadataMap;
     if ((!currentSong.title.isEmpty() && !currentSong.artist.isEmpty()) || (currentSong.isStandardStream() && !currentSong.name().isEmpty())) {
-        metadataMap.insert("mpris:trackid", currentTrackId());
+		metadataMap.insert("mpris:trackid", QDBusObjectPath(currentTrackId()));
         QString artist=currentSong.artist;
         QString album=currentSong.album;
         QString title=currentSong.title;
@@ -242,7 +243,7 @@ QVariantMap Mpris::Metadata() const {
             metadataMap.insert("xesam:discNumber", currentSong.disc);
         }
         if (currentSong.year>0) {
-            metadataMap.insert("xesam:contentCreated", QString("%04d").arg(currentSong.year));
+            metadataMap.insert("xesam:contentCreated", QString("%1").arg(currentSong.year, 4, 10, QChar(u'0')));
         }
         if (!currentSong.file.isEmpty()) {
             if (currentSong.isNonMPD()) {
