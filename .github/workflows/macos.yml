@@ -1,0 +1,38 @@
+name: macOS Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    name: 🚧 macOS
+    steps:
+
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        aqtversion: '==3.1.*'
+        version: '6.7.1'
+        host: 'mac'
+        target: 'desktop'
+        arch: 'clang_64'
+        modules: 'qtconnectivity qthttpserver qtimageformats qtmultimedia'
+        tools: 'tools_cmake tools_ninja'
+        archives: 'qttranslations qttools qtsvg qtbase'
+
+# TODO: Can we build TagLib and use it here?
+    - name: '🚧 Build Cantata'
+      run: |
+        cmake -S. -G Ninja -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+        cmake --build build
