@@ -861,21 +861,6 @@ endif()
 
 configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
 
-if(NOT WIN32 AND NOT APPLE AND NOT HAIKU)
-    # uninstall target
-    configure_file(
-        "${CMAKE_SOURCE_DIR}/cmake_uninstall.cmake.in"
-        "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
-        IMMEDIATE
-        @ONLY
-    )
-    configure_file(install_dirs.cmake ${CMAKE_BINARY_DIR}/install_dirs)
-    add_custom_target(
-        uninstall
-        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
-    )
-endif()
-
 if(APPLE)
     # Using macdeployqt from the official Qt download works.
     # With homebrew, the libraries are more entangled and it doesn't work.
