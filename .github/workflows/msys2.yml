@@ -45,6 +45,8 @@ jobs:
           qt6-multimedia:p
           qt6-httpserver:p
           ffmpeg:p
+          libebur128:p
+          mpg123:p
           qt6-imageformats:p
 
     - name: '🚧 Build Cantata'
