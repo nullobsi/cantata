@@ -33,8 +33,8 @@
 
   <content_rating type="oars-1.1" />
 
-  <url type="homepage">https://github.com/nullobsi/cantata</url>
-  <url type="vcs-browser">https://github.com/nullobsi/cantata</url>
+  <url type="homepage">https://cantata.unix.dog/</url>
+  <url type="vcs-browser">https://cantata.unix.dog/src</url>
 
   <screenshots>
     <screenshot type="default">
