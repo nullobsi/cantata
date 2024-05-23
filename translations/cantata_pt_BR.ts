@@ -1370,8 +1370,8 @@ Não será possível desfazer esta escolha.</translation>
         <translation>Apagando regra</translation>
     </message>
     <message>
-        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
-        <translation>Não foi possível iniciar o ajudante dinâmico. Por favor, verifique se todas &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependências&lt;/a&gt; foram instaladas.</translation>
+        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
+        <translation>Não foi possível iniciar o ajudante dinâmico. Por favor, verifique se todas &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependências&lt;/a&gt; foram instaladas.</translation>
     </message>
 </context>
 <context>
@@ -2899,8 +2899,8 @@ Sair agora cancelará o download.</translation>
         <translation>Metadados visualizados contextualmente graças à cortesia de &lt;a href=&quot;http://www.wikipedia.org&quot;&gt;Wikipedia&lt;/a&gt; e &lt;a href=&quot;http://www.last.fm&quot;&gt;Last.fm&lt;/a&gt;</translation>
     </message>
     <message>
-        <source>Please refer to &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
-        <translation>Por favor, consulte o &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Rastreador de erros Cantata&lt;/a&gt; para obter a lista de problemas conhecidos ou para relatar novos.</translation>
+        <source>Please refer to &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
+        <translation>Por favor, consulte o &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Rastreador de erros Cantata&lt;/a&gt; para obter a lista de problemas conhecidos ou para relatar novos.</translation>
     </message>
     <message>
         <source>Connecting to %1</source>

@@ -1589,7 +1589,7 @@ This cannot be undone.</source>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="385"/>
-        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
+        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3397,7 +3397,7 @@ If this search does find new lyrics, these will still be associated with the ori
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1254"/>
-        <source>Please refer to &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
+        <source>Please refer to &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

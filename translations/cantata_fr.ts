@@ -6807,8 +6807,8 @@ Cette action est définitive.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="385"/>
-        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
-        <translation>L&apos;assistant dynamique ne peut être lancé. Vérifiez que les dépendances sont installées &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt;.</translation>
+        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
+        <translation>L&apos;assistant dynamique ne peut être lancé. Vérifiez que les dépendances sont installées &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="496"/>
@@ -8622,8 +8622,8 @@ Si cette recherche donne de nouveaux résultats, ils seront toujours associés a
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1254"/>
-        <source>Please refer to &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
-        <translation>Visitez &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;le tracker de bug de Cantata,&lt;/a&gt; pour une liste de bugs connus ou pour en reporter de nouveaux.</translation>
+        <source>Please refer to &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
+        <translation>Visitez &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;le tracker de bug de Cantata,&lt;/a&gt; pour une liste de bugs connus ou pour en reporter de nouveaux.</translation>
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1256"/>

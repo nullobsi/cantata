@@ -1633,8 +1633,8 @@ Dit kan niet ongedaan worden gemaakt.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="385"/>
-        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
-        <translation>Kan het dynamische hulpprogramma niet starten. Controleer of alle &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;afhankelijkheden&lt;/a&gt; geïnstalleerd zijn.</translation>
+        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
+        <translation>Kan het dynamische hulpprogramma niet starten. Controleer of alle &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;afhankelijkheden&lt;/a&gt; geïnstalleerd zijn.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="496"/>
@@ -3449,8 +3449,8 @@ Als er wél een songtekst wordt gevonden, dan wordt deze gekoppeld aan het door 
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1254"/>
-        <source>Please refer to &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
-        <translation>Ga naar &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s probleemtracker&lt;/a&gt; om een lijst met bekende problemen te bekijken of een probleem te melden.</translation>
+        <source>Please refer to &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
+        <translation>Ga naar &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Cantata&apos;s probleemtracker&lt;/a&gt; om een lijst met bekende problemen te bekijken of een probleem te melden.</translation>
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1256"/>

@@ -1521,8 +1521,8 @@ Det kan ikke fortrydes.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="385"/>
-        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
-        <translation>Kunne ikke starte dynamisk hjælper. Tjek venligst at alle &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;afhængigheder&lt;/a&gt; er installeret.</translation>
+        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
+        <translation>Kunne ikke starte dynamisk hjælper. Tjek venligst at alle &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;afhængigheder&lt;/a&gt; er installeret.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="496"/>
@@ -3337,8 +3337,8 @@ Hvis søgningen ikke finder nye sangtekster, vil de stadig være tilknyttet den 
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1254"/>
-        <source>Please refer to &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
-        <translation>Besøg venligst &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s problemsporer&lt;/a&gt; for en liste over kendte problemer og for at rapportere nye problemer.</translation>
+        <source>Please refer to &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
+        <translation>Besøg venligst &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Cantata&apos;s problemsporer&lt;/a&gt; for en liste over kendte problemer og for at rapportere nye problemer.</translation>
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1256"/>

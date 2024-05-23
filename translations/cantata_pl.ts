@@ -7921,8 +7921,8 @@ Ta operacja nie może być cofnięta.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="385"/>
-        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
-        <translation>Wystartowanie pomocniczej aplikacji do trybu dynamicznego nie powiodło się. Należy sprawdzić czy wszystkie &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;zależności&lt;/a&gt; zostały zainstalowane.</translation>
+        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
+        <translation>Wystartowanie pomocniczej aplikacji do trybu dynamicznego nie powiodło się. Należy sprawdzić czy wszystkie &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;zależności&lt;/a&gt; zostały zainstalowane.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="496"/>
@@ -9738,8 +9738,8 @@ Jeśli to wyszukiwanie się powiedzie, to znaleziony tekst zostanie przyporządk
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1254"/>
-        <source>Please refer to &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
-        <translation>Na stronie &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;listy problemów programu Cantata&lt;/a&gt; można znaleźć znane błędy oraz zgłosić nowe problemy.</translation>
+        <source>Please refer to &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
+        <translation>Na stronie &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;listy problemów programu Cantata&lt;/a&gt; można znaleźć znane błędy oraz zgłosić nowe problemy.</translation>
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1256"/>

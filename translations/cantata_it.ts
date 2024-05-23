@@ -1635,8 +1635,8 @@ Non sarà possibile tornare indietro.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="385"/>
-        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
-        <translation>Non riesco ad avviare il dynamic helper. Prego controllare che tuttle le &gt;dipendenze&lt;/a&gt; siano installate &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;.</translation>
+        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
+        <translation>Non riesco ad avviare il dynamic helper. Prego controllare che tuttle le &gt;dipendenze&lt;/a&gt; siano installate &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="496"/>
@@ -3451,8 +3451,8 @@ Se questa ricerca dovesse trovare nuovi testi, sarebbero ancora associarti al ti
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1254"/>
-        <source>Please refer to &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
-        <translation>Per la lista dei problemi conosciuti e per riportarne di nuovi, prego fare riferimento all&apos;issue tracker di Cantata &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;</translation>
+        <source>Please refer to &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
+        <translation>Per la lista dei problemi conosciuti e per riportarne di nuovi, prego fare riferimento all&apos;issue tracker di Cantata &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;</translation>
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1256"/>

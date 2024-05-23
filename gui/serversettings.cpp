@@ -80,7 +80,7 @@ ServerSettings::ServerSettings(QWidget *p)
     musicFolderNoteLabel->appendText(QLatin1String("<i> ")+tr("This folder will also be used to locate music files "
                                      "for tag-editing, replay gain, etc.")+QLatin1String("</i>"));
     #endif
-    musicFolderNoteLabel->appendText(QLatin1String("<br/><i><a href=\"https://github.com/CDrummond/cantata/wiki/Accessing-music-files,-and-covers\">")+
+    musicFolderNoteLabel->appendText(QLatin1String("<br/><i><a href=\"https://github.com/nullobsi/cantata/wiki/Accessing-music-files,-and-covers\">")+
                                      tr("More information")+QLatin1String("</a></i>"));
 
     connect(combo, SIGNAL(activated(int)), SLOT(showDetails(int)));

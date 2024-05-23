@@ -7877,8 +7877,8 @@ This cannot be undone.</source>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="385"/>
-        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
-        <translation type="unfinished">동적 도움말을 시작할 수 없습니다. 모든 &lt;a href=&quot;https://github.com/CDrummond/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt;가 설치되었는 지 확인바랍니다.</translation>
+        <source>Could not start dynamic helper. Please check all &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt; are installed.</source>
+        <translation type="unfinished">동적 도움말을 시작할 수 없습니다. 모든 &lt;a href=&quot;https://github.com/nullobsi/cantata/wiki/Dynamic-Palylists-Helper&quot;&gt;dependencies&lt;/a&gt;가 설치되었는 지 확인바랍니다.</translation>
     </message>
     <message>
         <location filename="../playlists/dynamicplaylists.cpp" line="496"/>
@@ -9690,8 +9690,8 @@ If this search does find new lyrics, these will still be associated with the ori
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1254"/>
-        <source>Please refer to &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
-        <translation type="unfinished">알려지거나 새로운 문제는 &lt;a href=&quot;https://github.com/CDrummond/cantata/issues&quot;&gt;칸타타 이슈 확인&lt;/a&gt;을 참조하시기 바랍니다.</translation>
+        <source>Please refer to &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;Cantata&apos;s issue tracker&lt;/a&gt; for a list of known issues, and to report new issues.</source>
+        <translation type="unfinished">알려지거나 새로운 문제는 &lt;a href=&quot;https://github.com/nullobsi/cantata/issues&quot;&gt;칸타타 이슈 확인&lt;/a&gt;을 참조하시기 바랍니다.</translation>
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1256"/>

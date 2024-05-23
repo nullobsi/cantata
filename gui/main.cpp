@@ -282,7 +282,7 @@ static void sigHandler(int /*i*/)
     void *addrlist[constNumLevels+1];
 
     fprintf(stderr, "Unfortunately Cantata has crashed. Please report a bug at \n"
-                    "https://github.com/CDrummond/cantata/issues/ and include the following stack trace:\n\n");
+                    "https://github.com/nullobsi/cantata/issues/ and include the following stack trace:\n\n");
     // retrieve current stack addresses
     int addrlen = backtrace(addrlist, sizeof(addrlist) / sizeof(void*));
     if (!addrlen) {

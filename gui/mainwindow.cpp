@@ -1256,9 +1256,9 @@ void MainWindow::showAboutDialog()
 {
     QMessageBox::about(this, tr("About Cantata"),
                        tr("<b>Cantata %1</b><br/><br/>MPD client.<br/><br/>"
-                           "&copy; 2011-2022 Craig Drummond<br/>Released under the <a href=\"http://www.gnu.org/licenses/gpl.html\">GPLv3</a>").arg(PACKAGE_VERSION_STRING)+
+                           "&copy; 2011-2022 Craig Drummond, 2024 Cantata Contributors<br/>Released under the <a href=\"http://www.gnu.org/licenses/gpl.html\">GPLv3</a>").arg(PACKAGE_VERSION_STRING)+
                        QLatin1String("<br/><br/>")+
-                       tr("Please refer to <a href=\"https://github.com/CDrummond/cantata/issues\">Cantata's issue tracker</a> for a list of known issues, and to report new issues.")+
+                       tr("Please refer to <a href=\"https://github.com/nullobsi/cantata/issues\">Cantata's issue tracker</a> for a list of known issues, and to report new issues.")+
                        QLatin1String("<br/><br/><i><small>")+
                        tr("Based upon <a href=\"http://lowblog.nl\">QtMPC</a> - &copy; 2007-2010 The QtMPC Authors<br/>")+
                        tr("Context view backdrops courtesy of <a href=\"http://www.fanart.tv\">FanArt.tv</a>")+QLatin1String("<br/>")+
