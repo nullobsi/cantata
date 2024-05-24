@@ -1,12 +1,9 @@
 Build & Installation
 ====================
 
-1. mkdir build
-2. cd build
-3. cmake ..
-4. make
-5. sudo make install
-
+1. cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release
+2. cmake --build build -j4
+3. sudo cmake --install build
 
 Mac/Windows
 -----------
@@ -72,13 +69,6 @@ The following options may be passed to CMake:
         Install Yaru icons for Ubuntu.
         Default: OFF
 
-    -DCANTATA_HELPERS_LIB_DIR=<subdir>
-        For 64 bit builds, this may be used to control the lib sub-dir
-        where Cantata helper apps will be placed. e.g. setting this to lib64
-        will cause the helper apps (cantata-tags, cantata-replaygain) to be
-        install into /usr/lib64/cantata instead of /usr/lib/cantata
-        Default: <empty (which means /usr/lib will be used) >
-
     -DENABLE_SIMPLE_MPD_SUPPORT=OFF
         Enable support for basic, Cantata controlled, MPD instance.
         Default: ON
@@ -86,13 +76,12 @@ The following options may be passed to CMake:
     -DENABLE_AVAHI=ON
         Enable avahi support (automatic mpd discovery)
         Default: ON
+	
+	Windows specific:
 
-    Windows specific:
-
-    -DCANTATA_WINDOWS_INSTALLER_DEST=<folder>
-        Path where Inno Setpup Compiler should place the catata setup exe.
-        Default: z:\
-        
-    -DCANTATA_SSL_LIBS=<path>/libeay32.dll;<path>/ssleay32.dll
-        SSL libraries
-        Default: <empty>
+	-DNO_MSYS2_BUNDLEDLLS=TRUE
+		If not using MSYS2, the script that copies needed libraries to the
+		final install directory might not work because it needs Bash and
+		LDD. Set this flag to skip that part of the install, though the
+		final build might not work without manually copying the required
+		DLLs.

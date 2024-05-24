@@ -17,7 +17,7 @@ Table of Contents
 14. Debug Logging
 15. Credits
 16. Windows
-17. Mac OSX
+17. macOS
 
 
 
@@ -26,23 +26,20 @@ Table of Contents
 
 Cantata is a graphical client for MPD. It contains the following features:
 
- 1. Support for Linux, MacOSX, and Windows.
+ 1. Support for Linux, macOS, and Windows.
  2. Multiple MPD collections.
  3. Highly customisable layout.
  4. Songs grouped by album in play queue.
  5. Context view to show artist, album, and song information of current track.
  6. Simple tag editor.
  7. File organizer - use tags to organize files and folders.
- 8. Ability to calculate ReplyGain tags. (Linux only, and if relevant libraries
-    installed)
+ 8. Ability to calculate ReplyGain tags. (if enabled at build-time)
  9. Dynamic playlists.
-10. Online services; Jamendo, Magnatune, SoundCloud, and Podcasts.
+10. Online services; Jamendo, Magnatune, and Podcasts.
 11. Radio stream support - with the ability to search for streams via TuneIn,
-    ShoutCast, or Dirble.
-12. USB-Mass-Storage and MTP device support. (Linux only, and if relevant
-    libraries installed)
-13. Audio CD ripping and playback. (Linux only, and if relevant libraries
-    installed)
+    ShoutCast, or IceCast.
+12. USB-Mass-Storage and MTP device support. (if enabled at build-time)
+13. Audio CD ripping and playback. (if enabled at build-time)
 14. Playback of non-MPD songs - via simple in-built HTTP server if connected
     to MPD via a standard socket, otherwise filepath is sent to MPD.
 15. MPRISv2 DBUS interface.
@@ -50,7 +47,8 @@ Cantata is a graphical client for MPD. It contains the following features:
 17. Scrobbling.
 18. Ratings support.
 
-Cantata started off as a fork of QtMPC, however, the code (and user interface)
+This version of Cantata continues on CDrummond's work, which was
+originally a fork of QtMPC. The code (and user interface)
 is now *very* different to that of QtMPC.
 
 Unlike most other MPD clients, Cantata caches a copy of the MPD music library.
@@ -74,7 +72,7 @@ Cantata requires the following Qt libraries:
 4. QtXml
 5. QtSql
 6. QtDBus (Only for Linux builds)
-7. QtWidgets (Qt5 builds - where widgets are now separated from QtGui)
+7. QtWidgets 
 8. QtMultimedia / libVLC - depends on ENABLE_HTTP_STREAM_PLAYBACK and
    ENABLE_LIBVLC
 9. QtSvg
@@ -98,7 +96,7 @@ Cantata may also use the following optional libraries:
 ===========
 
 Please refer to the INSTALL file for general build instructions. Details on how
-Cantata is build for Windows can be found in section 16, and Mac OSX in section
+Cantata is build for Windows can be found in section 16, and macOS in section
 17.
 
 
@@ -120,7 +118,7 @@ version of MPD you are using.
 5. Translations
 ===============
 
-As of version 2.1.0, Cantata uses Qt5's translation framework.
+As of version 2.1.0, Cantata uses Qt's translation framework.
 
 To generate a new translation for Cantata:
 
@@ -361,7 +359,7 @@ add the CUE File to the album's track listing.
 8. Streams
 ==========
 
-As of 1.4.0, Cantata only comes with TuneIn, ShoutCast, IceCast and Dirble
+As of 1.4.0, Cantata only comes with TuneIn, ShoutCast, and IceCast
 stream providers. To install new providers, you can either use Cantata's
 download dialog (to install for Cantata's extras github repo), or install from
 file. To import new stream categories into Cantata, these files need to be GZip
@@ -441,6 +439,10 @@ To create .streams file:
 
 cantata-extra on github
 -----------------------
+
+**CDrummond no longer maintains Cantata.** In the future, these links
+will be updated. Please do not contact CDrummond for assitance, instead
+open a GitHub issue on the new repository.
 
 The streams page on Cantata's settings dialog, will allow you to install new
 providers from Cantata's extras github repo. To do this, the dialog first
@@ -717,130 +719,43 @@ Cantata contains code/icons from:
 16. Windows
 ===========
 
-Icon created under Linux using the createicon.sh in the windows folder.
+The easiest way to develop Cantata for Windows is to use the MSYS2
+environment. MSYS2 provides a ready-made development environment with
+all of the libraries that Cantata needs as packages which can be
+installed.
 
-The following steps are used to compile Cantata, and create the windows
-installer.
+Consult the GitHub actions configuration for more information; the MSYS2
+packages required are taglib, cmake, ninja, and the Qt libraries. Then,
+Cantata can be compiled like any other CMake project:
+	
+	cmake -Bbuild -G Ninja -DCMAKE_BUILD_TYPE=Release
+	cmake --build build -j 4
+	...
 
-This assumes the following folder structure:
+The Cantata installer is made with WiXv3 and CPack. Install and add WiX
+to your PATH, then you can simply run `cpack` in the build directory to
+create a standalone .MSI installer for Cantata.
 
-    z:\cantata\src          [ Checkout of Cantata's source code ]
-    z:\cantata\build
-    z:\cantata\install      [ make install will place target files here ]
-    z:\dev\Qt
-    z:\dev\taglib
-    z:\dev\zlib
-    z:\dev\ssl              [ libeay32.dll and ssleay32.dll ]
-s
+17. macOS
+=========
 
-1. Install Qt (5.3 or later), cmake, TagLib and zlib. TagLib and zlib will probably
-   need compiling.
+Cantata builds on macOS using either Homebrew or the official Qt
+packages. When building a Universal binary for ARM64 and x86_64, it's
+reccomended to use the Qt distribution because their binaries come with
+both architectures.
 
-2. Set (or amend) the following environemnt variables:
-    QTDIR=z:\dev\Qt\5.3\mingw482_32
-    PATH=z:\dev\Qt\5.3\mingw482_32\bin;z:\dev\Qt\Tools\mingw482_32\bin;z:\dev\taglib\bin;z:\dev\cmake\bin
+Unfortunately, the TagLib currently in the Homebrew repositories is an
+older version. Installing a newer version of TagLib from source is
+reccomended, as Cantata now required TagLib version 2.
 
-3. Load cantata's CMakeLists.txt in QtCreator, and pass the following to cmake:
-     ../src -DCMAKE_BUILD_TYPE=Release -DENABLE_TAGLIB=OFF -DTagLib_FOUND=1 -DTAGLIB_INCLUDES=z:/dev/taglib/include -DTAGLIB_LIBRARIES=z:/dev/taglib/lib/libtag.dll.a -DTAGLIB_MP4_FOUND=1 -DTAGLIB_ASF_FOUND=1 -DTAGLIB_CAN_SAVE_ID3VER=1 -DZLIB_INCLUDE_DIR=z:/dev/zlib/include -DZLIB_LIBRARY=z:/dev/zlib/lib/libz.dll.a -DCMAKE_INSTALL_PREFIX=z:/cantata/install -DCANTATA_WINDOWS_INSTALLER_DEST=z:/cantata -DCANTATA_SSL_LIBS=z:/dev/ssl/libeay32.dll;z:/dev/ssl/ssleay32.dll
+Once the Qt libraries are installed, ensure you also have CMake and
+Ninja installed. Then, you can build Cantata using CMake:
 
-   Notes: -DENABLE_TAGLIB=OFF stops cmake from trying to find TagLib, as the
-          TagLib settings have been manually set,
+	cmake -Bbuild -G Ninja -DCMAKE_BUILD_TYPE=Release
+		-DCMAKE_PREFIX_PATH=$HOME/Qt (if using Qt distribution)
+	cmake --build build -j4
 
-4. Build via QtCreator
+To create a DMG file for distribution, simply run `cpack` in the build
+directory. The Qt libraries will be copied to make a standalone
+executable.
 
-5. Create an 'install' project in QtCreator
-  - Projects
-  - Add/Clone Selected
-  - Expand Build Steps, and select install
-
-6. Build 'install' project via QtCreator
-
-This build is as per Qt-only, but does not have support for dbus, local dynamic
-playlists, device support, or replaygain calculation.
-
-
-Create Installer
-----------------
-Run Nullsoft Scriptable Install System, and use the cantata.nsi that has been
-generated in the install folder. This will place the setup exe into the install
-folder as well.
-
-
-TagLib
-------
-
-Windows version of taglib was built from TagLib 1.9.1, using QtCreator with the
-following passed to cmake:
-
-    -DCMAKE_BUILD_TYPE=Release -DWITH_ASF=1 -DWITH_MP4=1 -DCMAKE_INSTALL_PREFIX=z:\dev\taglib
-
-
-17. Mac OSX
-===========
-
-
-The following steps are used to compile Cantata, and create the OS X application
-bundle.
-
-These steps assume the following structure:
-
-    src/
-    build/
-    install/
-
-1. Install HomeBrew
-
-2. brew install cmake taglib ffmpeg openssl qt5
-
-3. Create the icon
-
-    cd src/mac
-    ./createicon.sh
-
-From here you have a couple of options:
-
-Build via QtCreator
--------------------
-
-1. Load cantata's CMakeLists.txt in QtCreator, and pass the following to cmake:
-     ../src -DCMAKE_INSTALL_PREFIX=`pwd`/../install -DENABLE_TAGLIB=ON -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5;/usr/local/opt/qt5/lib/cmake/Qt5Widgets -DCMAKE_BUILD_TYPE=Release
-
-2. Create an 'install' project in QtCreator
-  - Projects
-  - Add/Clone Selected
-  - Expand Build Steps, and select install
-
-3. Build 'install' project via QtCreator
-
-Build via commandline
----------------------
-
-If you have qt6 installed as well as qt5 (installed above), then homebrew
-calls qt6 "qt". Since we need to build Cantata against qt5, the easiest
-option is to temporarily unlink qt6 and link qt5, then undo the process.
-
-If you have qt6 installed (check version in "brew info qt"), then do this:
-
-    brew unlink qt@6
-    brew link qt@5
-
-Build and install Cantata:
-
-    cd build
-    export Qt5_DIR="/usr/local/opt/qt5/lib/cmake"
-    cmake -S "../src" -B "./" -DCMAKE_INSTALL_PREFIX="../install" -DENABLE_TAGLIB=ON -DCMAKE_PREFIX_PATH="/usr/local/opt/qt5/;/usr/local/opt/qt5/lib/cmake/Qt5Widgets/" -DCMAKE_BUILD_TYPE=Release
-    make
-    make install
-
-Finally, relink the original qt6 (again, if you had qt6 at all):
-
-    brew unlink qt@5
-    brew link qt@6
-
-
-Create Installer
-----------------
-
-1. Go into the 'mac' folder within the build folder
-
-2. Run ./create-dmg.sh
