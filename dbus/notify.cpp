@@ -59,13 +59,13 @@ QDBusArgument& operator<< (QDBusArgument &arg, const QImage &image)
     #endif
 
     arg.beginStructure();
-    arg << i.width();
-    arg << i.height();
-    arg << i.bytesPerLine();
-    arg << i.hasAlphaChannel();
+    arg << static_cast<int>(i.width());
+    arg << static_cast<int>(i.height());
+    arg << static_cast<int>(i.bytesPerLine());
+    arg << static_cast<bool>(i.hasAlphaChannel());
     int channels = /*i.isGrayscale() ? 1 : */ (i.hasAlphaChannel() ? 4 : 3);
-    arg << i.depth() / channels;
-    arg << channels;
+    arg << static_cast<int>(i.depth() / channels);
+    arg << static_cast<int>(channels);
     arg << QByteArray(reinterpret_cast<const char*>(i.bits()), i.sizeInBytes());
     arg.endStructure();
     return arg;
