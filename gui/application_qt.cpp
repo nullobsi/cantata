@@ -32,7 +32,7 @@ Application::Application(int &argc, char **argv)
 {
     setApplicationDisplayName(QLatin1String("Cantata"));
     #if QT_VERSION >= 0x050700
-    setDesktopFileName(QLatin1String(PROJECT_REV_ID ".desktop"));
+    setDesktopFileName(PROJECT_REV_ID);
     #endif
 }
 
