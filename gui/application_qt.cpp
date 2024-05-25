@@ -27,38 +27,37 @@
 #include <QDBusMessage>
 #include <QDir>
 
-Application::Application(int &argc, char **argv)
-    : QApplication(argc, argv)
+Application::Application(int& argc, char** argv)
+	: QApplication(argc, argv)
 {
-    setApplicationDisplayName(QLatin1String("Cantata"));
-    #if QT_VERSION >= 0x050700
-    setDesktopFileName(PROJECT_REV_ID);
-    #endif
+	setApplicationDisplayName(QLatin1String("Cantata"));
+#if QT_VERSION >= 0x050700
+	setDesktopFileName(PROJECT_REV_ID);
+#endif
 }
 
-bool Application::start(const QStringList &files)
+bool Application::start(const QStringList& files)
 {
 	// TODO: Add an option to try to run anyway when DBUS binding fails.
-    if (QDBusConnection::sessionBus().registerService(PROJECT_REV_ID)) {
-        if (Utils::KDE!=Utils::currentDe()) {
-            setAttribute(Qt::AA_DontShowIconsInMenus, true);
-        }
-        return true;
-    }
-    loadFiles(files);
-    // ...and activate window!
-    QDBusConnection::sessionBus().send(QDBusMessage::createMethodCall(PROJECT_REV_ID, "/org/mpris/MediaPlayer2", "", "Raise"));
-    return false;
+	if (QDBusConnection::sessionBus().registerService(PROJECT_REV_ID)) {
+		if (Utils::KDE != Utils::currentDe()) {
+			setAttribute(Qt::AA_DontShowIconsInMenus, true);
+		}
+		return true;
+	}
+	loadFiles(files);
+	// ...and activate window!
+	QDBusConnection::sessionBus().send(QDBusMessage::createMethodCall(PROJECT_REV_ID, "/org/mpris/MediaPlayer2", "", "Raise"));
+	return false;
 }
 
-void Application::loadFiles(const QStringList &files)
+void Application::loadFiles(const QStringList& files)
 {
-    if (!files.isEmpty()) {
-        QDBusMessage m = QDBusMessage::createMethodCall(PROJECT_REV_ID, "/cantata", "", "load");
-        QList<QVariant> a;
-        a.append(files);
-        m.setArguments(a);
-        QDBusConnection::sessionBus().send(m);
-    }
+	if (!files.isEmpty()) {
+		QDBusMessage m = QDBusMessage::createMethodCall(PROJECT_REV_ID, "/cantata", "", "load");
+		QList<QVariant> a;
+		a.append(files);
+		m.setArguments(a);
+		QDBusConnection::sessionBus().send(m);
+	}
 }
-
