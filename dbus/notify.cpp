@@ -23,42 +23,42 @@
 
 #include "notify.h"
 #include "notificationsinterface.h"
-#include <QDBusPendingReply>
 #include <QDBusPendingCallWatcher>
+#include <QDBusPendingReply>
 #include <QGuiApplication>
-#include <QPixmap>
 #include <QImage>
+#include <QPixmap>
 
-QDBusArgument& operator<< (QDBusArgument &arg, const QImage &image)
+QDBusArgument& operator<<(QDBusArgument& arg, const QImage& image)
 {
-    if (image.isNull()) {
-        // Sometimes this gets called with a null QImage for no obvious reason.
-        arg.beginStructure();
-        arg << 0 << 0 << 0 << false << 0 << 0 << QByteArray();
-        arg.endStructure();
-        return arg;
-    }
-    QImage scaled = image.scaledToHeight(128, Qt::SmoothTransformation).convertToFormat(QImage::Format_ARGB32);
+	if (image.isNull()) {
+		// Sometimes this gets called with a null QImage for no obvious reason.
+		arg.beginStructure();
+		arg << 0 << 0 << 0 << false << 0 << 0 << QByteArray();
+		arg.endStructure();
+		return arg;
+	}
+	QImage scaled = image.scaledToHeight(128, Qt::SmoothTransformation).convertToFormat(QImage::Format_ARGB32);
 
-    #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-    // ABGR -> ARGB
-    QImage i = scaled.rgbSwapped();
-    #else
-    // ABGR -> GBAR
-    QImage i(scaled.size(), scaled.format());
-    for (int y = 0; y < i.height(); ++y) {
-        QRgb *p = (QRgb*) scaled.scanLine(y);
-        QRgb *q = (QRgb*) i.scanLine(y);
-        QRgb *end = p + scaled.width();
-        while (p < end) {
-            *q = qRgba(qGreen(*p), qBlue(*p), qAlpha(*p), qRed(*p));
-            p++;
-            q++;
-        }
-    }
-    #endif
+#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+	// ABGR -> ARGB
+	QImage i = scaled.rgbSwapped();
+#else
+	// ABGR -> GBAR
+	QImage i(scaled.size(), scaled.format());
+	for (int y = 0; y < i.height(); ++y) {
+		QRgb* p = (QRgb*)scaled.scanLine(y);
+		QRgb* q = (QRgb*)i.scanLine(y);
+		QRgb* end = p + scaled.width();
+		while (p < end) {
+			*q = qRgba(qGreen(*p), qBlue(*p), qAlpha(*p), qRed(*p));
+			p++;
+			q++;
+		}
+	}
+#endif
 
-    arg.beginStructure();
+	arg.beginStructure();
 	arg << static_cast<int>(i.width());
 	arg << static_cast<int>(i.height());
 	arg << static_cast<int>(i.bytesPerLine());
@@ -67,71 +67,70 @@ QDBusArgument& operator<< (QDBusArgument &arg, const QImage &image)
 	arg << static_cast<int>(i.depth() / channels);
 	arg << static_cast<int>(channels);
 	arg << QByteArray(reinterpret_cast<const char*>(i.bits()), i.sizeInBytes());
-    arg.endStructure();
-    return arg;
+	arg.endStructure();
+	return arg;
 }
 
-const QDBusArgument& operator>> (const QDBusArgument &arg, QImage &image)
+const QDBusArgument& operator>>(const QDBusArgument& arg, QImage& image)
 {
-  // This is needed to link but shouldn't be called.
-  Q_ASSERT(0);
-  Q_UNUSED(image)
-  return arg;
+	// This is needed to link but shouldn't be called.
+	Q_ASSERT(0);
+	Q_UNUSED(image)
+	return arg;
 }
 
-static const int constTimeout=5000;
+static const int constTimeout = 5000;
 
-Notify::Notify(QObject *p)
-    : QObject(p)
-    , lastId(0)
+Notify::Notify(QObject* p)
+	: QObject(p), lastId(0)
 {
-    qDBusRegisterMetaType<QImage>();
-    iface=new OrgFreedesktopNotificationsInterface(OrgFreedesktopNotificationsInterface::staticInterfaceName(),
-                                                   "/org/freedesktop/Notifications", QDBusConnection::sessionBus());
+	qDBusRegisterMetaType<QImage>();
+	iface = new OrgFreedesktopNotificationsInterface(OrgFreedesktopNotificationsInterface::staticInterfaceName(),
+													 "/org/freedesktop/Notifications", QDBusConnection::sessionBus());
 }
 
-void Notify::show(const QString &title, const QString &text, const QImage &img, Notify::Urgency urgency)
+void Notify::show(const QString& title, const QString& text, const QImage& img, Notify::Urgency urgency)
 {
-    QVariantMap hints;
-    if (!img.isNull()) {
-        hints["image_data"] = QVariant(img);
-    }
+	QVariantMap hints;
+	if (!img.isNull()) {
+		hints["image_data"] = QVariant(img);
+	}
 
-    if (urgency != DefaultUrgency) {
-        hints["urgency"] = static_cast<int>(urgency);
-    }
+	if (urgency != DefaultUrgency) {
+		hints["urgency"] = static_cast<int>(urgency);
+	}
 
-    hints["desktop-entry"] = QGuiApplication::desktopFileName();
+	hints["desktop-entry"] = QGuiApplication::desktopFileName();
 
-    int id = 0;
-    if (lastTime.secsTo(QDateTime::currentDateTime()) * 1000 < constTimeout) {
-        // Reuse the existing popup if it's still open.  The reason we don't always
-        // reuse the popup is because the notification daemon on KDE4 won't re-show
-        // the bubble if it's already gone to the tray.  See issue #118
-        id = lastId;
-    }
+	int id = 0;
+	if (lastTime.secsTo(QDateTime::currentDateTime()) * 1000 < constTimeout) {
+		// Reuse the existing popup if it's still open.  The reason we don't always
+		// reuse the popup is because the notification daemon on KDE4 won't re-show
+		// the bubble if it's already gone to the tray.  See issue #118
+		id = lastId;
+	}
 
-    QDBusPendingReply<uint> reply = iface->Notify(QGuiApplication::applicationDisplayName(), id, "cantata",
-                                                  QString(title).replace(QLatin1String("&"), QLatin1String("&amp;")),
-                                                  QString(text).replace(QLatin1String("&"), QLatin1String("&amp;")),
-                                                  QStringList(), hints, constTimeout);
-    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
-    connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)), SLOT(callFinished(QDBusPendingCallWatcher*)));
+	QDBusPendingReply<uint> reply = iface->Notify(QGuiApplication::applicationDisplayName(), id, "cantata",
+												  QString(title).replace(QLatin1String("&"), QLatin1String("&amp;")),
+												  QString(text).replace(QLatin1String("&"), QLatin1String("&amp;")),
+												  QStringList(), hints, constTimeout);
+	QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(reply, this);
+	connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)), SLOT(callFinished(QDBusPendingCallWatcher*)));
 }
 
-void Notify::callFinished(QDBusPendingCallWatcher *watcher)
+void Notify::callFinished(QDBusPendingCallWatcher* watcher)
 {
-    QDBusPendingReply<uint> reply = *watcher;
-    watcher->deleteLater();
-    if (reply.isError()) {
-        return;
-    }
+	QDBusPendingReply<uint> reply = *watcher;
+	watcher->deleteLater();
+	if (reply.isError()) {
+		return;
+	}
 
-    uint id = reply.value();
-    if (id != 0) {
-        lastId = id;
-        lastTime = QDateTime::currentDateTime();
-    }
+	uint id = reply.value();
+	if (id != 0) {
+		lastId = id;
+		lastTime = QDateTime::currentDateTime();
+	}
 }
 
 #include "moc_notify.cpp"
