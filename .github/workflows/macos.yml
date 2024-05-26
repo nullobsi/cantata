@@ -36,7 +36,7 @@ jobs:
 # TODO: Can we build TagLib and use it here?
     - name: '🚧 Build Cantata'
       run: |
-        cmake -S. -G Ninja -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+        cmake -S. -G Ninja -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
         cmake --build build
 
     - name: '📦 Package Cantata'

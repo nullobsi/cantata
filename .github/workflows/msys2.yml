@@ -51,7 +51,7 @@ jobs:
 
     - name: '🚧 Build Cantata'
       run: |
-        cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Release
+        cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
         cmake --build build
 
     - name: '📦 Package Cantata'
