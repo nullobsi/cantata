@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5...3.29)
 
 project(
     Cantata
-    VERSION "3.0.2"
+    VERSION "3.1.0"
     DESCRIPTION "Graphical MPD Client with Qt."
     HOMEPAGE_URL "https://github.com/nullobsi/cantata"
     LANGUAGES CXX C

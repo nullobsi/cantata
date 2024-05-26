@@ -52,6 +52,17 @@
   </screenshots>
 
   <releases>
+  	<release version="3.1.0" date="2024-05-25">
+	  <description>
+	    <p>Bugfix release.</p>
+		<ul>
+		  <li>Fix crash when enabling notifications.</li>
+		  <li>Fix Qt warnings.</li>
+		  <li>Fix notifications on Flatpak.</li>
+		  <li>Fix tray icon image not showing up.</li>
+		</ul>
+	  </description>
+	</release>
     <release version="3.0.2" date="2024-05-22">
 	  <description>
 	    <p>Initial release.</p>
