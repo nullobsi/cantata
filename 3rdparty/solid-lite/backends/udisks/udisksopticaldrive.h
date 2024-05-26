@@ -22,60 +22,56 @@
 #ifndef UDISKSOPTICALDRIVE_H
 #define UDISKSOPTICALDRIVE_H
 
-#include <solid-lite/ifaces/opticaldrive.h>
 #include "udisksstoragedrive.h"
+#include <solid-lite/ifaces/opticaldrive.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks
-{
+namespace Solid {
+namespace Backends {
+namespace UDisks {
 
-class UDisksOpticalDrive: public UDisksStorageDrive, virtual public Solid::Ifaces::OpticalDrive
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::OpticalDrive)
+class UDisksOpticalDrive : public UDisksStorageDrive, virtual public Solid::Ifaces::OpticalDrive {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::OpticalDrive)
 
 public:
-    UDisksOpticalDrive(UDisksDevice *device);
-    virtual ~UDisksOpticalDrive();
+	UDisksOpticalDrive(UDisksDevice* device);
+	virtual ~UDisksOpticalDrive();
 
 Q_SIGNALS:
-    void ejectPressed(const QString &udi);
-    void ejectDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
-    void ejectRequested(const QString &udi);
+	void ejectPressed(const QString& udi);
+	void ejectDone(Solid::ErrorType error, QVariant errorData, const QString& udi);
+	void ejectRequested(const QString& udi);
 
 public:
-    virtual bool eject();
-    virtual QList<int> writeSpeeds() const;
-    virtual int writeSpeed() const;
-    virtual int readSpeed() const;
-    virtual Solid::OpticalDrive::MediumTypes supportedMedia() const;
+	virtual bool eject();
+	virtual QList<int> writeSpeeds() const;
+	virtual int writeSpeed() const;
+	virtual int readSpeed() const;
+	virtual Solid::OpticalDrive::MediumTypes supportedMedia() const;
 
 private Q_SLOTS:
-    void slotDBusReply(const QDBusMessage &reply);
-    void slotDBusError(const QDBusError &error);
+	void slotDBusReply(const QDBusMessage& reply);
+	void slotDBusError(const QDBusError& error);
 
-    void slotEjectRequested();
-    void slotEjectDone(int error, const QString &errorString);
+	void slotEjectRequested();
+	void slotEjectDone(int error, const QString& errorString);
 
-    void slotChanged();
+	void slotChanged();
 
 private:
-    void initReadWriteSpeeds() const;
+	void initReadWriteSpeeds() const;
 
-    bool m_ejectInProgress;
+	bool m_ejectInProgress;
 
-    // read/write speeds
-    mutable int m_readSpeed;
-    mutable int m_writeSpeed;
-    mutable QList<int> m_writeSpeeds;
-    mutable bool m_speedsInit;
+	// read/write speeds
+	mutable int m_readSpeed;
+	mutable int m_writeSpeed;
+	mutable QList<int> m_writeSpeeds;
+	mutable bool m_speedsInit;
 };
 
-}
-}
-}
+}// namespace UDisks
+}// namespace Backends
+}// namespace Solid
 
-#endif // UDISKSOPTICALDRIVE_H
+#endif// UDISKSOPTICALDRIVE_H

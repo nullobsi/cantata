@@ -24,33 +24,32 @@
 #ifndef DEVICEPROPERTIESDIALOG_H
 #define DEVICEPROPERTIESDIALOG_H
 
-#include "support/dialog.h"
 #include "device.h"
+#include "support/dialog.h"
 
 class FilenameSchemeDialog;
 class DevicePropertiesWidget;
 
-class DevicePropertiesDialog : public Dialog
-{
-    Q_OBJECT
+class DevicePropertiesDialog : public Dialog {
+	Q_OBJECT
 
 public:
-    DevicePropertiesDialog(QWidget *parent);
-    void show(const QString &path, const DeviceOptions &opts, int props, int disabledProps=0) { show(path, opts, QList<DeviceStorage>(), props, disabledProps); }
-    void show(const QString &path, const DeviceOptions &opts, const QList<DeviceStorage> &storage, int props, int disabledProps=0);
+	DevicePropertiesDialog(QWidget* parent);
+	void show(const QString& path, const DeviceOptions& opts, int props, int disabledProps = 0) { show(path, opts, QList<DeviceStorage>(), props, disabledProps); }
+	void show(const QString& path, const DeviceOptions& opts, const QList<DeviceStorage>& storage, int props, int disabledProps = 0);
 
 Q_SIGNALS:
-    void updatedSettings(const QString &path, const DeviceOptions &opts);
-    void cancelled();
+	void updatedSettings(const QString& path, const DeviceOptions& opts);
+	void cancelled();
 
 private Q_SLOTS:
-    void enableOkButton();
+	void enableOkButton();
 
 private:
-    void slotButtonClicked(int button) override;
+	void slotButtonClicked(int button) override;
 
 private:
-    DevicePropertiesWidget *devProp;
+	DevicePropertiesWidget* devProp;
 };
 
 #endif

@@ -24,34 +24,33 @@
 #ifndef FILENAMESCHEMEDIALOG_H
 #define FILENAMESCHEMEDIALOG_H
 
-#include "ui_filenameschemedialog.h"
-#include "support/dialog.h"
-#include "mpd-interface/song.h"
 #include "deviceoptions.h"
+#include "mpd-interface/song.h"
+#include "support/dialog.h"
+#include "ui_filenameschemedialog.h"
 
-class FilenameSchemeDialog : public Dialog, Ui::FilenameSchemeDialog
-{
-    Q_OBJECT
+class FilenameSchemeDialog : public Dialog, Ui::FilenameSchemeDialog {
+	Q_OBJECT
 
 public:
-    FilenameSchemeDialog(QWidget *parent);
-    void show(const DeviceOptions &opts);
+	FilenameSchemeDialog(QWidget* parent);
+	void show(const DeviceOptions& opts);
 
 Q_SIGNALS:
-    void scheme(const QString &text);
+	void scheme(const QString& text);
 
 private Q_SLOTS:
-    void showHelp();
-    void enableOkButton();
-    void insertVariable();
-    void updateExample();
+	void showHelp();
+	void enableOkButton();
+	void insertVariable();
+	void updateExample();
 
 private:
-    void slotButtonClicked(int button) override;
+	void slotButtonClicked(int button) override;
 
 private:
-    DeviceOptions origOpts;
-    Song exampleSong;
+	DeviceOptions origOpts;
+	Song exampleSong;
 };
 
 #endif

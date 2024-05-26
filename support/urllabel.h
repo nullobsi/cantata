@@ -24,22 +24,21 @@
 #ifndef URLLABEL_H
 #define URLLABEL_H
 
-#include <QLabel>
 #include <QCursor>
+#include <QLabel>
 
-class UrlLabel : public QLabel
-{
-    Q_OBJECT
+class UrlLabel : public QLabel {
+	Q_OBJECT
 
 public:
-    UrlLabel(QWidget *p);
-    ~UrlLabel() override { }
+	UrlLabel(QWidget* p);
+	~UrlLabel() override {}
 
-    void setText(const QString &t);
-    void setProperty(const char *name, const QVariant &value);
+	void setText(const QString& t);
+	void setProperty(const char* name, const QVariant& value);
 
 Q_SIGNALS:
-    void leftClickedUrl();
+	void leftClickedUrl();
 };
 
-#endif // URLLABEL_H
+#endif// URLLABEL_H

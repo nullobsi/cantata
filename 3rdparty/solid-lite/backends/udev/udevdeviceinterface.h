@@ -21,31 +21,27 @@
 #ifndef SOLID_BACKENDS_UDEV_DEVICEINTERFACE_H
 #define SOLID_BACKENDS_UDEV_DEVICEINTERFACE_H
 
-#include <solid-lite/ifaces/deviceinterface.h>
 #include "udevdevice.h"
+#include <solid-lite/ifaces/deviceinterface.h>
 
 #include <QObject>
 #include <QStringList>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDev
-{
-class DeviceInterface : public QObject, virtual public Solid::Ifaces::DeviceInterface
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::DeviceInterface)
+namespace Solid {
+namespace Backends {
+namespace UDev {
+class DeviceInterface : public QObject, virtual public Solid::Ifaces::DeviceInterface {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::DeviceInterface)
 public:
-    DeviceInterface(UDevDevice *device);
-    ~DeviceInterface() override;
+	DeviceInterface(UDevDevice* device);
+	~DeviceInterface() override;
 
 protected:
-    UDevDevice *m_device;
+	UDevDevice* m_device;
 };
-}
-}
-}
+}// namespace UDev
+}// namespace Backends
+}// namespace Solid
 
 #endif

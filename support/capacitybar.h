@@ -26,18 +26,19 @@
 
 #include <QProgressBar>
 
-class CapacityBar : public QProgressBar
-{
+class CapacityBar : public QProgressBar {
 public:
-    CapacityBar(QWidget *p)
-        : QProgressBar(p) {
-    }
+	CapacityBar(QWidget* p)
+		: QProgressBar(p)
+	{
+	}
 
-    void update(const QString &text, double value) {
-        setFormat(text);
-        setRange(0, 100*100);
-        setValue(value*100);
-    }
+	void update(const QString& text, double value)
+	{
+		setFormat(text);
+		setRange(0, 100 * 100);
+		setValue(value * 100);
+	}
 };
 
 #endif

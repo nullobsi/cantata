@@ -21,76 +21,76 @@
 #include <QHeaderView>
 
 class StretchHeaderView : public QHeaderView {
-  Q_OBJECT
+	Q_OBJECT
 
 public:
-  StretchHeaderView(Qt::Orientation orientation, QWidget* parent = nullptr);
+	StretchHeaderView(Qt::Orientation orientation, QWidget* parent = nullptr);
 
-  typedef double ColumnWidthType;
+	typedef double ColumnWidthType;
 
-  static const int kMinimumColumnWidth;
-  static const int kMagicNumber;
+	static const int kMinimumColumnWidth;
+	static const int kMagicNumber;
 
-  void setModel(QAbstractItemModel* model) override;
+	void setModel(QAbstractItemModel* model) override;
 
-  // Serialises the proportional and actual column widths.  Use these instead
-  // of QHeaderView::restoreState and QHeaderView::saveState to persist the
-  // proportional values directly and avoid floating point errors over time.
-  bool RestoreState(const QByteArray& data);
-  QByteArray SaveState() const;
+	// Serialises the proportional and actual column widths.  Use these instead
+	// of QHeaderView::restoreState and QHeaderView::saveState to persist the
+	// proportional values directly and avoid floating point errors over time.
+	bool RestoreState(const QByteArray& data);
+	QByteArray SaveState() const;
 
-  // Hides a section and resizes all other sections to fill the gap.  Does
-  // nothing if you try to hide the last section.
-  void HideSection(int logical);
+	// Hides a section and resizes all other sections to fill the gap.  Does
+	// nothing if you try to hide the last section.
+	void HideSection(int logical);
 
-  // Shows a section and resizes all other sections to make room.
-  void ShowSection(int logical);
+	// Shows a section and resizes all other sections to make room.
+	void ShowSection(int logical);
 
-  // Calls either HideSection or ShowSection.
-  void SetSectionHidden(int logical, bool hidden);
+	// Calls either HideSection or ShowSection.
+	void SetSectionHidden(int logical, bool hidden);
 
-  // Sets the width of the given column and resizes other columns appropriately.
-  // width is the proportion of the entire width from 0.0 to 1.0.
-  void SetColumnWidth(int logical, ColumnWidthType width);
+	// Sets the width of the given column and resizes other columns appropriately.
+	// width is the proportion of the entire width from 0.0 to 1.0.
+	void SetColumnWidth(int logical, ColumnWidthType width);
 
-  bool is_stretch_enabled() const { return stretch_enabled_; }
+	bool is_stretch_enabled() const { return stretch_enabled_; }
 
 public slots:
-  // Changes the stretch mode.  Enabling stretch mode will initialise the
-  // proportional column widths from the current state of the header.
-  void ToggleStretchEnabled();
-  void SetStretchEnabled(bool enabled);
+	// Changes the stretch mode.  Enabling stretch mode will initialise the
+	// proportional column widths from the current state of the header.
+	void ToggleStretchEnabled();
+	void SetStretchEnabled(bool enabled);
 
 signals:
-  // Emitted when the stretch mode is changed.
-  void StretchEnabledChanged(bool enabled);
+	// Emitted when the stretch mode is changed.
+	void StretchEnabledChanged(bool enabled);
 
 protected:
-  // QWidget
-  void mouseMoveEvent(QMouseEvent* e) override;
-  void resizeEvent(QResizeEvent* event) override;
+	// QWidget
+	void mouseMoveEvent(QMouseEvent* e) override;
+	void resizeEvent(QResizeEvent* event) override;
 
 private:
-  // If the width of the given column is less than a sensible threshold, resize
-  // it to make it bigger.  Workaround for a QHeaderView oddity that means a
-  // column can be visible but with a width of 0.
-  void AssertMinimalColumnWidth(int logical);
+	// If the width of the given column is less than a sensible threshold, resize
+	// it to make it bigger.  Workaround for a QHeaderView oddity that means a
+	// column can be visible but with a width of 0.
+	void AssertMinimalColumnWidth(int logical);
 
-  // Scales column_widths_ values so the total is 1.0.
-  void NormaliseWidths(const QList<int>& sections = QList<int>());
+	// Scales column_widths_ values so the total is 1.0.
+	void NormaliseWidths(const QList<int>& sections = QList<int>());
 
-  // Resizes the actual columns to make them match the proportional values
-  // in column_widths_.
-  void UpdateWidths(const QList<int>& sections = QList<int>());
+	// Resizes the actual columns to make them match the proportional values
+	// in column_widths_.
+	void UpdateWidths(const QList<int>& sections = QList<int>());
 
 private slots:
-  void SectionResized(int logical, int old_size, int new_size);
+	void SectionResized(int logical, int old_size, int new_size);
 
 private:
-  bool stretch_enabled_;
-  QVector<ColumnWidthType> column_widths_;
+	bool stretch_enabled_;
+	QVector<ColumnWidthType> column_widths_;
 
-  bool in_mouse_move_event_;
+	bool in_mouse_move_event_;
 };
 
-#endif // STRETCHHEADERVIEW_H
+#endif// STRETCHHEADERVIEW_H

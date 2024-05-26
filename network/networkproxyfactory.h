@@ -24,43 +24,42 @@
 #ifndef NETWORKPROXYFACTORY_H
 #define NETWORKPROXYFACTORY_H
 
+#include "config.h"
 #include <QMutex>
 #include <QNetworkProxyFactory>
 #include <QUrl>
-#include "config.h"
 
-class NetworkProxyFactory : public QNetworkProxyFactory
-{
+class NetworkProxyFactory : public QNetworkProxyFactory {
 public:
-      // These values are persisted
-      enum Mode {
-        Mode_System = 0,
-        Mode_Direct = 1,
-        Mode_Manual = 2
-    };
+	// These values are persisted
+	enum Mode {
+		Mode_System = 0,
+		Mode_Direct = 1,
+		Mode_Manual = 2
+	};
 
-    static NetworkProxyFactory * self();
-    static const char * constSettingsGroup;
+	static NetworkProxyFactory* self();
+	static const char* constSettingsGroup;
 
-    // These methods are thread-safe
-    #ifdef ENABLE_PROXY_CONFIG
-    void reloadSettings();
-    #endif
-    QList<QNetworkProxy> queryProxy(const QNetworkProxyQuery& query) override;
-
-private:
-    NetworkProxyFactory();
+// These methods are thread-safe
+#ifdef ENABLE_PROXY_CONFIG
+	void reloadSettings();
+#endif
+	QList<QNetworkProxy> queryProxy(const QNetworkProxyQuery& query) override;
 
 private:
-    #ifdef ENABLE_PROXY_CONFIG
-    QMutex mutex;
-    Mode mode;
-    QNetworkProxy::ProxyType type;
-    QString hostname;
-    int port;
-    QString username;
-    QString password;
-    #endif
+	NetworkProxyFactory();
+
+private:
+#ifdef ENABLE_PROXY_CONFIG
+	QMutex mutex;
+	Mode mode;
+	QNetworkProxy::ProxyType type;
+	QString hostname;
+	int port;
+	QString username;
+	QString password;
+#endif
 };
 
-#endif // NETWORKPROXYFACTORY_H
+#endif// NETWORKPROXYFACTORY_H

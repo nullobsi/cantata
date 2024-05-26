@@ -24,21 +24,20 @@
 #ifndef SONG_DIALOG_H
 #define SONG_DIALOG_H
 
-#include "support/dialog.h"
 #include "mpd-interface/song.h"
+#include "support/dialog.h"
 
-class SongDialog : public Dialog
-{
-    Q_OBJECT
+class SongDialog : public Dialog {
+	Q_OBJECT
 public:
-    static void enableDebug();
+	static void enableDebug();
 
-    SongDialog(QWidget *parent, const QString &name=QString(), const QSize &defSize=QSize())
-        : Dialog(parent, name, defSize) { }
-    ~SongDialog() override { }
+	SongDialog(QWidget* parent, const QString& name = QString(), const QSize& defSize = QSize())
+		: Dialog(parent, name, defSize) {}
+	~SongDialog() override {}
 
 protected:
-    bool songsOk(const QList<Song> &songs, const QString &base, bool isMpd);
+	bool songsOk(const QList<Song>& songs, const QString& base, bool isMpd);
 };
 
 #endif

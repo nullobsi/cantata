@@ -26,17 +26,16 @@
 
 #include "toolbutton.h"
 
-class MenuButton : public ToolButton
-{
-    Q_OBJECT
+class MenuButton : public ToolButton {
+	Q_OBJECT
 public:
-    explicit MenuButton(QWidget *parent = nullptr);
-    void controlState();
-    void setAlignedMenu(QMenu *m);
-    void addSeparator();
+	explicit MenuButton(QWidget* parent = nullptr);
+	void controlState();
+	void setAlignedMenu(QMenu* m);
+	void addSeparator();
 
 private:
-    bool eventFilter(QObject *o, QEvent *e) override;
+	bool eventFilter(QObject* o, QEvent* e) override;
 };
 
-#endif // MENUBUTTON_H
+#endif// MENUBUTTON_H

@@ -30,31 +30,32 @@
 #include "support/utils.h"
 #include <QString>
 
-struct Output
-{
-    Output(quint32 i, bool en, QString n) : id(i), enabled(en), name(n) { }
-    Output() : id(0xFFFFFFFF), enabled(false) { }
+struct Output {
+	Output(quint32 i, bool en, QString n) : id(i), enabled(en), name(n) {}
+	Output() : id(0xFFFFFFFF), enabled(false) {}
 
-    Output(const Output &o) { *this=o; }
+	Output(const Output& o) { *this = o; }
 
-    Output & operator=(const Output &o) {
-        id=o.id;
-        enabled=o.enabled;
-        inCurrentPartition=o.inCurrentPartition;
-        name=o.name;
-        return *this;
-    }
+	Output& operator=(const Output& o)
+	{
+		id = o.id;
+		enabled = o.enabled;
+		inCurrentPartition = o.inCurrentPartition;
+		name = o.name;
+		return *this;
+	}
 
-    bool operator<(const Output &o) const {
-        return Utils::compare(name, o.name)<0;
-    }
+	bool operator<(const Output& o) const
+	{
+		return Utils::compare(name, o.name) < 0;
+	}
 
-    virtual ~Output() { }
+	virtual ~Output() {}
 
-    quint32 id;
-    bool enabled;
-    bool inCurrentPartition{true};
-    QString name;
+	quint32 id;
+	bool enabled;
+	bool inCurrentPartition{true};
+	QString name;
 };
 
 #endif

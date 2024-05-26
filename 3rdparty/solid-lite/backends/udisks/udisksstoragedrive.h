@@ -22,34 +22,30 @@
 #ifndef UDISKSSTORAGEDRIVE_H
 #define UDISKSSTORAGEDRIVE_H
 
-#include <ifaces/storagedrive.h>
 #include "udisksblock.h"
+#include <ifaces/storagedrive.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks
-{
+namespace Solid {
+namespace Backends {
+namespace UDisks {
 
-class UDisksStorageDrive: public Block, virtual public Solid::Ifaces::StorageDrive
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::StorageDrive)
+class UDisksStorageDrive : public Block, virtual public Solid::Ifaces::StorageDrive {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::StorageDrive)
 
 public:
-    UDisksStorageDrive(UDisksDevice *device);
-    virtual ~UDisksStorageDrive();
+	UDisksStorageDrive(UDisksDevice* device);
+	virtual ~UDisksStorageDrive();
 
-    virtual qulonglong size() const;
-    virtual bool isHotpluggable() const;
-    virtual bool isRemovable() const;
-    virtual Solid::StorageDrive::DriveType driveType() const;
-    virtual Solid::StorageDrive::Bus bus() const;
+	virtual qulonglong size() const;
+	virtual bool isHotpluggable() const;
+	virtual bool isRemovable() const;
+	virtual Solid::StorageDrive::DriveType driveType() const;
+	virtual Solid::StorageDrive::Bus bus() const;
 };
 
-}
-}
-}
+}// namespace UDisks
+}// namespace Backends
+}// namespace Solid
 
-#endif // UDISKSSTORAGEDRIVE_H
+#endif// UDISKSSTORAGEDRIVE_H

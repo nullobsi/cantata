@@ -26,13 +26,12 @@
 
 #include "view.h"
 
-class OnlineView : public View
-{
-    Q_OBJECT
+class OnlineView : public View {
+	Q_OBJECT
 public:
-    OnlineView(QWidget *p);
+	OnlineView(QWidget* p);
 
-    void update(const Song &song, bool force=false) override;
+	void update(const Song& song, bool force = false) override;
 };
 
 #endif

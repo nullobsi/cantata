@@ -31,25 +31,24 @@ class StoredPlaylistsPage;
 class DynamicPlaylistsPage;
 class SmartPlaylistsPage;
 
-class PlaylistsPage : public MultiPageWidget
-{
-    Q_OBJECT
+class PlaylistsPage : public MultiPageWidget {
+	Q_OBJECT
 public:
-    PlaylistsPage(QWidget *p);
-    ~PlaylistsPage() override;
+	PlaylistsPage(QWidget* p);
+	~PlaylistsPage() override;
 
-    #ifdef ENABLE_DEVICES_SUPPORT
-    void addSelectionToDevice(const QString &udi) override;
-    #endif
+#ifdef ENABLE_DEVICES_SUPPORT
+	void addSelectionToDevice(const QString& udi) override;
+#endif
 
 Q_SIGNALS:
-    void addToDevice(const QString &from, const QString &to, const QList<Song> &songs);
-    void error(const QString &str);
+	void addToDevice(const QString& from, const QString& to, const QList<Song>& songs);
+	void error(const QString& str);
 
 private:
-    StoredPlaylistsPage *stored;
-    DynamicPlaylistsPage *dynamic;
-    SmartPlaylistsPage *smart;
+	StoredPlaylistsPage* stored;
+	DynamicPlaylistsPage* dynamic;
+	SmartPlaylistsPage* smart;
 };
 
 #endif

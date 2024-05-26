@@ -24,37 +24,36 @@
 #ifndef PROXYSTYLE_H
 #define PROXYSTYLE_H
 
-#include <QProxyStyle>
 #include <QIcon>
 #include <QMap>
+#include <QProxyStyle>
 
-class ProxyStyle : public QProxyStyle
-{
+class ProxyStyle : public QProxyStyle {
 public:
-    static const char * constModifyFrameProp;
+	static const char* constModifyFrameProp;
 
-    enum FrameMod {
-        VF_None = 0x00,
-        VF_Side = 0x01,
-        VF_Top  = 0x02
-    };
+	enum FrameMod {
+		VF_None = 0x00,
+		VF_Side = 0x01,
+		VF_Top = 0x02
+	};
 
-    ProxyStyle(int modView=VF_None);
-    ~ProxyStyle() override { }
-    void setModifyViewFrame(int modView) { modViewFrame=modView; }
-    int modifyViewFrame() const { return modViewFrame; }
-    void polish(QPalette &pal) override { QProxyStyle::polish(pal); }
-    void polish(QApplication *app) override { QProxyStyle::polish(app); }
-    void polish(QWidget *widget) override;
-    int styleHint(StyleHint hint, const QStyleOption *option, const QWidget *widget, QStyleHintReturn *returnData) const override;
-    int pixelMetric(PixelMetric metric, const QStyleOption *option, const QWidget *widget) const override;
-    void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const override;
-    QPixmap standardPixmap(StandardPixmap sp, const QStyleOption *opt, const QWidget *widget) const override;
-    QIcon standardIcon(StandardPixmap sp, const QStyleOption *opt, const QWidget *widget) const override;
+	ProxyStyle(int modView = VF_None);
+	~ProxyStyle() override {}
+	void setModifyViewFrame(int modView) { modViewFrame = modView; }
+	int modifyViewFrame() const { return modViewFrame; }
+	void polish(QPalette& pal) override { QProxyStyle::polish(pal); }
+	void polish(QApplication* app) override { QProxyStyle::polish(app); }
+	void polish(QWidget* widget) override;
+	int styleHint(StyleHint hint, const QStyleOption* option, const QWidget* widget, QStyleHintReturn* returnData) const override;
+	int pixelMetric(PixelMetric metric, const QStyleOption* option, const QWidget* widget) const override;
+	void drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const override;
+	QPixmap standardPixmap(StandardPixmap sp, const QStyleOption* opt, const QWidget* widget) const override;
+	QIcon standardIcon(StandardPixmap sp, const QStyleOption* opt, const QWidget* widget) const override;
 
 private:
-    int modViewFrame;
-    QMap<StandardPixmap, QIcon> icons;
+	int modViewFrame;
+	QMap<StandardPixmap, QIcon> icons;
 };
 
 #endif

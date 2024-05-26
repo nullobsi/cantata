@@ -22,48 +22,44 @@
 #ifndef SOLID_BACKENDS_WMI_CDROM_H
 #define SOLID_BACKENDS_WMI_CDROM_H
 
-#include <solid/ifaces/opticaldrive.h>
 #include "wmistorage.h"
+#include <solid/ifaces/opticaldrive.h>
 
 #include <QtCore/QProcess>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace Wmi
-{
-class Cdrom : public Storage, virtual public Solid::Ifaces::OpticalDrive
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::OpticalDrive)
+namespace Solid {
+namespace Backends {
+namespace Wmi {
+class Cdrom : public Storage, virtual public Solid::Ifaces::OpticalDrive {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::OpticalDrive)
 
 public:
-    Cdrom(WmiDevice *device);
-    virtual ~Cdrom();
+	Cdrom(WmiDevice* device);
+	virtual ~Cdrom();
 
-    virtual Solid::OpticalDrive::MediumTypes supportedMedia() const;
-    virtual int readSpeed() const;
-    virtual int writeSpeed() const;
-    virtual QList<int> writeSpeeds() const;
-    virtual bool eject();
+	virtual Solid::OpticalDrive::MediumTypes supportedMedia() const;
+	virtual int readSpeed() const;
+	virtual int writeSpeed() const;
+	virtual QList<int> writeSpeeds() const;
+	virtual bool eject();
 
 Q_SIGNALS:
-    void ejectPressed(const QString &udi);
-    void ejectDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
+	void ejectPressed(const QString& udi);
+	void ejectDone(Solid::ErrorType error, QVariant errorData, const QString& udi);
 
 private Q_SLOTS:
-    void slotCondition(const QString &name, const QString &reason);
-    void slotProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+	void slotCondition(const QString& name, const QString& reason);
+	void slotProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
-    bool callWmiDriveEject();
+	bool callWmiDriveEject();
 
-    bool m_ejectInProgress;
-    QProcess *m_process;
+	bool m_ejectInProgress;
+	QProcess* m_process;
 };
-}
-}
-}
+}// namespace Wmi
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_WMI_CDROM_H
+#endif// SOLID_BACKENDS_WMI_CDROM_H

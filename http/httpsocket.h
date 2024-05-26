@@ -24,53 +24,52 @@
 #ifndef _HTTP_SOCKET_H_
 #define _HTTP_SOCKET_H_
 
-#include <QTcpServer>
-#include <QMap>
 #include <QList>
+#include <QMap>
 #include <QSet>
+#include <QTcpServer>
 
 struct Song;
 class QHostAddress;
 class QTcpSocket;
 
-class HttpSocket : public QTcpServer
-{
-    Q_OBJECT
+class HttpSocket : public QTcpServer {
+	Q_OBJECT
 
 public:
-    HttpSocket(const QString &iface, quint16 port);
-    ~HttpSocket() override { }
+	HttpSocket(const QString& iface, quint16 port);
+	~HttpSocket() override {}
 
-    QString configuredInterface() { return cfgInterface; }
-    quint16 boundPort();
+	QString configuredInterface() { return cfgInterface; }
+	quint16 boundPort();
 
 public Q_SLOTS:
-    void terminate();
-    void mpdAddress(const QString &a);
+	void terminate();
+	void mpdAddress(const QString& a);
 
 private:
-    bool openPort(quint16 p);
-    bool isCantataStream(const QString &file) const;
-    void sendErrorResponse(QTcpSocket *socket, int code);
+	bool openPort(quint16 p);
+	bool isCantataStream(const QString& file) const;
+	void sendErrorResponse(QTcpSocket* socket, int code);
 
 private Q_SLOTS:
-    void handleNewConnection();
-    void readClient();
-    void discardClient();
-    void cantataStreams(const QStringList &files);
-    void cantataStreams(const QList<Song> &songs, bool isUpdate);
-    void removedIds(const QSet<qint32> &ids);
+	void handleNewConnection();
+	void readClient();
+	void discardClient();
+	void cantataStreams(const QStringList& files);
+	void cantataStreams(const QList<Song>& songs, bool isUpdate);
+	void removedIds(const QSet<qint32>& ids);
 
 private:
-    bool write(QTcpSocket *socket, char *buffer, qint32 bytesRead, bool &stop);
-    void setUrlAddress();
+	bool write(QTcpSocket* socket, char* buffer, qint32 bytesRead, bool& stop);
+	void setUrlAddress();
 
 private:
-    QSet<QString> newlyAddedFiles; // Holds cantata strema filenames as added to MPD via "add"
-    QMap<qint32, QString> streamIds; // Maps MPD playqueue song ID to fileName
-    QString cfgInterface;
-    QString mpdAddr;
-    bool terminated;
+	QSet<QString> newlyAddedFiles;  // Holds cantata strema filenames as added to MPD via "add"
+	QMap<qint32, QString> streamIds;// Maps MPD playqueue song ID to fileName
+	QString cfgInterface;
+	QString mpdAddr;
+	bool terminated;
 };
 
 #endif

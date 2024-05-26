@@ -27,10 +27,10 @@
 #ifndef MPD_PARSE_UTILS_H
 #define MPD_PARSE_UTILS_H
 
-#include <QString>
-#include <QSet>
 #include "config.h"
 #include "song.h"
+#include <QSet>
+#include <QString>
 
 struct Playlist;
 struct Partition;
@@ -38,66 +38,65 @@ struct Output;
 struct MPDStatsValues;
 struct MPDStatusValues;
 
-namespace MPDParseUtils
-{
-    extern void enableDebug();
+namespace MPDParseUtils {
+extern void enableDebug();
 
-    struct IdPos {
-        IdPos(qint32 i, quint32 p)
-            : id(i)
-            , pos(p) {
-        }
-        qint32 id;
-        quint32 pos;
-    };
+struct IdPos {
+	IdPos(qint32 i, quint32 p)
+		: id(i), pos(p)
+	{
+	}
+	qint32 id;
+	quint32 pos;
+};
 
-    enum Location {
-        Loc_Library,
-        Loc_Playlists,
-        Loc_PlayQueue,
-        Loc_Streams,
-        Loc_Search,
-        Loc_Browse
-    };
+enum Location {
+	Loc_Library,
+	Loc_Playlists,
+	Loc_PlayQueue,
+	Loc_Streams,
+	Loc_Search,
+	Loc_Browse
+};
 
-    enum CueSupport {
-        Cue_Parse,
-        Cue_ListButDontParse,
-        Cue_Ignore,
+enum CueSupport {
+	Cue_Parse,
+	Cue_ListButDontParse,
+	Cue_Ignore,
 
-        Cue_Count
-    };
+	Cue_Count
+};
 
-    struct Sticker {
-        QByteArray file;
-        QByteArray value;
-    };
+struct Sticker {
+	QByteArray file;
+	QByteArray value;
+};
 
-    extern QString toStr(CueSupport cs);
-    extern CueSupport toCueSupport(const QString &cs);
-    extern void setCueFileSupport(CueSupport cs);
-    extern CueSupport cueFileSupport();
-    extern void setSingleTracksFolders(const QSet<QString> &folders);
-    extern QList<Playlist> parsePlaylists(const QByteArray &data);
-    extern MPDStatsValues parseStats(const QByteArray &data);
-    extern MPDStatusValues parseStatus(const QByteArray &data);
-    extern Song parseSong(const QList<QByteArray> &lines, Location location);
-    inline Song parseSong(const QByteArray &data, Location location) { return parseSong(data.split('\n'), location); }
-    extern QList<Song> parseSongs(const QByteArray &data, Location location);
-    extern QList<IdPos> parseChanges(const QByteArray &data);
-    extern QStringList parseList(const QByteArray &data, const QByteArray &key);
-    typedef QMap<QByteArray, QStringList> MessageMap;
-    extern MessageMap parseMessages(const QByteArray &data);
-    extern void parseDirItems(const QByteArray &data, const QString &mpdDir, long mpdVersion, QList<Song> &songList, const QString &dir, QStringList &subDirs, Location loc);
-    extern QList<Partition> parsePartitions(const QByteArray &data);
-    extern QList<Output> parseOuputs(const QByteArray &data);
-    extern QByteArray parseSticker(const QByteArray &data, const QByteArray &sticker);
-    extern QList<Sticker> parseStickers(const QByteArray &data, const QByteArray &sticker);
-    // Single hash when saving streams to [Radio Streams] - for compatability
-    extern QString addStreamName(const QString &url, const QString &name, bool singleHash=false);
-    extern QString getStreamName(const QString &url);
-    // checkSingleHash - check for #<Name> as well as #StreamName:<Name>
-    extern QString getAndRemoveStreamName(QString &url, bool checkSingleHash=false);
-}
+extern QString toStr(CueSupport cs);
+extern CueSupport toCueSupport(const QString& cs);
+extern void setCueFileSupport(CueSupport cs);
+extern CueSupport cueFileSupport();
+extern void setSingleTracksFolders(const QSet<QString>& folders);
+extern QList<Playlist> parsePlaylists(const QByteArray& data);
+extern MPDStatsValues parseStats(const QByteArray& data);
+extern MPDStatusValues parseStatus(const QByteArray& data);
+extern Song parseSong(const QList<QByteArray>& lines, Location location);
+inline Song parseSong(const QByteArray& data, Location location) { return parseSong(data.split('\n'), location); }
+extern QList<Song> parseSongs(const QByteArray& data, Location location);
+extern QList<IdPos> parseChanges(const QByteArray& data);
+extern QStringList parseList(const QByteArray& data, const QByteArray& key);
+typedef QMap<QByteArray, QStringList> MessageMap;
+extern MessageMap parseMessages(const QByteArray& data);
+extern void parseDirItems(const QByteArray& data, const QString& mpdDir, long mpdVersion, QList<Song>& songList, const QString& dir, QStringList& subDirs, Location loc);
+extern QList<Partition> parsePartitions(const QByteArray& data);
+extern QList<Output> parseOuputs(const QByteArray& data);
+extern QByteArray parseSticker(const QByteArray& data, const QByteArray& sticker);
+extern QList<Sticker> parseStickers(const QByteArray& data, const QByteArray& sticker);
+// Single hash when saving streams to [Radio Streams] - for compatability
+extern QString addStreamName(const QString& url, const QString& name, bool singleHash = false);
+extern QString getStreamName(const QString& url);
+// checkSingleHash - check for #<Name> as well as #StreamName:<Name>
+extern QString getAndRemoveStreamName(QString& url, bool checkSingleHash = false);
+}// namespace MPDParseUtils
 
 #endif

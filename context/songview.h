@@ -24,9 +24,9 @@
 #ifndef SONG_VIEW_H
 #define SONG_VIEW_H
 
-#include <QWidget>
-#include "view.h"
 #include "config.h"
+#include "view.h"
+#include <QWidget>
 
 class UltimateLyricsProvider;
 class QImage;
@@ -35,71 +35,70 @@ class NetworkJob;
 class QTimer;
 class ContextEngine;
 
-class SongView : public View
-{
-    Q_OBJECT
+class SongView : public View {
+	Q_OBJECT
 
-    enum Mode {
-        Mode_Blank,
-        Mode_Display
-    };
+	enum Mode {
+		Mode_Blank,
+		Mode_Display
+	};
 
-    enum Pages {
-        Page_Lyrics,
-        Page_Information,
-        Page_Metadata
-    };
+	enum Pages {
+		Page_Lyrics,
+		Page_Information,
+		Page_Metadata
+	};
 
 public:
-    static const QLatin1String constLyricsDir;
-    static const QLatin1String constExtension;
-    static const QLatin1String constCacheDir;
-    static const QLatin1String constInfoExt;
+	static const QLatin1String constLyricsDir;
+	static const QLatin1String constExtension;
+	static const QLatin1String constCacheDir;
+	static const QLatin1String constInfoExt;
 
-    SongView(QWidget *p);
-    ~SongView() override;
+	SongView(QWidget* p);
+	~SongView() override;
 
-    void update(const Song &s, bool force=false) override;
-    void saveConfig();
+	void update(const Song& s, bool force = false) override;
+	void saveConfig();
 
 Q_SIGNALS:
-    void providersUpdated();
+	void providersUpdated();
 
 public Q_SLOTS:
-    void downloadFinished();
-    void lyricsReady(int, QString lyrics);
-    void update();
-    void search();
-    void edit();
-    void del();
-    void showContextMenu(const QPoint &pos);
-    void showInfoContextMenu(const QPoint &pos);
+	void downloadFinished();
+	void lyricsReady(int, QString lyrics);
+	void update();
+	void search();
+	void edit();
+	void del();
+	void showContextMenu(const QPoint& pos);
+	void showInfoContextMenu(const QPoint& pos);
 
 private Q_SLOTS:
-    void toggleScroll();
-    void songPosition();
-    void scroll();
-    void curentViewChanged();
-    void refreshInfo();
-    void infoSearchResponse(const QString &resp, const QString &lang);
-    void abortInfoSearch();
-    void showMoreInfo(const QUrl &url);
+	void toggleScroll();
+	void songPosition();
+	void scroll();
+	void curentViewChanged();
+	void refreshInfo();
+	void infoSearchResponse(const QString& resp, const QString& lang);
+	void abortInfoSearch();
+	void showMoreInfo(const QUrl& url);
 
 private:
-    void loadLyrics();
-    void loadLyricsFromFile();
-    void loadInfo();
-    void loadMetadata();
-    void searchForInfo();
-    void hideSpinner();
-    void abort() override;
-    QString mpdFileName() const;
-    QString cacheFileName() const;
-    void getLyrics();
-    void setMode(Mode m);
-    bool saveFile(const QString &fileName);
+	void loadLyrics();
+	void loadLyricsFromFile();
+	void loadInfo();
+	void loadMetadata();
+	void searchForInfo();
+	void hideSpinner();
+	void abort() override;
+	QString mpdFileName() const;
+	QString cacheFileName() const;
+	void getLyrics();
+	void setMode(Mode m);
+	bool saveFile(const QString& fileName);
 
-    /**
+	/**
      * Reads the lyrics from the given filePath and updates
      * the UI with those lyrics.
      *
@@ -107,29 +106,29 @@ private:
      *
      * @return Returns true if the file could be read; otherwise false.
      */
-    bool setLyricsFromFile(const QString &filePath);
+	bool setLyricsFromFile(const QString& filePath);
 
 private:
-    QTimer *scrollTimer;
-    qint32 songPos;
-    int currentProvider;
-    int currentRequest;
-    Action *scrollAction;
-    Action *refreshAction;
-    Action *editAction;
-    Action *delAction;
-    Mode mode;
-    QString lyricsFile;
-    QString preEdit;
-    NetworkJob *job;
-    UltimateLyricsProvider *currentProv;
+	QTimer* scrollTimer;
+	qint32 songPos;
+	int currentProvider;
+	int currentRequest;
+	Action* scrollAction;
+	Action* refreshAction;
+	Action* editAction;
+	Action* delAction;
+	Mode mode;
+	QString lyricsFile;
+	QString preEdit;
+	NetworkJob* job;
+	UltimateLyricsProvider* currentProv;
 
-    bool lyricsNeedsUpdating;
-    bool infoNeedsUpdating;
-    bool metadataNeedsUpdating;
-    Action *refreshInfoAction;
-    Action *cancelInfoJobAction;
-    ContextEngine *engine;
+	bool lyricsNeedsUpdating;
+	bool infoNeedsUpdating;
+	bool metadataNeedsUpdating;
+	Action* refreshInfoAction;
+	Action* cancelInfoJobAction;
+	ContextEngine* engine;
 };
 
 #endif

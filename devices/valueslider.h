@@ -23,35 +23,33 @@
 #ifndef VALUESLIDER_H
 #define VALUESLIDER_H
 
+#include "encoders.h"
 #include <QLabel>
 #include <QSlider>
-#include "encoders.h"
 
-class ValueSlider : public QWidget
-{
-    Q_OBJECT
+class ValueSlider : public QWidget {
+	Q_OBJECT
 public:
-    explicit ValueSlider(QWidget *parent=nullptr);
+	explicit ValueSlider(QWidget* parent = nullptr);
 
-    void setValues(const Encoders::Encoder &enc);
-    void setValue(int value);
-    int value() const { return slider->value(); }
+	void setValues(const Encoders::Encoder& enc);
+	void setValue(int value);
+	int value() const { return slider->value(); }
 
 Q_SIGNALS:
-    void valueChanged(int value);
+	void valueChanged(int value);
 
 private Q_SLOTS:
-    void onSliderChanged(int value);
+	void onSliderChanged(int value);
 
 private:
-    QLabel *valueTypeLabel;
-    QSlider *slider;
-    QLabel *midLabel;
-    QLabel *leftLabel;
-    QLabel *rightLabel;
-    int defaultSetting;
-    QList<Encoders::Setting> settings;
+	QLabel* valueTypeLabel;
+	QSlider* slider;
+	QLabel* midLabel;
+	QLabel* leftLabel;
+	QLabel* rightLabel;
+	int defaultSetting;
+	QList<Encoders::Setting> settings;
 };
-
 
 #endif

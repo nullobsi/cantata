@@ -26,22 +26,21 @@
 
 #include "rulesplaylists.h"
 
-class SmartPlaylists : public RulesPlaylists
-{
-    Q_OBJECT
+class SmartPlaylists : public RulesPlaylists {
+	Q_OBJECT
 
 public:
-    static SmartPlaylists * self();
+	static SmartPlaylists* self();
 
-    SmartPlaylists();
-    ~SmartPlaylists() override { }
+	SmartPlaylists();
+	~SmartPlaylists() override {}
 
-    QString name() const override;
-    QString title() const override;
-    QString descr() const override;
-    QVariant data(const QModelIndex &index, int role) const override;
-    int maxTracks() const override { return 10000; }
-    int defaultNumTracks() const override { return 100; }
+	QString name() const override;
+	QString title() const override;
+	QString descr() const override;
+	QVariant data(const QModelIndex& index, int role) const override;
+	int maxTracks() const override { return 10000; }
+	int defaultNumTracks() const override { return 100; }
 };
 
 #endif

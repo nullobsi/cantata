@@ -26,15 +26,14 @@
 
 #include "ui_audiocdsettings.h"
 
-class AudioCdSettings : public QWidget, private Ui::AudioCdSettings
-{
-    Q_OBJECT
+class AudioCdSettings : public QWidget, private Ui::AudioCdSettings {
+	Q_OBJECT
 public:
-    AudioCdSettings(QWidget *p);
-    virtual ~AudioCdSettings() { }
+	AudioCdSettings(QWidget* p);
+	virtual ~AudioCdSettings() {}
 
-    void load();
-    void save();
+	void load();
+	void save();
 };
 
 #endif

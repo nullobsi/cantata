@@ -28,45 +28,43 @@
 
 class QAction;
 
-class ActionItemDelegate : public QStyledItemDelegate
-{
-    Q_OBJECT
+class ActionItemDelegate : public QStyledItemDelegate {
+	Q_OBJECT
 
 public:
-    enum ActionPos {
-        AP_HBottom,
-        AP_VTop,
-        AP_HMiddle
-    };
+	enum ActionPos {
+		AP_HBottom,
+		AP_VTop,
+		AP_HMiddle
+	};
 
-    static void setup();
+	static void setup();
 
-    ActionItemDelegate(QObject *p);
-    ~ActionItemDelegate() override { }
+	ActionItemDelegate(QObject* p);
+	~ActionItemDelegate() override {}
 
-    static int constBorder;
-    static int constActionBorder;
-    static int constActionIconSize;
-    static int constLargeActionIconSize;
+	static int constBorder;
+	static int constActionBorder;
+	static int constActionIconSize;
+	static int constLargeActionIconSize;
 
-    void drawIcons(QPainter *painter, const QRect &r, bool mouseOver, bool rtl, ActionPos actionPos, const QModelIndex &index) const;
-    void setUnderMouse(bool um) { underMouse=um; }
-    void setLargeIcons(bool l) { largeIcons=l; }
+	void drawIcons(QPainter* painter, const QRect& r, bool mouseOver, bool rtl, ActionPos actionPos, const QModelIndex& index) const;
+	void setUnderMouse(bool um) { underMouse = um; }
+	void setLargeIcons(bool l) { largeIcons = l; }
 
 public Q_SLOTS:
-    bool helpEvent(QHelpEvent *e, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index) override;
+	bool helpEvent(QHelpEvent* e, QAbstractItemView* view, const QStyleOptionViewItem& option, const QModelIndex& index) override;
 
 public:
-    QAction * getAction(const QModelIndex &index, int adjust=0) const;
+	QAction* getAction(const QModelIndex& index, int adjust = 0) const;
 
 private:
-    QRect calcActionRect(bool rtl, ActionPos actionPos, const QRect &rect) const;
-    static void adjustActionRect(bool rtl, ActionPos actionPos, QRect &rect, int iconSize);
+	QRect calcActionRect(bool rtl, ActionPos actionPos, const QRect& rect) const;
+	static void adjustActionRect(bool rtl, ActionPos actionPos, QRect& rect, int iconSize);
 
 protected:
-    bool largeIcons;
-    bool underMouse;
+	bool largeIcons;
+	bool underMouse;
 };
 
 #endif
-

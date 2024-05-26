@@ -21,33 +21,29 @@
 #ifndef SOLID_BACKENDS_HAL_OPTICALDISC_H
 #define SOLID_BACKENDS_HAL_OPTICALDISC_H
 
-#include <solid-lite/ifaces/opticaldisc.h>
 #include "halvolume.h"
+#include <solid-lite/ifaces/opticaldisc.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace Hal
-{
-class OpticalDisc : public Volume, virtual public Solid::Ifaces::OpticalDisc
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::OpticalDisc)
+namespace Solid {
+namespace Backends {
+namespace Hal {
+class OpticalDisc : public Volume, virtual public Solid::Ifaces::OpticalDisc {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::OpticalDisc)
 
 public:
-    OpticalDisc(HalDevice *device);
-    ~OpticalDisc() override;
+	OpticalDisc(HalDevice* device);
+	~OpticalDisc() override;
 
-    Solid::OpticalDisc::ContentTypes availableContent() const override;
-    Solid::OpticalDisc::DiscType discType() const override;
-    bool isAppendable() const override;
-    bool isBlank() const override;
-    bool isRewritable() const override;
-    qulonglong capacity() const override;
+	Solid::OpticalDisc::ContentTypes availableContent() const override;
+	Solid::OpticalDisc::DiscType discType() const override;
+	bool isAppendable() const override;
+	bool isBlank() const override;
+	bool isRewritable() const override;
+	qulonglong capacity() const override;
 };
-}
-}
-}
+}// namespace Hal
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_HAL_OPTICALDISC_H
+#endif// SOLID_BACKENDS_HAL_OPTICALDISC_H

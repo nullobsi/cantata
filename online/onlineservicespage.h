@@ -27,21 +27,20 @@
 #include "onlineservice.h"
 #include "widgets/multipagewidget.h"
 
-class OnlineServicesPage : public MultiPageWidget
-{
-    Q_OBJECT
+class OnlineServicesPage : public MultiPageWidget {
+	Q_OBJECT
 
 public:
-    OnlineServicesPage(QWidget *p);
-    ~OnlineServicesPage() override;
+	OnlineServicesPage(QWidget* p);
+	~OnlineServicesPage() override;
 
-    bool isDownloading();
-    void cancelAll();
-    bool isEanbeld() { return true; }
-    void setEnabled(bool) { }
+	bool isDownloading();
+	void cancelAll();
+	bool isEanbeld() { return true; }
+	void setEnabled(bool) {}
 
 Q_SIGNALS:
-    void error(const QString &msg);
+	void error(const QString& msg);
 };
 
 #endif

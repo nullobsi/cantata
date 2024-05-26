@@ -24,33 +24,32 @@
 #ifndef TAG_HELPER_H
 #define TAG_HELPER_H
 
-#include <QObject>
 #include <QByteArray>
+#include <QObject>
 
 class QLocalSocket;
 
-class TagHelper : public QObject
-{
-    Q_OBJECT
+class TagHelper : public QObject {
+	Q_OBJECT
 
 public:
-    static void enableDebug();
+	static void enableDebug();
 
-    TagHelper(const QString &sockName, int parent);
-    ~TagHelper() override;
+	TagHelper(const QString& sockName, int parent);
+	~TagHelper() override;
 
 private Q_SLOTS:
-    void dataReady();
-    void checkParent();
+	void dataReady();
+	void checkParent();
 
 private:
-    void process();
+	void process();
 
 private:
-    int parentPid;
-    QLocalSocket *socket;
-    qint32 dataSize;
-    QByteArray data;
+	int parentPid;
+	QLocalSocket* socket;
+	qint32 dataSize;
+	QByteArray data;
 };
 
 #endif

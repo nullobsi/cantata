@@ -24,8 +24,8 @@
 #ifndef MEDIA_KEYS_H
 #define MEDIA_KEYS_H
 
-#include <qglobal.h>
 #include "config.h"
+#include <qglobal.h>
 
 class GnomeMediaKeys;
 class QxtMediaKeys;
@@ -35,29 +35,28 @@ class MultiMediaKeysInterface;
 // #define CANTATA_USE_QXT_MEDIAKEYS
 #endif
 
-class MediaKeys
-{
+class MediaKeys {
 public:
-    static void enableDebug();
-    static MediaKeys * self();
+	static void enableDebug();
+	static MediaKeys* self();
 
-    MediaKeys();
-    ~MediaKeys();
+	MediaKeys();
+	~MediaKeys();
 
-    void start();
-    void stop();
-
-private:
-    bool activate(MultiMediaKeysInterface *iface);
-    void deactivate(MultiMediaKeysInterface *iface);
+	void start();
+	void stop();
 
 private:
-    #ifdef QT_QTDBUS_FOUND
-    GnomeMediaKeys *gnome;
-    #endif
-    #ifdef CANTATA_USE_QXT_MEDIAKEYS
-    QxtMediaKeys *qxt;
-    #endif
+	bool activate(MultiMediaKeysInterface* iface);
+	void deactivate(MultiMediaKeysInterface* iface);
+
+private:
+#ifdef QT_QTDBUS_FOUND
+	GnomeMediaKeys* gnome;
+#endif
+#ifdef CANTATA_USE_QXT_MEDIAKEYS
+	QxtMediaKeys* qxt;
+#endif
 };
 
 #endif

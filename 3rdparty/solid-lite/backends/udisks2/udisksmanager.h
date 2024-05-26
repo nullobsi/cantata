@@ -22,50 +22,46 @@
 #ifndef UDISKS2MANAGER_H
 #define UDISKS2MANAGER_H
 
+#include "dbus/manager.h"
 #include "udisks2.h"
 #include "udisksdevice.h"
-#include "dbus/manager.h"
 
 #include "solid-lite/ifaces/devicemanager.h"
 
 #include <QDBusInterface>
 #include <QSet>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks2
-{
+namespace Solid {
+namespace Backends {
+namespace UDisks2 {
 
-class Manager: public Solid::Ifaces::DeviceManager
-{
-    Q_OBJECT
+class Manager : public Solid::Ifaces::DeviceManager {
+	Q_OBJECT
 
 public:
-    Manager(QObject *parent);
-    QObject* createDevice(const QString& udi) override;
-    QStringList devicesFromQuery(const QString& parentUdi, Solid::DeviceInterface::Type type) override;
-    QStringList allDevices() override;
-    QSet< Solid::DeviceInterface::Type > supportedInterfaces() const override;
-    QString udiPrefix() const override;
-    ~Manager() override;
+	Manager(QObject* parent);
+	QObject* createDevice(const QString& udi) override;
+	QStringList devicesFromQuery(const QString& parentUdi, Solid::DeviceInterface::Type type) override;
+	QStringList allDevices() override;
+	QSet<Solid::DeviceInterface::Type> supportedInterfaces() const override;
+	QString udiPrefix() const override;
+	~Manager() override;
 
 private Q_SLOTS:
-    void slotInterfacesAdded(const QDBusObjectPath &object_path, const QVariantMapMap &interfaces_and_properties);
-    void slotInterfacesRemoved(const QDBusObjectPath &object_path, const QStringList &interfaces);
-    void slotMediaChanged(const QDBusMessage &msg);
+	void slotInterfacesAdded(const QDBusObjectPath& object_path, const QVariantMapMap& interfaces_and_properties);
+	void slotInterfacesRemoved(const QDBusObjectPath& object_path, const QStringList& interfaces);
+	void slotMediaChanged(const QDBusMessage& msg);
 
 private:
-    const QStringList &deviceCache();
-    void introspect(const QString & path, bool checkOptical = false);
-    void updateBackend(const QString & udi);
-    QSet<Solid::DeviceInterface::Type> m_supportedInterfaces;
-    org::freedesktop::DBus::ObjectManager m_manager;
-    QStringList m_deviceCache;
+	const QStringList& deviceCache();
+	void introspect(const QString& path, bool checkOptical = false);
+	void updateBackend(const QString& udi);
+	QSet<Solid::DeviceInterface::Type> m_supportedInterfaces;
+	org::freedesktop::DBus::ObjectManager m_manager;
+	QStringList m_deviceCache;
 };
 
-}
-}
-}
-#endif // UDISKS2MANAGER_H
+}// namespace UDisks2
+}// namespace Backends
+}// namespace Solid
+#endif// UDISKS2MANAGER_H

@@ -26,50 +26,46 @@
 #if QT_VERSION < 0x050000
 #include <QWeakPointer>
 #else
-#include <QPointer>
 #include "ifaces/device.h"
+#include <QPointer>
 #endif
 
-#include <QMap>
 #include "deviceinterface.h"
+#include <QMap>
 
-namespace Solid
-{
-    #if QT_VERSION < 0x050000
-    namespace Ifaces
-    {
-        class Device;
-    }
-    #endif
-
-    class DevicePrivate : public QObject, public QSharedData
-    {
-        Q_OBJECT
-    public:
-        explicit DevicePrivate(const QString &udi);
-        ~DevicePrivate() override;
-
-        QString udi() const { return m_udi; }
-
-        Ifaces::Device *backendObject() const { return m_backendObject.data(); }
-        void setBackendObject(Ifaces::Device *object);
-
-        DeviceInterface *interface(const DeviceInterface::Type &type) const;
-        void setInterface(const DeviceInterface::Type &type, DeviceInterface *interface);
-
-    public Q_SLOTS:
-        void _k_destroyed(QObject *object);
-
-    private:
-        QString m_udi;
-        #if QT_VERSION < 0x050000
-        QWeakPointer<Ifaces::Device> m_backendObject;
-        #else
-        QPointer<Ifaces::Device> m_backendObject;
-        #endif
-        QMap<DeviceInterface::Type, DeviceInterface *> m_ifaces;
-    };
+namespace Solid {
+#if QT_VERSION < 0x050000
+namespace Ifaces {
+class Device;
 }
+#endif
 
+class DevicePrivate : public QObject, public QSharedData {
+	Q_OBJECT
+public:
+	explicit DevicePrivate(const QString& udi);
+	~DevicePrivate() override;
+
+	QString udi() const { return m_udi; }
+
+	Ifaces::Device* backendObject() const { return m_backendObject.data(); }
+	void setBackendObject(Ifaces::Device* object);
+
+	DeviceInterface* interface(const DeviceInterface::Type& type) const;
+	void setInterface(const DeviceInterface::Type& type, DeviceInterface* interface);
+
+public Q_SLOTS:
+	void _k_destroyed(QObject* object);
+
+private:
+	QString m_udi;
+#if QT_VERSION < 0x050000
+	QWeakPointer<Ifaces::Device> m_backendObject;
+#else
+	QPointer<Ifaces::Device> m_backendObject;
+#endif
+	QMap<DeviceInterface::Type, DeviceInterface*> m_ifaces;
+};
+}// namespace Solid
 
 #endif

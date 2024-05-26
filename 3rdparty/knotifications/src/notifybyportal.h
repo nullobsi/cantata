@@ -19,30 +19,29 @@
 class KNotification;
 class NotifyByPortalPrivate;
 
-class NotifyByPortal : public KNotificationPlugin
-{
-    Q_OBJECT
+class NotifyByPortal : public KNotificationPlugin {
+	Q_OBJECT
 public:
-    explicit NotifyByPortal(QObject *parent = nullptr);
-    ~NotifyByPortal() override;
+	explicit NotifyByPortal(QObject* parent = nullptr);
+	~NotifyByPortal() override;
 
-    QString optionName() override
-    {
-        return QStringLiteral("Popup");
-    }
-    void notify(KNotification *notification, const KNotifyConfig &notifyConfig) override;
-    void close(KNotification *notification) override;
-    void update(KNotification *notification, const KNotifyConfig &notifyConfig) override;
+	QString optionName() override
+	{
+		return QStringLiteral("Popup");
+	}
+	void notify(KNotification* notification, const KNotifyConfig& notifyConfig) override;
+	void close(KNotification* notification) override;
+	void update(KNotification* notification, const KNotifyConfig& notifyConfig) override;
 
 private Q_SLOTS:
 
-    // slot to catch appearance or disappearance of org.freedesktop.Desktop DBus service
-    void onServiceOwnerChanged(const QString &, const QString &, const QString &);
+	// slot to catch appearance or disappearance of org.freedesktop.Desktop DBus service
+	void onServiceOwnerChanged(const QString&, const QString&, const QString&);
 
-    void onPortalNotificationActionInvoked(const QString &, const QString &, const QVariantList &);
+	void onPortalNotificationActionInvoked(const QString&, const QString&, const QVariantList&);
 
 private:
-    std::unique_ptr<NotifyByPortalPrivate> const d;
+	std::unique_ptr<NotifyByPortalPrivate> const d;
 };
 
 #endif

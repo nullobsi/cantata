@@ -27,39 +27,38 @@
 #ifndef MUSIC_LIBRARY_ITEM_ARTIST_H
 #define MUSIC_LIBRARY_ITEM_ARTIST_H
 
+#include "mpd-interface/song.h"
+#include "musiclibraryitem.h"
+#include <QHash>
 #include <QList>
 #include <QVariant>
-#include <QHash>
-#include "musiclibraryitem.h"
-#include "mpd-interface/song.h"
 
 class MusicLibraryItemRoot;
 class MusicLibraryItemAlbum;
 
-class MusicLibraryItemArtist : public MusicLibraryItemContainer
-{
+class MusicLibraryItemArtist : public MusicLibraryItemContainer {
 public:
-    static bool lessThan(const MusicLibraryItem *a, const MusicLibraryItem *b);
+	static bool lessThan(const MusicLibraryItem* a, const MusicLibraryItem* b);
 
-    MusicLibraryItemArtist(const Song &song, MusicLibraryItemContainer *parent=nullptr);
-    ~MusicLibraryItemArtist() override { }
+	MusicLibraryItemArtist(const Song& song, MusicLibraryItemContainer* parent = nullptr);
+	~MusicLibraryItemArtist() override {}
 
-    MusicLibraryItemAlbum * album(const Song &s, bool create=true);
-    MusicLibraryItemAlbum * createAlbum(const Song &s);
-    const QString & sortString() const { return m_sortString.isEmpty() ? m_itemData : m_sortString; }
-    void remove(MusicLibraryItemAlbum *album);
-    Type itemType() const override { return Type_Artist; }
-    // 'data' could be 'Composer' if we are set to use that, but need to save real artist...
-    const QString & actualArtist() const { return m_actualArtist; }
-    Song coverSong() const;
-
-private:
-    MusicLibraryItemAlbum * getAlbum(const QString &key) const;
+	MusicLibraryItemAlbum* album(const Song& s, bool create = true);
+	MusicLibraryItemAlbum* createAlbum(const Song& s);
+	const QString& sortString() const { return m_sortString.isEmpty() ? m_itemData : m_sortString; }
+	void remove(MusicLibraryItemAlbum* album);
+	Type itemType() const override { return Type_Artist; }
+	// 'data' could be 'Composer' if we are set to use that, but need to save real artist...
+	const QString& actualArtist() const { return m_actualArtist; }
+	Song coverSong() const;
 
 private:
-    QString m_sortString; // Do we have an actual artist-sort, or is m_sortString just "Artist, The" ??? - needed for cache saving
-    QString m_actualArtist;
-    mutable QHash<QString, int> m_indexes;
+	MusicLibraryItemAlbum* getAlbum(const QString& key) const;
+
+private:
+	QString m_sortString;// Do we have an actual artist-sort, or is m_sortString just "Artist, The" ??? - needed for cache saving
+	QString m_actualArtist;
+	mutable QHash<QString, int> m_indexes;
 };
 
 #endif

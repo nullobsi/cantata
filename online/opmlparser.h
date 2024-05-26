@@ -24,36 +24,33 @@
 #ifndef OPMLPARSER_H
 #define OPMLPARSER_H
 
-#include <QUrl>
-#include <QString>
 #include <QList>
+#include <QString>
+#include <QUrl>
 
 class QIODevice;
 
-namespace OpmlParser
-{
+namespace OpmlParser {
 
-struct Podcast
-{
-    Podcast() { }
-    QString name;
-    QString description;
-    QString htmlUrl;
-    QUrl url;
-    QUrl image;
+struct Podcast {
+	Podcast() {}
+	QString name;
+	QString description;
+	QString htmlUrl;
+	QUrl url;
+	QUrl image;
 };
 
-struct Category
-{
-    QString name;
-    QList<Podcast> podcasts;
-    QList<Category> categories;
-    bool isValid() const { return !name.isEmpty(); }
+struct Category {
+	QString name;
+	QList<Podcast> podcasts;
+	QList<Category> categories;
+	bool isValid() const { return !name.isEmpty(); }
 };
 
-Category parse(QIODevice *dev);
-Category parse(const QByteArray &data);
+Category parse(QIODevice* dev);
+Category parse(const QByteArray& data);
 
-}
+}// namespace OpmlParser
 
 #endif

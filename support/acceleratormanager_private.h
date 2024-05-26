@@ -17,14 +17,12 @@
     Boston, MA 02110-1301, USA.
 */
 
-
 #ifndef ACCELERATORMANAGER_PRIVATE_H
 #define ACCELERATORMANAGER_PRIVATE_H
 
-
+#include <QObject>
 #include <QString>
 #include <QVector>
-#include <QObject>
 
 class QStackedWidget;
 class QMenu;
@@ -39,46 +37,39 @@ class QMenu;
  * @author Matthias H�zer-Klpfel <mhk@kde.org>
 */
 
-class AccelString
-{
+class AccelString {
 public:
+	AccelString() : m_pureText(), m_accel(-1), m_orig_accel(-1) {}
+	explicit AccelString(const QString& input, int initalWeight = -1);
 
-  AccelString() : m_pureText(), m_accel(-1), m_orig_accel(-1) {}
-  explicit AccelString(const QString &input, int initalWeight=-1);
+	void calculateWeights(int initialWeight);
 
-  void calculateWeights(int initialWeight);
+	const QString& pure() const { return m_pureText; }
+	QString accelerated() const;
 
-  const QString &pure() const { return m_pureText; }
-  QString accelerated() const;
+	int accel() const { return m_accel; }
+	void setAccel(int accel) { m_accel = accel; }
 
-  int accel() const { return m_accel; }
-  void setAccel(int accel) { m_accel = accel; }
+	int originalAccel() const { return m_orig_accel; }
+	QString originalText() const { return m_origText; }
 
-  int originalAccel() const { return m_orig_accel; }
-  QString originalText() const { return m_origText; }
+	QChar accelerator() const;
 
-  QChar accelerator() const;
+	int maxWeight(int& index, const QString& used) const;
 
-  int maxWeight(int &index, const QString &used) const;
-
-  bool operator == (const AccelString &c) const { return m_pureText == c.m_pureText && m_accel == c.m_accel && m_orig_accel == c.m_orig_accel; }
-
+	bool operator==(const AccelString& c) const { return m_pureText == c.m_pureText && m_accel == c.m_accel && m_orig_accel == c.m_orig_accel; }
 
 private:
+	int stripAccelerator(QString& input);
 
-  int stripAccelerator(QString &input);
+	void dump();
 
-  void dump();
-
-  QString        m_pureText,  m_origText;
-  int            m_accel, m_orig_accel;
-  QVector<int> m_weight;
-
+	QString m_pureText, m_origText;
+	int m_accel, m_orig_accel;
+	QVector<int> m_weight;
 };
 
-
 typedef QList<AccelString> AccelStringList;
-
 
 /**
  * This class encapsulates the algorithm finding the 'best'
@@ -87,37 +78,33 @@ typedef QList<AccelString> AccelStringList;
  * @author Matthias H�zer-Klpfel <mhk@kde.org>
 */
 
-class AccelManagerAlgorithm
-{
+class AccelManagerAlgorithm {
 public:
+	enum {
+		// Default control weight
+		DEFAULT_WEIGHT = 50,
+		// Additional weight for first character in string
+		FIRST_CHARACTER_EXTRA_WEIGHT = 50,
+		// Additional weight for the beginning of a word
+		WORD_BEGINNING_EXTRA_WEIGHT = 50,
+		// Additional weight for the dialog buttons (large, we basically never want these reassigned)
+		DIALOG_BUTTON_EXTRA_WEIGHT = 300,
+		// Additional weight for a 'wanted' accelerator
+		WANTED_ACCEL_EXTRA_WEIGHT = 150,
+		// Default weight for an 'action' widget (ie, pushbuttons)
+		ACTION_ELEMENT_WEIGHT = 50,
+		// Default weight for group boxes (lowest priority)
+		GROUP_BOX_WEIGHT = -2000,
+		// Default weight for checkable group boxes (low priority)
+		CHECKABLE_GROUP_BOX_WEIGHT = 20,
+		// Default weight for menu titles
+		MENU_TITLE_WEIGHT = 250,
+		// Additional weight for KDE standard accelerators
+		STANDARD_ACCEL = 300
+	};
 
-  enum {
-    // Default control weight
-    DEFAULT_WEIGHT = 50,
-    // Additional weight for first character in string
-    FIRST_CHARACTER_EXTRA_WEIGHT = 50,
-    // Additional weight for the beginning of a word
-    WORD_BEGINNING_EXTRA_WEIGHT = 50,
-    // Additional weight for the dialog buttons (large, we basically never want these reassigned)
-    DIALOG_BUTTON_EXTRA_WEIGHT = 300,
-    // Additional weight for a 'wanted' accelerator
-    WANTED_ACCEL_EXTRA_WEIGHT = 150,
-    // Default weight for an 'action' widget (ie, pushbuttons)
-    ACTION_ELEMENT_WEIGHT = 50,
-    // Default weight for group boxes (lowest priority)
-    GROUP_BOX_WEIGHT = -2000,
-    // Default weight for checkable group boxes (low priority)
-    CHECKABLE_GROUP_BOX_WEIGHT = 20,
-    // Default weight for menu titles
-    MENU_TITLE_WEIGHT = 250,
-    // Additional weight for KDE standard accelerators
-    STANDARD_ACCEL = 300
-  };
-
-  static void findAccelerators(AccelStringList &result, QString &used);
-
+	static void findAccelerators(AccelStringList& result, QString& used);
 };
-
 
 /**
  * This class manages a popup menu. It will notice if entries have been
@@ -128,66 +115,49 @@ public:
  * @author Matthias H�zer-Klpfel <mhk@kde.org>
 */
 
-class PopupAccelManager : public QObject
-{
-  Q_OBJECT
+class PopupAccelManager : public QObject {
+	Q_OBJECT
 
 public:
-
-  static void manage(QMenu *popup);
-
+	static void manage(QMenu* popup);
 
 protected:
-
-  PopupAccelManager(QMenu *popup);
-
+	PopupAccelManager(QMenu* popup);
 
 private Q_SLOTS:
 
-  void aboutToShow();
-
+	void aboutToShow();
 
 private:
+	void calculateAccelerators();
 
-  void calculateAccelerators();
+	void findMenuEntries(AccelStringList& list);
+	void setMenuEntries(const AccelStringList& list);
 
-  void findMenuEntries(AccelStringList &list);
-  void setMenuEntries(const AccelStringList &list);
-
-  QMenu       *m_popup;
-  AccelStringList m_entries;
-  int              m_count;
-
+	QMenu* m_popup;
+	AccelStringList m_entries;
+	int m_count;
 };
 
-
-class QWidgetStackAccelManager : public QObject
-{
-  Q_OBJECT
+class QWidgetStackAccelManager : public QObject {
+	Q_OBJECT
 
 public:
-
-  static void manage(QStackedWidget *popup);
-
+	static void manage(QStackedWidget* popup);
 
 protected:
-
-  QWidgetStackAccelManager(QStackedWidget *popup);
-
+	QWidgetStackAccelManager(QStackedWidget* popup);
 
 private Q_SLOTS:
 
-    void currentChanged(int child);
-    bool eventFilter ( QObject * watched, QEvent * e ) override;
+	void currentChanged(int child);
+	bool eventFilter(QObject* watched, QEvent* e) override;
 
 private:
+	void calculateAccelerators();
 
-  void calculateAccelerators();
-
-  QStackedWidget     *m_stack;
-  AccelStringList m_entries;
-
+	QStackedWidget* m_stack;
+	AccelStringList m_entries;
 };
 
-
-#endif // AcceleratorMANAGER_PRIVATE_H
+#endif// AcceleratorMANAGER_PRIVATE_H

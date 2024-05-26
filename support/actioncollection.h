@@ -34,90 +34,91 @@ class QWidget;
 class QIcon;
 
 class ActionCollection : public QObject {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit ActionCollection(QObject *parent);
-    ~ActionCollection() override;
+	explicit ActionCollection(QObject* parent);
+	~ActionCollection() override;
 
-    static void setMainWidget(QWidget *w);
-    static ActionCollection * get();
-    Action * createAction(const QString &name, const QString &text, const char *icon=nullptr, const QString &whatsThis=QString());
-    Action * createAction(const QString &name, const QString &text, const QIcon &icon, const QString &whatsThis=QString());
+	static void setMainWidget(QWidget* w);
+	static ActionCollection* get();
+	Action* createAction(const QString& name, const QString& text, const char* icon = nullptr, const QString& whatsThis = QString());
+	Action* createAction(const QString& name, const QString& text, const QIcon& icon, const QString& whatsThis = QString());
 
-    /// Clears the entire action collection, deleting all actions.
-    void clear();
+	/// Clears the entire action collection, deleting all actions.
+	void clear();
 
-    /// Associate all action in this collection to the given \a widget.
-    /** Not that this only adds all current actions in the collection to that widget;
+	/// Associate all action in this collection to the given \a widget.
+	/** Not that this only adds all current actions in the collection to that widget;
      *  subsequently added actions won't be added automatically.
      */
-    void associateWidget(QWidget *widget) const;
+	void associateWidget(QWidget* widget) const;
 
-    /// Associate all actions in this collection to the given \a widget.
-    /** Subsequently added actions will be automagically associated with this widget as well.
+	/// Associate all actions in this collection to the given \a widget.
+	/** Subsequently added actions will be automagically associated with this widget as well.
      */
-    void addAssociatedWidget(QWidget *widget);
+	void addAssociatedWidget(QWidget* widget);
 
-    void removeAssociatedWidget(QWidget *widget);
-    QList<QWidget *> associatedWidgets() const;
-    void clearAssociatedWidgets();
+	void removeAssociatedWidget(QWidget* widget);
+	QList<QWidget*> associatedWidgets() const;
+	void clearAssociatedWidgets();
 
-    void readSettings();
-    void writeSettings() const;
+	void readSettings();
+	void writeSettings() const;
 
-    int count() const { return actions().count(); }
-    bool isEmpty() const { return 0==actions().count(); }
+	int count() const { return actions().count(); }
+	bool isEmpty() const { return 0 == actions().count(); }
 
-    QAction *action(int index) const;
-    QAction *action(const QString &name) const;
-    QList<QAction *> actions() const;
+	QAction* action(int index) const;
+	QAction* action(const QString& name) const;
+	QList<QAction*> actions() const;
 
-    QAction *addAction(const QString &name, QAction *action);
-    Action *addAction(const QString &name, Action *action);
-    Action *addAction(const QString &name, const QObject *receiver = nullptr, const char *member = nullptr);
-    void removeAction(QAction *action);
-    QAction *takeAction(QAction *action);
+	QAction* addAction(const QString& name, QAction* action);
+	Action* addAction(const QString& name, Action* action);
+	Action* addAction(const QString& name, const QObject* receiver = nullptr, const char* member = nullptr);
+	void removeAction(QAction* action);
+	QAction* takeAction(QAction* action);
 
-    /// Create new action under the given name, add it to the collection and connect its triggered(bool) signal to the specified receiver.
-    template<class ActionType>
-    ActionType *add(const QString &name, const QObject *receiver = nullptr, const char *member = nullptr) {
-        ActionType *a = new ActionType(this);
-        if(receiver && member)
-            connect(a, SIGNAL(triggered(bool)), receiver, member);
-        addAction(name, a);
-        return a;
-    }
+	/// Create new action under the given name, add it to the collection and connect its triggered(bool) signal to the specified receiver.
+	template<class ActionType>
+	ActionType* add(const QString& name, const QObject* receiver = nullptr, const char* member = nullptr)
+	{
+		ActionType* a = new ActionType(this);
+		if (receiver && member)
+			connect(a, SIGNAL(triggered(bool)), receiver, member);
+		addAction(name, a);
+		return a;
+	}
 
-    void updateToolTips();
+	void updateToolTips();
 
 Q_SIGNALS:
-    void inserted(QAction *action);
-    void actionHovered(QAction *action);
-    void actionTriggered(QAction *action);
-    void tooltipUpdated(QAction *);
+	void inserted(QAction* action);
+	void actionHovered(QAction* action);
+	void actionTriggered(QAction* action);
+	void tooltipUpdated(QAction*);
 
 protected Q_SLOTS:
-    virtual void slotActionTriggered();
+	virtual void slotActionTriggered();
 
 protected:
-    void connectNotify(const QMetaMethod &signal) override;
+	void connectNotify(const QMetaMethod& signal) override;
 
 private Q_SLOTS:
-    void slotActionHovered();
-    void actionDestroyed(QObject *);
-    void associatedWidgetDestroyed(QObject *);
+	void slotActionHovered();
+	void actionDestroyed(QObject*);
+	void associatedWidgetDestroyed(QObject*);
 
 private:
-    bool unlistAction(QAction *);
-    QString configKey() const;
+	bool unlistAction(QAction*);
+	QString configKey() const;
 
-    QMap<QString, QAction *> _actionByName;
-    QList<QAction *> _actions;
-    QList<QWidget *> _associatedWidgets;
+	QMap<QString, QAction*> _actionByName;
+	QList<QAction*> _actions;
+	QList<QWidget*> _associatedWidgets;
 
-    bool _connectHovered;
-    bool _connectTriggered;
+	bool _connectHovered;
+	bool _connectTriggered;
 };
 
 #endif

@@ -11,14 +11,13 @@
 class QVariant;
 class QImage;
 
-namespace ImageConverter
-{
+namespace ImageConverter {
 /**
  * Returns a variant representing an image using the format describe in the
  * freedesktop.org spec
  */
-QVariant variantForImage(const QImage &image);
+QVariant variantForImage(const QImage& image);
 
-} // namespace
+}// namespace ImageConverter
 
 #endif /* IMAGECONVERTER_H */

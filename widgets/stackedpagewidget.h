@@ -24,32 +24,31 @@
 #ifndef STACKED_PAGE_WIDGET_H
 #define STACKED_PAGE_WIDGET_H
 
-#include <QStackedWidget>
-#include <QMap>
-#include "mpd-interface/song.h"
 #include "gui/page.h"
+#include "mpd-interface/song.h"
+#include <QMap>
+#include <QStackedWidget>
 
 class SelectorButton;
 class SizeWidget;
 class QLabel;
 
-class StackedPageWidget : public QStackedWidget, public Page
-{
-    Q_OBJECT
+class StackedPageWidget : public QStackedWidget, public Page {
+	Q_OBJECT
 
 public:
-    StackedPageWidget(QWidget *p);
-    ~StackedPageWidget() override;
+	StackedPageWidget(QWidget* p);
+	~StackedPageWidget() override;
 
-    void setView(int v);
-    void focusSearch() override;
-    QStringList selectedFiles(bool allowPlaylists) const;
-    QList<Song> selectedSongs(bool allowPlaylists) const override;
-    void addSelectionToPlaylist(const QString &name, int action, quint8 priority, bool decreasePriority) override;
-    void removeItems() override;
+	void setView(int v);
+	void focusSearch() override;
+	QStringList selectedFiles(bool allowPlaylists) const;
+	QList<Song> selectedSongs(bool allowPlaylists) const override;
+	void addSelectionToPlaylist(const QString& name, int action, quint8 priority, bool decreasePriority) override;
+	void removeItems() override;
 
 Q_SIGNALS:
-    void close();
+	void close();
 };
 
 #endif

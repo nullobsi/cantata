@@ -24,23 +24,26 @@
 #ifndef ACTIONMODEL_H
 #define ACTIONMODEL_H
 
+#include "config.h"
+#include "support/action.h"
 #include <QAbstractItemModel>
 #include <QMetaType>
-#include "support/action.h"
-#include "config.h"
 
-class ActionModel : public QAbstractItemModel
-{
-    Q_OBJECT
+class ActionModel : public QAbstractItemModel {
+	Q_OBJECT
 
 public:
-    ActionModel(QObject *p=nullptr) : QAbstractItemModel(p) { }
-    ~ActionModel() override { }
-    
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    virtual void resetModel() { beginResetModel(); endResetModel(); }
+	ActionModel(QObject* p = nullptr) : QAbstractItemModel(p) {}
+	~ActionModel() override {}
+
+	QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+	virtual void resetModel()
+	{
+		beginResetModel();
+		endResetModel();
+	}
 };
 
-Q_DECLARE_METATYPE(QList<Action *>)
+Q_DECLARE_METATYPE(QList<Action*>)
 
 #endif

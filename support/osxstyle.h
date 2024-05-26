@@ -24,9 +24,9 @@
 #ifndef OSXSTYLE_H
 #define OSXSTYLE_H
 
-#include <QStyleOption>
 #include <QMap>
 #include <QObject>
+#include <QStyleOption>
 
 class QPalette;
 class QTreeWidget;
@@ -39,46 +39,45 @@ class QMainWindow;
 class QWindow;
 class Action;
 
-class OSXStyle : public QObject
-{
-    Q_OBJECT
+class OSXStyle : public QObject {
+	Q_OBJECT
 
 public:
-    static OSXStyle * self();
+	static OSXStyle* self();
 
-    OSXStyle();
-    const QPalette & viewPalette();
-    void drawSelection(QStyleOptionViewItem opt, QPainter *painter, double opacity);
-    QColor monoIconColor();
+	OSXStyle();
+	const QPalette& viewPalette();
+	void drawSelection(QStyleOptionViewItem opt, QPainter* painter, double opacity);
+	QColor monoIconColor();
 
-    void initWindowMenu(QMainWindow *mw);
+	void initWindowMenu(QMainWindow* mw);
 
 public:
-    void addWindow(QWidget *w);
-    void removeWindow(QWidget *w);
+	void addWindow(QWidget* w);
+	void removeWindow(QWidget* w);
 
 private Q_SLOTS:
-    void showWindow();
-    void windowTitleChanged();
-    void focusWindowChanged(QWindow *win);
-    void closeWindow();
-    void minimizeWindow();
-    void zoomWindow();
+	void showWindow();
+	void windowTitleChanged();
+	void focusWindowChanged(QWindow* win);
+	void closeWindow();
+	void minimizeWindow();
+	void zoomWindow();
 
 private:
-    QWidget * currentWindow();
-    void controlActions(QWidget *w);
-    QTreeWidget * viewWidget();
+	QWidget* currentWindow();
+	void controlActions(QWidget* w);
+	QTreeWidget* viewWidget();
 
 private:
-    QTreeWidget *view;
-    QMenu *windowMenu;
-    QMap<QWidget *, QAction *> actions;
-    QAction *closeAct;
-    QAction *minAct;
-    QAction *zoomAct;
+	QTreeWidget* view;
+	QMenu* windowMenu;
+	QMap<QWidget*, QAction*> actions;
+	QAction* closeAct;
+	QAction* minAct;
+	QAction* zoomAct;
 
-    friend class Dialog;
+	friend class Dialog;
 };
 
-#endif // OSXSTYLE_H
+#endif// OSXSTYLE_H

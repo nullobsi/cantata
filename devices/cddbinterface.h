@@ -24,42 +24,40 @@
 #ifndef CANTATA_CDDB_H
 #define CANTATA_CDDB_H
 
+#include "cdalbum.h"
+#include "config.h"
 #include <QObject>
 #include <QString>
-#include "config.h"
-#include "cdalbum.h"
 
 class Thread;
 typedef struct cddb_disc_s cddb_disc_t;
 
-class CddbInterface : public QObject
-{
-    Q_OBJECT
+class CddbInterface : public QObject {
+	Q_OBJECT
 
 public:
-    static QString dataTrack();
+	static QString dataTrack();
 
-    CddbInterface(const QString &device);
-    ~CddbInterface();
+	CddbInterface(const QString& device);
+	~CddbInterface();
 
 public Q_SLOTS:
-    void lookup(bool full);
+	void lookup(bool full);
 
 Q_SIGNALS:
-    void error(const QString &error);
-    void initialDetails(const CdAlbum &);
-    void matches(const QList<CdAlbum> &);
+	void error(const QString& error);
+	void initialDetails(const CdAlbum&);
+	void matches(const QList<CdAlbum>&);
 
 private:
-    void readDisc();
-    bool checkConnection();
+	void readDisc();
+	bool checkConnection();
 
 private:
-    Thread *thread;
-    QString dev;
-    cddb_disc_t *disc;
-    CdAlbum initial;
+	Thread* thread;
+	QString dev;
+	cddb_disc_t* disc;
+	CdAlbum initial;
 };
 
 #endif
-

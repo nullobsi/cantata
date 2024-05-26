@@ -24,76 +24,74 @@
 #ifndef ONLINE_DB_SERVICE_H
 #define ONLINE_DB_SERVICE_H
 
-#include "onlineservice.h"
 #include "models/sqllibrarymodel.h"
+#include "onlineservice.h"
 
 class NetworkJob;
 class Thread;
 class QXmlStreamReader;
 struct Song;
 
-class OnlineXmlParser : public QObject
-{
-    Q_OBJECT
+class OnlineXmlParser : public QObject {
+	Q_OBJECT
 public:
-    OnlineXmlParser();
-    ~OnlineXmlParser() override;
-    void start(NetworkJob *job);
-    virtual int parse(QXmlStreamReader &xml) = 0;
+	OnlineXmlParser();
+	~OnlineXmlParser() override;
+	void start(NetworkJob* job);
+	virtual int parse(QXmlStreamReader& xml) = 0;
 Q_SIGNALS:
-    void songs(QList<Song> *s);
-    void coverUrl(const QString &artist, const QString &album, const QString &cover);
-    void startUpdate();
-    void endUpdate();
-    void abortUpdate();
-    void stats(int numArtists);
-    void complete();
-    void error(const QString &msg);
-    void startParsing(NetworkJob *job);
+	void songs(QList<Song>* s);
+	void coverUrl(const QString& artist, const QString& album, const QString& cover);
+	void startUpdate();
+	void endUpdate();
+	void abortUpdate();
+	void stats(int numArtists);
+	void complete();
+	void error(const QString& msg);
+	void startParsing(NetworkJob* job);
 
 private Q_SLOTS:
-    void doParsing(NetworkJob *job);
+	void doParsing(NetworkJob* job);
 
 private:
-    Thread *thread;
+	Thread* thread;
 };
 
-class OnlineDbService : public SqlLibraryModel, public OnlineService
-{
-    Q_OBJECT
+class OnlineDbService : public SqlLibraryModel, public OnlineService {
+	Q_OBJECT
 public:
-    OnlineDbService(LibraryDb *d, QObject *p);
-    ~OnlineDbService() override { }
+	OnlineDbService(LibraryDb* d, QObject* p);
+	~OnlineDbService() override {}
 
-    void createDb();
-    QVariant data(const QModelIndex &index, int role) const override;
-    bool previouslyDownloaded() const;
-    bool isDownloading() { return nullptr!=job; }
-    void open();
-    void download(bool redownload);
-    virtual OnlineXmlParser * createParser() = 0;
-    virtual QUrl listingUrl() const = 0;
-    virtual void configure(QWidget *p) =0;
-    virtual int averageSize() const = 0;
+	void createDb();
+	QVariant data(const QModelIndex& index, int role) const override;
+	bool previouslyDownloaded() const;
+	bool isDownloading() { return nullptr != job; }
+	void open();
+	void download(bool redownload);
+	virtual OnlineXmlParser* createParser() = 0;
+	virtual QUrl listingUrl() const = 0;
+	virtual void configure(QWidget* p) = 0;
+	virtual int averageSize() const = 0;
 
 public Q_SLOTS:
-    void abort();
+	void abort();
 
 Q_SIGNALS:
-    void error(const QString &msg);
+	void error(const QString& msg);
 
 private Q_SLOTS:
-    void cover(const Song &song, const QImage &img, const QString &file);
-    void updateStatus(const QString &msg);
-    void downloadPercent(int pc);
-    void downloadFinished();
-    void updateStats();
+	void cover(const Song& song, const QImage& img, const QString& file);
+	void updateStatus(const QString& msg);
+	void downloadPercent(int pc);
+	void downloadFinished();
+	void updateStats();
 
 protected:
-    int lastPc;
-    QString status;
-    QString stats;
-    NetworkJob *job;
+	int lastPc;
+	QString status;
+	QString stats;
+	NetworkJob* job;
 };
 
 #endif

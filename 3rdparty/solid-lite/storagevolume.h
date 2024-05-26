@@ -25,32 +25,30 @@
 
 #include <solid-lite/deviceinterface.h>
 
-namespace Solid
-{
-    class StorageVolumePrivate;
-    class Device;
+namespace Solid {
+class StorageVolumePrivate;
+class Device;
 
-    /**
+/**
      * This device interface is available on volume devices.
      *
      * A volume is anything that can contain data (partition, optical disc,
      * memory card). It's a particular kind of block device.
      */
-    class SOLID_EXPORT StorageVolume : public DeviceInterface
-    {
-        Q_OBJECT
-        Q_ENUMS(UsageType)
-        Q_PROPERTY(bool ignored READ isIgnored)
-        Q_PROPERTY(UsageType usage READ usage)
-        Q_PROPERTY(QString fsType READ fsType)
-        Q_PROPERTY(QString label READ label)
-        Q_PROPERTY(QString uuid READ uuid)
-        Q_PROPERTY(qulonglong size READ size)
-        Q_DECLARE_PRIVATE(StorageVolume)
-        friend class Device;
+class SOLID_EXPORT StorageVolume : public DeviceInterface {
+	Q_OBJECT
+	Q_ENUMS(UsageType)
+	Q_PROPERTY(bool ignored READ isIgnored)
+	Q_PROPERTY(UsageType usage READ usage)
+	Q_PROPERTY(QString fsType READ fsType)
+	Q_PROPERTY(QString label READ label)
+	Q_PROPERTY(QString uuid READ uuid)
+	Q_PROPERTY(qulonglong size READ size)
+	Q_DECLARE_PRIVATE(StorageVolume)
+	friend class Device;
 
-    public:
-        /**
+public:
+	/**
          * This enum type defines the how a volume is used.
          *
          * - FileSystem : A mountable filesystem volume
@@ -59,11 +57,15 @@ namespace Solid
          * - Other : A not mountable volume (like a swap partition)
          * - Unused : An unused or free volume
          */
-        enum UsageType { Other = 0, Unused = 1, FileSystem = 2, PartitionTable = 3, Raid = 4, Encrypted = 5 };
+	enum UsageType { Other = 0,
+					 Unused = 1,
+					 FileSystem = 2,
+					 PartitionTable = 3,
+					 Raid = 4,
+					 Encrypted = 5 };
 
-
-    private:
-        /**
+private:
+	/**
          * Creates a new StorageVolume object.
          * You generally won't need this. It's created when necessary using
          * Device::as().
@@ -71,25 +73,23 @@ namespace Solid
          * @param backendObject the device interface object provided by the backend
          * @see Solid::Device::as()
          */
-        explicit StorageVolume(QObject *backendObject);
+	explicit StorageVolume(QObject* backendObject);
 
-    public:
-        /**
+public:
+	/**
          * Destroys a StorageVolume object.
          */
-        ~StorageVolume() override;
+	~StorageVolume() override;
 
-
-        /**
+	/**
          * Get the Solid::DeviceInterface::Type of the StorageVolume device interface.
          *
          * @return the StorageVolume device interface type
          * @see Solid::DeviceInterface::Type
          */
-        static Type deviceInterfaceType() { return DeviceInterface::StorageVolume; }
+	static Type deviceInterfaceType() { return DeviceInterface::StorageVolume; }
 
-
-        /**
+	/**
          * Indicates if this volume should be ignored by applications.
          *
          * If it should be ignored, it generally means that it should be
@@ -98,17 +98,17 @@ namespace Solid
          *
          * @return true if the volume should be ignored
          */
-        bool isIgnored() const;
+	bool isIgnored() const;
 
-        /**
+	/**
          * Retrieves the type of use for this volume (for example filesystem).
          *
          * @return the usage type
          * @see Solid::StorageVolume::UsageType
          */
-        UsageType usage() const;
+	UsageType usage() const;
 
-        /**
+	/**
          * Retrieves the filesystem type of this volume.
          *
          * FIXME: It's a platform dependent string, maybe we should switch to
@@ -116,16 +116,16 @@ namespace Solid
          *
          * @return the filesystem type if applicable, QString() otherwise
          */
-        QString fsType() const;
+	QString fsType() const;
 
-        /**
+	/**
          * Retrieves this volume label.
          *
          * @return the volume label if available, QString() otherwise
          */
-        QString label() const;
+	QString label() const;
 
-        /**
+	/**
          * Retrieves this volume Universal Unique IDentifier (UUID).
          *
          * You can generally assume that this identifier is unique with reasonable
@@ -135,29 +135,29 @@ namespace Solid
          *
          * @return the Universal Unique IDentifier if available, QString() otherwise
          */
-        QString uuid() const;
+	QString uuid() const;
 
-        /**
+	/**
          * Retrieves this volume size in bytes.
          *
          * @return the size of this volume
          */
-        qulonglong size() const;
+	qulonglong size() const;
 
-        /**
+	/**
          * Retrieves the crypto container of this volume.
          *
          * @return the encrypted volume containing the current volume if appliable,
          * an invalid device otherwise
          */
-        Device encryptedContainer() const;
+	Device encryptedContainer() const;
 
-    protected:
-        /**
+protected:
+	/**
          * @internal
          */
-        StorageVolume(StorageVolumePrivate &dd, QObject *backendObject);
-    };
-}
+	StorageVolume(StorageVolumePrivate& dd, QObject* backendObject);
+};
+}// namespace Solid
 
-#endif // SOLID_STORAGEVOLUME_H
+#endif// SOLID_STORAGEVOLUME_H

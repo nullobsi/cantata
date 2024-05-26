@@ -24,37 +24,36 @@
 #ifndef ONLINE_DB_WIDGET_H
 #define ONLINE_DB_WIDGET_H
 
-#include <QWidget>
-#include "widgets/singlepagewidget.h"
 #include "onlinedbservice.h"
+#include "widgets/singlepagewidget.h"
+#include <QWidget>
 
-class OnlineDbWidget : public SinglePageWidget
-{
-    Q_OBJECT
+class OnlineDbWidget : public SinglePageWidget {
+	Q_OBJECT
 public:
-    OnlineDbWidget(OnlineDbService *s, QWidget *p);
-    ~OnlineDbWidget() override;
-    QStringList selectedFiles(bool allowPlaylists) const override;
-    QList<Song> selectedSongs(bool allowPlaylists) const override;
-    void showEvent(QShowEvent *e) override;
+	OnlineDbWidget(OnlineDbService* s, QWidget* p);
+	~OnlineDbWidget() override;
+	QStringList selectedFiles(bool allowPlaylists) const override;
+	QList<Song> selectedSongs(bool allowPlaylists) const override;
+	void showEvent(QShowEvent* e) override;
 
 private Q_SLOTS:
-    void groupByChanged();
-    void firstTimePrompt();
-    void headerClicked(int level);
-    void configure();
-    void updateToPlayQueue(const QModelIndex &idx, bool replace);
-    void addRandomAlbum();
-    void modelReset();
+	void groupByChanged();
+	void firstTimePrompt();
+	void headerClicked(int level);
+	void configure();
+	void updateToPlayQueue(const QModelIndex& idx, bool replace);
+	void addRandomAlbum();
+	void modelReset();
 
 private:
-    void doSearch() override;
-    void refresh() override;
-    void controlActions() override;
+	void doSearch() override;
+	void refresh() override;
+	void controlActions() override;
 
 private:
-    QString configGroup;
-    OnlineDbService *srv;
+	QString configGroup;
+	OnlineDbService* srv;
 };
 
 #endif

@@ -27,59 +27,53 @@
 #ifndef MPD_STATS_H
 #define MPD_STATS_H
 
-#include <ctime>
 #include <QDateTime>
 #include <QObject>
+#include <ctime>
 
-struct MPDStatsValues
-{
-    MPDStatsValues()
-        : artists(0)
-        , albums(0)
-        , songs(0)
-        , uptime(0)
-        , playtime(0)
-        , dbPlaytime(0) {
-    }
-    quint32 artists;
-    quint32 albums;
-    quint32 songs;
-    quint32 uptime;
-    quint32 playtime;
-    quint32 dbPlaytime;
-    time_t dbUpdate;
+struct MPDStatsValues {
+	MPDStatsValues()
+		: artists(0), albums(0), songs(0), uptime(0), playtime(0), dbPlaytime(0)
+	{
+	}
+	quint32 artists;
+	quint32 albums;
+	quint32 songs;
+	quint32 uptime;
+	quint32 playtime;
+	quint32 dbPlaytime;
+	time_t dbUpdate;
 };
 
-class MPDStats : public QObject
-{
-    Q_OBJECT
+class MPDStats : public QObject {
+	Q_OBJECT
 
 public:
-    static MPDStats * self();
+	static MPDStats* self();
 
-    // NOTE: There are no read/write locks aroud these values as they are read/written only from the GUI thread...
-    quint32 artists() const { return values.artists; }
-    quint32 albums() const { return values.albums; }
-    quint32 songs() const { return values.songs; }
-    quint32 uptime() const { return values.uptime; }
-    quint32 playtime() const { return values.playtime; }
-    quint32 dbPlaytime() const { return values.dbPlaytime; }
-    time_t dbUpdate() const { return values.dbUpdate;  }
+	// NOTE: There are no read/write locks aroud these values as they are read/written only from the GUI thread...
+	quint32 artists() const { return values.artists; }
+	quint32 albums() const { return values.albums; }
+	quint32 songs() const { return values.songs; }
+	quint32 uptime() const { return values.uptime; }
+	quint32 playtime() const { return values.playtime; }
+	quint32 dbPlaytime() const { return values.dbPlaytime; }
+	time_t dbUpdate() const { return values.dbUpdate; }
 
 public Q_SLOTS:
-    void update(const MPDStatsValues &v);
+	void update(const MPDStatsValues& v);
 
 Q_SIGNALS:
-    void updated();
+	void updated();
 
 private:
-    MPDStats();
-    ~MPDStats() override {}
-    MPDStats(const MPDStats&);
-    MPDStats& operator=(const MPDStats& other);
+	MPDStats();
+	~MPDStats() override {}
+	MPDStats(const MPDStats&);
+	MPDStats& operator=(const MPDStats& other);
 
 private:
-    MPDStatsValues values;
+	MPDStatsValues values;
 };
 
 #endif

@@ -18,30 +18,28 @@
 #ifndef AVAHIDISCOVERY_H
 #define AVAHIDISCOVERY_H
 
+#include <QObject>
+#include <assert.h>
 #include <avahi-client/client.h>
 #include <avahi-client/lookup.h>
 #include <stdio.h>
-#include <assert.h>
-#include <QObject>
 
-class AvahiDiscovery : public QObject
-{
-    Q_OBJECT
+class AvahiDiscovery : public QObject {
+	Q_OBJECT
 
 public:
-    static void enableDebug();
+	static void enableDebug();
 
-    AvahiDiscovery();
-    ~AvahiDiscovery() override;
+	AvahiDiscovery();
+	~AvahiDiscovery() override;
 
 Q_SIGNALS:
-    void mpdFound(QString name, QString address, int port);
-    void mpdRemoved(QString name);
+	void mpdFound(QString name, QString address, int port);
+	void mpdRemoved(QString name);
 
 private:
-    AvahiClient* m_client = nullptr;
-    AvahiServiceBrowser* m_browser = nullptr;
+	AvahiClient* m_client = nullptr;
+	AvahiServiceBrowser* m_browser = nullptr;
 };
 
-
-#endif // AVAHIDISCOVERY_H
+#endif// AVAHIDISCOVERY_H

@@ -24,11 +24,11 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-#include <QWidget>
-#include <QSize>
-#include <QLabel>
 #include "mpd-interface/song.h"
 #include "widgets/selectorlabel.h"
+#include <QLabel>
+#include <QSize>
+#include <QWidget>
 
 class QImage;
 class Spinner;
@@ -39,55 +39,54 @@ class Action;
 class QStackedWidget;
 class QMenu;
 
-class View : public QWidget
-{
-    Q_OBJECT
+class View : public QWidget {
+	Q_OBJECT
 public:
-    static QString subTag;
+	static QString subTag;
 
-    View(QWidget *p, const QStringList &views=QStringList());
-    ~View() override;
+	View(QWidget* p, const QStringList& views = QStringList());
+	~View() override;
 
-    static QString encode(const QImage &img);
-    static QString subHeader(const QString &str) { return "<"+subTag+">"+str+"</"+subTag+">"; }
-    static void initHeaderTags();
+	static QString encode(const QImage& img);
+	static QString subHeader(const QString& str) { return "<" + subTag + ">" + str + "</" + subTag + ">"; }
+	static void initHeaderTags();
 
-    void clear();
-    void setStandardHeader(const QString &h) { stdHeader=h; }
-    void setHeader(const QString &str);
-    void setPicSize(const QSize &sz);
-    QSize picSize() const;
-    QString createPicTag(const QImage &img, const QString &file);
-    void showEvent(QShowEvent *e) override;
-    void showSpinner(bool enableCancel=true);
-    void hideSpinner(bool disableCancel=true);
-    void setEditable(bool e, int index=0);
-    void setPal(const QPalette &pal, const QColor &linkColor, const QColor &prevLinkColor);
-    void addEventFilter(QObject *obj);
-    virtual void update(const Song &s, bool force)=0;
-    void setHtml(const QString &h, int index=0);
-    int currentView() const { return selector ? selector->currentIndex() : -1; }
-    void setCurrentView(int v) { selector->setCurrentIndex(v); }
+	void clear();
+	void setStandardHeader(const QString& h) { stdHeader = h; }
+	void setHeader(const QString& str);
+	void setPicSize(const QSize& sz);
+	QSize picSize() const;
+	QString createPicTag(const QImage& img, const QString& file);
+	void showEvent(QShowEvent* e) override;
+	void showSpinner(bool enableCancel = true);
+	void hideSpinner(bool disableCancel = true);
+	void setEditable(bool e, int index = 0);
+	void setPal(const QPalette& pal, const QColor& linkColor, const QColor& prevLinkColor);
+	void addEventFilter(QObject* obj);
+	virtual void update(const Song& s, bool force) = 0;
+	void setHtml(const QString& h, int index = 0);
+	int currentView() const { return selector ? selector->currentIndex() : -1; }
+	void setCurrentView(int v) { selector->setCurrentIndex(v); }
 
 Q_SIGNALS:
-    void viewChanged();
+	void viewChanged();
 
 protected Q_SLOTS:
-    virtual void abort();
-    void setScaleImage(bool s);
+	virtual void abort();
+	void setScaleImage(bool s);
 
 protected:
-    Song currentSong;
-    QString stdHeader;
-    QLabel *header;
-    bool needToUpdate;
-    Spinner *spinner;
-    Action *cancelJobAction;
+	Song currentSong;
+	QString stdHeader;
+	QLabel* header;
+	bool needToUpdate;
+	Spinner* spinner;
+	Action* cancelJobAction;
 
-    SelectorLabel *selector;
-    QStackedWidget *stack;
-    TextBrowser *text; // short-cut to first text item...
-    QList<TextBrowser *> texts;
+	SelectorLabel* selector;
+	QStackedWidget* stack;
+	TextBrowser* text;// short-cut to first text item...
+	QList<TextBrowser*> texts;
 };
 
 #endif

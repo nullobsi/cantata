@@ -21,34 +21,30 @@
 #ifndef SOLID_BACKENDS_HAL_VOLUME_H
 #define SOLID_BACKENDS_HAL_VOLUME_H
 
-#include <solid-lite/ifaces/storagevolume.h>
 #include "halblock.h"
+#include <solid-lite/ifaces/storagevolume.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace Hal
-{
-class Volume : public Block, virtual public Solid::Ifaces::StorageVolume
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::StorageVolume)
+namespace Solid {
+namespace Backends {
+namespace Hal {
+class Volume : public Block, virtual public Solid::Ifaces::StorageVolume {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::StorageVolume)
 
 public:
-    Volume(HalDevice *device);
-    ~Volume() override;
+	Volume(HalDevice* device);
+	~Volume() override;
 
-    bool isIgnored() const override;
-    Solid::StorageVolume::UsageType usage() const override;
-    QString fsType() const override;
-    QString label() const override;
-    QString uuid() const override;
-    qulonglong size() const override;
-    QString encryptedContainerUdi() const override;
+	bool isIgnored() const override;
+	Solid::StorageVolume::UsageType usage() const override;
+	QString fsType() const override;
+	QString label() const override;
+	QString uuid() const override;
+	qulonglong size() const override;
+	QString encryptedContainerUdi() const override;
 };
-}
-}
-}
+}// namespace Hal
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_HAL_VOLUME_H
+#endif// SOLID_BACKENDS_HAL_VOLUME_H

@@ -24,8 +24,8 @@
 #ifndef CONFIG_DIALOG_H
 #define CONFIG_DIALOG_H
 
-#include "dialog.h"
 #include "config.h"
+#include "dialog.h"
 #include <QMap>
 
 #ifdef __APPLE__
@@ -45,76 +45,76 @@ class QIcon;
 class QAbstractButton;
 
 class ConfigDialog : public
-        #ifdef __APPLE__
-        QMainWindow
-        #else
-        Dialog
-        #endif
+#ifdef __APPLE__
+					 QMainWindow
+#else
+					 Dialog
+#endif
 {
-    Q_OBJECT
-    #ifdef __APPLE__
-    Q_PROPERTY(int h READ getH WRITE setH)
-    #endif
+	Q_OBJECT
+#ifdef __APPLE__
+	Q_PROPERTY(int h READ getH WRITE setH)
+#endif
 
 public:
-    ConfigDialog(QWidget *parent, const QString &name=QString(), const QSize &defSize=QSize(), bool instantApply=false);
-    ~ConfigDialog() override;
+	ConfigDialog(QWidget* parent, const QString& name = QString(), const QSize& defSize = QSize(), bool instantApply = false);
+	~ConfigDialog() override;
 
-    void addPage(const QString &id, QWidget *widget, const QString &name, const QIcon &icon, const QString &header);
-    bool setCurrentPage(const QString &id);
-    QWidget *getPage(const QString &id) const;
+	void addPage(const QString& id, QWidget* widget, const QString& name, const QIcon& icon, const QString& header);
+	bool setCurrentPage(const QString& id);
+	QWidget* getPage(const QString& id) const;
 
-    #ifdef __APPLE__
-    void setCaption(const QString &c) { setWindowTitle(c); }
-    void accept();
-    void reject();
-    int getH() const { return height(); }
-    void setH(int h);
-    #endif
+#ifdef __APPLE__
+	void setCaption(const QString& c) { setWindowTitle(c); }
+	void accept();
+	void reject();
+	int getH() const { return height(); }
+	void setH(int h);
+#endif
 
-    virtual void save()=0;
-    virtual void cancel()=0;
+	virtual void save() = 0;
+	virtual void cancel() = 0;
 
 public Q_SLOTS:
-    #ifdef __APPLE__
-    void slotButtonClicked(int button);
-    #else
-    void slotButtonClicked(int button) override;
-    #endif
+#ifdef __APPLE__
+	void slotButtonClicked(int button);
+#else
+	void slotButtonClicked(int button) override;
+#endif
 
 private Q_SLOTS:
-    void activatePage();
-    void macButtonPressed(QAbstractButton *b);
-    void setFocus();
+	void activatePage();
+	void macButtonPressed(QAbstractButton* b);
+	void setFocus();
 
 private:
-    #ifdef __APPLE__
-    void keyPressEvent(QKeyEvent *e) override;
-    void showEvent(QShowEvent *e) override;
-    void hideEvent(QHideEvent *e) override;
-    void closeEvent(QCloseEvent *e) override;
-    #endif
+#ifdef __APPLE__
+	void keyPressEvent(QKeyEvent* e) override;
+	void showEvent(QShowEvent* e) override;
+	void hideEvent(QHideEvent* e) override;
+	void closeEvent(QCloseEvent* e) override;
+#endif
 
 private:
-    #ifdef __APPLE__
-    struct Page {
-        Page() : item(0), widget(0), index(0) { }
-        QToolButton *item;
-        QWidget *widget;
-        int index;
-    };
-    QToolBar *toolBar;
-    QAction *rightSpacer;
-    QButtonGroup *group;
-    QStackedWidget *stack;
-    QDialogButtonBox *buttonBox;
-    QMap<QString, Page> pages;
-    bool shown;
-    QPropertyAnimation *resizeAnim;
-    #else
-    PageWidget *pageWidget;
-    QMap<QString, PageWidgetItem *> pages;
-    #endif
+#ifdef __APPLE__
+	struct Page {
+		Page() : item(0), widget(0), index(0) {}
+		QToolButton* item;
+		QWidget* widget;
+		int index;
+	};
+	QToolBar* toolBar;
+	QAction* rightSpacer;
+	QButtonGroup* group;
+	QStackedWidget* stack;
+	QDialogButtonBox* buttonBox;
+	QMap<QString, Page> pages;
+	bool shown;
+	QPropertyAnimation* resizeAnim;
+#else
+	PageWidget* pageWidget;
+	QMap<QString, PageWidgetItem*> pages;
+#endif
 };
 
 #endif

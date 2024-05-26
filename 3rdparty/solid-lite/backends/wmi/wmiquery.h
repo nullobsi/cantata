@@ -22,71 +22,65 @@
 #ifndef SOLID_BACKENDS_WMI_WMIQUERY_H
 #define SOLID_BACKENDS_WMI_WMIQUERY_H
 
-#include <QDebug>
-#include <QVariant>
-#include <QList>
 #include <QAtomicInt>
+#include <QDebug>
+#include <QList>
 #include <QSharedPointer>
+#include <QVariant>
 
 #include <solid-lite/solid_export.h>
 
-
-#include <windows.h>
-#include <rpc.h>
-#include <comdef.h>
-#include <Wbemidl.h>
 #include <WTypes.h>
+#include <Wbemidl.h>
+#include <comdef.h>
+#include <rpc.h>
+#include <windows.h>
 
 #include "wmimanager.h"
 
-namespace Solid
-{
-namespace Backends
-{
-namespace Wmi
-{
-class WmiQuery
-{
+namespace Solid {
+namespace Backends {
+namespace Wmi {
+class WmiQuery {
 public:
-    class Item {
-    public:
-        Item();
-        Item(IWbemClassObject *p);
-        Item(const Item& other);
-        Item& operator=(const Item& other);
-        ~Item();
+	class Item {
+	public:
+		Item();
+		Item(IWbemClassObject* p);
+		Item(const Item& other);
+		Item& operator=(const Item& other);
+		~Item();
 
-        IWbemClassObject* data() const;
-        bool isNull() const;
-        QVariant getProperty(const QString &property) const;
-        QVariantMap getAllProperties();
+		IWbemClassObject* data() const;
+		bool isNull() const;
+		QVariant getProperty(const QString& property) const;
+		QVariantMap getAllProperties();
 
-    private:
+	private:
+		static QVariant msVariantToQVariant(VARIANT msVariant, CIMTYPE variantType);
+		QVariant getProperty(BSTR property) const;
+		// QSharedPointer alone doesn't help because we need to call Release()
+		IWbemClassObject* m_p;
+		QVariantMap m_properies;
+	};
 
-        static QVariant msVariantToQVariant(VARIANT msVariant, CIMTYPE variantType);
-        QVariant getProperty(BSTR property) const;
-        // QSharedPointer alone doesn't help because we need to call Release()
-        IWbemClassObject* m_p;
-        QVariantMap m_properies;
-    };
+	typedef QList<Item> ItemList;
 
-    typedef QList<Item> ItemList;
-
-    WmiQuery();
-    ~WmiQuery();
-    ItemList sendQuery( const QString &wql );
-    void addDeviceListeners(WmiManager::WmiEventSink *sink);
-    bool isLegit() const;
-	static WmiQuery &instance();
+	WmiQuery();
+	~WmiQuery();
+	ItemList sendQuery(const QString& wql);
+	void addDeviceListeners(WmiManager::WmiEventSink* sink);
+	bool isLegit() const;
+	static WmiQuery& instance();
 
 private:
-    bool m_failed;
-    bool m_bNeedUninit;
-    IWbemLocator *pLoc;
-    IWbemServices *pSvc;
+	bool m_failed;
+	bool m_bNeedUninit;
+	IWbemLocator* pLoc;
+	IWbemServices* pSvc;
 };
-}
-}
-}
+}// namespace Wmi
+}// namespace Backends
+}// namespace Solid
 
 #endif

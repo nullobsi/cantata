@@ -24,63 +24,61 @@
 #ifndef SEARRCHWIDGET_H
 #define SEARRCHWIDGET_H
 
-#include "support/lineedit.h"
-#include "toolbutton.h"
-#include "support/squeezedtextlabel.h"
 #include "selectorlabel.h"
-#include <QSet>
+#include "support/lineedit.h"
+#include "support/squeezedtextlabel.h"
+#include "toolbutton.h"
 #include <QList>
 #include <QPair>
+#include <QSet>
 
-class SearchWidget : public QWidget
-{
-    Q_OBJECT
+class SearchWidget : public QWidget {
+	Q_OBJECT
 public:
-    struct Category
-    {
-        Category(const QString &txt=QString(), const QString &f=QString(), const QString &tt=QString())
-            : text(txt), field(f), toolTip(tt) {
+	struct Category {
+		Category(const QString& txt = QString(), const QString& f = QString(), const QString& tt = QString())
+			: text(txt), field(f), toolTip(tt)
+		{
+		}
 
-        }
+		QString text;
+		QString field;
+		QString toolTip;
+	};
 
-        QString text;
-        QString field;
-        QString toolTip;
-    };
+	SearchWidget(QWidget* p, int extraSpace = 0);
+	~SearchWidget() override {}
 
-    SearchWidget(QWidget *p, int extraSpace=0);
-    ~SearchWidget() override { }
-
-    void setText(const QString &t) { edit->setText(t); }
-    QString text() const { return edit->text(); }
-    QString category() const { return cat ? cat->itemData(cat->currentIndex()) : QString(); }
-    void setFocus() { edit->setFocus(); }
-    bool hasFocus() const { return edit->hasFocus() || (closeButton && closeButton->hasFocus()); }
-    bool isActive() const { return widgetIsActive; }
-    void setPermanent();
-    void setCategories(const QList<Category> &categories);
-    void setCategory(const QString &id);
+	void setText(const QString& t) { edit->setText(t); }
+	QString text() const { return edit->text(); }
+	QString category() const { return cat ? cat->itemData(cat->currentIndex()) : QString(); }
+	void setFocus() { edit->setFocus(); }
+	bool hasFocus() const { return edit->hasFocus() || (closeButton && closeButton->hasFocus()); }
+	bool isActive() const { return widgetIsActive; }
+	void setPermanent();
+	void setCategories(const QList<Category>& categories);
+	void setCategory(const QString& id);
 
 Q_SIGNALS:
-    void textChanged(const QString &);
-    void returnPressed();
-    void active(bool);
+	void textChanged(const QString&);
+	void returnPressed();
+	void active(bool);
 
 public Q_SLOTS:
-    void toggle();
-    void clear() { edit->clear(); }
-    void activate(const QString &text=QString());
-    void show() { setVisible(true); }
-    void close();
+	void toggle();
+	void clear() { edit->clear(); }
+	void activate(const QString& text = QString());
+	void show() { setVisible(true); }
+	void close();
 
 private Q_SLOTS:
-    void categoryActivated(int c);
+	void categoryActivated(int c);
 
 private:
-    SelectorLabel *cat;
-    LineEdit *edit;
-    ToolButton *closeButton;
-    bool widgetIsActive;
+	SelectorLabel* cat;
+	LineEdit* edit;
+	ToolButton* closeButton;
+	bool widgetIsActive;
 };
 
 #endif

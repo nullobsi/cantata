@@ -24,53 +24,56 @@
 #ifndef PROXYMODEL_H
 #define PROXYMODEL_H
 
+#include "config.h"
+#include "mpd-interface/song.h"
 #include <QSortFilterProxyModel>
 #include <QStringList>
-#include "mpd-interface/song.h"
-#include "config.h"
 
 class QMimeData;
 
-class ProxyModel : public QSortFilterProxyModel
-{
+class ProxyModel : public QSortFilterProxyModel {
 public:
-    ProxyModel(QObject *parent) : QSortFilterProxyModel(parent), isSorted(false), filterEnabled(false), filter(nullptr) { }
-    ~ProxyModel() override { }
+	ProxyModel(QObject* parent) : QSortFilterProxyModel(parent), isSorted(false), filterEnabled(false), filter(nullptr) {}
+	~ProxyModel() override {}
 
-    bool update(const QString &text);
-    const void * filterItem() const { return filter; }
-    void setFilterItem(void *f) { filter=f; }
-    void setRootIndex(const QModelIndex &idx) { rootIndex=idx.isValid() ? mapToSource(idx) : idx; }
-    bool isChildOfRoot(const QModelIndex &idx) const;
-    bool isEmpty() const { return filterStrings.isEmpty() && nullptr==filter; }
-    bool enabled() const { return filterEnabled; }
-    const QString & filterText() const { return origFilterText; }
-    void resort();
-    void sort() { isSorted=false; sort(0); }
-    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
-    QList<int> mapToSourceRows(const QModelIndexList &list) const;
-    QModelIndex mapToSource(const QModelIndex &idx) const override { return QSortFilterProxyModel::mapToSource(idx); }
-    QModelIndexList mapToSource(const QModelIndexList &list, bool leavesOnly=true) const;
-    QMimeData * mimeData(const QModelIndexList &indexes) const override;
-    QModelIndexList leaves(const QModelIndexList &list) const;
+	bool update(const QString& text);
+	const void* filterItem() const { return filter; }
+	void setFilterItem(void* f) { filter = f; }
+	void setRootIndex(const QModelIndex& idx) { rootIndex = idx.isValid() ? mapToSource(idx) : idx; }
+	bool isChildOfRoot(const QModelIndex& idx) const;
+	bool isEmpty() const { return filterStrings.isEmpty() && nullptr == filter; }
+	bool enabled() const { return filterEnabled; }
+	const QString& filterText() const { return origFilterText; }
+	void resort();
+	void sort()
+	{
+		isSorted = false;
+		sort(0);
+	}
+	void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
+	QList<int> mapToSourceRows(const QModelIndexList& list) const;
+	QModelIndex mapToSource(const QModelIndex& idx) const override { return QSortFilterProxyModel::mapToSource(idx); }
+	QModelIndexList mapToSource(const QModelIndexList& list, bool leavesOnly = true) const;
+	QMimeData* mimeData(const QModelIndexList& indexes) const override;
+	QModelIndexList leaves(const QModelIndexList& list) const;
 
 protected:
-    bool matchesFilter(const Song &s) const;
-    bool matchesFilter(const QStringList &strings) const;
+	bool matchesFilter(const Song& s) const;
+	bool matchesFilter(const QStringList& strings) const;
 
 private:
-    QModelIndexList leaves(const QModelIndex &idx) const;
+	QModelIndexList leaves(const QModelIndex& idx) const;
 
 protected:
-    bool isSorted;
-    bool filterEnabled;
-    QModelIndex rootIndex;
-    QString origFilterText;
-    QStringList filterStrings;
-    uint unmatchedStrings;
-    const void *filter;
-    quint16 yearFrom;
-    quint16 yearTo;
+	bool isSorted;
+	bool filterEnabled;
+	QModelIndex rootIndex;
+	QString origFilterText;
+	QStringList filterStrings;
+	uint unmatchedStrings;
+	const void* filter;
+	quint16 yearFrom;
+	quint16 yearTo;
 };
 
 #endif

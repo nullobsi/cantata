@@ -26,21 +26,20 @@
 
 #include <QObject>
 
-class MultiMediaKeysInterface : public QObject
-{
-    Q_OBJECT
+class MultiMediaKeysInterface : public QObject {
+	Q_OBJECT
 public:
-    MultiMediaKeysInterface(QObject *p) : QObject(p) { }
-    ~MultiMediaKeysInterface() override { }
+	MultiMediaKeysInterface(QObject* p) : QObject(p) {}
+	~MultiMediaKeysInterface() override {}
 
-    virtual bool activate()=0;
-    virtual void deactivate()=0;
+	virtual bool activate() = 0;
+	virtual void deactivate() = 0;
 
 Q_SIGNALS:
-    void playPause();
-    void stop();
-    void next();
-    void previous();
+	void playPause();
+	void stop();
+	void next();
+	void previous();
 };
 
 #endif

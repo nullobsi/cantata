@@ -23,59 +23,56 @@
 
 #include "udev.h"
 
-#include <solid-lite/ifaces/device.h>
 #include <QStringList>
+#include <solid-lite/ifaces/device.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDev
-{
+namespace Solid {
+namespace Backends {
+namespace UDev {
 
-class UDevDevice : public Solid::Ifaces::Device
-{
-    Q_OBJECT
+class UDevDevice : public Solid::Ifaces::Device {
+	Q_OBJECT
 
 public:
-    UDevDevice(const UdevQt::Device device);
-    ~UDevDevice() override;
+	UDevDevice(const UdevQt::Device device);
+	~UDevDevice() override;
 
-    QString udi() const override;
+	QString udi() const override;
 
-    QString parentUdi() const override;
+	QString parentUdi() const override;
 
-    QString vendor() const override;
+	QString vendor() const override;
 
-    QString product() const override;
+	QString product() const override;
 
-    QString icon() const override;
+	QString icon() const override;
 
-    QStringList emblems() const override;
+	QStringList emblems() const override;
 
-    QString description() const override;
+	QString description() const override;
 
-    bool queryDeviceInterface(const Solid::DeviceInterface::Type &type) const override;
+	bool queryDeviceInterface(const Solid::DeviceInterface::Type& type) const override;
 
-    QObject *createDeviceInterface(const Solid::DeviceInterface::Type &type) override;
+	QObject* createDeviceInterface(const Solid::DeviceInterface::Type& type) override;
 
-    QString device() const;
+	QString device() const;
 
-    QVariant property(const QString &key) const;
-    QMap<QString, QVariant> allProperties() const;
-    bool propertyExists(const QString &key) const;
+	QVariant property(const QString& key) const;
+	QMap<QString, QVariant> allProperties() const;
+	bool propertyExists(const QString& key) const;
 
-    QString systemAttribute(const char *attribute) const;
-    QString deviceName() const;
-    QString devicePath() const;
-    int deviceNumber() const;
+	QString systemAttribute(const char* attribute) const;
+	QString deviceName() const;
+	QString devicePath() const;
+	int deviceNumber() const;
 
-    UdevQt::Device udevDevice();
+	UdevQt::Device udevDevice();
+
 private:
-    UdevQt::Device m_device;
+	UdevQt::Device m_device;
 };
 
-}
-}
-}
-#endif // SOLID_BACKENDS_UDEV_UDEVDEVICE_H
+}// namespace UDev
+}// namespace Backends
+}// namespace Solid
+#endif// SOLID_BACKENDS_UDEV_UDEVDEVICE_H

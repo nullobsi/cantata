@@ -27,53 +27,52 @@
 #include "config.h"
 #include "support/action.h"
 
-class StdActions
-{
+class StdActions {
 public:
-    static StdActions *self();
+	static StdActions* self();
 
-    StdActions();
+	StdActions();
 
-    Action *nextTrackAction;
-    Action *prevTrackAction;
-    Action *playPauseTrackAction;
-    Action *stopPlaybackAction;
-    Action *stopAfterCurrentTrackAction;
-    Action *stopAfterTrackAction;
-    Action *increaseVolumeAction;
-    Action *decreaseVolumeAction;
-    Action *savePlayQueueAction;
-    Action *appendToPlayQueueAction;
-    Action *appendToPlayQueueAndPlayAction;
-    Action *addToPlayQueueAndPlayAction;
-    Action *insertAfterCurrentAction;
-    Action *replacePlayQueueAction;
-    Action *addWithPriorityAction;
-    Action *addToStoredPlaylistAction;
-    Action *setPriorityAction;
-    Action *addToPlayQueueMenuAction;
-    Action *addRandomAlbumToPlayQueueAction;
-    #ifdef TagLib_FOUND
-    Action *editTagsAction;
-    Action *organiseFilesAction;
-    #endif
-    #ifdef ENABLE_REPLAYGAIN_SUPPORT
-    Action *replaygainAction;
-    #endif
-    #ifdef ENABLE_DEVICES_SUPPORT
-    Action *copyToDeviceAction;
-    Action *deleteSongsAction;
-    #endif
-    Action *setCoverAction;
-    Action *removeAction;
-    Action *searchAction;
-    Action *zoomInAction;
-    Action *zoomOutAction;
+	Action* nextTrackAction;
+	Action* prevTrackAction;
+	Action* playPauseTrackAction;
+	Action* stopPlaybackAction;
+	Action* stopAfterCurrentTrackAction;
+	Action* stopAfterTrackAction;
+	Action* increaseVolumeAction;
+	Action* decreaseVolumeAction;
+	Action* savePlayQueueAction;
+	Action* appendToPlayQueueAction;
+	Action* appendToPlayQueueAndPlayAction;
+	Action* addToPlayQueueAndPlayAction;
+	Action* insertAfterCurrentAction;
+	Action* replacePlayQueueAction;
+	Action* addWithPriorityAction;
+	Action* addToStoredPlaylistAction;
+	Action* setPriorityAction;
+	Action* addToPlayQueueMenuAction;
+	Action* addRandomAlbumToPlayQueueAction;
+#ifdef TagLib_FOUND
+	Action* editTagsAction;
+	Action* organiseFilesAction;
+#endif
+#ifdef ENABLE_REPLAYGAIN_SUPPORT
+	Action* replaygainAction;
+#endif
+#ifdef ENABLE_DEVICES_SUPPORT
+	Action* copyToDeviceAction;
+	Action* deleteSongsAction;
+#endif
+	Action* setCoverAction;
+	Action* removeAction;
+	Action* searchAction;
+	Action* zoomInAction;
+	Action* zoomOutAction;
 
-    void enableAddToPlayQueue(bool en);
+	void enableAddToPlayQueue(bool en);
 
 private:
-    StdActions(const StdActions &o);
-    StdActions & operator=(const StdActions &o);
+	StdActions(const StdActions& o);
+	StdActions& operator=(const StdActions& o);
 };
 #endif

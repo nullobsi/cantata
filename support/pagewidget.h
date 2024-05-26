@@ -25,47 +25,45 @@
 #define PAGEWIDGET_H
 
 #include "icon.h"
-#include <QWidget>
 #include <QMap>
+#include <QWidget>
 
 class QListWidget;
 class QListWidgetItem;
 class QStackedWidget;
 
-class PageWidgetItem : public QWidget
-{
+class PageWidgetItem : public QWidget {
 public:
-    PageWidgetItem(QWidget *p, const QString &header, const QIcon &icon, QWidget *cfg, bool showHeader);
-    ~PageWidgetItem() override { }
-    QWidget * widget() const { return wid; }
+	PageWidgetItem(QWidget* p, const QString& header, const QIcon& icon, QWidget* cfg, bool showHeader);
+	~PageWidgetItem() override {}
+	QWidget* widget() const { return wid; }
 
 private:
-    QWidget *wid;
+	QWidget* wid;
 };
 
-class PageWidget : public QWidget
-{
-    Q_OBJECT
+class PageWidget : public QWidget {
+	Q_OBJECT
 
 public:
-    PageWidget(QWidget *p, bool listView=false, bool headers=true);
-    ~PageWidget() override { }
-    PageWidgetItem * addPage(QWidget *widget, const QString &name, const QIcon &icon, const QString &header);
-    int count();
-    PageWidgetItem * currentPage() const;
-    void setCurrentPage(PageWidgetItem *item);
+	PageWidget(QWidget* p, bool listView = false, bool headers = true);
+	~PageWidget() override {}
+	PageWidgetItem* addPage(QWidget* widget, const QString& name, const QIcon& icon, const QString& header);
+	int count();
+	PageWidgetItem* currentPage() const;
+	void setCurrentPage(PageWidgetItem* item);
 
 public Q_SLOTS:
-    void setFocus();
+	void setFocus();
 
 Q_SIGNALS:
-    void currentPageChanged();
+	void currentPageChanged();
 
 private:
-    bool showHeaders;
-    QListWidget *list;
-    QStackedWidget *stack;
-    QMap<QListWidgetItem *, PageWidgetItem*> pages;
+	bool showHeaders;
+	QListWidget* list;
+	QStackedWidget* stack;
+	QMap<QListWidgetItem*, PageWidgetItem*> pages;
 };
 
 #endif

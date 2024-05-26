@@ -34,53 +34,52 @@ class QUrl;
 class ContextEngine;
 class Action;
 
-class AlbumView : public View
-{
-    Q_OBJECT
+class AlbumView : public View {
+	Q_OBJECT
 public:
-    static const QLatin1String constCacheDir;
-    static const QLatin1String constInfoExt;
+	static const QLatin1String constCacheDir;
+	static const QLatin1String constInfoExt;
 
-    AlbumView(QWidget *p);
-    ~AlbumView() override;
+	AlbumView(QWidget* p);
+	~AlbumView() override;
 
-    void update(const Song &song, bool force=false) override;
+	void update(const Song& song, bool force = false) override;
 
 Q_SIGNALS:
-    void playSong(const QString &file);
+	void playSong(const QString& file);
 
 public Q_SLOTS:
-    void coverRetrieved(const Song &s, const QImage &img, const QString &file);
-    void coverUpdated(const Song &s, const QImage &img, const QString &file);
-    void playSong(const QUrl &u);
+	void coverRetrieved(const Song& s, const QImage& img, const QString& file);
+	void coverUpdated(const Song& s, const QImage& img, const QString& file);
+	void playSong(const QUrl& u);
 
 private Q_SLOTS:
-    void showContextMenu(const QPoint &pos);
-    void refresh();
-    void clearCache();
-    void searchResponse(const QString &resp, const QString &lang);
+	void showContextMenu(const QPoint& pos);
+	void refresh();
+	void clearCache();
+	void searchResponse(const QString& resp, const QString& lang);
 
 private:
-    void clearDetails();
-    void getTrackListing();
-    void getDetails();
-    void updateDetails(bool preservePos=false);
-    void abort() override;
+	void clearDetails();
+	void getTrackListing();
+	void getDetails();
+	void updateDetails(bool preservePos = false);
+	void abort() override;
 
 private:
-    QString currentArtist;
-    Action *refreshAction;
-    #ifndef Q_OS_WIN
-    Action *fullWidthCoverAction;
-    #endif
-    ContextEngine *engine;
-    int detailsReceived;
-    QString pic;
-    QString details;
-    QString trackList;
-    QString bioArtist;
-    QString bio;
-    QList<Song> songs;
+	QString currentArtist;
+	Action* refreshAction;
+#ifndef Q_OS_WIN
+	Action* fullWidthCoverAction;
+#endif
+	ContextEngine* engine;
+	int detailsReceived;
+	QString pic;
+	QString details;
+	QString trackList;
+	QString bioArtist;
+	QString bio;
+	QList<Song> songs;
 };
 
 #endif

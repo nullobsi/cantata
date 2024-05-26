@@ -21,31 +21,27 @@
 #ifndef SOLID_BACKENDS_IOKIT_DEVICEINTERFACE_H
 #define SOLID_BACKENDS_IOKIT_DEVICEINTERFACE_H
 
-#include <solid-lite/ifaces/deviceinterface.h>
 #include "iokitdevice.h"
+#include <solid-lite/ifaces/deviceinterface.h>
 
 #include <QObject>
 #include <QStringList>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace IOKit
-{
-class DeviceInterface : public QObject, virtual public Solid::Ifaces::DeviceInterface
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::DeviceInterface)
+namespace Solid {
+namespace Backends {
+namespace IOKit {
+class DeviceInterface : public QObject, virtual public Solid::Ifaces::DeviceInterface {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::DeviceInterface)
 public:
-    DeviceInterface(IOKitDevice *device);
-    virtual ~DeviceInterface();
+	DeviceInterface(IOKitDevice* device);
+	virtual ~DeviceInterface();
 
 protected:
-    IOKitDevice *m_device;
+	IOKitDevice* m_device;
 };
-}
-}
-}
+}// namespace IOKit
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_IOKIT_DEVICEINTERFACE_H
+#endif// SOLID_BACKENDS_IOKIT_DEVICEINTERFACE_H

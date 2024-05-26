@@ -25,39 +25,41 @@
 #define SELECTOR_LABEL_H
 
 #include <QLabel>
-#include <QString>
 #include <QMenu>
+#include <QString>
 
 class QMenu;
-class SelectorLabel : public QLabel
-{
-    Q_OBJECT
+class SelectorLabel : public QLabel {
+	Q_OBJECT
 public:
-    SelectorLabel(QWidget *p);
-    void setUseArrow(bool a) { useArrow=a; }
-    void clear() { if (menu) menu->clear(); }
-    void addItem(const QString &text, const QString &data, const QString &tt=QString());
-    bool event(QEvent *e) override;
-    int currentIndex() const { return current; }
-    void setCurrentIndex(int v);
-    QString itemData(int index) const;
-    QAction * action(int index) const;
-    int count() const { return menu ? menu->actions().count() : 0; }
-    void setColor(const QColor &col) { textColor=col; }
-    void setBold(bool b) { bold=b; }
+	SelectorLabel(QWidget* p);
+	void setUseArrow(bool a) { useArrow = a; }
+	void clear()
+	{
+		if (menu) menu->clear();
+	}
+	void addItem(const QString& text, const QString& data, const QString& tt = QString());
+	bool event(QEvent* e) override;
+	int currentIndex() const { return current; }
+	void setCurrentIndex(int v);
+	QString itemData(int index) const;
+	QAction* action(int index) const;
+	int count() const { return menu ? menu->actions().count() : 0; }
+	void setColor(const QColor& col) { textColor = col; }
+	void setBold(bool b) { bold = b; }
 
 Q_SIGNALS:
-    void activated(int);
+	void activated(int);
 
 private Q_SLOTS:
-    void itemSelected();
+	void itemSelected();
 
 private:
-    QColor textColor;
-    int current;
-    bool useArrow;
-    bool bold;
-    QMenu *menu;
+	QColor textColor;
+	int current;
+	bool useArrow;
+	bool bold;
+	QMenu* menu;
 };
 
 #endif

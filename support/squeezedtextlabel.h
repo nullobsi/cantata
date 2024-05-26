@@ -24,34 +24,38 @@
 #ifndef SQUEEZEDTEXTLABEL_H
 #define SQUEEZEDTEXTLABEL_H
 
-#include <QLabel>
 #include <QFontMetrics>
+#include <QLabel>
 class QResizeEvent;
 
-class SqueezedTextLabel : public QLabel
-{
+class SqueezedTextLabel : public QLabel {
 public:
-    SqueezedTextLabel(QWidget *p);
+	SqueezedTextLabel(QWidget* p);
 
-    void setText(const QString &text) { originalText=text; elideText(); }
-    const QString & fullText() const { return originalText; }
-    void setTextElideMode(Qt::TextElideMode mode);
+	void setText(const QString& text)
+	{
+		originalText = text;
+		elideText();
+	}
+	const QString& fullText() const { return originalText; }
+	void setTextElideMode(Qt::TextElideMode mode);
 
-    QSize minimumSizeHint() const override {
-        QSize sh = QLabel::minimumSizeHint();
-        sh.setWidth(-1);
-        return sh;
-    }
+	QSize minimumSizeHint() const override
+	{
+		QSize sh = QLabel::minimumSizeHint();
+		sh.setWidth(-1);
+		return sh;
+	}
 
-    QSize sizeHint() const override { return QSize(fontMetrics().horizontalAdvance(originalText), QLabel::sizeHint().height()); }
-    void resizeEvent(QResizeEvent *) override { elideText(); }
+	QSize sizeHint() const override { return QSize(fontMetrics().horizontalAdvance(originalText), QLabel::sizeHint().height()); }
+	void resizeEvent(QResizeEvent*) override { elideText(); }
 
 private:
-    void elideText();
+	void elideText();
 
 private:
-    QString originalText;
-    Qt::TextElideMode elideMode;
+	QString originalText;
+	Qt::TextElideMode elideMode;
 };
 
-#endif // SQUEEZEDTEXTLABEL_H
+#endif// SQUEEZEDTEXTLABEL_H

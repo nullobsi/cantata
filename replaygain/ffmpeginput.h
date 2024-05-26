@@ -12,31 +12,30 @@
 
 #include "input.h"
 
-class FfmpegInput : public Input
-{
+class FfmpegInput : public Input {
 public:
-    struct Handle;
+	struct Handle;
 
-    static void init();
+	static void init();
 
-    FfmpegInput(const QString &fileName);
-    ~FfmpegInput();
+	FfmpegInput(const QString& fileName);
+	~FfmpegInput();
 
-    operator bool() const { return 0!=handle; }
+	operator bool() const { return 0 != handle; }
 
-    size_t totalFrames() const;
-    unsigned int channels() const;
-    unsigned long sampleRate() const;
-    float * buffer() const;
-    bool setChannelMap(int *st) const;
-    size_t readFrames();
-    bool isFloatCodec() const;
-
-private:
-    size_t readOnePacket();
+	size_t totalFrames() const;
+	unsigned int channels() const;
+	unsigned long sampleRate() const;
+	float* buffer() const;
+	bool setChannelMap(int* st) const;
+	size_t readFrames();
+	bool isFloatCodec() const;
 
 private:
-    Handle *handle;
+	size_t readOnePacket();
+
+private:
+	Handle* handle;
 };
 
 #endif

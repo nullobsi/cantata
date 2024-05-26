@@ -25,26 +25,23 @@
 #include <solid-lite/ifaces/deviceinterface.h>
 #include <solid-lite/portablemediaplayer.h>
 
-namespace Solid
-{
-namespace Ifaces
-{
-    /**
+namespace Solid {
+namespace Ifaces {
+/**
      * This class implements Portable Media Player device interface and represents
      * a portable media player attached to the system.
      * A portable media player is a portable device able to play multimedia files.
      * Some of them have even recording capabilities.
      * @author Davide Bettio <davide.bettio@kdemail.net>
      */
-    class PortableMediaPlayer : virtual public DeviceInterface
-    {
-    public:
-        /**
+class PortableMediaPlayer : virtual public DeviceInterface {
+public:
+	/**
          * Destroys a portable media player object.
          */
-        ~PortableMediaPlayer() override;
+	~PortableMediaPlayer() override;
 
-        /**
+	/**
          * Retrieves known protocols this device can speak.  This list may be dependent
          * on installed device driver libraries.
          *
@@ -58,9 +55,9 @@ namespace Ifaces
          *
          * @return a list of known protocols this device can speak
          */
-        virtual QStringList supportedProtocols() const = 0;
+	virtual QStringList supportedProtocols() const = 0;
 
-        /**
+	/**
          * Retrieves known installed device drivers that claim to handle this device
          * using the requested protocol.
          *
@@ -74,9 +71,9 @@ namespace Ifaces
          *                 drivers for all possible protocols.
          * @return a list of known device drivers that can handle this device
          */
-        virtual QStringList supportedDrivers(QString protocol = QString()) const = 0;
+	virtual QStringList supportedDrivers(QString protocol = QString()) const = 0;
 
-        /**
+	/**
          * Retrieves a driver specific string allowing to access the device.
          *
          * For example for the "mtp" driver it will return the serial number
@@ -84,10 +81,10 @@ namespace Ifaces
          *
          * @return the driver specific data
          */
-        virtual QVariant driverHandle(const QString &driver) const = 0;
-    };
-}
-}
+	virtual QVariant driverHandle(const QString& driver) const = 0;
+};
+}// namespace Ifaces
+}// namespace Solid
 
 Q_DECLARE_INTERFACE(Solid::Ifaces::PortableMediaPlayer, "org.kde.Solid.Ifaces.PortableMediaPlayer/0.1")
 

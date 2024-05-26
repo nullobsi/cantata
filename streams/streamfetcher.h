@@ -24,55 +24,54 @@
 #ifndef STREAMFETCHER_H
 #define STREAMFETCHER_H
 
-#include <QObject>
-#include <QList>
 #include <QByteArray>
+#include <QList>
+#include <QObject>
 #include <QStringList>
 
 class NetworkJob;
 
-class StreamFetcher : public QObject
-{
-    Q_OBJECT
+class StreamFetcher : public QObject {
+	Q_OBJECT
 
 public:
-    static void enableDebug();
+	static void enableDebug();
 
-    StreamFetcher(QObject *p);
-    ~StreamFetcher() override;
+	StreamFetcher(QObject* p);
+	~StreamFetcher() override;
 
-    void get(const QStringList &items, int insertRow, int action, quint8 priority, bool decPriority);
+	void get(const QStringList& items, int insertRow, int action, quint8 priority, bool decPriority);
 
 private:
-    void doNext();
+	void doNext();
 
 public Q_SLOTS:
-    void cancel();
+	void cancel();
 
 Q_SIGNALS:
-    void result(const QStringList &items, int insertRow, int action, quint8 priority, bool decreasePriority);
-    void status(const QString &msg);
+	void result(const QStringList& items, int insertRow, int action, quint8 priority, bool decreasePriority);
+	void status(const QString& msg);
 
 private Q_SLOTS:
-    void dataReady();
-    void jobFinished();
+	void dataReady();
+	void jobFinished();
 
 private:
-    void jobFinished(NetworkJob *reply);
-    void cancelJob();
+	void jobFinished(NetworkJob* reply);
+	void cancelJob();
 
 private:
-    NetworkJob *job;
-    QString current;
-    QString currentName;
-    QStringList todo;
-    QStringList done;
-    int row;
-    int playQueueAction;
-    quint8 prio;
-    bool decreasePriority;
-    int redirects;
-    QByteArray data;
+	NetworkJob* job;
+	QString current;
+	QString currentName;
+	QStringList todo;
+	QStringList done;
+	int row;
+	int playQueueAction;
+	quint8 prio;
+	bool decreasePriority;
+	int redirects;
+	QByteArray data;
 };
 
 #endif

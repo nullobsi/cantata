@@ -24,39 +24,38 @@
 #ifndef PLAYBACKSETTINGS_H
 #define PLAYBACKSETTINGS_H
 
-#include "ui_playbacksettings.h"
 #include "mpd-interface/output.h"
+#include "ui_playbacksettings.h"
 #include <QList>
 #include <QSet>
 
-class PlaybackSettings : public QWidget, private Ui::PlaybackSettings
-{
-    Q_OBJECT
+class PlaybackSettings : public QWidget, private Ui::PlaybackSettings {
+	Q_OBJECT
 
 public:
-    PlaybackSettings(QWidget *p);
-    ~PlaybackSettings() override { }
+	PlaybackSettings(QWidget* p);
+	~PlaybackSettings() override {}
 
-    void load();
-    void save();
+	void load();
+	void save();
 
 Q_SIGNALS:
-    // These are for communicating with MPD object (which is in its own thread, so need to talk via signal/slots)
-    void getReplayGain();
-    void setReplayGain(const QString &);
-    void setCrossFade(int secs);
-    void outputs();
-    void enableOutput(quint32 id, bool);
+	// These are for communicating with MPD object (which is in its own thread, so need to talk via signal/slots)
+	void getReplayGain();
+	void setReplayGain(const QString&);
+	void setCrossFade(int secs);
+	void outputs();
+	void enableOutput(quint32 id, bool);
 
 private Q_SLOTS:
-    void replayGainSetting(const QString &rg);
-    void updateOutputs(const QList<Output> &outputs);
-    void mpdConnectionStateChanged(bool c);
-    void showAboutReplayGain();
+	void replayGainSetting(const QString& rg);
+	void updateOutputs(const QList<Output>& outputs);
+	void mpdConnectionStateChanged(bool c);
+	void showAboutReplayGain();
 
 private:
-    QSet<int> enabledOutputs;
-    QString rgSetting;
+	QSet<int> enabledOutputs;
+	QString rgSetting;
 };
 
 #endif

@@ -21,30 +21,30 @@
 #include <QTimer>
 
 struct Q_DECL_HIDDEN KNotification::Private {
-    QString eventId;
-    int id = -1;
-    int ref = 0;
+	QString eventId;
+	int id = -1;
+	int ref = 0;
 
-    QString title;
-    QString text;
-    QString iconName;
-    KNotificationAction *defaultAction = nullptr;
-    QList<KNotificationAction *> actions;
-    bool ownsActions = true;
-    QString xdgActivationToken;
-    std::unique_ptr<KNotificationReplyAction> replyAction;
-    QPixmap pixmap;
-    NotificationFlags flags = KNotification::CloseOnTimeout;
-    QString componentName;
-    KNotification::Urgency urgency = KNotification::DefaultUrgency;
-    QVariantMap hints;
+	QString title;
+	QString text;
+	QString iconName;
+	KNotificationAction* defaultAction = nullptr;
+	QList<KNotificationAction*> actions;
+	bool ownsActions = true;
+	QString xdgActivationToken;
+	std::unique_ptr<KNotificationReplyAction> replyAction;
+	QPixmap pixmap;
+	NotificationFlags flags = KNotification::CloseOnTimeout;
+	QString componentName;
+	KNotification::Urgency urgency = KNotification::DefaultUrgency;
+	QVariantMap hints;
 
-    QTimer updateTimer;
-    bool needUpdate = false;
-    bool isNew = true;
-    bool autoDelete = true;
-    QWindow *window = nullptr;
-    int actionIdCounter = 1;
+	QTimer updateTimer;
+	bool needUpdate = false;
+	bool isNew = true;
+	bool autoDelete = true;
+	QWindow* window = nullptr;
+	int actionIdCounter = 1;
 };
 
 #endif

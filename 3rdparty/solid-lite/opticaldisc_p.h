@@ -23,14 +23,12 @@
 
 #include "storagevolume_p.h"
 
-namespace Solid
-{
-    class OpticalDiscPrivate : public StorageVolumePrivate
-    {
-    public:
-        OpticalDiscPrivate()
-            : StorageVolumePrivate() { }
-    };
-}
+namespace Solid {
+class OpticalDiscPrivate : public StorageVolumePrivate {
+public:
+	OpticalDiscPrivate()
+		: StorageVolumePrivate() {}
+};
+}// namespace Solid
 
 #endif

@@ -24,61 +24,58 @@
 #ifndef RATINGWIDGET_H
 #define RATINGWIDGET_H
 
-#include <QWidget>
 #include <QPixmap>
+#include <QWidget>
 
-class RatingPainter
-{
+class RatingPainter {
 public:
-    RatingPainter(int s);
+	RatingPainter(int s);
 
-    void paint(QPainter *p, const QRect &r, int rating);
-    int starSize() const { return starSz; }
-    void setColor(const QColor &c);
-    const QColor & color() const { return col; }
-    const QSize & size() const { return pixmapSize; }
-    bool isNull() const { return pixmaps[0].isNull(); }
+	void paint(QPainter* p, const QRect& r, int rating);
+	int starSize() const { return starSz; }
+	void setColor(const QColor& c);
+	const QColor& color() const { return col; }
+	const QSize& size() const { return pixmapSize; }
+	bool isNull() const { return pixmaps[0].isNull(); }
 
 private:
-    int starSz;
-    QSize pixmapSize;
-    QColor col;
-    QPixmap pixmaps[3];
+	int starSz;
+	QSize pixmapSize;
+	QColor col;
+	QPixmap pixmaps[3];
 };
 
-class RatingWidget : public QWidget
-{
-    Q_OBJECT
+class RatingWidget : public QWidget {
+	Q_OBJECT
 
 public:
+	RatingWidget(QWidget* parent = nullptr);
 
-    RatingWidget(QWidget *parent = nullptr);
-
-    QSize sizeHint() const override { return rp.size(); }
-    int value() const { return val; }
-    void setValue(int v);
-    void setColor(const QColor &c);
-    void setShowZeroForNull(bool s) { showZeroForNull=s; }
+	QSize sizeHint() const override { return rp.size(); }
+	int value() const { return val; }
+	void setValue(int v);
+	void setColor(const QColor& c);
+	void setShowZeroForNull(bool s) { showZeroForNull = s; }
 
 Q_SIGNALS:
-    void valueChanged(int v);
+	void valueChanged(int v);
 
 protected:
-    void paintEvent(QPaintEvent *e) override;
-    void mousePressEvent(QMouseEvent *e) override;
-    void mouseMoveEvent(QMouseEvent *e) override;
-    void leaveEvent(QEvent *e) override;
+	void paintEvent(QPaintEvent* e) override;
+	void mousePressEvent(QMouseEvent* e) override;
+	void mouseMoveEvent(QMouseEvent* e) override;
+	void leaveEvent(QEvent* e) override;
 
 private:
-    QRect contentsRect() const;
-    int valueForPos(const QPoint &pos) const;
-    QColor getColor() const;
+	QRect contentsRect() const;
+	int valueForPos(const QPoint& pos) const;
+	QColor getColor() const;
 
 private:
-    RatingPainter rp;
-    int val;
-    int hoverVal;
-    bool showZeroForNull;
+	RatingPainter rp;
+	int val;
+	int hoverVal;
+	bool showZeroForNull;
 };
 
 #endif

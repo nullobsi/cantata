@@ -27,87 +27,85 @@
 
 #include "config.h"
 #include "thinsplitterhandle.h"
+#include <QAbstractItemView>
 #include <QList>
 #include <QQueue>
-#include <QVariantAnimation>
 #include <QSet>
-#include <QAbstractItemView>
+#include <QVariantAnimation>
 
 Q_DECLARE_METATYPE(QList<int>)
 
 class SplitterSizeAnimation;
 
-class AutohidingSplitterHandle : public ThinSplitterHandle
-{
-    Q_OBJECT
+class AutohidingSplitterHandle : public ThinSplitterHandle {
+	Q_OBJECT
 
 public:
-    AutohidingSplitterHandle(Qt::Orientation orientation, QSplitter *parent) : ThinSplitterHandle(orientation, parent) { }
-    ~AutohidingSplitterHandle() override { }
+	AutohidingSplitterHandle(Qt::Orientation orientation, QSplitter* parent) : ThinSplitterHandle(orientation, parent) {}
+	~AutohidingSplitterHandle() override {}
 
-    QSize sizeHint() const override;
+	QSize sizeHint() const override;
 
 Q_SIGNALS:
-    void hoverStarted();
-    void hoverFinished();
+	void hoverStarted();
+	void hoverFinished();
 
 protected:
-    void enterEvent(QEnterEvent *) override { emit hoverStarted(); }
-    void leaveEvent(QEvent *) override { emit hoverFinished(); }
+	void enterEvent(QEnterEvent*) override { emit hoverStarted(); }
+	void leaveEvent(QEvent*) override { emit hoverFinished(); }
 };
 
-class AutohidingSplitter : public QSplitter
-{
-    Q_OBJECT
+class AutohidingSplitter : public QSplitter {
+	Q_OBJECT
 
 public:
-    explicit AutohidingSplitter(Qt::Orientation orientation, QWidget *parent=nullptr);
-    explicit AutohidingSplitter(QWidget *parent=nullptr);
-    ~AutohidingSplitter() override;
+	explicit AutohidingSplitter(Qt::Orientation orientation, QWidget* parent = nullptr);
+	explicit AutohidingSplitter(QWidget* parent = nullptr);
+	~AutohidingSplitter() override;
 
-    void setAutohidable(int index, bool autohidable = true);
-    void addWidget(QWidget *widget);
-    bool restoreState( const QByteArray &state);
-    QByteArray saveState() const;
-    bool eventFilter(QObject *watched, QEvent *event) override;
-    bool isAutoHideEnabled() const { return autoHideEnabled; }
+	void setAutohidable(int index, bool autohidable = true);
+	void addWidget(QWidget* widget);
+	bool restoreState(const QByteArray& state);
+	QByteArray saveState() const;
+	bool eventFilter(QObject* watched, QEvent* event) override;
+	bool isAutoHideEnabled() const { return autoHideEnabled; }
 
 public Q_SLOTS:
-    void setAutoHideEnabled(bool en);
-    void setVisible(bool visible) override;
+	void setAutoHideEnabled(bool en);
+	void setVisible(bool visible) override;
 
 protected:
-    QSplitterHandle * createHandle() override;
-    void childEvent(QChildEvent *) override;
-    void removeChild(QObject* pObject);
-    void addChild(QObject *pObject);
-    void resizeEvent(QResizeEvent *) override;
+	QSplitterHandle* createHandle() override;
+	void childEvent(QChildEvent*) override;
+	void removeChild(QObject* pObject);
+	void addChild(QObject* pObject);
+	void resizeEvent(QResizeEvent*) override;
 
 private Q_SLOTS:
-    void widgetHoverStarted(int index);
-    void widgetHoverFinished(int index);
-    void handleHoverStarted();
-    void handleHoverFinished();
-    void updateResizeQueue();
-    void setWidgetForHiding();
-    void startAnimation();
-    void updateAfterSplitterMoved(int pos, int index);
-    void inhibitModifications(){haltModifications = true;}
-    void resumeModifications(){haltModifications = false;}
+	void widgetHoverStarted(int index);
+	void widgetHoverFinished(int index);
+	void handleHoverStarted();
+	void handleHoverFinished();
+	void updateResizeQueue();
+	void setWidgetForHiding();
+	void startAnimation();
+	void updateAfterSplitterMoved(int pos, int index);
+	void inhibitModifications() { haltModifications = true; }
+	void resumeModifications() { haltModifications = false; }
 
 private:
-    bool autoHideEnabled;
-    bool haltModifications;
-    QList<int> getSizesAfterHiding()const;
-    SplitterSizeAnimation *autohideAnimation;
-    QList<QTimer *> animationDelayTimer;
-    QList<bool> widgetAutohidden;
-    QList<bool> widgetAutohiddenPrev;
-    QList<bool> widgetAutohidable;
-    QList<int> expandedSizes;
-    QQueue<QList<int> > targetSizes;
-    QSet<QWidget *> popupsBlockingAutohiding;
-    friend class AutohidingSplitterHandle;
+	bool autoHideEnabled;
+	bool haltModifications;
+	QList<int> getSizesAfterHiding() const;
+	SplitterSizeAnimation* autohideAnimation;
+	QList<QTimer*> animationDelayTimer;
+	QList<bool> widgetAutohidden;
+	QList<bool> widgetAutohiddenPrev;
+	QList<bool> widgetAutohidable;
+	QList<int> expandedSizes;
+	QQueue<QList<int>> targetSizes;
+	QSet<QWidget*> popupsBlockingAutohiding;
+	friend class AutohidingSplitterHandle;
 };
 
 #endif

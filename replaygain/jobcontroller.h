@@ -29,66 +29,63 @@
 class Thread;
 class QProcess;
 
-class Job : public QObject
-{
-    Q_OBJECT
+class Job : public QObject {
+	Q_OBJECT
 public:
-    Job();
-    virtual ~Job() { }
+	Job();
+	virtual ~Job() {}
 
-    virtual void requestAbort() { abortRequested=true; }
-    virtual void start()=0;
-    virtual void stop()=0;
-    void setFinished(bool f);
-    bool success() { return finished; }
+	virtual void requestAbort() { abortRequested = true; }
+	virtual void start() = 0;
+	virtual void stop() = 0;
+	void setFinished(bool f);
+	bool success() { return finished; }
 
 Q_SIGNALS:
-    void exec();
-    void progress(int);
-    void done();
+	void exec();
+	void progress(int);
+	void done();
 
 protected:
-    bool abortRequested;
-    bool finished;
+	bool abortRequested;
+	bool finished;
 };
 
-class StandardJob : public Job
-{
-    Q_OBJECT
+class StandardJob : public Job {
+	Q_OBJECT
 public:
-    StandardJob();
-    virtual ~StandardJob() { stop(); }
+	StandardJob();
+	virtual ~StandardJob() { stop(); }
 
-    virtual void start();
-    virtual void stop();
+	virtual void start();
+	virtual void stop();
 
 private Q_SLOTS:
-    virtual void run() =0;
+	virtual void run() = 0;
 
 private:
-    Thread *thread;
+	Thread* thread;
 };
 
-class JobController : public QObject
-{
-    Q_OBJECT
+class JobController : public QObject {
+	Q_OBJECT
 public:
-    static JobController * self();
-    JobController();
+	static JobController* self();
+	JobController();
 
-    void setMaxActive(int m);
-    void add(Job *job);
-    void finishedWith(Job *job);
-    void startJobs();
-    void cancel();
+	void setMaxActive(int m);
+	void add(Job* job);
+	void finishedWith(Job* job);
+	void startJobs();
+	void cancel();
 
 private Q_SLOTS:
-    void jobDone();
+	void jobDone();
 
 private:
-    int maxActive;
-    QList<Job *> active;
-    QList<Job *> jobs;
+	int maxActive;
+	QList<Job*> active;
+	QList<Job*> jobs;
 };
 
 #endif

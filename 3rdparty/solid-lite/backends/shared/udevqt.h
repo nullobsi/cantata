@@ -21,8 +21,8 @@
 #ifndef UDEVQT_H
 #define UDEVQT_H
 
-#include <QObject>
 #include <QList>
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QVariant>
@@ -30,126 +30,122 @@
 #include <QSocketNotifier>
 #include <libudev.h>
 
-namespace UdevQt
-{
+namespace UdevQt {
 
 class DevicePrivate;
-class Device
-{
-    public:
-        Device();
-        Device(const Device &other);
-        ~Device();
-        Device &operator= (const Device &other);
+class Device {
+public:
+	Device();
+	Device(const Device& other);
+	~Device();
+	Device& operator=(const Device& other);
 
-        bool isValid() const;
-        QString subsystem() const;
-        QString devType() const;
-        QString name() const;
-        QString sysfsPath() const;
-        int sysfsNumber() const;
-        QString driver() const;
-        QString primaryDeviceFile() const;
-        QStringList alternateDeviceSymlinks() const;
-        QStringList deviceProperties() const;
-        Device parent() const;
+	bool isValid() const;
+	QString subsystem() const;
+	QString devType() const;
+	QString name() const;
+	QString sysfsPath() const;
+	int sysfsNumber() const;
+	QString driver() const;
+	QString primaryDeviceFile() const;
+	QStringList alternateDeviceSymlinks() const;
+	QStringList deviceProperties() const;
+	Device parent() const;
 
-        // ### should this really be a QVariant? as far as udev knows, everything is a string...
-        // see also Client::devicesByProperty
-        QVariant deviceProperty(const QString &name) const;
-        QString decodedDeviceProperty(const QString &name) const;
-        QVariant sysfsProperty(const QString &name) const;
-        Device ancestorOfType(const QString &subsys, const QString &devtype) const;
+	// ### should this really be a QVariant? as far as udev knows, everything is a string...
+	// see also Client::devicesByProperty
+	QVariant deviceProperty(const QString& name) const;
+	QString decodedDeviceProperty(const QString& name) const;
+	QVariant sysfsProperty(const QString& name) const;
+	Device ancestorOfType(const QString& subsys, const QString& devtype) const;
 
-    private:
-        Device(DevicePrivate *devPrivate);
-        friend class Client;
-        friend class ClientPrivate;
+private:
+	Device(DevicePrivate* devPrivate);
+	friend class Client;
+	friend class ClientPrivate;
 
-        DevicePrivate *d;
+	DevicePrivate* d;
 };
 
 typedef QList<Device> DeviceList;
 
 class ClientPrivate;
-class Client : public QObject
-{
-    Q_OBJECT
+class Client : public QObject {
+	Q_OBJECT
 
-    Q_PROPERTY(QStringList watchedSubsystems READ watchedSubsystems WRITE setWatchedSubsystems)
+	Q_PROPERTY(QStringList watchedSubsystems READ watchedSubsystems WRITE setWatchedSubsystems)
 
-    public:
-        Client(QObject *parent = nullptr);
-        Client(const QStringList &subsystemList, QObject *parent = nullptr);
-        ~Client() override;
+public:
+	Client(QObject* parent = nullptr);
+	Client(const QStringList& subsystemList, QObject* parent = nullptr);
+	~Client() override;
 
-        QStringList watchedSubsystems() const;
-        void setWatchedSubsystems(const QStringList &subsystemList);
+	QStringList watchedSubsystems() const;
+	void setWatchedSubsystems(const QStringList& subsystemList);
 
-        DeviceList allDevices();
-        DeviceList devicesByProperty(const QString &property, const QVariant &value);
-        DeviceList devicesBySubsystem(const QString &subsystem);
-        Device deviceByDeviceFile(const QString &deviceFile);
-        Device deviceBySysfsPath(const QString &sysfsPath);
-        Device deviceBySubsystemAndName(const QString &subsystem, const QString &name);
+	DeviceList allDevices();
+	DeviceList devicesByProperty(const QString& property, const QVariant& value);
+	DeviceList devicesBySubsystem(const QString& subsystem);
+	Device deviceByDeviceFile(const QString& deviceFile);
+	Device deviceBySysfsPath(const QString& sysfsPath);
+	Device deviceBySubsystemAndName(const QString& subsystem, const QString& name);
 
-    signals:
-        void deviceAdded(const UdevQt::Device &dev);
-        void deviceRemoved(const UdevQt::Device &dev);
-        void deviceChanged(const UdevQt::Device &dev);
-        void deviceOnlined(const UdevQt::Device &dev);
-        void deviceOfflined(const UdevQt::Device &dev);
+signals:
+	void deviceAdded(const UdevQt::Device& dev);
+	void deviceRemoved(const UdevQt::Device& dev);
+	void deviceChanged(const UdevQt::Device& dev);
+	void deviceOnlined(const UdevQt::Device& dev);
+	void deviceOfflined(const UdevQt::Device& dev);
 
-    private:
-        friend class ClientPrivate;
-        Q_PRIVATE_SLOT(d, void _uq_monitorReadyRead(int fd))
-        ClientPrivate *d;
+private:
+	friend class ClientPrivate;
+	Q_PRIVATE_SLOT(d, void _uq_monitorReadyRead(int fd))
+	ClientPrivate* d;
 };
 
-class DevicePrivate
-{
-    public:
-        DevicePrivate(struct udev_device *udev_, bool ref = true);
-        ~DevicePrivate();
-        DevicePrivate &operator=(const DevicePrivate& other);
+class DevicePrivate {
+public:
+	DevicePrivate(struct udev_device* udev_, bool ref = true);
+	~DevicePrivate();
+	DevicePrivate& operator=(const DevicePrivate& other);
 
-        QString decodePropertyValue(const QByteArray &encoded) const;
+	QString decodePropertyValue(const QByteArray& encoded) const;
 
-        struct udev_device *udev;
+	struct udev_device* udev;
 };
 
+class ClientPrivate {
+public:
+	enum ListenToWhat { ListenToList,
+						ListenToNone };
 
-class ClientPrivate
-{
-    public:
-        enum ListenToWhat { ListenToList, ListenToNone };
+	ClientPrivate(Client* q_);
+	~ClientPrivate();
 
-        ClientPrivate(Client *q_);
-        ~ClientPrivate();
+	void init(const QStringList& subsystemList, ListenToWhat what);
+	void setWatchedSubsystems(const QStringList& subsystemList);
+	void _uq_monitorReadyRead(int fd);
+	DeviceList deviceListFromEnumerate(struct udev_enumerate* en);
 
-        void init(const QStringList &subsystemList, ListenToWhat what);
-        void setWatchedSubsystems(const QStringList &subsystemList);
-        void _uq_monitorReadyRead(int fd);
-        DeviceList deviceListFromEnumerate(struct udev_enumerate *en);
-
-        struct udev *udev;
-        struct udev_monitor *monitor;
-        Client *q;
-        QSocketNotifier *monitorNotifier;
-        QStringList watchedSubsystems;
+	struct udev* udev;
+	struct udev_monitor* monitor;
+	Client* q;
+	QSocketNotifier* monitorNotifier;
+	QStringList watchedSubsystems;
 };
 
-inline QStringList listFromListEntry(struct udev_list_entry *list)
+inline QStringList listFromListEntry(struct udev_list_entry* list)
 {
-    QStringList ret;
-    struct udev_list_entry *entry;
+	QStringList ret;
+	struct udev_list_entry* entry;
 
-    udev_list_entry_foreach(entry, list) {
-        ret << QString::fromLatin1(udev_list_entry_get_name(entry));
-    }
-    return ret;
+	udev_list_entry_foreach(entry, list)
+	{
+		ret << QString::fromLatin1(udev_list_entry_get_name(entry));
+	}
+	return ret;
 }
 
-}
+}// namespace UdevQt
 
 #endif

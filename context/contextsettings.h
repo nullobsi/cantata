@@ -31,17 +31,17 @@ class LyricSettings;
 class OtherSettings;
 
 class ContextSettings : public QTabWidget {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    ContextSettings(QWidget *p=nullptr);
-    ~ContextSettings() override { }
-    void load();
-    void save();
-    
+	ContextSettings(QWidget* p = nullptr);
+	~ContextSettings() override {}
+	void load();
+	void save();
+
 private:
-    WikipediaSettings *wiki;
-    LyricSettings *lyrics;
-    OtherSettings *other;
+	WikipediaSettings* wiki;
+	LyricSettings* lyrics;
+	OtherSettings* other;
 };
 
 #endif

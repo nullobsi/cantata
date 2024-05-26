@@ -30,35 +30,34 @@
 
 class QProcess;
 
-class AlbumScanner : public Job
-{
-    Q_OBJECT
+class AlbumScanner : public Job {
+	Q_OBJECT
 
 public:
-    struct Values {
-        Values() : gain(0.0), peak(0.0), ok(false) { }
-        double gain;
-        double peak;
-        bool ok;
-    };
+	struct Values {
+		Values() : gain(0.0), peak(0.0), ok(false) {}
+		double gain;
+		double peak;
+		bool ok;
+	};
 
-    AlbumScanner(const QMap<int, QString> &files);
-    ~AlbumScanner();
-    virtual void start();
-    virtual void stop();
-    const Values & albumValues() const { return album; }
-    const QMap<int, Values> trackValues() const { return tracks; }
+	AlbumScanner(const QMap<int, QString>& files);
+	~AlbumScanner();
+	virtual void start();
+	virtual void stop();
+	const Values& albumValues() const { return album; }
+	const QMap<int, Values> trackValues() const { return tracks; }
 
 private Q_SLOTS:
-    void read();
-    void procFinished();
+	void read();
+	void procFinished();
 
 private:
-    QProcess *proc;
-    Values album;
-    QMap<int, Values> tracks;
-    QMap<int, int> trackIndexMap;
-    QStringList fileNames;
+	QProcess* proc;
+	Values album;
+	QMap<int, Values> tracks;
+	QMap<int, int> trackIndexMap;
+	QStringList fileNames;
 };
 
 #endif

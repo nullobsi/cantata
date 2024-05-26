@@ -26,29 +26,27 @@
 
 #include <QString>
 
-struct Stream
-{
-    Stream() { }
-    Stream(const QString &u, const QString &n) : url(u), name(n) { }
-    Stream(const Stream &o) { *this=o; }
+struct Stream {
+	Stream() {}
+	Stream(const QString& u, const QString& n) : url(u), name(n) {}
+	Stream(const Stream& o) { *this = o; }
 
-    bool operator==(const Stream &o) const
-    {
-        return url==o.url;
-    }
+	bool operator==(const Stream& o) const
+	{
+		return url == o.url;
+	}
 
-    Stream & operator=(const Stream &o)
-    {
-        url=o.url;
-        name=o.name;
-        return *this;
-    }
+	Stream& operator=(const Stream& o)
+	{
+		url = o.url;
+		name = o.name;
+		return *this;
+	}
 
-    virtual ~Stream() { }
+	virtual ~Stream() {}
 
-    QString url;
-    QString name;
+	QString url;
+	QString name;
 };
 
 #endif
-

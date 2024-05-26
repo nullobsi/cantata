@@ -24,12 +24,12 @@
 #ifndef MPD_LIBRARY_DB_H
 #define MPD_LIBRARY_DB_H
 
-#include <QObject>
+#include "config.h"
+#include "librarydb.h"
+#include <QElapsedTimer>
 #include <QList>
 #include <QMap>
-#include <QElapsedTimer>
-#include "librarydb.h"
-#include "config.h"
+#include <QObject>
 #include <time.h>
 
 struct MPDStatsValues;
@@ -38,34 +38,33 @@ class QSqlDatabase;
 class QSqlQuery;
 class QSettings;
 
-class MpdLibraryDb : public LibraryDb
-{
-    Q_OBJECT
+class MpdLibraryDb : public LibraryDb {
+	Q_OBJECT
 
 public:
-    static void removeUnusedDbs();
+	static void removeUnusedDbs();
 
-    MpdLibraryDb(QObject *p=nullptr);
-    ~MpdLibraryDb() override;
+	MpdLibraryDb(QObject* p = nullptr);
+	~MpdLibraryDb() override;
 
-    Song getCoverSong(const QString &artistId, const QString &albumId=QString());
+	Song getCoverSong(const QString& artistId, const QString& albumId = QString());
 
 Q_SIGNALS:
-    void loadLibrary();
+	void loadLibrary();
 
 public Q_SLOTS:
-    void connectionChanged(const MPDConnectionDetails &details);
-    void statsUpdated(const MPDStatsValues &stats);
+	void connectionChanged(const MPDConnectionDetails& details);
+	void statsUpdated(const MPDStatsValues& stats);
 
 private:
-    void reset() override;
-    void updateFinished() override;
+	void reset() override;
+	void updateFinished() override;
 
 private:
-    bool loading;
-    QSqlQuery *coverQuery;
-    QSqlQuery *albumIdOnlyCoverQuery;
-    QSqlQuery *artistImageQuery;
+	bool loading;
+	QSqlQuery* coverQuery;
+	QSqlQuery* albumIdOnlyCoverQuery;
+	QSqlQuery* artistImageQuery;
 };
 
 #endif

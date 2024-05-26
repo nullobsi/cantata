@@ -26,47 +26,46 @@
 
 #include "support/dialog.h"
 #include "support/lineedit.h"
-#include <QWidget>
 #include <QTreeWidget>
+#include <QWidget>
 
 class QPushButton;
 
-class CustomActionDialog : public Dialog
-{
-    Q_OBJECT
+class CustomActionDialog : public Dialog {
+	Q_OBJECT
 public:
-    CustomActionDialog(QWidget *p);
-    bool create();
-    bool edit(const QString &name, const QString &cmd);
-    QString nameText() const { return nameEntry->text().trimmed(); }
-    QString commandText() const { return commandEntry->text().trimmed(); }
+	CustomActionDialog(QWidget* p);
+	bool create();
+	bool edit(const QString& name, const QString& cmd);
+	QString nameText() const { return nameEntry->text().trimmed(); }
+	QString commandText() const { return commandEntry->text().trimmed(); }
+
 private:
-    LineEdit *nameEntry;
-    LineEdit *commandEntry;
+	LineEdit* nameEntry;
+	LineEdit* commandEntry;
 };
 
-class CustomActionsSettings : public QWidget
-{
-    Q_OBJECT
+class CustomActionsSettings : public QWidget {
+	Q_OBJECT
 public:
-    CustomActionsSettings(QWidget *parent);
-    ~CustomActionsSettings() override;
+	CustomActionsSettings(QWidget* parent);
+	~CustomActionsSettings() override;
 
-    void load();
-    void save();
+	void load();
+	void save();
 
 private Q_SLOTS:
-    void controlButtons();
-    void addCommand();
-    void editCommand();
-    void delCommand();
+	void controlButtons();
+	void addCommand();
+	void editCommand();
+	void delCommand();
 
 private:
-    QTreeWidget *tree;
-    QPushButton *add;
-    QPushButton *edit;
-    QPushButton *del;
-    CustomActionDialog *dlg;
+	QTreeWidget* tree;
+	QPushButton* add;
+	QPushButton* edit;
+	QPushButton* del;
+	CustomActionDialog* dlg;
 };
 
 #endif

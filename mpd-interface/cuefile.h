@@ -31,13 +31,12 @@ struct Song;
 // This parser will try to detect the real encoding of a .cue file but there's
 // a great chance it will fail so it's probably best to assume that the parser
 // is UTF compatible only.
-namespace CueFile
-{
-    extern void enableDebug();
+namespace CueFile {
+extern void enableDebug();
 
-    extern bool isCue(const QString &str);
-    extern QByteArray getLoadLine(const QString &str);
-    extern bool parse(const QString &fileName, const QString &dir, QList<Song> &songList, QSet<QString> &files, double &lastTrackIndex);
-}
+extern bool isCue(const QString& str);
+extern QByteArray getLoadLine(const QString& str);
+extern bool parse(const QString& fileName, const QString& dir, QList<Song>& songList, QSet<QString>& files, double& lastTrackIndex);
+}// namespace CueFile
 
-#endif  // CUEFILE_H
+#endif// CUEFILE_H

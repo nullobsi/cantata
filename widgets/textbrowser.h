@@ -28,37 +28,44 @@
 
 class QTimer;
 
-class TextBrowser : public QTextBrowser
-{
-    Q_OBJECT
+class TextBrowser : public QTextBrowser {
+	Q_OBJECT
 public:
-    TextBrowser(QWidget *p);
-    QVariant loadResource(int type, const QUrl &name) override;
+	TextBrowser(QWidget* p);
+	QVariant loadResource(int type, const QUrl& name) override;
 
-    void setPicSize(const QSize &p) { pSize=p; }
-    QSize picSize() const { return pSize; }
-    void setFullWidthImage(bool s);
-    bool fullWidthImage() const { return fullWidthImg; }
-    void setPal(const QPalette &pal);
-    void setHtml(const QString &s) { haveImg=false; QTextBrowser::setHtml(s); }
-    void setText(const QString &s) { haveImg=false; QTextBrowser::setText(s); }
+	void setPicSize(const QSize& p) { pSize = p; }
+	QSize picSize() const { return pSize; }
+	void setFullWidthImage(bool s);
+	bool fullWidthImage() const { return fullWidthImg; }
+	void setPal(const QPalette& pal);
+	void setHtml(const QString& s)
+	{
+		haveImg = false;
+		QTextBrowser::setHtml(s);
+	}
+	void setText(const QString& s)
+	{
+		haveImg = false;
+		QTextBrowser::setText(s);
+	}
 
-    void resizeEvent(QResizeEvent *e) override;
-    bool eventFilter(QObject *obj, QEvent *ev) override;
+	void resizeEvent(QResizeEvent* e) override;
+	bool eventFilter(QObject* obj, QEvent* ev) override;
 
 private Q_SLOTS:
-    void refreshHtml();
+	void refreshHtml();
 
 private:
-    void handleSizeChange();
-    QSize imageSize() const;
+	void handleSizeChange();
+	QSize imageSize() const;
 
 private:
-    QTimer *timer;
-    int lastImageSize;
-    bool fullWidthImg;
-    bool haveImg;
-    QSize pSize;
+	QTimer* timer;
+	int lastImageSize;
+	bool fullWidthImg;
+	bool haveImg;
+	QSize pSize;
 };
 
 #endif

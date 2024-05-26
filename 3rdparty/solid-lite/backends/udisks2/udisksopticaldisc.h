@@ -26,55 +26,49 @@
 
 #include "../shared/udevqt.h"
 
-#include "udisksstoragevolume.h"
 #include "udisksdevice.h"
+#include "udisksstoragevolume.h"
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks2
-{
+namespace Solid {
+namespace Backends {
+namespace UDisks2 {
 
-class OpticalDisc: public StorageVolume, virtual public Solid::Ifaces::OpticalDisc
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::OpticalDisc)
+class OpticalDisc : public StorageVolume, virtual public Solid::Ifaces::OpticalDisc {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::OpticalDisc)
 
 public:
-    OpticalDisc(Device *dev);
-    ~OpticalDisc() override;
+	OpticalDisc(Device* dev);
+	~OpticalDisc() override;
 
-    qulonglong capacity() const override;
-    bool isRewritable() const override;
-    bool isBlank() const override;
-    bool isAppendable() const override;
-    Solid::OpticalDisc::DiscType discType() const override;
-    Solid::OpticalDisc::ContentTypes availableContent() const override;
+	qulonglong capacity() const override;
+	bool isRewritable() const override;
+	bool isBlank() const override;
+	bool isAppendable() const override;
+	Solid::OpticalDisc::DiscType discType() const override;
+	Solid::OpticalDisc::ContentTypes availableContent() const override;
 
+	class Identity {
+	public:
+		Identity();
+		Identity(const Device& device, const Device& drive);
+		bool operator==(const Identity&) const;
 
-    class Identity
-    {
-    public:
-        Identity();
-        Identity(const Device &device, const Device &drive);
-        bool operator==(const Identity &) const;
-
-    private:
-        long long m_detectTime;
-        long long m_size;
-        uint m_labelHash;
-    };
+	private:
+		long long m_detectTime;
+		long long m_size;
+		uint m_labelHash;
+	};
 
 private:
-    mutable Identity m_identity;
-    QString media() const;
-    mutable Solid::OpticalDisc::ContentTypes m_cachedContent;
-    Device *m_drive;
-    UdevQt::Device m_udevDevice;
+	mutable Identity m_identity;
+	QString media() const;
+	mutable Solid::OpticalDisc::ContentTypes m_cachedContent;
+	Device* m_drive;
+	UdevQt::Device m_udevDevice;
 };
 
-}
-}
-}
-#endif // UDISKS2OPTICALDISC_H
+}// namespace UDisks2
+}// namespace Backends
+}// namespace Solid
+#endif// UDISKS2OPTICALDISC_H

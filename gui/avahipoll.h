@@ -18,47 +18,45 @@
 #ifndef AVAHIPOLL_H
 #define AVAHIPOLL_H
 
-#include <avahi-common/watch.h>
 #include <QObject>
 #include <QSocketNotifier>
 #include <QTimer>
+#include <avahi-common/watch.h>
 
-class AvahiTimeout: public QObject
-{
-    Q_OBJECT
-
-public:
-    AvahiTimeout(const struct timeval *tv, AvahiTimeoutCallback cb, void *ud);
-    void updateTimeout(const struct timeval *tv);
-
-private:
-    QTimer timer;
-    AvahiTimeoutCallback callback;
-    void *userData;
-
-private Q_SLOTS:
-    void timeout();
-};
-
-class AvahiWatch: public QObject
-{
-    Q_OBJECT
+class AvahiTimeout : public QObject {
+	Q_OBJECT
 
 public:
-    AvahiWatch(int f, AvahiWatchEvent ev, AvahiWatchCallback cb, void *ud);
-    void setEventType(AvahiWatchEvent event);
-    AvahiWatchEvent previousEvent();
+	AvahiTimeout(const struct timeval* tv, AvahiTimeoutCallback cb, void* ud);
+	void updateTimeout(const struct timeval* tv);
 
 private:
-    QScopedPointer<QSocketNotifier> notifier;
-    AvahiWatchCallback callback;
-    AvahiWatchEvent event;
-    AvahiWatchEvent prevEvent;
-    void *userData;
-    int fd;
+	QTimer timer;
+	AvahiTimeoutCallback callback;
+	void* userData;
 
 private Q_SLOTS:
-    void activated(int fd);
+	void timeout();
 };
 
-#endif //AVAHIPOLL_H
+class AvahiWatch : public QObject {
+	Q_OBJECT
+
+public:
+	AvahiWatch(int f, AvahiWatchEvent ev, AvahiWatchCallback cb, void* ud);
+	void setEventType(AvahiWatchEvent event);
+	AvahiWatchEvent previousEvent();
+
+private:
+	QScopedPointer<QSocketNotifier> notifier;
+	AvahiWatchCallback callback;
+	AvahiWatchEvent event;
+	AvahiWatchEvent prevEvent;
+	void* userData;
+	int fd;
+
+private Q_SLOTS:
+	void activated(int fd);
+};
+
+#endif//AVAHIPOLL_H

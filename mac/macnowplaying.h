@@ -24,31 +24,30 @@
 #ifndef MACMEDIAPLAYER_H
 #define MACMEDIAPLAYER_H
 
-#include <QObject>
-#include "mpd-interface/song.h"
 #include "mpd-interface/mpdstatus.h"
+#include "mpd-interface/song.h"
+#include <QObject>
 
-class MacNowPlaying : public QObject
-{
-    Q_OBJECT
-
-public:
-    MacNowPlaying(QObject *p);
-    ~MacNowPlaying() override;
+class MacNowPlaying : public QObject {
+	Q_OBJECT
 
 public:
-    void updateCurrentSong(const Song &song);
-    void updateStatus(MPDStatus *const status);
+	MacNowPlaying(QObject* p);
+	~MacNowPlaying() override;
+
+public:
+	void updateCurrentSong(const Song& song);
+	void updateStatus(MPDStatus* const status);
 
 public Q_SLOTS:
-    void updateCurrentCover(const QString &fileName);
+	void updateCurrentCover(const QString& fileName);
 
 Q_SIGNALS:
-    void setSeekId(qint32 songId, quint32 time);
+	void setSeekId(qint32 songId, quint32 time);
 
 private:
-    struct impl;
-    std::unique_ptr<impl> pimpl;
+	struct impl;
+	std::unique_ptr<impl> pimpl;
 };
 
 #endif

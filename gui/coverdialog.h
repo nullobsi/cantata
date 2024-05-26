@@ -25,13 +25,13 @@
 #define COVER_DIALOG_H
 
 #include "config.h"
-#include "support/dialog.h"
-#include "mpd-interface/song.h"
-#include "ui_coverdialog.h"
 #include "covers.h"
-#include <QSet>
+#include "mpd-interface/song.h"
+#include "support/dialog.h"
+#include "ui_coverdialog.h"
 #include <QList>
 #include <QMap>
+#include <QSet>
 
 class NetworkJob;
 class QUrl;
@@ -48,114 +48,112 @@ class MessageOverlay;
 class QAction;
 class QMenu;
 
-class CoverPreview : public Dialog
-{
-    Q_OBJECT
+class CoverPreview : public Dialog {
+	Q_OBJECT
 
 public:
-    CoverPreview(QWidget *p);
-    ~CoverPreview() override { }
-    void showImage(const QImage &img, const QString &u);
-    void downloading(const QString &u);
-    bool aboutToShow(const QString &u) const { return u==url; }
+	CoverPreview(QWidget* p);
+	~CoverPreview() override {}
+	void showImage(const QImage& img, const QString& u);
+	void downloading(const QString& u);
+	bool aboutToShow(const QString& u) const { return u == url; }
 
 private Q_SLOTS:
-    void progress(qint64 rx, qint64 total);
+	void progress(qint64 rx, qint64 total);
 
 private:
-    void scaleImage(int adjust);
-    void wheelEvent(QWheelEvent *event) override;
+	void scaleImage(int adjust);
+	void wheelEvent(QWheelEvent* event) override;
 
 private:
-    QString url;
-    QLabel *loadingLabel;
-    QProgressBar *pbar;
-    QLabel *imageLabel;
-    QScrollArea *scrollArea;
-    double zoom;
-    int imgW;
-    int imgH;
+	QString url;
+	QLabel* loadingLabel;
+	QProgressBar* pbar;
+	QLabel* imageLabel;
+	QScrollArea* scrollArea;
+	double zoom;
+	int imgW;
+	int imgH;
 };
 
-class CoverDialog : public Dialog, public Ui::CoverDialog
-{
-    Q_OBJECT
+class CoverDialog : public Dialog, public Ui::CoverDialog {
+	Q_OBJECT
 
 public:
-    static int instanceCount();
+	static int instanceCount();
 
-    enum DownloadType {
-        DL_Query,
-        DL_Thumbnail,
-        DL_LargePreview,
-        DL_LargeSave
-    };
+	enum DownloadType {
+		DL_Query,
+		DL_Thumbnail,
+		DL_LargePreview,
+		DL_LargeSave
+	};
 
-    CoverDialog(QWidget *parent);
-    ~CoverDialog() override;
+	CoverDialog(QWidget* parent);
+	~CoverDialog() override;
 
-    void show(const Song &s, const Covers::Image &current=Covers::Image());
-    int imageSize() const { return iSize; }
+	void show(const Song& s, const Covers::Image& current = Covers::Image());
+	int imageSize() const { return iSize; }
 
 Q_SIGNALS:
-    void selectedCover(const QImage &img, const QString &fileName);
+	void selectedCover(const QImage& img, const QString& fileName);
 
 private Q_SLOTS:
-    void queryJobFinished();
-    void downloadJobFinished();
-    void showImage(QListWidgetItem *item);
-    void sendQuery();
-    void cancelQuery();
-    void checkStatus();
-    void addLocalFile();
-    void menuRequested(const QPoint &pos);
-    void showImage();
-    void removeImages();
+	void queryJobFinished();
+	void downloadJobFinished();
+	void showImage(QListWidgetItem* item);
+	void sendQuery();
+	void cancelQuery();
+	void checkStatus();
+	void addLocalFile();
+	void menuRequested(const QPoint& pos);
+	void showImage();
+	void removeImages();
 
 private:
-    void sendLastFmQuery(const QString &fixedQuery, int page);
-    //void sendGoogleQuery(const QString &fixedQuery, int page);
-    //void sendSpotifyQuery(const QString &fixedQuery);
-    void sendITunesQuery(const QString &fixedQuery);
-    void sendDeezerQuery(const QString &fixedQuery);
-    CoverPreview *previewDialog();
-    void insertItem(CoverItem *item);
-    NetworkJob * downloadImage(const QString &url, DownloadType dlType);
-    void downloadThumbnail(const QString &thumbUrl, const QString &largeUrl, const QString &host, int w=-1, int h=-1, int sz=-1);
-    void clearTempFiles();
-    void sendQueryRequest(const QUrl &url, const QString &host=QString());
-    void parseLastFmQueryResponse(const QByteArray &resp);
-    //void parseGoogleQueryResponse(const QByteArray &resp);
-    void parseCoverArtArchiveQueryResponse(const QByteArray &resp);
-    //void parseSpotifyQueryResponse(const QByteArray &resp);
-    void parseITunesQueryResponse(const QByteArray &resp);
-    void parseDeezerQueryResponse(const QByteArray &resp);
-    void slotButtonClicked(int button) override;
-    bool saveCover(const QString &src, const QImage &img);
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
-    void setSearching(bool s);
+	void sendLastFmQuery(const QString& fixedQuery, int page);
+	//void sendGoogleQuery(const QString &fixedQuery, int page);
+	//void sendSpotifyQuery(const QString &fixedQuery);
+	void sendITunesQuery(const QString& fixedQuery);
+	void sendDeezerQuery(const QString& fixedQuery);
+	CoverPreview* previewDialog();
+	void insertItem(CoverItem* item);
+	NetworkJob* downloadImage(const QString& url, DownloadType dlType);
+	void downloadThumbnail(const QString& thumbUrl, const QString& largeUrl, const QString& host, int w = -1, int h = -1, int sz = -1);
+	void clearTempFiles();
+	void sendQueryRequest(const QUrl& url, const QString& host = QString());
+	void parseLastFmQueryResponse(const QByteArray& resp);
+	//void parseGoogleQueryResponse(const QByteArray &resp);
+	void parseCoverArtArchiveQueryResponse(const QByteArray& resp);
+	//void parseSpotifyQueryResponse(const QByteArray &resp);
+	void parseITunesQueryResponse(const QByteArray& resp);
+	void parseDeezerQueryResponse(const QByteArray& resp);
+	void slotButtonClicked(int button) override;
+	bool saveCover(const QString& src, const QImage& img);
+	void dragEnterEvent(QDragEnterEvent* event) override;
+	void dropEvent(QDropEvent* event) override;
+	void setSearching(bool s);
 
 private:
-    Song song;
-    ExistingCover *existing;
-    QString currentQueryString;
-    QSet<NetworkJob *> currentQuery;
-    QSet<QString> currentUrls;
-    QSet<QString> currentLocalCovers;
-    QList<QTemporaryFile *> tempFiles;
-    CoverPreview *preview;
-    bool saving;
-    bool isArtist;
-    bool isComposer;
-    int iSize;
-    Spinner *spinner;
-    MessageOverlay *msgOverlay;
-    int page;
-    QMenu *menu;
-    QAction *showAction;
-    QAction *removeAction;
-    QMap<int, QAction *> providers;
+	Song song;
+	ExistingCover* existing;
+	QString currentQueryString;
+	QSet<NetworkJob*> currentQuery;
+	QSet<QString> currentUrls;
+	QSet<QString> currentLocalCovers;
+	QList<QTemporaryFile*> tempFiles;
+	CoverPreview* preview;
+	bool saving;
+	bool isArtist;
+	bool isComposer;
+	int iSize;
+	Spinner* spinner;
+	MessageOverlay* msgOverlay;
+	int page;
+	QMenu* menu;
+	QAction* showAction;
+	QAction* removeAction;
+	QMap<int, QAction*> providers;
 };
 
 #endif

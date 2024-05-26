@@ -34,58 +34,57 @@
 
 class QTimer;
 
-class HttpStream : public QObject
-{
-    Q_OBJECT
+class HttpStream : public QObject {
+	Q_OBJECT
 
 public:
-    static void enableDebug();
-    static HttpStream * self();
+	static void enableDebug();
+	static HttpStream* self();
 
-    HttpStream(QObject *p=nullptr);
-    ~HttpStream() override { save(); }
-    void save() const;
-    bool isMuted() const { return muted; }
-    int volume();
-    int unmuteVolume() const { return unmuteVol; }
+	HttpStream(QObject* p = nullptr);
+	~HttpStream() override { save(); }
+	void save() const;
+	bool isMuted() const { return muted; }
+	int volume();
+	int unmuteVolume() const { return unmuteVol; }
 
 Q_SIGNALS:
-    void isEnabled(bool en);
-    void update();
+	void isEnabled(bool en);
+	void update();
 
 public Q_SLOTS:
-    void setEnabled(bool e);
-    void setVolume(int vol);
-    void toggleMute();
+	void setEnabled(bool e);
+	void setVolume(int vol);
+	void toggleMute();
 
 private Q_SLOTS:
-    void updateStatus();
-    void streamUrl(const QString &url);
-    void checkPlayer();
+	void updateStatus();
+	void streamUrl(const QString& url);
+	void checkPlayer();
 #ifndef LIBVLC_FOUND
-    void bufferingProgress(int progress);
+	void bufferingProgress(int progress);
 #endif
 
 private:
-    void startTimer();
-    void stopTimer();
+	void startTimer();
+	void stopTimer();
 
 private:
-    bool enabled;
-    bool muted;
-    int state;
-    int playStateChecks;
-    int currentVolume;
-    int unmuteVol;
-    QTimer *playStateCheckTimer;
+	bool enabled;
+	bool muted;
+	int state;
+	int playStateChecks;
+	int currentVolume;
+	int unmuteVol;
+	QTimer* playStateCheckTimer;
 
-    #ifdef LIBVLC_FOUND
-    libvlc_instance_t *instance;
-    libvlc_media_player_t *player;
-    libvlc_media_t *media;
-    #else
-    QMediaPlayer *player;
-    #endif
+#ifdef LIBVLC_FOUND
+	libvlc_instance_t* instance;
+	libvlc_media_player_t* player;
+	libvlc_media_t* media;
+#else
+	QMediaPlayer* player;
+#endif
 };
 
 #endif

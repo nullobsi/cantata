@@ -26,21 +26,20 @@
 
 #include "onlinesearchservice.h"
 
-class SoundCloudService : public OnlineSearchService
-{
-    Q_OBJECT
+class SoundCloudService : public OnlineSearchService {
+	Q_OBJECT
 
 public:
-    SoundCloudService(QObject *p);
-    ~SoundCloudService() override { }
+	SoundCloudService(QObject* p);
+	~SoundCloudService() override {}
 
-    QString name() const override;
-    QString title() const override;
-    QString descr() const override;
-    void search(const QString &key, const QString &value) override;
+	QString name() const override;
+	QString title() const override;
+	QString descr() const override;
+	void search(const QString& key, const QString& value) override;
 
 private Q_SLOTS:
-    void jobFinished();
+	void jobFinished();
 };
 
 #endif

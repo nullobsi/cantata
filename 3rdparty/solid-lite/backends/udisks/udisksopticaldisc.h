@@ -22,42 +22,38 @@
 #ifndef OPTICALDISC_H
 #define OPTICALDISC_H
 
-#include <solid-lite/ifaces/opticaldisc.h>
 #include "udisksstoragevolume.h"
+#include <solid-lite/ifaces/opticaldisc.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks
-{
+namespace Solid {
+namespace Backends {
+namespace UDisks {
 
-class OpticalDisc : public UDisksStorageVolume, virtual public Solid::Ifaces::OpticalDisc
-{
+class OpticalDisc : public UDisksStorageVolume, virtual public Solid::Ifaces::OpticalDisc {
 
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::OpticalDisc)
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::OpticalDisc)
 
 public:
-    OpticalDisc(UDisksDevice *device);
-    virtual ~OpticalDisc();
+	OpticalDisc(UDisksDevice* device);
+	virtual ~OpticalDisc();
 
-    virtual qulonglong capacity() const;
-    virtual bool isRewritable() const;
-    virtual bool isBlank() const;
-    virtual bool isAppendable() const;
-    virtual Solid::OpticalDisc::DiscType discType() const;
-    virtual Solid::OpticalDisc::ContentTypes availableContent() const;
+	virtual qulonglong capacity() const;
+	virtual bool isRewritable() const;
+	virtual bool isBlank() const;
+	virtual bool isAppendable() const;
+	virtual Solid::OpticalDisc::DiscType discType() const;
+	virtual Solid::OpticalDisc::ContentTypes availableContent() const;
 
 private slots:
-    void slotChanged();
+	void slotChanged();
 
 private:
-    mutable bool m_needsReprobe;
-    mutable Solid::OpticalDisc::ContentTypes m_cachedContent;
+	mutable bool m_needsReprobe;
+	mutable Solid::OpticalDisc::ContentTypes m_cachedContent;
 };
 
-}
-}
-}
-#endif // OPTICALDISC_H
+}// namespace UDisks
+}// namespace Backends
+}// namespace Solid
+#endif// OPTICALDISC_H

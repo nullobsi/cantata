@@ -28,18 +28,17 @@
 
 class QToolButton;
 
-namespace Icon
-{
-    extern int stdSize(int s);
-    extern int dlgIconSize();
-    extern void init(QToolButton *btn, bool setFlat=true);
-    inline QIcon get(const QString &name) { return name.startsWith(":") || name.startsWith("/") ? QIcon(name) : QIcon::fromTheme(name); }
+namespace Icon {
+extern int stdSize(int s);
+extern int dlgIconSize();
+extern void init(QToolButton* btn, bool setFlat = true);
+inline QIcon get(const QString& name) { return name.startsWith(":") || name.startsWith("/") ? QIcon(name) : QIcon::fromTheme(name); }
 
-    enum Std {
-        Close,
-        Clear
-    };
-    extern QPixmap getScaledPixmap(const QIcon &icon, int w, int h, int base);
-}
+enum Std {
+	Close,
+	Clear
+};
+extern QPixmap getScaledPixmap(const QIcon& icon, int w, int h, int base);
+}// namespace Icon
 
 #endif

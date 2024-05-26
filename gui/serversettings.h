@@ -24,55 +24,54 @@
 #ifndef SERVERSETTINGS_H
 #define SERVERSETTINGS_H
 
-#include "ui_serversettings.h"
-#include "mpd-interface/mpdconnection.h"
 #include "devices/deviceoptions.h"
+#include "mpd-interface/mpdconnection.h"
+#include "ui_serversettings.h"
 
 #include <QPushButton>
 
-class ServerSettings : public QWidget, private Ui::ServerSettings
-{
-    Q_OBJECT
+class ServerSettings : public QWidget, private Ui::ServerSettings {
+	Q_OBJECT
 
-    struct Collection {
-        Collection(const MPDConnectionDetails &d=MPDConnectionDetails(), const DeviceOptions &n=DeviceOptions())
-            : details(d), namingOpts(n) { }
-        MPDConnectionDetails details;
-        DeviceOptions namingOpts;
-    };
+	struct Collection {
+		Collection(const MPDConnectionDetails& d = MPDConnectionDetails(), const DeviceOptions& n = DeviceOptions())
+			: details(d), namingOpts(n) {}
+		MPDConnectionDetails details;
+		DeviceOptions namingOpts;
+	};
 
 public:
-    ServerSettings(QWidget *p);
-    ~ServerSettings() override { }
+	ServerSettings(QWidget* p);
+	~ServerSettings() override {}
 
-    void load();
-    void save();
-    void cancel();
+	void load();
+	void save();
+	void cancel();
 
 private Q_SLOTS:
-    void showDetails(int index);
-    void add();
-    void remove();
-    void nameChanged();
-    void basicDirChanged();
-    #ifdef Avahi_FOUND
-    void detectMPDs();
-    void adoptServerSettings(QString ip, QString port);
-    #endif
+	void showDetails(int index);
+	void add();
+	void remove();
+	void nameChanged();
+	void basicDirChanged();
+#ifdef Avahi_FOUND
+	void detectMPDs();
+	void adoptServerSettings(QString ip, QString port);
+#endif
 
 private:
-    void setDetails(const MPDConnectionDetails &details);
-    MPDConnectionDetails getDetails() const;
-    QString generateName(int ignore=-1) const;
+	void setDetails(const MPDConnectionDetails& details);
+	MPDConnectionDetails getDetails() const;
+	QString generateName(int ignore = -1) const;
 
 private:
-    QList<Collection> collections;
-    Collection prevBasic;
-    bool haveBasicCollection;
-    int prevIndex;
-    #ifdef Avahi_FOUND
-    QPushButton *discoveryButton;
-    #endif
+	QList<Collection> collections;
+	Collection prevBasic;
+	bool haveBasicCollection;
+	int prevIndex;
+#ifdef Avahi_FOUND
+	QPushButton* discoveryButton;
+#endif
 };
 
 #endif

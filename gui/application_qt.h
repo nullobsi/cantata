@@ -25,16 +25,15 @@
 #define APPLICATION_QT_H
 
 #include <QApplication>
-class Application : public QApplication
-{
+class Application : public QApplication {
 public:
-    static void init();
-    static void fixSize(QWidget *widget);
-    Application(int &argc, char **argv);
-    ~Application() override { }
+	static void init();
+	static void fixSize(QWidget* widget);
+	Application(int& argc, char** argv);
+	~Application() override {}
 
-    bool start(const QStringList &files);
-    void loadFiles(const QStringList &files);
+	bool start(const QStringList& files);
+	void loadFiles(const QStringList& files);
 };
 
 #endif

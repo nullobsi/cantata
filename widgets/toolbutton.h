@@ -24,23 +24,22 @@
 #ifndef TOOLBUTTON_H
 #define TOOLBUTTON_H
 
-#include <QToolButton>
 #include "support/icon.h"
+#include <QToolButton>
 
 class QMenu;
-class ToolButton : public QToolButton
-{
+class ToolButton : public QToolButton {
 public:
-    explicit ToolButton(QWidget *parent = nullptr);
-    QSize sizeHint() const override;
-    void setMenu(QMenu *m);
-    void paintEvent(QPaintEvent *e) override;
+	explicit ToolButton(QWidget* parent = nullptr);
+	QSize sizeHint() const override;
+	void setMenu(QMenu* m);
+	void paintEvent(QPaintEvent* e) override;
 
 private:
-    mutable QSize sh;
-    #ifdef Q_OS_MAC
-    bool allowMouseOver;
-    #endif
+	mutable QSize sh;
+#ifdef Q_OS_MAC
+	bool allowMouseOver;
+#endif
 };
 
-#endif // MENUBUTTON_H
+#endif// MENUBUTTON_H

@@ -23,33 +23,31 @@
 
 #include <solid-lite/solid_export.h>
 
-#include <solid-lite/solidnamespace.h>
-#include <solid-lite/deviceinterface.h>
 #include <QVariant>
+#include <solid-lite/deviceinterface.h>
+#include <solid-lite/solidnamespace.h>
 
-namespace Solid
-{
-    class StorageAccessPrivate;
-    class Device;
+namespace Solid {
+class StorageAccessPrivate;
+class Device;
 
-    /**
+/**
      * This device interface is available on volume devices to access them
      * (i.e. mount or unmount them).
      *
      * A volume is anything that can contain data (partition, optical disc,
      * memory card). It's a particular kind of block device.
      */
-    class SOLID_EXPORT StorageAccess : public DeviceInterface
-    {
-        Q_OBJECT
-        Q_PROPERTY(bool accessible READ isAccessible)
-        Q_PROPERTY(QString filePath READ filePath)
-        Q_PROPERTY(bool ignored READ isIgnored)
-        Q_DECLARE_PRIVATE(StorageAccess)
-        friend class Device;
+class SOLID_EXPORT StorageAccess : public DeviceInterface {
+	Q_OBJECT
+	Q_PROPERTY(bool accessible READ isAccessible)
+	Q_PROPERTY(QString filePath READ filePath)
+	Q_PROPERTY(bool ignored READ isIgnored)
+	Q_DECLARE_PRIVATE(StorageAccess)
+	friend class Device;
 
-    private:
-        /**
+private:
+	/**
          * Creates a new StorageAccess object.
          * You generally won't need this. It's created when necessary using
          * Device::as().
@@ -57,40 +55,38 @@ namespace Solid
          * @param backendObject the device interface object provided by the backend
          * @see Solid::Device::as()
          */
-        explicit StorageAccess(QObject *backendObject);
+	explicit StorageAccess(QObject* backendObject);
 
-    public:
-        /**
+public:
+	/**
          * Destroys a StorageAccess object.
          */
-        ~StorageAccess() override;
+	~StorageAccess() override;
 
-
-        /**
+	/**
          * Get the Solid::DeviceInterface::Type of the StorageAccess device interface.
          *
          * @return the StorageVolume device interface type
          * @see Solid::Ifaces::Enums::DeviceInterface::Type
          */
-        static Type deviceInterfaceType() { return DeviceInterface::StorageAccess; }
+	static Type deviceInterfaceType() { return DeviceInterface::StorageAccess; }
 
-
-        /**
+	/**
          * Indicates if this volume is mounted.
          *
          * @return true if the volume is mounted
          */
-        bool isAccessible() const;
+	bool isAccessible() const;
 
-        /**
+	/**
          * Retrieves the absolute path of this volume mountpoint.
          *
          * @return the absolute path to the mount point if the volume is
          * mounted, QString() otherwise
          */
-        QString filePath() const;
+	QString filePath() const;
 
-        /**
+	/**
          * Indicates if this volume should be ignored by applications.
          *
          * If it should be ignored, it generally means that it should be
@@ -99,35 +95,35 @@ namespace Solid
          *
          * @return true if the volume should be ignored
          */
-        bool isIgnored() const;
+	bool isIgnored() const;
 
-        /**
+	/**
          * Mounts the volume.
          *
          * @return false if the operation is not supported, true if the
          * operation is attempted
          */
-        bool setup();
+	bool setup();
 
-        /**
+	/**
          * Unmounts the volume.
          *
          * @return false if the operation is not supported, true if the
          * operation is attempted
          */
-        bool teardown();
+	bool teardown();
 
-    Q_SIGNALS:
-        /**
+Q_SIGNALS:
+	/**
          * This signal is emitted when the accessiblity of this device
          * has changed.
          *
          * @param accessible true if the volume is accessible, false otherwise
          * @param udi the UDI of the volume
          */
-        void accessibilityChanged(bool accessible, const QString &udi);
+	void accessibilityChanged(bool accessible, const QString& udi);
 
-        /**
+	/**
          * This signal is emitted when the attempted setting up of this
          * device is completed. The signal might be spontaneous i.e.
          * it can be triggered by another process.
@@ -136,9 +132,9 @@ namespace Solid
          * @param errorData more information about the error, if any
          * @param udi the UDI of the volume
          */
-        void setupDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
+	void setupDone(Solid::ErrorType error, QVariant errorData, const QString& udi);
 
-        /**
+	/**
          * This signal is emitted when the attempted tearing down of this
          * device is completed. The signal might be spontaneous i.e.
          * it can be triggered by another process.
@@ -147,32 +143,32 @@ namespace Solid
          * @param errorData more information about the error, if any
          * @param udi the UDI of the volume
          */
-        void teardownDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
+	void teardownDone(Solid::ErrorType error, QVariant errorData, const QString& udi);
 
-        /**
+	/**
          * This signal is emitted when a setup of this device is requested.
          * The signal might be spontaneous i.e. it can be triggered by
          * another process.
          *
          * @param udi the UDI of the volume
          */
-        void setupRequested(const QString &udi);
+	void setupRequested(const QString& udi);
 
-        /**
+	/**
          * This signal is emitted when a teardown of this device is requested.
          * The signal might be spontaneous i.e. it can be triggered by
          * another process
          *
          * @param udi the UDI of the volume
          */
-        void teardownRequested(const QString &udi);
+	void teardownRequested(const QString& udi);
 
-    protected:
-        /**
+protected:
+	/**
          * @internal
          */
-        StorageAccess(StorageAccessPrivate &dd, QObject *backendObject);
-    };
-}
+	StorageAccess(StorageAccessPrivate& dd, QObject* backendObject);
+};
+}// namespace Solid
 
 #endif

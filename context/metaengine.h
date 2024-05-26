@@ -25,47 +25,46 @@
 #define META_ENGINE_H
 
 #include "contextengine.h"
-#include <QStringList>
 #include <QMap>
+#include <QStringList>
 
 class WikipediaEngine;
 class LastFmEngine;
 
-class MetaEngine : public ContextEngine
-{
-    Q_OBJECT
-    
-    enum Engines {
-        Wiki   = 0,
-        LastFm = 1
-    };
+class MetaEngine : public ContextEngine {
+	Q_OBJECT
 
-    struct Response {
-        Response(const QString &h=QString(), const QString &l=QString()) : html(h), lang(l) { }
-        QString html;
-        QString lang;
-    };
+	enum Engines {
+		Wiki = 0,
+		LastFm = 1
+	};
+
+	struct Response {
+		Response(const QString& h = QString(), const QString& l = QString()) : html(h), lang(l) {}
+		QString html;
+		QString lang;
+	};
 
 public:
-    static void enableDebug();
+	static void enableDebug();
 
-    MetaEngine(QObject *p);
+	MetaEngine(QObject* p);
 
-    QStringList getLangs() const override;
-    QString getPrefix(const QString &key) const override;
-    QString translateLinks(QString text) const override;
+	QStringList getLangs() const override;
+	QString getPrefix(const QString& key) const override;
+	QString translateLinks(QString text) const override;
 
 public Q_SLOTS:
-    void search(const QStringList &query, Mode mode) override;
+	void search(const QStringList& query, Mode mode) override;
 
 private Q_SLOTS:
-    void wikiResponse(const QString &html, const QString &lang);
-    void lastFmResponse(const QString &html, const QString &lang);
-    
+	void wikiResponse(const QString& html, const QString& lang);
+	void lastFmResponse(const QString& html, const QString& lang);
+
 private:
-    QMap<int, Response> responses;
-    WikipediaEngine *wiki;
-    LastFmEngine *lastfm;
+	QMap<int, Response> responses;
+	WikipediaEngine* wiki;
+	LastFmEngine* lastfm;
 };
 
 #endif

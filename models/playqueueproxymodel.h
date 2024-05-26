@@ -27,19 +27,18 @@
 #ifndef PLAYQUEUEPROXYMODEL_H
 #define PLAYQUEUEPROXYMODEL_H
 
-#include "proxymodel.h"
 #include "config.h"
+#include "proxymodel.h"
 
-class PlayQueueProxyModel : public ProxyModel
-{
-    Q_OBJECT
+class PlayQueueProxyModel : public ProxyModel {
+	Q_OBJECT
 
 public:
-    PlayQueueProxyModel(QObject *parent = nullptr);
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+	PlayQueueProxyModel(QObject* parent = nullptr);
+	bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const override;
 
-    QMimeData *mimeData(const QModelIndexList &indexes) const override;
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
+	QMimeData* mimeData(const QModelIndexList& indexes) const override;
+	bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) override;
 };
 
 #endif

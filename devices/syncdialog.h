@@ -24,46 +24,45 @@
 #ifndef _SYNC_DIALOG_H_
 #define _SYNC_DIALOG_H_
 
-#include "support/dialog.h"
-#include "mpd-interface/song.h"
 #include "deviceoptions.h"
+#include "mpd-interface/song.h"
+#include "support/dialog.h"
 
 class Device;
 class SyncCollectionWidget;
 class SqueezedTextLabel;
 
-class SyncDialog : public Dialog
-{
-    Q_OBJECT
+class SyncDialog : public Dialog {
+	Q_OBJECT
 
 public:
-    static int instanceCount();
+	static int instanceCount();
 
-    SyncDialog(QWidget *parent);
-    ~SyncDialog() override;
+	SyncDialog(QWidget* parent);
+	~SyncDialog() override;
 
-    void sync(const QString &udi);
+	void sync(const QString& udi);
 
 private Q_SLOTS:
-    void copy(const QList<Song> &songs);
-    void librarySongs(const QList<Song> &songs, double pc);
-    void selectionChanged();
-    void configure();
-    void saveProperties(const QString &path, const DeviceOptions &opts);
+	void copy(const QList<Song>& songs);
+	void librarySongs(const QList<Song>& songs, double pc);
+	void selectionChanged();
+	void configure();
+	void saveProperties(const QString& path, const DeviceOptions& opts);
 
 private:
-    void updateSongs();
-    void slotButtonClicked(int button) override;
-    Device * getDevice();
+	void updateSongs();
+	void slotButtonClicked(int button) override;
+	Device* getDevice();
 
 private:
-    SqueezedTextLabel *statusLabel;
-    QString devUdi;
-    Device *currentDev;
-    SyncCollectionWidget *devWidget;
-    SyncCollectionWidget *libWidget;
-    QSet<Song> libSongs;
-    DeviceOptions libOptions;
+	SqueezedTextLabel* statusLabel;
+	QString devUdi;
+	Device* currentDev;
+	SyncCollectionWidget* devWidget;
+	SyncCollectionWidget* libWidget;
+	QSet<Song> libSongs;
+	DeviceOptions libOptions;
 };
 
 #endif

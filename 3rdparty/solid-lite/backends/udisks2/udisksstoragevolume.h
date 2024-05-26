@@ -21,37 +21,32 @@
 #ifndef UDISKS2STORAGEVOLUME_H
 #define UDISKS2STORAGEVOLUME_H
 
-#include <ifaces/storagevolume.h>
 #include "udisksblock.h"
+#include <ifaces/storagevolume.h>
 
+namespace Solid {
+namespace Backends {
+namespace UDisks2 {
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks2
-{
-
-class StorageVolume: public Block, virtual public Solid::Ifaces::StorageVolume
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::StorageVolume)
+class StorageVolume : public Block, virtual public Solid::Ifaces::StorageVolume {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::StorageVolume)
 
 public:
-    StorageVolume(Device *device);
-    ~StorageVolume() override;
+	StorageVolume(Device* device);
+	~StorageVolume() override;
 
-    QString encryptedContainerUdi() const override;
-    qulonglong size() const override;
-    QString uuid() const override;
-    QString label() const override;
-    QString fsType() const override;
-    Solid::StorageVolume::UsageType usage() const override;
-    bool isIgnored() const override;
+	QString encryptedContainerUdi() const override;
+	qulonglong size() const override;
+	QString uuid() const override;
+	QString label() const override;
+	QString fsType() const override;
+	Solid::StorageVolume::UsageType usage() const override;
+	bool isIgnored() const override;
 };
 
-}
-}
-}
+}// namespace UDisks2
+}// namespace Backends
+}// namespace Solid
 
-#endif // UDISKS2STORAGEVOLUME_H
+#endif// UDISKS2STORAGEVOLUME_H

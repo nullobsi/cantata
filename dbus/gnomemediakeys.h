@@ -31,33 +31,32 @@ class OrgGnomeSettingsDaemonMediaKeysInterface;
 class QDBusPendingCallWatcher;
 class QDBusServiceWatcher;
 
-class GnomeMediaKeys : public MultiMediaKeysInterface
-{
-    Q_OBJECT
+class GnomeMediaKeys : public MultiMediaKeysInterface {
+	Q_OBJECT
 
 public:
-    GnomeMediaKeys(QObject *p);
+	GnomeMediaKeys(QObject* p);
 
-    bool activate() override;
-    void deactivate() override;
+	bool activate() override;
+	void deactivate() override;
 
 private:
-    bool daemonIsRunning();
-    void releaseKeys();
-    void grabKeys();
-    void disconnectDaemon();
+	bool daemonIsRunning();
+	void releaseKeys();
+	void grabKeys();
+	void disconnectDaemon();
 
 private Q_SLOTS:
-    void serviceOwnerChanged(const QString &name, const QString &oldOwner, const QString &newOwner);
-    void registerFinished(QDBusPendingCallWatcher *watcher);
-    void keyPressed(const QString &app, const QString &key);
-    void pluginActivated(const QString &name);
+	void serviceOwnerChanged(const QString& name, const QString& oldOwner, const QString& newOwner);
+	void registerFinished(QDBusPendingCallWatcher* watcher);
+	void keyPressed(const QString& app, const QString& key);
+	void pluginActivated(const QString& name);
 
 private:
-    OrgGnomeSettingsDaemonInterface *daemon;
-    OrgGnomeSettingsDaemonMediaKeysInterface *mk;
-    QDBusServiceWatcher *watcher;
-    QString serviceName;
+	OrgGnomeSettingsDaemonInterface* daemon;
+	OrgGnomeSettingsDaemonMediaKeysInterface* mk;
+	QDBusServiceWatcher* watcher;
+	QString serviceName;
 };
 
 #endif

@@ -30,36 +30,34 @@ class QComboBox;
 class QCheckBox;
 class PathRequester;
 
-class PodcastSettingsDialog : public Dialog
-{
-    Q_OBJECT
+class PodcastSettingsDialog : public Dialog {
+	Q_OBJECT
 public:
-    enum Changes {
-        RssUpdate    = 0x01,
-        DownloadPath = 0x02,
-        AutoDownload = 0x04
-    };
+	enum Changes {
+		RssUpdate = 0x01,
+		DownloadPath = 0x02,
+		AutoDownload = 0x04
+	};
 
-    PodcastSettingsDialog(QWidget *p);
-    ~PodcastSettingsDialog() override { }
+	PodcastSettingsDialog(QWidget* p);
+	~PodcastSettingsDialog() override {}
 
-    int changes() const { return changed; }
+	int changes() const { return changed; }
 
 private Q_SLOTS:
-    void checkSaveable();
+	void checkSaveable();
 
 private:
-    void slotButtonClicked(int button) override;
+	void slotButtonClicked(int button) override;
 
 private:
-    QComboBox *updateCombo;
-    int origRssUpdate;
-    PathRequester *downloadPath;
-    QComboBox *autoDownloadCombo;
-    QString origPodcastDownloadPath;
-    int origPodcastAutoDownload;
-    int changed;
+	QComboBox* updateCombo;
+	int origRssUpdate;
+	PathRequester* downloadPath;
+	QComboBox* autoDownloadCombo;
+	QString origPodcastDownloadPath;
+	int origPodcastAutoDownload;
+	int changed;
 };
-
 
 #endif

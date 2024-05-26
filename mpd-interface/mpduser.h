@@ -24,42 +24,45 @@
 #ifndef MPD_USER_H
 #define MPD_USER_H
 
-#include <QString>
-#include <QMutex>
 #include "mpdconnection.h"
+#include <QMutex>
+#include <QString>
 
-class MPDUser
-{
+class MPDUser {
 public:
-    static MPDUser * self();
+	static MPDUser* self();
 
-    static const QString constName;
-    static QString translatedName();
+	static const QString constName;
+	static QString translatedName();
 
-    MPDUser();
+	MPDUser();
 
-    bool isSupported();
-    bool isRunning();
-    void start();
-    void stop();
-    void setMusicFolder(const QString &folder);
-    // Remove all files and folders (apart from Music folder!) associated with use MPD instance...
-    void cleanup();
+	bool isSupported();
+	bool isRunning();
+	void start();
+	void stop();
+	void setMusicFolder(const QString& folder);
+	// Remove all files and folders (apart from Music folder!) associated with use MPD instance...
+	void cleanup();
 
-    const MPDConnectionDetails & details(bool createFiles=false) { init(createFiles); return det; }
-    void setDetails(const MPDConnectionDetails &d);
-
-private:
-    void init(bool create);
-    int getPid();
-    void killProcess();
-    bool controlMpd(bool stop);
+	const MPDConnectionDetails& details(bool createFiles = false)
+	{
+		init(createFiles);
+		return det;
+	}
+	void setDetails(const MPDConnectionDetails& d);
 
 private:
-    QString mpdExe;
-    QString pidFileName;
-    MPDConnectionDetails det;
-    QMutex mutex;
+	void init(bool create);
+	int getPid();
+	void killProcess();
+	bool controlMpd(bool stop);
+
+private:
+	QString mpdExe;
+	QString pidFileName;
+	MPDConnectionDetails det;
+	QMutex mutex;
 };
 
 #endif

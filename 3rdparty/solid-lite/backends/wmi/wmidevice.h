@@ -22,80 +22,73 @@
 #ifndef SOLID_BACKENDS_WMI_WMIDEVICE_H
 #define SOLID_BACKENDS_WMI_WMIDEVICE_H
 
-#include <solid-lite/ifaces/device.h>
 #include "wmiquery.h"
+#include <solid-lite/ifaces/device.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace Wmi
-{
+namespace Solid {
+namespace Backends {
+namespace Wmi {
 class WmiManager;
 class WmiDevicePrivate;
 
-struct ChangeDescription
-{
-    QString key;
-    bool added;
-    bool removed;
+struct ChangeDescription {
+	QString key;
+	bool added;
+	bool removed;
 };
 
-class WmiDevice : public Solid::Ifaces::Device
-{
-    Q_OBJECT
+class WmiDevice : public Solid::Ifaces::Device {
+	Q_OBJECT
 
 public:
-    WmiDevice(const QString &udi);
-    virtual ~WmiDevice();
+	WmiDevice(const QString& udi);
+	virtual ~WmiDevice();
 
-    virtual QString udi() const;
-    virtual QString parentUdi() const;
+	virtual QString udi() const;
+	virtual QString parentUdi() const;
 
-    virtual QString vendor() const;
-    virtual QString product() const;
-    virtual QString icon() const;
-    virtual QStringList emblems() const;
-    virtual QString description() const;
+	virtual QString vendor() const;
+	virtual QString product() const;
+	virtual QString icon() const;
+	virtual QStringList emblems() const;
+	virtual QString description() const;
 
-    virtual bool isValid() const;
+	virtual bool isValid() const;
 
-    virtual QVariant property(const QString &key) const;
+	virtual QVariant property(const QString& key) const;
 
-    virtual QMap<QString, QVariant> allProperties() const;
+	virtual QMap<QString, QVariant> allProperties() const;
 
-    virtual bool propertyExists(const QString &key) const;
+	virtual bool propertyExists(const QString& key) const;
 
-    virtual bool queryDeviceInterface(const Solid::DeviceInterface::Type &type) const;
-    virtual QObject *createDeviceInterface(const Solid::DeviceInterface::Type &type);
+	virtual bool queryDeviceInterface(const Solid::DeviceInterface::Type& type) const;
+	virtual QObject* createDeviceInterface(const Solid::DeviceInterface::Type& type);
 
-    static QStringList generateUDIList(const Solid::DeviceInterface::Type &type);
-    static bool exists(const QString &udi);
-    const Solid::DeviceInterface::Type type() const;
+	static QStringList generateUDIList(const Solid::DeviceInterface::Type& type);
+	static bool exists(const QString& udi);
+	const Solid::DeviceInterface::Type type() const;
 
-
-    //TODO:rename the folowing methodes...
-    static WmiQuery::Item win32LogicalDiskByDiskPartitionID(const QString &deviceID);
-    static WmiQuery::Item win32DiskDriveByDiskPartitionID(const QString &deviceID);
-    static WmiQuery::Item win32DiskPartitionByDeviceIndex(const QString &deviceID);
-    static WmiQuery::Item win32DiskPartitionByDriveLetter(const QString &driveLetter);
-    static WmiQuery::Item win32LogicalDiskByDriveLetter(const QString &driveLetter);
-
+	//TODO:rename the folowing methodes...
+	static WmiQuery::Item win32LogicalDiskByDiskPartitionID(const QString& deviceID);
+	static WmiQuery::Item win32DiskDriveByDiskPartitionID(const QString& deviceID);
+	static WmiQuery::Item win32DiskPartitionByDeviceIndex(const QString& deviceID);
+	static WmiQuery::Item win32DiskPartitionByDriveLetter(const QString& driveLetter);
+	static WmiQuery::Item win32LogicalDiskByDriveLetter(const QString& driveLetter);
 
 Q_SIGNALS:
-    void propertyChanged(const QMap<QString,int> &changes);
-    void conditionRaised(const QString &condition, const QString &reason);
+	void propertyChanged(const QMap<QString, int>& changes);
+	void conditionRaised(const QString& condition, const QString& reason);
 
 private Q_SLOTS:
-    void slotPropertyModified(int count, const QList<ChangeDescription> &changes);
-    void slotCondition(const QString &condition, const QString &reason);
+	void slotPropertyModified(int count, const QList<ChangeDescription>& changes);
+	void slotCondition(const QString& condition, const QString& reason);
 
-private:    
-    WmiDevicePrivate *d;
-    friend class WmiDevicePrivate;
+private:
+	WmiDevicePrivate* d;
+	friend class WmiDevicePrivate;
 };
-}
-}
-}
+}// namespace Wmi
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_WMI_WMIDEVICE_H
+#endif// SOLID_BACKENDS_WMI_WMIDEVICE_H

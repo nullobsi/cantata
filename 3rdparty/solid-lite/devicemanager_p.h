@@ -34,55 +34,49 @@
 #include <QSharedData>
 #include <QThreadStorage>
 
-namespace Solid
-{
-    namespace Ifaces
-    {
-        class Device;
-    }
-    class DevicePrivate;
-
-
-    class DeviceManagerPrivate : public DeviceNotifier, public ManagerBasePrivate
-    {
-        Q_OBJECT
-    public:
-        DeviceManagerPrivate();
-        ~DeviceManagerPrivate() override;
-
-        DevicePrivate *findRegisteredDevice(const QString &udi);
-
-    private Q_SLOTS:
-        void _k_deviceAdded(const QString &udi);
-        void _k_deviceRemoved(const QString &udi);
-        void _k_destroyed(QObject *object);
-
-    private:
-        Ifaces::Device *createBackendObject(const QString &udi);
-
-        QExplicitlySharedDataPointer<DevicePrivate> m_nullDevice;
-        #if QT_VERSION < 0x050000
-        QMap<QString, QWeakPointer<DevicePrivate> > m_devicesMap;
-        #else
-        QMap<QString, QPointer<DevicePrivate> > m_devicesMap;
-        #endif
-        QMap<QObject *, QString> m_reverseMap;
-    };
-
-    class DeviceManagerStorage
-    {
-    public:
-        DeviceManagerStorage();
-
-        QList<QObject*> managerBackends();
-        DeviceNotifier *notifier();
-
-    private:
-        void ensureManagerCreated();
-
-        QThreadStorage<DeviceManagerPrivate*> m_storage;
-    };
+namespace Solid {
+namespace Ifaces {
+class Device;
 }
+class DevicePrivate;
 
+class DeviceManagerPrivate : public DeviceNotifier, public ManagerBasePrivate {
+	Q_OBJECT
+public:
+	DeviceManagerPrivate();
+	~DeviceManagerPrivate() override;
+
+	DevicePrivate* findRegisteredDevice(const QString& udi);
+
+private Q_SLOTS:
+	void _k_deviceAdded(const QString& udi);
+	void _k_deviceRemoved(const QString& udi);
+	void _k_destroyed(QObject* object);
+
+private:
+	Ifaces::Device* createBackendObject(const QString& udi);
+
+	QExplicitlySharedDataPointer<DevicePrivate> m_nullDevice;
+#if QT_VERSION < 0x050000
+	QMap<QString, QWeakPointer<DevicePrivate>> m_devicesMap;
+#else
+	QMap<QString, QPointer<DevicePrivate>> m_devicesMap;
+#endif
+	QMap<QObject*, QString> m_reverseMap;
+};
+
+class DeviceManagerStorage {
+public:
+	DeviceManagerStorage();
+
+	QList<QObject*> managerBackends();
+	DeviceNotifier* notifier();
+
+private:
+	void ensureManagerCreated();
+
+	QThreadStorage<DeviceManagerPrivate*> m_storage;
+};
+}// namespace Solid
 
 #endif

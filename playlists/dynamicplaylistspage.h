@@ -24,52 +24,51 @@
 #ifndef DYNAMIC_RULES_PAGE_H
 #define DYNAMIC_RULES_PAGE_H
 
-#include "widgets/singlepagewidget.h"
 #include "playlistproxymodel.h"
+#include "widgets/singlepagewidget.h"
 
 #include <QLabel>
 #include <support/action.h>
 
-class DynamicPlaylistsPage : public SinglePageWidget
-{
-    Q_OBJECT
+class DynamicPlaylistsPage : public SinglePageWidget {
+	Q_OBJECT
 
 public:
-    DynamicPlaylistsPage(QWidget *p);
-    ~DynamicPlaylistsPage() override;
-    void setView(int) override { }
+	DynamicPlaylistsPage(QWidget* p);
+	~DynamicPlaylistsPage() override;
+	void setView(int) override {}
 
 private Q_SLOTS:
-    void remoteDynamicSupport(bool s);
-    void add();
-    void edit();
-    void remove();
-    void start();
-    void stop();
-    void toggle();
-    void running(bool status);
-    void headerClicked(int level);
+	void remoteDynamicSupport(bool s);
+	void add();
+	void edit();
+	void remove();
+	void start();
+	void stop();
+	void toggle();
+	void running(bool status);
+	void headerClicked(int level);
 
 private:
-    void doSearch() override;
-    void controlActions() override;
-    void enableWidgets(bool enable);
-    void showEvent(QShowEvent *e) override;
-    void hideEvent(QHideEvent *e) override;
+	void doSearch() override;
+	void controlActions() override;
+	void enableWidgets(bool enable);
+	void showEvent(QShowEvent* e) override;
+	void hideEvent(QHideEvent* e) override;
 
 private:
-    PlaylistProxyModel proxy;
-    Action *addAction;
-    Action *editAction;
-    Action *removeAction;
-    Action *toggleAction;
-    QList<QWidget *> controls;
-    #ifdef Q_OS_WIN
-    QString infoStr;
-    Q_DECL_UNUSED QLabel *remoteRunningLabel;
+	PlaylistProxyModel proxy;
+	Action* addAction;
+	Action* editAction;
+	Action* removeAction;
+	Action* toggleAction;
+	QList<QWidget*> controls;
+#ifdef Q_OS_WIN
+	QString infoStr;
+	Q_DECL_UNUSED QLabel* remoteRunningLabel;
 
-    #endif
-    QIcon server;
+#endif
+	QIcon server;
 };
 
 #endif

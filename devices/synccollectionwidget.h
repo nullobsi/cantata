@@ -24,58 +24,57 @@
 #ifndef _SYNCCOLLECTIONWIDGET_H_
 #define _SYNCCOLLECTIONWIDGET_H_
 
-#include "ui_synccollectionwidget.h"
-#include "mpd-interface/song.h"
 #include "models/musiclibrarymodel.h"
 #include "models/musiclibraryproxymodel.h"
+#include "mpd-interface/song.h"
+#include "ui_synccollectionwidget.h"
 #include <QSet>
 
 class QTimer;
 class Action;
 
-class SyncCollectionWidget : public QWidget, Ui::SyncCollectionWidget
-{
-    Q_OBJECT
+class SyncCollectionWidget : public QWidget, Ui::SyncCollectionWidget {
+	Q_OBJECT
 
 public:
-    SyncCollectionWidget(QWidget *parent, const QString &title);
-    ~SyncCollectionWidget() override;
+	SyncCollectionWidget(QWidget* parent, const QString& title);
+	~SyncCollectionWidget() override;
 
-    void clear() { model.clear(); }
-    void update(const QSet<Song> &songs);
-    void setSupportsAlbumArtistTag(bool s) { model.setSupportsAlbumArtistTag(s); }
-    int numArtists() { return model.rowCount(); }
-    int numCheckedSongs() const { return checked.count(); }
-    QList<Song> checkedSongs() const;
+	void clear() { model.clear(); }
+	void update(const QSet<Song>& songs);
+	void setSupportsAlbumArtistTag(bool s) { model.setSupportsAlbumArtistTag(s); }
+	int numArtists() { return model.rowCount(); }
+	int numCheckedSongs() const { return checked.count(); }
+	QList<Song> checkedSongs() const;
 
 Q_SIGNALS:
-    void selectionChanged();
-    void configure();
+	void selectionChanged();
+	void configure();
 
 private Q_SLOTS:
-    void dataChanged(const QModelIndex &tl, const QModelIndex &br);
-    void checkItems();
-    void unCheckItems();
-    void delaySearchItems();
-    void searchItems();
-    void expandAll();
-    void collapseAll();
-    void itemClicked(const QModelIndex &index);
-    void itemActivated(const QModelIndex &index);
+	void dataChanged(const QModelIndex& tl, const QModelIndex& br);
+	void checkItems();
+	void unCheckItems();
+	void delaySearchItems();
+	void searchItems();
+	void expandAll();
+	void collapseAll();
+	void itemClicked(const QModelIndex& index);
+	void itemActivated(const QModelIndex& index);
 
 private:
-    void checkItems(bool c);
-    void songToggled(const MusicLibraryItemSong *song);
+	void checkItems(bool c);
+	void songToggled(const MusicLibraryItemSong* song);
 
 private:
-    bool performedSearch;
-    MusicLibraryModel model;
-    MusicLibraryProxyModel proxy;
-    QTimer *searchTimer;
-    QSet<const Song *> checked;
-    quint64 spaceRequired;
-    Action *checkAction;
-    Action *unCheckAction;
+	bool performedSearch;
+	MusicLibraryModel model;
+	MusicLibraryProxyModel proxy;
+	QTimer* searchTimer;
+	QSet<const Song*> checked;
+	quint64 spaceRequired;
+	Action* checkAction;
+	Action* unCheckAction;
 };
 
 #endif

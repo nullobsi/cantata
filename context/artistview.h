@@ -24,9 +24,9 @@
 #ifndef ARTIST_VIEW_H
 #define ARTIST_VIEW_H
 
-#include "view.h"
-#include "mpd-interface/song.h"
 #include "db/librarydb.h"
+#include "mpd-interface/song.h"
+#include "view.h"
 #include <QMap>
 
 class ComboBox;
@@ -38,58 +38,57 @@ class QUrl;
 class ContextEngine;
 class Action;
 
-class ArtistView : public View
-{
-    Q_OBJECT
+class ArtistView : public View {
+	Q_OBJECT
 
 public:
-    static const int constCacheAge;
-    static const QLatin1String constCacheDir;
-    static const QLatin1String constInfoExt;
-    static const QLatin1String constSimilarInfoExt;
+	static const int constCacheAge;
+	static const QLatin1String constCacheDir;
+	static const QLatin1String constInfoExt;
+	static const QLatin1String constSimilarInfoExt;
 
-    ArtistView(QWidget *parent);
-    ~ArtistView() override { abort(); }
+	ArtistView(QWidget* parent);
+	~ArtistView() override { abort(); }
 
-    void update(const Song &s, bool force=false) override;
-    const QList<LibraryDb::Album> &getArtistAlbums();
+	void update(const Song& s, bool force = false) override;
+	const QList<LibraryDb::Album>& getArtistAlbums();
 
 Q_SIGNALS:
-    void findArtist(const QString &artist);
-    void findAlbum(const QString &artist, const QString &album);
+	void findArtist(const QString& artist);
+	void findAlbum(const QString& artist, const QString& album);
 
 public Q_SLOTS:
-    void artistImage(const Song &song, const QImage &i, const QString &f);
-    void artistImageUpdated(const Song &song, const QImage &i, const QString &f);
+	void artistImage(const Song& song, const QImage& i, const QString& f);
+	void artistImageUpdated(const Song& song, const QImage& i, const QString& f);
 
 private Q_SLOTS:
-    void showContextMenu(const QPoint &pos);
-    void refresh();
-    void setBio();
-    void handleSimilarReply();
-    void show(const QUrl &url);
-    void clearCache();
-    void searchResponse(const QString &resp, const QString &lang);
+	void showContextMenu(const QPoint& pos);
+	void refresh();
+	void setBio();
+	void handleSimilarReply();
+	void show(const QUrl& url);
+	void clearCache();
+	void searchResponse(const QString& resp, const QString& lang);
 
 private:
-    void loadBio();
-    void loadSimilar();
-    void requestSimilar();
-    QStringList parseSimilarResponse(const QByteArray &resp);
-    void buildSimilar(const QStringList &artists);
-    void abort() override;
+	void loadBio();
+	void loadSimilar();
+	void requestSimilar();
+	QStringList parseSimilarResponse(const QByteArray& resp);
+	void buildSimilar(const QStringList& artists);
+	void abort() override;
 
 private:
-    Action *refreshAction;
-    ContextEngine *engine;
-    QString pic;
-    QString biography;
-    QString similarArtists;
-    NetworkJob *currentSimilarJob;
-    QString provider;
-    QString webLinks;
-    QString albums;
-    QList<LibraryDb::Album> artistAlbums;
+	Action* refreshAction;
+	ContextEngine* engine;
+	QString pic;
+	QString biography;
+	QString similarArtists;
+	NetworkJob* currentSimilarJob;
+	QString provider;
+	QString webLinks;
+	QString albums;
+	QList<LibraryDb::Album> artistAlbums;
 };
 
 #endif

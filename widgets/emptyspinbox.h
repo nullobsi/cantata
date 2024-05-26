@@ -24,35 +24,38 @@
 #ifndef EMPTYSPINBOX_H
 #define EMPTYSPINBOX_H
 
-#include <QSpinBox>
 #include <QFontMetrics>
+#include <QSpinBox>
 
-class EmptySpinBox : public QSpinBox
-{
+class EmptySpinBox : public QSpinBox {
 public:
-    EmptySpinBox(QWidget *parent)
-        : QSpinBox(parent)
-        {
-        setKeyboardTracking(true);
-        setMaximum(3000);
-    }
+	EmptySpinBox(QWidget* parent)
+		: QSpinBox(parent)
+	{
+		setKeyboardTracking(true);
+		setMaximum(3000);
+	}
 
-    QSize sizeHint() const override {
-        return QSpinBox::sizeHint()+QSize(fontMetrics().height()/2, 0);
-    }
+	QSize sizeHint() const override
+	{
+		return QSpinBox::sizeHint() + QSize(fontMetrics().height() / 2, 0);
+	}
 
 protected:
-    QValidator::State validate(QString &input, int &pos) const override {
-        return input.isEmpty() ? QValidator::Acceptable : QSpinBox::validate(input, pos);
-    }
+	QValidator::State validate(QString& input, int& pos) const override
+	{
+		return input.isEmpty() ? QValidator::Acceptable : QSpinBox::validate(input, pos);
+	}
 
-    int valueFromText(const QString &text) const override {
-        return text.isEmpty() ? minimum() : QSpinBox::valueFromText(text);
-    }
+	int valueFromText(const QString& text) const override
+	{
+		return text.isEmpty() ? minimum() : QSpinBox::valueFromText(text);
+	}
 
-    QString textFromValue(int val) const override {
-        return val==minimum() ? QString() : QSpinBox::textFromValue(val);
-    }
+	QString textFromValue(int val) const override
+	{
+		return val == minimum() ? QString() : QSpinBox::textFromValue(val);
+	}
 };
 
 #endif

@@ -25,43 +25,42 @@
 #define PLAYLIST_RULE_DIALOG_H
 
 #include "config.h"
+#include "dynamicplaylists.h"
 #include "support/dialog.h"
 #include "ui_playlistrule.h"
-#include "dynamicplaylists.h"
 
-class PlaylistRuleDialog : public Dialog, Ui::PlaylistRule
-{
-    Q_OBJECT
+class PlaylistRuleDialog : public Dialog, Ui::PlaylistRule {
+	Q_OBJECT
 
 public:
-    PlaylistRuleDialog(QWidget *parent, bool isDynamic);
-    ~PlaylistRuleDialog() override;
+	PlaylistRuleDialog(QWidget* parent, bool isDynamic);
+	~PlaylistRuleDialog() override;
 
-    void createNew() { edit(RulesPlaylists::Rule(), true); }
-    bool edit(const RulesPlaylists::Rule &rule, bool isAdd=false);
-    RulesPlaylists::Rule rule() const;
+	void createNew() { edit(RulesPlaylists::Rule(), true); }
+	bool edit(const RulesPlaylists::Rule& rule, bool isAdd = false);
+	RulesPlaylists::Rule rule() const;
 
-    QString artist() const { return artistText->text().trimmed(); }
-    QString similarArtists() const { return similarArtistsText ? similarArtistsText->text().trimmed() : QString(); }
-    QString albumArtist() const { return albumArtistText->text().trimmed(); }
-    QString composer() const { return composerText->text().trimmed(); }
-    QString comment() const { return commentText->text().trimmed(); }
-    QString album() const { return albumText->text().trimmed(); }
-    QString title() const { return titleText->text().trimmed(); }
-    QString genre() const { return genreText->text().trimmed(); }
-    QString filename() const { return filenameText->text().trimmed(); }
+	QString artist() const { return artistText->text().trimmed(); }
+	QString similarArtists() const { return similarArtistsText ? similarArtistsText->text().trimmed() : QString(); }
+	QString albumArtist() const { return albumArtistText->text().trimmed(); }
+	QString composer() const { return composerText->text().trimmed(); }
+	QString comment() const { return commentText->text().trimmed(); }
+	QString album() const { return albumText->text().trimmed(); }
+	QString title() const { return titleText->text().trimmed(); }
+	QString genre() const { return genreText->text().trimmed(); }
+	QString filename() const { return filenameText->text().trimmed(); }
 
 Q_SIGNALS:
-    void addRule(const RulesPlaylists::Rule &r);
+	void addRule(const RulesPlaylists::Rule& r);
 
 private Q_SLOTS:
-    void enableOkButton();
+	void enableOkButton();
 
 private:
-    void slotButtonClicked(int button) override;
+	void slotButtonClicked(int button) override;
 
 private:
-    bool addingRules;
+	bool addingRules;
 };
 
 #endif

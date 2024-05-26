@@ -24,34 +24,32 @@
 #ifndef REMOTEDEVICEPROPERTIESWIDGET_H
 #define REMOTEDEVICEPROPERTIESWIDGET_H
 
-#include "ui_remotedevicepropertieswidget.h"
 #include "remotefsdevice.h"
+#include "ui_remotedevicepropertieswidget.h"
 
-class RemoteDevicePropertiesWidget : public QWidget, Ui::RemoteDevicePropertiesWidget
-{
-    Q_OBJECT
+class RemoteDevicePropertiesWidget : public QWidget, Ui::RemoteDevicePropertiesWidget {
+	Q_OBJECT
 
 public:
-
-    RemoteDevicePropertiesWidget(QWidget *parent);
-    virtual ~RemoteDevicePropertiesWidget() { }
-    void update(const RemoteFsDevice::Details &d, bool create, bool isConnected);
-    RemoteFsDevice::Details details();
-    const RemoteFsDevice::Details & origDetails() const { return orig; }
-    bool isModified() const { return modified; }
-    bool isSaveable() const { return saveable; }
+	RemoteDevicePropertiesWidget(QWidget* parent);
+	virtual ~RemoteDevicePropertiesWidget() {}
+	void update(const RemoteFsDevice::Details& d, bool create, bool isConnected);
+	RemoteFsDevice::Details details();
+	const RemoteFsDevice::Details& origDetails() const { return orig; }
+	bool isModified() const { return modified; }
+	bool isSaveable() const { return saveable; }
 
 Q_SIGNALS:
-    void updated();
+	void updated();
 
 private Q_SLOTS:
-    void checkSaveable();
-    void setType();
+	void checkSaveable();
+	void setType();
 
 private:
-    RemoteFsDevice::Details orig;
-    bool modified;
-    bool saveable;
+	RemoteFsDevice::Details orig;
+	bool modified;
+	bool saveable;
 };
 
 #endif

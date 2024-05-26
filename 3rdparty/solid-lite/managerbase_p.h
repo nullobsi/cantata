@@ -26,20 +26,18 @@
 
 #include "solid-lite/solid_export.h"
 
-namespace Solid
-{
-    class ManagerBasePrivate
-    {
-    public:
-        ManagerBasePrivate();
-        virtual ~ManagerBasePrivate();
-        void loadBackends();
+namespace Solid {
+class ManagerBasePrivate {
+public:
+	ManagerBasePrivate();
+	virtual ~ManagerBasePrivate();
+	void loadBackends();
 
-        QList<QObject*> managerBackends() const;
+	QList<QObject*> managerBackends() const;
 
-    private:
-        QList<QObject*> m_backends;
-    };
-}
+private:
+	QList<QObject*> m_backends;
+};
+}// namespace Solid
 
 #endif

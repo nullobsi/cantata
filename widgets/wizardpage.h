@@ -24,22 +24,21 @@
 #ifndef WIZARDPAGE_H
 #define WIZARDPAGE_H
 
-#include <QWizardPage>
 #include <QPixmap>
+#include <QWizardPage>
 
 class QIcon;
 
-class WizardPage : public QWizardPage
-{
+class WizardPage : public QWizardPage {
 public:
-    WizardPage(QWidget *parent = nullptr) : QWizardPage(parent) { }
-    ~WizardPage() override { }
+	WizardPage(QWidget* parent = nullptr) : QWizardPage(parent) {}
+	~WizardPage() override {}
 
-    void setBackground(const QIcon &i);
-    void paintEvent(QPaintEvent *e) override;
+	void setBackground(const QIcon& i);
+	void paintEvent(QPaintEvent* e) override;
 
 private:
-    QPixmap pix;
+	QPixmap pix;
 };
 
 #endif

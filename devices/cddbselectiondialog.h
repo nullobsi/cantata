@@ -24,29 +24,28 @@
 #ifndef CDDBSELECTIONDIALOG_H
 #define CDDBSELECTIONDIALOG_H
 
-#include "support/dialog.h"
 #include "cdalbum.h"
+#include "support/dialog.h"
 #include <QList>
 
 class QComboBox;
 class QTreeWidget;
 
-class CddbSelectionDialog : public Dialog
-{
-    Q_OBJECT
+class CddbSelectionDialog : public Dialog {
+	Q_OBJECT
 
 public:
-    CddbSelectionDialog(QWidget *parent);
+	CddbSelectionDialog(QWidget* parent);
 
-    int select(const QList<CdAlbum> &albums);
+	int select(const QList<CdAlbum>& albums);
 
 private Q_SLOTS:
-    void updateTracks();
+	void updateTracks();
 
 private:
-    QComboBox *combo;
-    QTreeWidget *tracks;
-    QList<CdAlbum> albumDetails;
+	QComboBox* combo;
+	QTreeWidget* tracks;
+	QList<CdAlbum> albumDetails;
 };
 
 #endif

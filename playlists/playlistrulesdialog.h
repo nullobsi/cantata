@@ -25,48 +25,47 @@
 #define PLAYLIST_RULES_DIALOG_H
 
 #include "config.h"
+#include "dynamicplaylists.h"
 #include "support/dialog.h"
 #include "ui_playlistrules.h"
-#include "dynamicplaylists.h"
 
 class PlaylistRuleDialog;
 class QStandardItemModel;
 class QStandardItem;
 class RulesSort;
 
-class PlaylistRulesDialog : public Dialog, Ui::PlaylistRules
-{
-    Q_OBJECT
+class PlaylistRulesDialog : public Dialog, Ui::PlaylistRules {
+	Q_OBJECT
 
 public:
-    PlaylistRulesDialog(QWidget *parent, RulesPlaylists *m);
-    ~PlaylistRulesDialog() override;
+	PlaylistRulesDialog(QWidget* parent, RulesPlaylists* m);
+	~PlaylistRulesDialog() override;
 
-    void edit(const QString &name);
+	void edit(const QString& name);
 
 private:
-    void slotButtonClicked(int button) override;
-    bool save();
-    int indexOf(QStandardItem *item, bool diff=false);
+	void slotButtonClicked(int button) override;
+	bool save();
+	int indexOf(QStandardItem* item, bool diff = false);
 
 private Q_SLOTS:
-    void saved(bool s);
-    void enableOkButton();
-    void controlButtons();
-    void add();
-    void addRule(const RulesPlaylists::Rule &rule);
-    void edit();
-    void remove();
-    void showAbout();
-    void setOrder();
-    void ratingChanged(int value);
+	void saved(bool s);
+	void enableOkButton();
+	void controlButtons();
+	void add();
+	void addRule(const RulesPlaylists::Rule& rule);
+	void edit();
+	void remove();
+	void showAbout();
+	void setOrder();
+	void ratingChanged(int value);
 
 private:
-    RulesPlaylists *rules;
-    RulesSort *proxy;
-    QStandardItemModel *model;
-    QString origName;
-    PlaylistRuleDialog *dlg;
+	RulesPlaylists* rules;
+	RulesSort* proxy;
+	QStandardItemModel* model;
+	QString origName;
+	PlaylistRuleDialog* dlg;
 };
 
 #endif

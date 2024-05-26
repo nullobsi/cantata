@@ -25,4 +25,4 @@
 
 #define UDEV_UDI_PREFIX "/org/kde/solid/udev"
 
-#endif // SOLID_BACKENDS_UDEV_H
+#endif// SOLID_BACKENDS_UDEV_H

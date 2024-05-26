@@ -25,69 +25,68 @@
 #define STREAM_SEARCH_MODEL_H
 
 #include "streamsmodel.h"
+#include <QDateTime>
+#include <QIcon>
 #include <QList>
 #include <QMap>
-#include <QIcon>
-#include <QDateTime>
 
 class NetworkJob;
 class QXmlStreamReader;
 class QIODevice;
 
-class StreamSearchModel : public ActionModel
-{
-    Q_OBJECT
+class StreamSearchModel : public ActionModel {
+	Q_OBJECT
 
 public:
-    enum Category {
-        // DO NOT CHANGE ORDER!
-        TuneIn,
-        ShoutCast,
-        CommunityRadio,
-        NumCategories
-    };
+	enum Category {
+		// DO NOT CHANGE ORDER!
+		TuneIn,
+		ShoutCast,
+		CommunityRadio,
+		NumCategories
+	};
 
-    StreamSearchModel(QObject *parent = nullptr);
-    ~StreamSearchModel() override;
-    QModelIndex index(int, int, const QModelIndex & = QModelIndex()) const override;
-    QModelIndex parent(const QModelIndex &) const override;
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    int columnCount(const QModelIndex &) const override;
-    QVariant data(const QModelIndex &, int) const override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-    bool hasChildren(const QModelIndex &index) const override;
-    bool canFetchMore(const QModelIndex &index) const override;
-    void fetchMore(const QModelIndex &index) override;
+	StreamSearchModel(QObject* parent = nullptr);
+	~StreamSearchModel() override;
+	QModelIndex index(int, int, const QModelIndex& = QModelIndex()) const override;
+	QModelIndex parent(const QModelIndex&) const override;
+	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+	int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+	int columnCount(const QModelIndex&) const override;
+	QVariant data(const QModelIndex&, int) const override;
+	Qt::ItemFlags flags(const QModelIndex& index) const override;
+	bool hasChildren(const QModelIndex& index) const override;
+	bool canFetchMore(const QModelIndex& index) const override;
+	void fetchMore(const QModelIndex& index) override;
 
-    QStringList filenames(const QModelIndexList &indexes, bool addPrefix) const;
-    QMimeData * mimeData(const QModelIndexList &indexes) const override;
-    QStringList mimeTypes() const override;
+	QStringList filenames(const QModelIndexList& indexes, bool addPrefix) const;
+	QMimeData* mimeData(const QModelIndexList& indexes) const override;
+	QStringList mimeTypes() const override;
 
-    void clear();
-    void search(const QString &searchTerm, bool stationsOnly);
-    void cancelAll();
- 
+	void clear();
+	void search(const QString& searchTerm, bool stationsOnly);
+	void cancelAll();
+
 Q_SIGNALS:
-    void loading();
-    void loaded();
-    void error(const QString &msg);
+	void loading();
+	void loaded();
+	void error(const QString& msg);
 
 private Q_SLOTS:
-    void jobFinished();
+	void jobFinished();
 
 private:
-    QList<StreamsModel::Item *> getStreams(StreamsModel::CategoryItem *cat);
-    StreamsModel::Item * toItem(const QModelIndex &index) const { return index.isValid() ? static_cast<StreamsModel::Item*>(index.internalPointer()) : root; }
-    QList<StreamsModel::Item *> parseRadioTimeResponse(QIODevice *dev, StreamsModel::CategoryItem *cat);
-    StreamsModel::Item * parseRadioTimeEntry(QXmlStreamReader &doc, StreamsModel::CategoryItem *parent);
+	QList<StreamsModel::Item*> getStreams(StreamsModel::CategoryItem* cat);
+	StreamsModel::Item* toItem(const QModelIndex& index) const { return index.isValid() ? static_cast<StreamsModel::Item*>(index.internalPointer()) : root; }
+	QList<StreamsModel::Item*> parseRadioTimeResponse(QIODevice* dev, StreamsModel::CategoryItem* cat);
+	StreamsModel::Item* parseRadioTimeEntry(QXmlStreamReader& doc, StreamsModel::CategoryItem* parent);
 
 private:
-    Category category;
-    QMap<NetworkJob *, StreamsModel::CategoryItem *> jobs;
-    StreamsModel::CategoryItem *root;
-    QString currentSearch;
-    QIcon icon;
+	Category category;
+	QMap<NetworkJob*, StreamsModel::CategoryItem*> jobs;
+	StreamsModel::CategoryItem* root;
+	QString currentSearch;
+	QIcon icon;
 };
 
 #endif

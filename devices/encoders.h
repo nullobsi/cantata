@@ -24,67 +24,55 @@
 #ifndef ENCODERS_H
 #define ENCODERS_H
 
+#include <QList>
 #include <QString>
 #include <QStringList>
-#include <QList>
 
-namespace Encoders
-{
-    struct Setting {
-        Setting(const QString &d, int v)
-            : descr(d)
-            , value(v) {
-        }
-        QString descr;
-        int value;
-    };
+namespace Encoders {
+struct Setting {
+	Setting(const QString& d, int v)
+		: descr(d), value(v)
+	{
+	}
+	QString descr;
+	int value;
+};
 
-    struct Encoder {
-        Encoder()
-            : defaultValueIndex(0), ffmpegValueMultiplier(0), transcoder(false) {
-        }
-        Encoder(const QString &n, const QString &d, const QString &t, const QString &e, const QString &a, const QString &c,
-                const QString &f, const QString &v, const QList<Setting> &vs, const QString &l, const QString &h, int def, int mult=1)
-            : name(n)
-            , description(d)
-            , tooltip(t)
-            , extension(e)
-            , app(a)
-            , codec(c)
-            , param(f)
-            , valueLabel(v)
-            , values(vs)
-            , low(l)
-            , high(h)
-            , defaultValueIndex(def)
-            , ffmpegValueMultiplier(mult)
-            , transcoder(true) {
-        }
-        bool isNull() { return name.isEmpty(); }
-        bool operator==(const Encoder &o) const { return name==o.name && codec==o.codec; }
-        bool operator<(const Encoder &o) const;
-        QString changeExtension(const QString &file);
-        bool isDifferent(const QString &file);
-        QStringList params(int value, const QString &in, const QString &out) const;
-        QString name;
-        QString description;
-        QString tooltip;
-        QString extension;
-        QString app;
-        QString codec;
-        QString param;
-        QString valueLabel;
-        QList<Setting> values;
-        QString low;
-        QString high;
-        QString outputParam;
-        int defaultValueIndex;
-        int ffmpegValueMultiplier;
-        bool transcoder;
-    };
+struct Encoder {
+	Encoder()
+		: defaultValueIndex(0), ffmpegValueMultiplier(0), transcoder(false)
+	{
+	}
+	Encoder(const QString& n, const QString& d, const QString& t, const QString& e, const QString& a, const QString& c,
+			const QString& f, const QString& v, const QList<Setting>& vs, const QString& l, const QString& h, int def, int mult = 1)
+		: name(n), description(d), tooltip(t), extension(e), app(a), codec(c), param(f), valueLabel(v), values(vs), low(l), high(h), defaultValueIndex(def), ffmpegValueMultiplier(mult), transcoder(true)
+	{
+	}
+	bool isNull() { return name.isEmpty(); }
+	bool operator==(const Encoder& o) const { return name == o.name && codec == o.codec; }
+	bool operator<(const Encoder& o) const;
+	QString changeExtension(const QString& file);
+	bool isDifferent(const QString& file);
+	QStringList params(int value, const QString& in, const QString& out) const;
+	QString name;
+	QString description;
+	QString tooltip;
+	QString extension;
+	QString app;
+	QString codec;
+	QString param;
+	QString valueLabel;
+	QList<Setting> values;
+	QString low;
+	QString high;
+	QString outputParam;
+	int defaultValueIndex;
+	int ffmpegValueMultiplier;
+	bool transcoder;
+};
 
-    extern QList<Encoder> getAvailable();
-    extern Encoder getEncoder(const QString &codec);
-}
+extern QList<Encoder> getAvailable();
+extern Encoder getEncoder(const QString& codec);
+}// namespace Encoders
 
 #endif

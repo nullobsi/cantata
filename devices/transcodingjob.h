@@ -22,38 +22,36 @@
 #ifndef TRANSCODING_JOB_H
 #define TRANSCODING_JOB_H
 
-#include "filejob.h"
 #include "encoders.h"
+#include "filejob.h"
 #include <QProcess>
 
-class TranscodingJob : public CopyJob
-{
-    Q_OBJECT
+class TranscodingJob : public CopyJob {
+	Q_OBJECT
 public:
-    explicit TranscodingJob(const Encoders::Encoder &enc, int val, const QString &src, const QString &dest,
-                            const DeviceOptions &d=DeviceOptions(), int co=0, const Song &s=Song());
-    ~TranscodingJob() override;
+	explicit TranscodingJob(const Encoders::Encoder& enc, int val, const QString& src, const QString& dest,
+							const DeviceOptions& d = DeviceOptions(), int co = 0, const Song& s = Song());
+	~TranscodingJob() override;
 
-    void stop() override;
+	void stop() override;
 
 private:
-    void run() override;
+	void run() override;
 
 private Q_SLOTS:
-    void processOutput();
-    void finished(int exitCode, QProcess::ExitStatus exitStatus);
+	void processOutput();
+	void finished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
-    inline qint64 computeDuration(const QString &output);
-    inline qint64 computeProgress(const QString &output);
+	inline qint64 computeDuration(const QString& output);
+	inline qint64 computeProgress(const QString& output);
 
 private:
-    Encoders::Encoder encoder;
-    int value;
-    QProcess *process;
-    qint64 duration; //in csec
-    QString data;
+	Encoders::Encoder encoder;
+	int value;
+	QProcess* process;
+	qint64 duration;//in csec
+	QString data;
 };
 
-
-#endif //TRANSCODING_JOB_H
+#endif//TRANSCODING_JOB_H

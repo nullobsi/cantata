@@ -24,62 +24,61 @@
 #ifndef CDPARANOIA_H
 #define CDPARANOIA_H
 
-#include <QString>
 #include "config.h"
+#include <QString>
 
 extern "C" {
 #ifdef LibCDIOParanoia_FOUND
-#include <paranoia.h>
 #include <cdda.h>
+#include <paranoia.h>
 #else
 #include <cdda_interface.h>
 #include <cdda_paranoia.h>
 #endif
 }
 
-class CdParanoia
-{
+class CdParanoia {
 public:
-    explicit CdParanoia(const QString &device, bool full, bool noSkip, bool playback, int offset);
-    ~CdParanoia();
+	explicit CdParanoia(const QString& device, bool full, bool noSkip, bool playback, int offset);
+	~CdParanoia();
 
-    inline operator bool() const { return !dev.isEmpty(); }
+	inline operator bool() const { return !dev.isEmpty(); }
 
-    void setParanoiaMode(int mode);
-    void setFullParanoiaMode(bool f) { setParanoiaMode(f ? 3 : 0); }
-    void setMaxRetries(int m) { maxRetries=m; }
+	void setParanoiaMode(int mode);
+	void setFullParanoiaMode(bool f) { setParanoiaMode(f ? 3 : 0); }
+	void setMaxRetries(int m) { maxRetries = m; }
 
-    qint16 * read();
-    int seek(long sector, int mode);
+	qint16* read();
+	int seek(long sector, int mode);
 
-    int firstSectorOfTrack(int track);
-    int lastSectorOfTrack(int track);
-    int length();
+	int firstSectorOfTrack(int track);
+	int lastSectorOfTrack(int track);
+	int length();
 
-    int lengthOfTrack(int n);
-    int numOfFramesOfTrack(int n);
-    double sizeOfTrack(int n); //in MiB
-    int frameOffsetOfTrack(int n);
-    bool isAudioTrack(int n);
-    void reset() { init(); }
-
-private:
-    bool init();
-    void free();
+	int lengthOfTrack(int n);
+	int numOfFramesOfTrack(int n);
+	double sizeOfTrack(int n);//in MiB
+	int frameOffsetOfTrack(int n);
+	bool isAudioTrack(int n);
+	void reset() { init(); }
 
 private:
-    QString dev;
-    #ifdef LibCDIOParanoia_FOUND
-    cdrom_drive_t *drive;
-    cdrom_paranoia_t *paranoia;
-    #else
-    cdrom_drive *drive;
-    cdrom_paranoia *paranoia;
-    #endif
-    int paranoiaMode;
-    bool neverSkip;
-    int maxRetries;
-    int seekOffst;
+	bool init();
+	void free();
+
+private:
+	QString dev;
+#ifdef LibCDIOParanoia_FOUND
+	cdrom_drive_t* drive;
+	cdrom_paranoia_t* paranoia;
+#else
+	cdrom_drive* drive;
+	cdrom_paranoia* paranoia;
+#endif
+	int paranoiaMode;
+	bool neverSkip;
+	int maxRetries;
+	int seekOffst;
 };
 
 #endif

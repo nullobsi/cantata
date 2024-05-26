@@ -28,19 +28,18 @@
 
 class QListWidgetItem;
 
-class OnlineSettings : public QWidget, private Ui::OnlineSettings
-{
-    Q_OBJECT
+class OnlineSettings : public QWidget, private Ui::OnlineSettings {
+	Q_OBJECT
 public:
-    OnlineSettings(QWidget *p);
-    virtual ~OnlineSettings() { }
+	OnlineSettings(QWidget* p);
+	virtual ~OnlineSettings() {}
 
-    void load();
-    void save();
+	void load();
+	void save();
 
 private Q_SLOTS:
-    void currentProviderChanged(int row);
-    void configure();
+	void currentProviderChanged(int row);
+	void configure();
 };
 
 #endif

@@ -24,34 +24,33 @@
 #ifndef WINTHUMBNAILTOOLBAR_H
 #define WINTHUMBNAILTOOLBAR_H
 
-#include <QWinThumbnailToolBar>
-#include <QPointer>
-#include "mpd-interface/song.h"
 #include "mpd-interface/mpdstatus.h"
+#include "mpd-interface/song.h"
+#include <QPointer>
+#include <QWinThumbnailToolBar>
 
 class QWinThumbnailToolButton;
 class Action;
-class ThumbnailToolBar : public QWinThumbnailToolBar
-{
+class ThumbnailToolBar : public QWinThumbnailToolBar {
 public:
-    ThumbnailToolBar(QWidget *w);
-    virtual ~ThumbnailToolBar() { }
+	ThumbnailToolBar(QWidget* w);
+	virtual ~ThumbnailToolBar() {}
 
-    void readSettings();
-    void updateCurrentSong(const Song &song);
-    void updateStatus(MPDStatus * const status);
-
-private:
-    void update();
-    QWinThumbnailToolButton * createButton(Action *act);
+	void readSettings();
+	void updateCurrentSong(const Song& song);
+	void updateStatus(MPDStatus* const status);
 
 private:
-    Song currentSong;
-    QPointer<MPDStatus> status;
-    QWinThumbnailToolButton *prevButton;
-    QWinThumbnailToolButton *playPauseButton;
-    QWinThumbnailToolButton *stopButton;
-    QWinThumbnailToolButton *nextButton;
+	void update();
+	QWinThumbnailToolButton* createButton(Action* act);
+
+private:
+	Song currentSong;
+	QPointer<MPDStatus> status;
+	QWinThumbnailToolButton* prevButton;
+	QWinThumbnailToolButton* playPauseButton;
+	QWinThumbnailToolButton* stopButton;
+	QWinThumbnailToolButton* nextButton;
 };
 
 #endif

@@ -24,37 +24,36 @@
 #ifndef REMOTEDEVICEPROPERTIESDIALOG_H
 #define REMOTEDEVICEPROPERTIESDIALOG_H
 
-#include "support/dialog.h"
 #include "remotefsdevice.h"
+#include "support/dialog.h"
 
 class QTabWidget;
 class FilenameSchemeDialog;
 class DevicePropertiesWidget;
 class RemoteDevicePropertiesWidget;
 
-class RemoteDevicePropertiesDialog : public Dialog
-{
-    Q_OBJECT
+class RemoteDevicePropertiesDialog : public Dialog {
+	Q_OBJECT
 
 public:
-    RemoteDevicePropertiesDialog(QWidget *parent);
-    void show(const DeviceOptions &opts, const RemoteFsDevice::Details &det, int props, int disabledProps=0, bool creating=false, bool isConnected=false);
+	RemoteDevicePropertiesDialog(QWidget* parent);
+	void show(const DeviceOptions& opts, const RemoteFsDevice::Details& det, int props, int disabledProps = 0, bool creating = false, bool isConnected = false);
 
 Q_SIGNALS:
-    void updatedSettings(const DeviceOptions &opts, const RemoteFsDevice::Details &det);
-    void cancelled();
+	void updatedSettings(const DeviceOptions& opts, const RemoteFsDevice::Details& det);
+	void cancelled();
 
 private Q_SLOTS:
-    void enableOkButton();
+	void enableOkButton();
 
 private:
-    void slotButtonClicked(int button);
+	void slotButtonClicked(int button);
 
 private:
-    QTabWidget *tab;
-    RemoteDevicePropertiesWidget *remoteProp;
-    DevicePropertiesWidget *devProp;
-    bool isCreate;
+	QTabWidget* tab;
+	RemoteDevicePropertiesWidget* remoteProp;
+	DevicePropertiesWidget* devProp;
+	bool isCreate;
 };
 
 #endif

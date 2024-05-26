@@ -24,102 +24,105 @@
 #ifndef REMOTEFSDEVICE_H
 #define REMOTEFSDEVICE_H
 
-#include "fsdevice.h"
 #include "config.h"
+#include "fsdevice.h"
 #include <QUrl>
 
 class QProcess;
-class RemoteFsDevice : public FsDevice
-{
-    Q_OBJECT
+class RemoteFsDevice : public FsDevice {
+	Q_OBJECT
 
 public:
-    struct Details
-    {
-        Details()
-            : configured(false) {
-        }
-        void load(const QString &group=QString());
-        void save() const;
+	struct Details {
+		Details()
+			: configured(false)
+		{
+		}
+		void load(const QString& group = QString());
+		void save() const;
 
-        bool operator==(const Details &o) const {
-            return url==o.url && extraOptions==o.extraOptions;
-        }
-        bool operator!=(const Details &o) const {
-            return !(*this==o);
-        }
-        bool isEmpty() const {
-            return name.isEmpty() || url.isEmpty();
-        }
-        bool isLocalFile() const {
-            return url.scheme().isEmpty() || constFileProtocol==url.scheme();
-        }
+		bool operator==(const Details& o) const
+		{
+			return url == o.url && extraOptions == o.extraOptions;
+		}
+		bool operator!=(const Details& o) const
+		{
+			return !(*this == o);
+		}
+		bool isEmpty() const
+		{
+			return name.isEmpty() || url.isEmpty();
+		}
+		bool isLocalFile() const
+		{
+			return url.scheme().isEmpty() || constFileProtocol == url.scheme();
+		}
 
-        QString name;
-        QUrl url;
-        QString serviceName;
-        QString extraOptions;
-        bool configured;
-    };
+		QString name;
+		QUrl url;
+		QString serviceName;
+		QString extraOptions;
+		bool configured;
+	};
 
-    static const QLatin1String constPromptPassword;
-    static const QLatin1String constSshfsProtocol;
-    static const QLatin1String constFileProtocol;
+	static const QLatin1String constPromptPassword;
+	static const QLatin1String constSshfsProtocol;
+	static const QLatin1String constFileProtocol;
 
-    static QList<Device *> loadAll(MusicLibraryModel *m);
-    static Device *create(MusicLibraryModel *m, const DeviceOptions &options, const Details &d);
-    static void renamed(const QString &oldName, const QString &newName);
-    static QString createUdi(const QString &n);
+	static QList<Device*> loadAll(MusicLibraryModel* m);
+	static Device* create(MusicLibraryModel* m, const DeviceOptions& options, const Details& d);
+	static void renamed(const QString& oldName, const QString& newName);
+	static QString createUdi(const QString& n);
 
-    RemoteFsDevice(MusicLibraryModel *m, const DeviceOptions &options, const Details &d);
-    RemoteFsDevice(MusicLibraryModel *m, const Details &d);
-    ~RemoteFsDevice() override;
+	RemoteFsDevice(MusicLibraryModel* m, const DeviceOptions& options, const Details& d);
+	RemoteFsDevice(MusicLibraryModel* m, const Details& d);
+	~RemoteFsDevice() override;
 
-    void toggle() override;
-    void mount();
-    void unmount();
-    bool supportsDisconnect() const override { return !details.isLocalFile(); }
-    bool isConnected() const override;
-    double usedCapacity() override;
-    QString capacityString() override;
-    qint64 freeSpace() override;
-    void saveOptions() override;
-    void configure(QWidget *parent) override;
-    DevType devType() const override { return RemoteFs; }
-    bool canPlaySongs() const override;
-    void destroy(bool removeFromConfig=true);
-    const Details & getDetails() const { return details; }
-    QString subText() override { return sub; }
+	void toggle() override;
+	void mount();
+	void unmount();
+	bool supportsDisconnect() const override { return !details.isLocalFile(); }
+	bool isConnected() const override;
+	double usedCapacity() override;
+	QString capacityString() override;
+	qint64 freeSpace() override;
+	void saveOptions() override;
+	void configure(QWidget* parent) override;
+	DevType devType() const override { return RemoteFs; }
+	bool canPlaySongs() const override;
+	void destroy(bool removeFromConfig = true);
+	const Details& getDetails() const { return details; }
+	QString subText() override { return sub; }
 
 Q_SIGNALS:
-    void udiChanged();
-    void connectionStateHasChanged(const QString &id, bool connected);
+	void udiChanged();
+	void connectionStateHasChanged(const QString& id, bool connected);
 
 protected:
-    void load();
-    void setup();
-    void setAudioFolder() const override;
+	void load();
+	void setup();
+	void setAudioFolder() const override;
 
 private:
-    bool isOldSshfs();
-    QString settingsFileName() const;
+	bool isOldSshfs();
+	QString settingsFileName() const;
 
 protected Q_SLOTS:
-    void saveProperties();
-    void saveProperties(const DeviceOptions &newOpts, const RemoteFsDevice::Details &newDetails);
-    void procFinished(int exitCode);
-    void mountStatus(const QString &mp, int pid, int st);
-    void umountStatus(const QString &mp, int pid, int st);
+	void saveProperties();
+	void saveProperties(const DeviceOptions& newOpts, const RemoteFsDevice::Details& newDetails);
+	void procFinished(int exitCode);
+	void mountStatus(const QString& mp, int pid, int st);
+	void umountStatus(const QString& mp, int pid, int st);
 
 protected:
-    mutable int mountToken;
-    mutable bool currentMountStatus;
-    Details details;
-    QProcess *proc;
-//     QString audioFolderSetting;
-    bool messageSent;
-    QString sub;
-    friend class DevicesModel;
+	mutable int mountToken;
+	mutable bool currentMountStatus;
+	Details details;
+	QProcess* proc;
+	//     QString audioFolderSetting;
+	bool messageSent;
+	QString sub;
+	friend class DevicesModel;
 };
 
 #endif

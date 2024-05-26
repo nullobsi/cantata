@@ -24,41 +24,40 @@
 #ifndef TITLE_WIDGET_H
 #define TITLE_WIDGET_H
 
-#include <QListView>
 #include "mpd-interface/song.h"
+#include <QListView>
 
 class QImage;
 class QIcon;
 class SqueezedTextLabel;
 class QLabel;
 
-class TitleWidget : public QListView
-{
-    Q_OBJECT
+class TitleWidget : public QListView {
+	Q_OBJECT
 public:
-    TitleWidget(QWidget *p);
-    ~TitleWidget() override { }
-    void update(const Song &sng, const QIcon &icon, const QString &text, const QString &sub, bool showControls=false);
-    bool eventFilter(QObject *obj, QEvent *event) override;
+	TitleWidget(QWidget* p);
+	~TitleWidget() override {}
+	void update(const Song& sng, const QIcon& icon, const QString& text, const QString& sub, bool showControls = false);
+	bool eventFilter(QObject* obj, QEvent* event) override;
 
 Q_SIGNALS:
-    void clicked();
-    void addToPlayQueue();
-    void replacePlayQueue();
+	void clicked();
+	void addToPlayQueue();
+	void replacePlayQueue();
 
 private Q_SLOTS:
-    void coverRetrieved(const Song &s, const QImage &img, const QString &file);
+	void coverRetrieved(const Song& s, const QImage& img, const QString& file);
 
 private:
-    void setImage(const QImage &img);
+	void setImage(const QImage& img);
 
 private:
-    Song song;
-    bool pressed;
-    QLabel *image;
-    QWidget *controls;
-    SqueezedTextLabel *mainText;
-    SqueezedTextLabel *subText;
+	Song song;
+	bool pressed;
+	QLabel* image;
+	QWidget* controls;
+	SqueezedTextLabel* mainText;
+	SqueezedTextLabel* subText;
 };
 
 #endif

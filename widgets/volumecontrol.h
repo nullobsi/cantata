@@ -30,28 +30,27 @@ class VolumeSlider;
 class SelectorLabel;
 class QStackedWidget;
 
-class VolumeControl : public QWidget
-{
-    Q_OBJECT
+class VolumeControl : public QWidget {
+	Q_OBJECT
 
 public:
-    VolumeControl(QWidget *p);
-    ~VolumeControl();
+	VolumeControl(QWidget* p);
+	~VolumeControl();
 
-    void setColor(const QColor &col);
-    void initActions();
-    void setPageStep(int step);
+	void setColor(const QColor& col);
+	void initActions();
+	void setPageStep(int step);
 
 private Q_SLOTS:
-    void selectControl();
-    void stateChanged();
-    void itemSelected(int i);
+	void selectControl();
+	void stateChanged();
+	void itemSelected(int i);
 
 private:
-    SelectorLabel *label;
-    QStackedWidget *stack;
-    VolumeSlider *mpdVol;
-    VolumeSlider *httpVol;
+	SelectorLabel* label;
+	QStackedWidget* stack;
+	VolumeSlider* mpdVol;
+	VolumeSlider* httpVol;
 };
 
 #endif

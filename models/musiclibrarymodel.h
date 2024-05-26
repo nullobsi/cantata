@@ -27,46 +27,49 @@
 #ifndef MUSIC_LIBRARY_MODEL_H
 #define MUSIC_LIBRARY_MODEL_H
 
-#include <QSet>
-#include <QMap>
-#include "musiclibraryitemroot.h"
-#include "musiclibraryitemalbum.h"
-#include "mpd-interface/song.h"
 #include "actionmodel.h"
+#include "mpd-interface/song.h"
+#include "musiclibraryitemalbum.h"
+#include "musiclibraryitemroot.h"
+#include <QMap>
+#include <QSet>
 
 class QMimeData;
 class MusicLibraryItemArtist;
 
-class MusicLibraryModel : public ActionModel
-{
-    Q_OBJECT
+class MusicLibraryModel : public ActionModel {
+	Q_OBJECT
 public:
-    MusicLibraryModel(QObject *parent=nullptr);
-    ~MusicLibraryModel() override;
-    QModelIndex index(int, int, const QModelIndex & = QModelIndex()) const override;
-    QModelIndex parent(const QModelIndex &) const override;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    int columnCount(const QModelIndex &i=QModelIndex()) const override { Q_UNUSED(i) return 1; }
-    QVariant data(const QModelIndex &, int) const override;
-    bool setData(const QModelIndex &idx, const QVariant &value, int role = Qt::EditRole) override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-    void clear();
-    void setSongs(const QSet<Song> &songs);
-    void setSupportsAlbumArtistTag(bool s) { rootItem->setSupportsAlbumArtistTag(s); }
-    virtual int row(void *i) const { return rootItem->indexOf(static_cast<MusicLibraryItem *>(i)); }
+	MusicLibraryModel(QObject* parent = nullptr);
+	~MusicLibraryModel() override;
+	QModelIndex index(int, int, const QModelIndex& = QModelIndex()) const override;
+	QModelIndex parent(const QModelIndex&) const override;
+	int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+	int columnCount(const QModelIndex& i = QModelIndex()) const override
+	{
+		Q_UNUSED(i)
+		return 1;
+	}
+	QVariant data(const QModelIndex&, int) const override;
+	bool setData(const QModelIndex& idx, const QVariant& value, int role = Qt::EditRole) override;
+	Qt::ItemFlags flags(const QModelIndex& index) const override;
+	void clear();
+	void setSongs(const QSet<Song>& songs);
+	void setSupportsAlbumArtistTag(bool s) { rootItem->setSupportsAlbumArtistTag(s); }
+	virtual int row(void* i) const { return rootItem->indexOf(static_cast<MusicLibraryItem*>(i)); }
 
 protected:
-    const MusicLibraryItemRoot * root(const MusicLibraryItem *item) const;
+	const MusicLibraryItemRoot* root(const MusicLibraryItem* item) const;
 
 private:
-    void setParentState(const QModelIndex &parent);
+	void setParentState(const QModelIndex& parent);
 
 private:
-    MusicLibraryItemRoot *rootItem;
+	MusicLibraryItemRoot* rootItem;
 
-    friend class MusicLibraryItemRoot;
-    friend class DevicesModel;
-    friend class Device;
+	friend class MusicLibraryItemRoot;
+	friend class DevicesModel;
+	friend class Device;
 };
 
 #endif

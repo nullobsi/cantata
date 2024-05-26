@@ -21,33 +21,29 @@
 #ifndef UDISKSBLOCK_H
 #define UDISKSBLOCK_H
 
-#include <solid-lite/ifaces/block.h>
 #include "udisksdeviceinterface.h"
+#include <solid-lite/ifaces/block.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks
-{
+namespace Solid {
+namespace Backends {
+namespace UDisks {
 
-class Block: public DeviceInterface, virtual public Solid::Ifaces::Block
-{
+class Block : public DeviceInterface, virtual public Solid::Ifaces::Block {
 
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::Block)
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::Block)
 
 public:
-    Block(UDisksDevice *device);
-    virtual ~Block();
+	Block(UDisksDevice* device);
+	virtual ~Block();
 
-    virtual QString device() const;
-    virtual int deviceMinor() const;
-    virtual int deviceMajor() const;
+	virtual QString device() const;
+	virtual int deviceMinor() const;
+	virtual int deviceMajor() const;
 };
 
-}
-}
-}
+}// namespace UDisks
+}// namespace Backends
+}// namespace Solid
 
-#endif // UDISKSBLOCK_H
+#endif// UDISKSBLOCK_H

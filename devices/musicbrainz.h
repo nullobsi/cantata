@@ -27,34 +27,33 @@
 #define MUSICBRAINZ_H
 
 #include "cdalbum.h"
-#include <QString>
 #include <QObject>
+#include <QString>
 
 class Thread;
 
-class MusicBrainz : public QObject
-{
-    Q_OBJECT
+class MusicBrainz : public QObject {
+	Q_OBJECT
 public:
-    MusicBrainz(const QString &device);
-    ~MusicBrainz();
+	MusicBrainz(const QString& device);
+	~MusicBrainz();
 
 public Q_SLOTS:
-    void lookup(bool full);
+	void lookup(bool full);
 
 Q_SIGNALS:
-    void error(const QString &error);
-    void initialDetails(const CdAlbum &);
-    void matches(const QList<CdAlbum> &);
+	void error(const QString& error);
+	void initialDetails(const CdAlbum&);
+	void matches(const QList<CdAlbum>&);
 
 private:
-    void readDisc();
+	void readDisc();
 
 private:
-    Thread *thread;
-    QString dev;
-    QString discId;
-    CdAlbum initial;
+	Thread* thread;
+	QString dev;
+	QString discId;
+	CdAlbum initial;
 };
 
-#endif // MUSICBRAINZ_H
+#endif// MUSICBRAINZ_H

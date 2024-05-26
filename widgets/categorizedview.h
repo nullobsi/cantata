@@ -31,60 +31,67 @@ class QIcon;
 class QMenu;
 class KCategorizedSortFilterProxyModel;
 
-class CategorizedView : public KCategorizedView
-{
-    Q_OBJECT
+class CategorizedView : public KCategorizedView {
+	Q_OBJECT
 
 public:
-    CategorizedView(QWidget *parent=nullptr);
-    ~CategorizedView() override;
+	CategorizedView(QWidget* parent = nullptr);
+	~CategorizedView() override;
 
-    void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
-    bool haveSelectedItems() const;
-    bool haveUnSelectedItems() const;
-    void startDrag(Qt::DropActions supportedActions) override { TreeView::drag(supportedActions, this, selectedIndexes()); }
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    QModelIndexList selectedIndexes() const override { return selectedIndexes(true); }
-    QModelIndexList selectedIndexes(bool sorted) const;
-    void setModel(QAbstractItemModel *m) override;
-    void addDefaultAction(QAction *act);
-    void setBackgroundImage(const QIcon &icon);
-    void paintEvent(QPaintEvent *e) override;
-    void installFilter(QObject *f) { eventFilter=f; installEventFilter(f); }
-    QObject * filter() const { return eventFilter; }
-    double zoom() const { return zoomLevel; }
-    void setZoom(double l) { zoomLevel = l; }
-    void setInfoText(const QString &i) { info=i; update(); }
-    void setRootIndex(const QModelIndex &idx) override;
-    QModelIndex rootIndex() const;
-    QModelIndex indexAt(const QPoint &point) const override { return indexAt(point, false); }
-    QModelIndex indexAt(const QPoint &point, bool ensureFromSource) const;
-    QModelIndex mapFromSource(const QModelIndex &idx) const;
-    void setPlain(bool plain);
+	void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) override;
+	bool haveSelectedItems() const;
+	bool haveUnSelectedItems() const;
+	void startDrag(Qt::DropActions supportedActions) override { TreeView::drag(supportedActions, this, selectedIndexes()); }
+	void mouseReleaseEvent(QMouseEvent* event) override;
+	QModelIndexList selectedIndexes() const override { return selectedIndexes(true); }
+	QModelIndexList selectedIndexes(bool sorted) const;
+	void setModel(QAbstractItemModel* m) override;
+	void addDefaultAction(QAction* act);
+	void setBackgroundImage(const QIcon& icon);
+	void paintEvent(QPaintEvent* e) override;
+	void installFilter(QObject* f)
+	{
+		eventFilter = f;
+		installEventFilter(f);
+	}
+	QObject* filter() const { return eventFilter; }
+	double zoom() const { return zoomLevel; }
+	void setZoom(double l) { zoomLevel = l; }
+	void setInfoText(const QString& i)
+	{
+		info = i;
+		update();
+	}
+	void setRootIndex(const QModelIndex& idx) override;
+	QModelIndex rootIndex() const;
+	QModelIndex indexAt(const QPoint& point) const override { return indexAt(point, false); }
+	QModelIndex indexAt(const QPoint& point, bool ensureFromSource) const;
+	QModelIndex mapFromSource(const QModelIndex& idx) const;
+	void setPlain(bool plain);
 
 private Q_SLOTS:
-    void correctSelection();
-    void showCustomContextMenu(const QPoint &pos);
-    void checkDoubleClick(const QModelIndex &idx);
-    void checkClicked(const QModelIndex &idx);
-    void checkActivated(const QModelIndex &idx);
+	void correctSelection();
+	void showCustomContextMenu(const QPoint& pos);
+	void checkDoubleClick(const QModelIndex& idx);
+	void checkClicked(const QModelIndex& idx);
+	void checkActivated(const QModelIndex& idx);
 
 Q_SIGNALS:
-    bool itemsSelected(bool);
-    void itemDoubleClicked(const QModelIndex &idx);
-    void itemClicked(const QModelIndex &idx);
-    void itemActivated(const QModelIndex &idx);
+	bool itemsSelected(bool);
+	void itemDoubleClicked(const QModelIndex& idx);
+	void itemClicked(const QModelIndex& idx);
+	void itemActivated(const QModelIndex& idx);
 
 private:
-    void rowsInserted(const QModelIndex &parent, int start, int end) override;
+	void rowsInserted(const QModelIndex& parent, int start, int end) override;
 
 private:
-    QString info;
-    QObject *eventFilter;
-    QMenu *menu;
-    QPixmap bgnd;
-    double zoomLevel;
-    KCategorizedSortFilterProxyModel *proxy;
+	QString info;
+	QObject* eventFilter;
+	QMenu* menu;
+	QPixmap bgnd;
+	double zoomLevel;
+	KCategorizedSortFilterProxyModel* proxy;
 };
 
 #endif

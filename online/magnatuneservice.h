@@ -28,59 +28,60 @@
 #include "onlinedbservice.h"
 #include <QMap>
 
-class MagnatuneXmlParser : public OnlineXmlParser
-{
+class MagnatuneXmlParser : public OnlineXmlParser {
 public:
-    int parse(QXmlStreamReader &xml) override;
+	int parse(QXmlStreamReader& xml) override;
+
 private:
-    Song parseSong(QXmlStreamReader &xml);
+	Song parseSong(QXmlStreamReader& xml);
+
 private:
-    QSet<QString> artists;
-    QSet<QString> albumUrls;
+	QSet<QString> artists;
+	QSet<QString> albumUrls;
 };
 
-class MagnatuneService : public OnlineDbService
-{
-    Q_OBJECT
+class MagnatuneService : public OnlineDbService {
+	Q_OBJECT
 public:
-    enum MemberShip {
-        MB_None,
-        MB_Streaming,
-        // MB_Download, // TODO: Magnatune downloads!
+	enum MemberShip {
+		MB_None,
+		MB_Streaming,
+		// MB_Download, // TODO: Magnatune downloads!
 
-        MB_Count
-    };
+		MB_Count
+	};
 
-    enum DownloadType {
-        DL_Mp3,
-        DL_Mp3Vbr,
-        DL_Ogg,
-        DL_Flac,
-        DL_Wav,
+	enum DownloadType {
+		DL_Mp3,
+		DL_Mp3Vbr,
+		DL_Ogg,
+		DL_Flac,
+		DL_Wav,
 
-        DL_Count
-    };
+		DL_Count
+	};
 
-    static QString membershipStr(MemberShip f, bool trans=false);
-    static QString downloadTypeStr(DownloadType f, bool trans=false);
+	static QString membershipStr(MemberShip f, bool trans = false);
+	static QString downloadTypeStr(DownloadType f, bool trans = false);
 
-    MagnatuneService(QObject *p);
-    QVariant data(const QModelIndex &index, int role) const override;
-    QString name() const override;
-    QString title() const override;
-    QString descr() const override;
-    OnlineXmlParser * createParser() override;
-    QUrl listingUrl() const override;
-    void configure(QWidget *p) override;
-    int averageSize() const override { return 10; }
-private:
-    Song & fixPath(Song &s) const override;
+	MagnatuneService(QObject* p);
+	QVariant data(const QModelIndex& index, int role) const override;
+	QString name() const override;
+	QString title() const override;
+	QString descr() const override;
+	OnlineXmlParser* createParser() override;
+	QUrl listingUrl() const override;
+	void configure(QWidget* p) override;
+	int averageSize() const override { return 10; }
 
 private:
-    MemberShip membership;
-    DownloadType download;
-    QString username;
-    QString password;
+	Song& fixPath(Song& s) const override;
+
+private:
+	MemberShip membership;
+	DownloadType download;
+	QString username;
+	QString password;
 };
 
 #endif

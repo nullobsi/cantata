@@ -24,60 +24,59 @@
 #ifndef CURRENT_COVERW_H
 #define CURRENT_COVERW_H
 
-#include <QObject>
-#include <QImage>
 #include "mpd-interface/song.h"
+#include <QImage>
+#include <QObject>
 
 class QPixmap;
 class QTimer;
 
-class CurrentCover : public QObject
-{
-    Q_OBJECT
+class CurrentCover : public QObject {
+	Q_OBJECT
 
 public:
-    static CurrentCover * self();
-    CurrentCover();
-    ~CurrentCover() override;
+	static CurrentCover* self();
+	CurrentCover();
+	~CurrentCover() override;
 
-    void setEnabled(bool e);
-    void update(const Song &s);
-    const Song & song() const { return current; }
-    bool isValid() const { return valid; }
-    const QString & fileName() const { return coverFileName; }
-    const QImage &image() const { return img; }
+	void setEnabled(bool e);
+	void update(const Song& s);
+	const Song& song() const { return current; }
+	bool isValid() const { return valid; }
+	const QString& fileName() const { return coverFileName; }
+	const QImage& image() const { return img; }
 
 Q_SIGNALS:
-    void coverImage(const QImage &img);
-    void coverFile(const QString &name);
+	void coverImage(const QImage& img);
+	void coverFile(const QString& name);
 
 private Q_SLOTS:
-    void coverRetrieved(const Song &s, const QImage &img, const QString &file);
-    void setDefault();
+	void coverRetrieved(const Song& s, const QImage& img, const QString& file);
+	void setDefault();
 
 private:
-    const QImage & stdImage(const Song &s);
-    #if !defined Q_OS_WIN && !defined Q_OS_MAC
-    void initIconThemes();
-    QString findIcon(const QStringList &names);
-    #endif
+	const QImage& stdImage(const Song& s);
+#if !defined Q_OS_WIN && !defined Q_OS_MAC
+	void initIconThemes();
+	QString findIcon(const QStringList& names);
+#endif
 
 private:
-    bool enabled;
-    bool valid;
-    Song current;
-    mutable QImage img;
-    QString coverFileName;
-    QImage noStreamCover;
-    QImage noPodcastCover;
-    QImage noCover;
-    QString noStreamCoverFileName;
-    QString noPodcastCoverFileName;
-    QString noCoverFileName;
-    QTimer *timer;
-    #if !defined Q_OS_WIN && !defined Q_OS_MAC
-    QStringList iconThemes;
-    #endif
+	bool enabled;
+	bool valid;
+	Song current;
+	mutable QImage img;
+	QString coverFileName;
+	QImage noStreamCover;
+	QImage noPodcastCover;
+	QImage noCover;
+	QString noStreamCoverFileName;
+	QString noPodcastCoverFileName;
+	QString noCoverFileName;
+	QTimer* timer;
+#if !defined Q_OS_WIN && !defined Q_OS_MAC
+	QStringList iconThemes;
+#endif
 };
 
 #endif

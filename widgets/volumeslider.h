@@ -24,57 +24,56 @@
 #ifndef VOLUMESLIDER_H
 #define VOLUMESLIDER_H
 
-#include <QSlider>
 #include <QColor>
+#include <QSlider>
 
 class QPixmap;
 class QMenu;
 class Action;
 class QAction;
 
-class VolumeSlider : public QSlider
-{
-    Q_OBJECT
+class VolumeSlider : public QSlider {
+	Q_OBJECT
 
 public:
-    static QColor clampColor(const QColor &col);
+	static QColor clampColor(const QColor& col);
 
-    VolumeSlider(bool isMpd, QWidget *p=nullptr);
-    ~VolumeSlider() override { }
+	VolumeSlider(bool isMpd, QWidget* p = nullptr);
+	~VolumeSlider() override {}
 
-    void setActive(bool a) { isActive=a; }
-    void initActions();
-    void setColor(const QColor &col);
-    void paintEvent(QPaintEvent *ev) override;
-    void mousePressEvent(QMouseEvent *ev) override;
-    void mouseReleaseEvent(QMouseEvent *ev) override;
-    void contextMenuEvent(QContextMenuEvent *ev) override;
-    void wheelEvent(QWheelEvent *ev) override;
+	void setActive(bool a) { isActive = a; }
+	void initActions();
+	void setColor(const QColor& col);
+	void paintEvent(QPaintEvent* ev) override;
+	void mousePressEvent(QMouseEvent* ev) override;
+	void mouseReleaseEvent(QMouseEvent* ev) override;
+	void contextMenuEvent(QContextMenuEvent* ev) override;
+	void wheelEvent(QWheelEvent* ev) override;
 
 Q_SIGNALS:
-    void stateChanged();
-    void toggleMute();
+	void stateChanged();
+	void toggleMute();
 
 private Q_SLOTS:
-    void muteToggled();
-    void updateStatus();
-    void increaseVolume();
-    void decreaseVolume();
+	void muteToggled();
+	void updateStatus();
+	void increaseVolume();
+	void decreaseVolume();
 
 private:
-    void generatePixmaps();
-    QPixmap generatePixmap(bool filled);
+	void generatePixmaps();
+	QPixmap generatePixmap(bool filled);
 
 private:
-    bool isMpdVol;
-    bool isActive;
-    int lineWidth;
-    bool down;
-    QColor textCol;
-    QPixmap pixmaps[2];
-    Action *muteAction;
-    QAction *muteMenuAction;
-    QMenu *menu;
+	bool isMpdVol;
+	bool isActive;
+	int lineWidth;
+	bool down;
+	QColor textCol;
+	QPixmap pixmaps[2];
+	Action* muteAction;
+	QAction* muteMenuAction;
+	QMenu* menu;
 };
 
 #endif

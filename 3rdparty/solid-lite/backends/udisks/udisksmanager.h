@@ -29,42 +29,38 @@
 #include <QDBusInterface>
 #include <QSet>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks
-{
+namespace Solid {
+namespace Backends {
+namespace UDisks {
 
-class UDisksManager : public Solid::Ifaces::DeviceManager
-{
-    Q_OBJECT
+class UDisksManager : public Solid::Ifaces::DeviceManager {
+	Q_OBJECT
 
 public:
-    UDisksManager(QObject *parent);
-    virtual QObject* createDevice(const QString& udi);
-    virtual QStringList devicesFromQuery(const QString& parentUdi, Solid::DeviceInterface::Type type);
-    virtual QStringList allDevices();
-    virtual QSet< Solid::DeviceInterface::Type > supportedInterfaces() const;
-    virtual QString udiPrefix() const;
-    virtual ~UDisksManager();
+	UDisksManager(QObject* parent);
+	virtual QObject* createDevice(const QString& udi);
+	virtual QStringList devicesFromQuery(const QString& parentUdi, Solid::DeviceInterface::Type type);
+	virtual QStringList allDevices();
+	virtual QSet<Solid::DeviceInterface::Type> supportedInterfaces() const;
+	virtual QString udiPrefix() const;
+	virtual ~UDisksManager();
 
 private Q_SLOTS:
-    void slotDeviceAdded(const QDBusObjectPath &opath);
-    void slotDeviceRemoved(const QDBusObjectPath &opath);
-    void slotDeviceChanged(const QDBusObjectPath &opath);
+	void slotDeviceAdded(const QDBusObjectPath& opath);
+	void slotDeviceRemoved(const QDBusObjectPath& opath);
+	void slotDeviceChanged(const QDBusObjectPath& opath);
 
 private:
-    const QStringList &deviceCache();
-    QStringList allDevicesInternal();
-    QStringList m_knownDrivesWithMedia;  // list of known optical drives which contain a media
-    QSet<Solid::DeviceInterface::Type> m_supportedInterfaces;
-    QDBusInterface m_manager;
-    QStringList m_deviceCache;
-    QStringList m_dirtyDevices; // special 2-stage storage like Nokia N900
+	const QStringList& deviceCache();
+	QStringList allDevicesInternal();
+	QStringList m_knownDrivesWithMedia;// list of known optical drives which contain a media
+	QSet<Solid::DeviceInterface::Type> m_supportedInterfaces;
+	QDBusInterface m_manager;
+	QStringList m_deviceCache;
+	QStringList m_dirtyDevices;// special 2-stage storage like Nokia N900
 };
 
-}
-}
-}
-#endif // UDISKSMANAGER_H
+}// namespace UDisks
+}// namespace Backends
+}// namespace Solid
+#endif// UDISKSMANAGER_H

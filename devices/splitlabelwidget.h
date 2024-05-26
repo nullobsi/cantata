@@ -24,29 +24,27 @@
 #ifndef SPLIT_LABEL_WIDGET
 #define SPLIT_LABEL_WIDGET
 
-#include <QStackedWidget>
 #include <QList>
 #include <QPair>
+#include <QStackedWidget>
 
 class QLabel;
 class QStackedWidget;
 class SqueezedTextLabel;
 
-class SplitLabelWidget : public QStackedWidget
-{
+class SplitLabelWidget : public QStackedWidget {
 public:
-    SplitLabelWidget(QWidget *p);
-    void setText(const QString &text);
-    void setText(const QList<QPair<QString, QString> > &details, const QString &msg=QString());
+	SplitLabelWidget(QWidget* p);
+	void setText(const QString& text);
+	void setText(const QList<QPair<QString, QString>>& details, const QString& msg = QString());
 
 private:
-    QLabel *single;
+	QLabel* single;
 
-    QWidget *multiplePage;
-    QLabel *message;
-    QList<QLabel *> labels;
-    QList<SqueezedTextLabel *> values;
+	QWidget* multiplePage;
+	QLabel* message;
+	QList<QLabel*> labels;
+	QList<SqueezedTextLabel*> values;
 };
-
 
 #endif

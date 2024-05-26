@@ -22,36 +22,33 @@
 #ifndef SOLID_BACKENDS_WMI_STORAGE_H
 #define SOLID_BACKENDS_WMI_STORAGE_H
 
-#include <solid-lite/ifaces/storagedrive.h>
 #include "wmiblock.h"
 #include "wmiquery.h"
+#include <solid-lite/ifaces/storagedrive.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace Wmi
-{
-class Storage : public Block, virtual public Solid::Ifaces::StorageDrive
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::StorageDrive)
+namespace Solid {
+namespace Backends {
+namespace Wmi {
+class Storage : public Block, virtual public Solid::Ifaces::StorageDrive {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::StorageDrive)
 
 public:
-    Storage(WmiDevice *device);
-    virtual ~Storage();
+	Storage(WmiDevice* device);
+	virtual ~Storage();
 
-    virtual Solid::StorageDrive::Bus bus() const;
-    virtual Solid::StorageDrive::DriveType driveType() const;
+	virtual Solid::StorageDrive::Bus bus() const;
+	virtual Solid::StorageDrive::DriveType driveType() const;
 
-    virtual bool isRemovable() const;
-    virtual bool isHotpluggable() const;
-    virtual qulonglong size() const;
+	virtual bool isRemovable() const;
+	virtual bool isHotpluggable() const;
+	virtual qulonglong size() const;
+
 private:
-    WmiQuery::Item m_logicalDisk;
+	WmiQuery::Item m_logicalDisk;
 };
-}
-}
-}
+}// namespace Wmi
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_WMI_STORAGE_H
+#endif// SOLID_BACKENDS_WMI_STORAGE_H

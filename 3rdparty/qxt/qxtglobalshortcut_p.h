@@ -26,51 +26,51 @@
 #define QXTGLOBALSHORTCUT_P_H
 
 #include "qxtglobalshortcut.h"
-#if QT_VERSION<0x050000
+#if QT_VERSION < 0x050000
 #include <QAbstractEventDispatcher>
 #else
 #include <QAbstractNativeEventFilter>
 #include <QCoreApplication>
 #endif
-#include <QKeySequence>
 #include <QHash>
+#include <QKeySequence>
 
-#if QT_VERSION>=0x050000
+#if QT_VERSION >= 0x050000
 class QxtGlobalShortcutPrivate : public QAbstractNativeEventFilter, public QxtPrivate<QxtGlobalShortcut>
 #else
 class QxtGlobalShortcutPrivate : public QxtPrivate<QxtGlobalShortcut>
 #endif
 {
 public:
-    QXT_DECLARE_PUBLIC(QxtGlobalShortcut)
-    QxtGlobalShortcutPrivate();
-    ~QxtGlobalShortcutPrivate();
+	QXT_DECLARE_PUBLIC(QxtGlobalShortcut)
+	QxtGlobalShortcutPrivate();
+	~QxtGlobalShortcutPrivate();
 
-    bool enabled;
-    Qt::Key key;
-    Qt::KeyboardModifiers mods;
+	bool enabled;
+	Qt::Key key;
+	Qt::KeyboardModifiers mods;
 
-    bool setShortcut(const QKeySequence& shortcut);
-    bool unsetShortcut();
+	bool setShortcut(const QKeySequence& shortcut);
+	bool unsetShortcut();
 
-    static bool error;
-    static int ref;
-    #if QT_VERSION<0x050000
-    static QAbstractEventDispatcher::EventFilter prevEventFilter;
-    static bool eventFilter(void* message);
-    #else
-    bool nativeEventFilter(const QByteArray &, void *message, long *result);
-    #endif
+	static bool error;
+	static int ref;
+#if QT_VERSION < 0x050000
+	static QAbstractEventDispatcher::EventFilter prevEventFilter;
+	static bool eventFilter(void* message);
+#else
+	bool nativeEventFilter(const QByteArray&, void* message, long* result);
+#endif
 
 private:
-    static quint32 nativeKeycode(Qt::Key keycode);
-    static quint32 nativeModifiers(Qt::KeyboardModifiers modifiers);
+	static quint32 nativeKeycode(Qt::Key keycode);
+	static quint32 nativeModifiers(Qt::KeyboardModifiers modifiers);
 
-    static bool registerShortcut(quint32 nativeKey, quint32 nativeMods);
-    static bool unregisterShortcut(quint32 nativeKey, quint32 nativeMods);
-    static void activateShortcut(quint32 nativeKey, quint32 nativeMods);
+	static bool registerShortcut(quint32 nativeKey, quint32 nativeMods);
+	static bool unregisterShortcut(quint32 nativeKey, quint32 nativeMods);
+	static void activateShortcut(quint32 nativeKey, quint32 nativeMods);
 
-    static QHash<QPair<quint32, quint32>, QxtGlobalShortcut*> shortcuts;
+	static QHash<QPair<quint32, quint32>, QxtGlobalShortcut*> shortcuts;
 };
 
-#endif // QXTGLOBALSHORTCUT_P_H
+#endif// QXTGLOBALSHORTCUT_P_H

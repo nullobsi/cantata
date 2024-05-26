@@ -24,28 +24,27 @@
 #ifndef LYRICSETTINGS_H
 #define LYRICSETTINGS_H
 
-#include <QWidget>
-#include <QStringList>
-#include <QList>
 #include "togglelist.h"
+#include <QList>
+#include <QStringList>
+#include <QWidget>
 
 class QListWidgetItem;
 class UltimateLyricsProvider;
 
-class LyricSettings : public ToggleList
-{
-    Q_OBJECT
+class LyricSettings : public ToggleList {
+	Q_OBJECT
 public:
-    LyricSettings(QWidget *p);
-    ~LyricSettings() override { }
+	LyricSettings(QWidget* p);
+	~LyricSettings() override {}
 
-    void load();
-    void save();
+	void load();
+	void save();
 
-    void showEvent(QShowEvent *e) override;
+	void showEvent(QShowEvent* e) override;
 
 private:
-    bool loadedXml;
+	bool loadedXml;
 };
 
-#endif // LYRICSETTINGS_H
+#endif// LYRICSETTINGS_H

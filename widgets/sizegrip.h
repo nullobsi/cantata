@@ -26,10 +26,9 @@
 
 #include <QWidget>
 
-class SizeGrip : public QWidget
-{
+class SizeGrip : public QWidget {
 public:
-    explicit SizeGrip(QWidget *parent = nullptr);
+	explicit SizeGrip(QWidget* parent = nullptr);
 };
 
 #endif

@@ -23,14 +23,12 @@
 
 #include "storagedrive_p.h"
 
-namespace Solid
-{
-    class OpticalDrivePrivate : public StorageDrivePrivate
-    {
-    public:
-        OpticalDrivePrivate()
-            : StorageDrivePrivate() { }
-    };
-}
+namespace Solid {
+class OpticalDrivePrivate : public StorageDrivePrivate {
+public:
+	OpticalDrivePrivate()
+		: StorageDrivePrivate() {}
+};
+}// namespace Solid
 
-#endif // SOLID_OPTICALDRIVE_P_H
+#endif// SOLID_OPTICALDRIVE_P_H

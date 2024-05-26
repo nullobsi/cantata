@@ -24,48 +24,47 @@
 #ifndef _REPLAYGAIN_H_
 #define _REPLAYGAIN_H_
 
-#include <QObject>
+#include "config.h"
+#include "trackscanner.h"
 #include <QList>
 #include <QMap>
+#include <QObject>
 #include <QStringList>
-#include "trackscanner.h"
-#include "config.h"
 
-class ReplayGain : public QObject
-{
-    Q_OBJECT
+class ReplayGain : public QObject {
+	Q_OBJECT
 
 public:
-    ReplayGain(const QStringList &fileNames);
-    virtual ~ReplayGain();
+	ReplayGain(const QStringList& fileNames);
+	virtual ~ReplayGain();
 
 public Q_SLOTS:
-    void scan();
+	void scan();
 
 private:
-    void createScanner(int index);
-    void clearScanners();
-    void showProgress();
-    void showResults();
+	void createScanner(int index);
+	void clearScanners();
+	void showProgress();
+	void showResults();
 
 private Q_SLOTS:
-    void scannerProgress(int p);
-    void scannerDone();
+	void scannerProgress(int p);
+	void scannerDone();
 
 private:
-    struct Track {
-        Track() : progress(0), finished(false), success(false) { }
-        unsigned char progress;
-        bool finished : 1;
-        bool success : 1;
-    };
+	struct Track {
+		Track() : progress(0), finished(false), success(false) {}
+		unsigned char progress;
+		bool finished : 1;
+		bool success : 1;
+	};
 
-    QStringList files;
-    QMap<int, TrackScanner *> scanners;
-    QList<int> toScan;
-    QMap<int, Track> tracks;
-    int lastProgress;
-    int totalScanned;
+	QStringList files;
+	QMap<int, TrackScanner*> scanners;
+	QList<int> toScan;
+	QMap<int, Track> tracks;
+	int lastProgress;
+	int totalScanned;
 };
 
 #endif

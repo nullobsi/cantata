@@ -29,9 +29,8 @@
 #include <QStringList>
 class QString;
 
-namespace Solid
-{
-    /**
+namespace Solid {
+/**
      @brief Resource type based handling of standard directories
 
      Developers of several Free Software desktop projects have created
@@ -48,9 +47,8 @@ namespace Solid
 
      @see http://www.freedesktop.org/wiki/Specifications/basedir-spec
      */
-    namespace XdgBaseDirs
-    {
-        /**
+namespace XdgBaseDirs {
+/**
          @brief Returns the user specific directory for the given resource type
 
          Unless the user's environment has a specific path set as an override
@@ -64,9 +62,9 @@ namespace Solid
 
          @see systemPathList()
          */
-        QString homePath( const char *resource );
+QString homePath(const char* resource);
 
-        /**
+/**
          @brief Returns the list of system wide directories for a given resource type
 
          The returned list can contain one or more directory paths. If there are more
@@ -86,9 +84,9 @@ namespace Solid
 
          @see homePath()
          */
-        QStringList systemPathList( const char *resource );
+QStringList systemPathList(const char* resource);
 
-        /**
+/**
          @brief Searches the resource specific directories for a given file
 
          Convenience method for finding a given file (with optional relative path)
@@ -105,8 +103,8 @@ namespace Solid
                   relative path exists in any of the base directories or if
                   a match is not a file
          */
-        QString findResourceFile( const char *resource, const QString &relPath );
-    }
-}
+QString findResourceFile(const char* resource, const QString& relPath);
+}// namespace XdgBaseDirs
+}// namespace Solid
 
 #endif

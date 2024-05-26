@@ -26,16 +26,15 @@
 
 #include "singleapplication.h"
 
-class Application : public SingleApplication    
-{
+class Application : public SingleApplication {
 public:
-    static void init();
-    static void fixSize(QWidget *widget);
-    Application(int &argc, char **argv);
-    virtual ~Application() { };
+	static void init();
+	static void fixSize(QWidget* widget);
+	Application(int& argc, char** argv);
+	virtual ~Application() {};
 
-    bool start(const QStringList &files);
-    void loadFiles(const QStringList &files);
+	bool start(const QStringList& files);
+	void loadFiles(const QStringList& files);
 };
 
 #endif

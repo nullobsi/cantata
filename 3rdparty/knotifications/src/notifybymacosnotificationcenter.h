@@ -9,21 +9,20 @@
 
 #include "knotificationplugin.h"
 
-class NotifyByMacOSNotificationCenter : public KNotificationPlugin
-{
-    Q_OBJECT
+class NotifyByMacOSNotificationCenter : public KNotificationPlugin {
+	Q_OBJECT
 
 public:
-    NotifyByMacOSNotificationCenter(QObject *parent);
-    ~NotifyByMacOSNotificationCenter() override;
+	NotifyByMacOSNotificationCenter(QObject* parent);
+	~NotifyByMacOSNotificationCenter() override;
 
-    QString optionName() override
-    {
-        return QStringLiteral("Popup");
-    }
-    void notify(KNotification *notification, const KNotifyConfig &notifyConfig) override;
-    void update(KNotification *notification, const KNotifyConfig &notifyConfig) override;
-    void close(KNotification *notification) override;
+	QString optionName() override
+	{
+		return QStringLiteral("Popup");
+	}
+	void notify(KNotification* notification, const KNotifyConfig& notifyConfig) override;
+	void update(KNotification* notification, const KNotifyConfig& notifyConfig) override;
+	void close(KNotification* notification) override;
 };
 
-#endif // NOTIFYBYMACOSNOTIFICATIONCENTER_H
+#endif// NOTIFYBYMACOSNOTIFICATIONCENTER_H

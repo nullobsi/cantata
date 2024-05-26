@@ -24,46 +24,45 @@
 #ifndef ALBUMDETAILSDIALOG_H
 #define ALBUMDETAILSDIALOG_H
 
-#include "ui_albumdetails.h"
-#include "support/dialog.h"
-#include "mpd-interface/song.h"
 #include "gui/covers.h"
+#include "mpd-interface/song.h"
+#include "support/dialog.h"
+#include "ui_albumdetails.h"
 
 class AudioCdDevice;
 class QTreeWidgetItem;
 struct CdAlbum;
 
-class AlbumDetailsDialog : public Dialog, Ui::AlbumDetails
-{
-    Q_OBJECT
+class AlbumDetailsDialog : public Dialog, Ui::AlbumDetails {
+	Q_OBJECT
 
 public:
-    static int instanceCount();
+	static int instanceCount();
 
-    AlbumDetailsDialog(QWidget *parent);
-    virtual ~AlbumDetailsDialog();
-    void show(AudioCdDevice *dev);
+	AlbumDetailsDialog(QWidget* parent);
+	virtual ~AlbumDetailsDialog();
+	void show(AudioCdDevice* dev);
 
 private Q_SLOTS:
-    void hideArtistColumn(bool hide);
-    void applyVa();
-    void revertVa();
-    void capitalise();
-    void adjustTrackNumbers();
-    void coverSelected(const QImage &img, const QString &fileName);
+	void hideArtistColumn(bool hide);
+	void applyVa();
+	void revertVa();
+	void capitalise();
+	void adjustTrackNumbers();
+	void coverSelected(const QImage& img, const QString& fileName);
 
 private:
-    void slotButtonClicked(int button);
-    Song toSong(QTreeWidgetItem *i, const CdAlbum &album);
-    void update(QTreeWidgetItem *i, const Song &s);
-    void setCover();
-    bool eventFilter(QObject *object, QEvent *event);
-    CdAlbum getAlbum() const;
+	void slotButtonClicked(int button);
+	Song toSong(QTreeWidgetItem* i, const CdAlbum& album);
+	void update(QTreeWidgetItem* i, const Song& s);
+	void setCover();
+	bool eventFilter(QObject* object, QEvent* event);
+	CdAlbum getAlbum() const;
 
 private:
-    QString udi;
-    bool pressed;
-    Covers::Image coverImage;
+	QString udi;
+	bool pressed;
+	Covers::Image coverImage;
 };
 
 #endif

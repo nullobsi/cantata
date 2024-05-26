@@ -26,75 +26,72 @@
 
 #include "mpd-interface/song.h"
 #include <QImage>
-#include <QString>
+#include <QMap>
 #include <QMutex>
 #include <QSemaphore>
-#include <QMap>
+#include <QString>
 
 class QLocalServer;
 class QLocalSocket;
 class QProcess;
 class Thread;
 
-namespace Tags
-{
-    struct ReplayGain;
+namespace Tags {
+struct ReplayGain;
 }
 
-class TagHelperIface : public QObject
-{
-    Q_OBJECT
+class TagHelperIface : public QObject {
+	Q_OBJECT
 
 public:
-    static void enableDebug();
-    static TagHelperIface * self();
+	static void enableDebug();
+	static TagHelperIface* self();
 
-    struct Reply
-    {
-        bool status;
-        QByteArray data;
-    };
+	struct Reply {
+		bool status;
+		QByteArray data;
+	};
 
-    TagHelperIface();
-    void stop();
-    Song read(const QString &fileName);
-    QImage readImage(const QString &fileName);
-    QString readLyrics(const QString &fileName);
-    QString readComment(const QString &fileName);
-    int updateArtistAndTitle(const QString &fileName, const Song &song);
-    int update(const QString &fileName, const Song &from, const Song &to, int id3Ver, bool saveComment);
-    Tags::ReplayGain readReplaygain(const QString &fileName);
-    int updateReplaygain(const QString &fileName, const Tags::ReplayGain &rg);
-    int embedImage(const QString &fileName, const QByteArray &cover);
-    QString oggMimeType(const QString &fileName);
-    int readRating(const QString &fileName);
-    int updateRating(const QString &fileName, int rating);
-    QMap<QString, QString> readAll(const QString &fileName);
+	TagHelperIface();
+	void stop();
+	Song read(const QString& fileName);
+	QImage readImage(const QString& fileName);
+	QString readLyrics(const QString& fileName);
+	QString readComment(const QString& fileName);
+	int updateArtistAndTitle(const QString& fileName, const Song& song);
+	int update(const QString& fileName, const Song& from, const Song& to, int id3Ver, bool saveComment);
+	Tags::ReplayGain readReplaygain(const QString& fileName);
+	int updateReplaygain(const QString& fileName, const Tags::ReplayGain& rg);
+	int embedImage(const QString& fileName, const QByteArray& cover);
+	QString oggMimeType(const QString& fileName);
+	int readRating(const QString& fileName);
+	int updateRating(const QString& fileName, int rating);
+	QMap<QString, QString> readAll(const QString& fileName);
 
 private:
-    bool helperIsRunning();
-    Reply sendMessage(const QByteArray &msg);
-    bool startHelper();
-    void setStatus(bool st);
+	bool helperIsRunning();
+	Reply sendMessage(const QByteArray& msg);
+	bool startHelper();
+	void setStatus(bool st);
 
 private Q_SLOTS:
-    void close();
-    void stopHelper();
-    void sendMsg();
-    void dataReady();
-    void helperClosed();
+	void close();
+	void stopHelper();
+	void sendMsg();
+	void dataReady();
+	void helperClosed();
 
 private:
-    QMutex mutex;
-    QByteArray data;
-    bool msgStatus;
-    qint32 dataSize;
-    bool awaitingResponse;
-    Thread *thread;
-    QSemaphore sema;
-    QProcess *proc;
-    QLocalServer *server;
-    QLocalSocket *sock;
+	QMutex mutex;
+	QByteArray data;
+	bool msgStatus;
+	qint32 dataSize;
+	bool awaitingResponse;
+	Thread* thread;
+	QSemaphore sema;
+	QProcess* proc;
+	QLocalServer* server;
+	QLocalSocket* sock;
 };
 
 #endif

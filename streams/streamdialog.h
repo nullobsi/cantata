@@ -24,38 +24,37 @@
 #ifndef STREAMDIALOG_H
 #define STREAMDIALOG_H
 
-#include <QSet>
-#include <QCheckBox>
 #include "support/dialog.h"
 #include "support/lineedit.h"
+#include <QCheckBox>
+#include <QSet>
 
 class QLabel;
 class BuddyLabel;
 
-class StreamDialog : public Dialog
-{
-    Q_OBJECT
+class StreamDialog : public Dialog {
+	Q_OBJECT
 
 public:
-    StreamDialog(QWidget *parent, bool addToPlayQueue=false);
+	StreamDialog(QWidget* parent, bool addToPlayQueue = false);
 
-    void setEdit(const QString &editName, const QString &editUrl);
-    QString name() const { return nameEntry->text().trimmed(); }
-    QString url() const { return urlEntry->text().trimmed(); }
-    bool save() const { return !saveCheckbox || saveCheckbox->isChecked(); }
+	void setEdit(const QString& editName, const QString& editUrl);
+	QString name() const { return nameEntry->text().trimmed(); }
+	QString url() const { return urlEntry->text().trimmed(); }
+	bool save() const { return !saveCheckbox || saveCheckbox->isChecked(); }
 
 private Q_SLOTS:
-    void changed();
+	void changed();
 
 private:
-    QString prevName;
-    QString prevUrl;
-    QCheckBox *saveCheckbox;
-    LineEdit *nameEntry;
-    LineEdit *urlEntry;
-    BuddyLabel *nameLabel;
-    QLabel *statusText;
-    QSet<QString> urlHandlers;
+	QString prevName;
+	QString prevUrl;
+	QCheckBox* saveCheckbox;
+	LineEdit* nameEntry;
+	LineEdit* urlEntry;
+	BuddyLabel* nameLabel;
+	QLabel* statusText;
+	QSet<QString> urlHandlers;
 };
 
 #endif

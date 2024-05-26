@@ -24,10 +24,10 @@
 #ifndef NOWPLAYING_WIDGET_H
 #define NOWPLAYING_WIDGET_H
 
-#include <QWidget>
+#include "support/squeezedtextlabel.h"
 #include <QElapsedTimer>
 #include <QSlider>
-#include "support/squeezedtextlabel.h"
+#include <QWidget>
 
 class QTimer;
 class QLabel;
@@ -35,76 +35,74 @@ class TimeLabel;
 class RatingWidget;
 struct Song;
 
-class PosSlider : public QSlider
-{
-    Q_OBJECT
+class PosSlider : public QSlider {
+	Q_OBJECT
 public:
-    PosSlider(QWidget *p);
-    ~PosSlider() override { }
+	PosSlider(QWidget* p);
+	~PosSlider() override {}
 
-    void updateStyleSheet(const QColor &col);
-    void mouseMoveEvent(QMouseEvent *e) override;
-    void wheelEvent(QWheelEvent *ev) override;
-    void setRange(int min, int max);
+	void updateStyleSheet(const QColor& col);
+	void mouseMoveEvent(QMouseEvent* e) override;
+	void wheelEvent(QWheelEvent* ev) override;
+	void setRange(int min, int max);
 
 Q_SIGNALS:
-    void positionSet();
+	void positionSet();
 };
 
-class NowPlayingWidget : public QWidget
-{
-    Q_OBJECT
+class NowPlayingWidget : public QWidget {
+	Q_OBJECT
 public:
-    NowPlayingWidget(QWidget *p);
-    ~NowPlayingWidget() override { }
-    void update(const Song &song);
-    void startTimer();
-    void stopTimer();
-    void setValue(int v);
-    void setRange(int min, int max);
-    void clearTimes();
-    int value() const;
-    void readConfig();
-    void saveConfig();
-    void setEnabled(bool e) { slider->setEnabled(e); }
-    bool isEnabled() const { return slider->isEnabled(); }
-    void initColors();
-    QColor textColor() const { return track->palette().windowText().color(); }
-    void resizeEvent(QResizeEvent *ev) override;
+	NowPlayingWidget(QWidget* p);
+	~NowPlayingWidget() override {}
+	void update(const Song& song);
+	void startTimer();
+	void stopTimer();
+	void setValue(int v);
+	void setRange(int min, int max);
+	void clearTimes();
+	int value() const;
+	void readConfig();
+	void saveConfig();
+	void setEnabled(bool e) { slider->setEnabled(e); }
+	bool isEnabled() const { return slider->isEnabled(); }
+	void initColors();
+	QColor textColor() const { return track->palette().windowText().color(); }
+	void resizeEvent(QResizeEvent* ev) override;
 
 Q_SIGNALS:
-    void sliderReleased();
+	void sliderReleased();
 
-    void mpdPoll();
-    void setRating(const QString &file, quint8 r);
+	void mpdPoll();
+	void setRating(const QString& file, quint8 r);
 
 public Q_SLOTS:
-    void rating(const QString &file, quint8 r);
+	void rating(const QString& file, quint8 r);
 
 private Q_SLOTS:
-    void updateTimes();
-    void updatePos();
-    void pressed();
-    void released();
-    void setRating(int v);
-    void updateInfo();
-    void copyInfo();
+	void updateTimes();
+	void updatePos();
+	void pressed();
+	void released();
+	void setRating(int v);
+	void updateInfo();
+	void copyInfo();
 
 private:
-    void controlWidgets();
+	void controlWidgets();
 
 private:
-    SqueezedTextLabel *track;
-    SqueezedTextLabel *artist;
-    QLabel *infoLabel;
-    TimeLabel *time;
-    PosSlider *slider;
-    RatingWidget *ratingWidget;
-    QTimer *timer;
-    QElapsedTimer elapsedTimer;
-    QString currentSongFile;
-    int lastVal;
-    int pollCount;
+	SqueezedTextLabel* track;
+	SqueezedTextLabel* artist;
+	QLabel* infoLabel;
+	TimeLabel* time;
+	PosSlider* slider;
+	RatingWidget* ratingWidget;
+	QTimer* timer;
+	QElapsedTimer elapsedTimer;
+	QString currentSongFile;
+	int lastVal;
+	int pollCount;
 };
 
 #endif

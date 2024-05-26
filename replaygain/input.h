@@ -12,25 +12,27 @@
 
 class QString;
 
-class Input
-{
+class Input {
 public:
-    Input() {
-    }
-    virtual ~Input() {
-    }
+	Input()
+	{
+	}
+	virtual ~Input()
+	{
+	}
 
-    virtual operator bool() const=0;
+	virtual operator bool() const = 0;
 
-    virtual size_t totalFrames() const=0;
-    virtual unsigned int channels() const=0;
-    virtual unsigned long sampleRate() const=0;
-    virtual bool allocateBuffer() {
-        return true;
-    }
-    virtual float * buffer() const=0;
-    virtual bool setChannelMap(int *st) const=0;
-    virtual size_t readFrames()=0;
+	virtual size_t totalFrames() const = 0;
+	virtual unsigned int channels() const = 0;
+	virtual unsigned long sampleRate() const = 0;
+	virtual bool allocateBuffer()
+	{
+		return true;
+	}
+	virtual float* buffer() const = 0;
+	virtual bool setChannelMap(int* st) const = 0;
+	virtual size_t readFrames() = 0;
 };
 
 #endif

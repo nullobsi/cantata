@@ -24,33 +24,31 @@
 #ifndef MIRROR_MENU_H
 #define MIRROR_MENU_H
 
-#include <QMenu>
 #include <QList>
+#include <QMenu>
 
-class MirrorMenu : public QMenu
-{
-    Q_OBJECT
+class MirrorMenu : public QMenu {
+	Q_OBJECT
 public:
-    MirrorMenu(QWidget *p);
-    void addAction(QAction *act);
-    QAction * addAction(const QString &text);
-    QAction * addAction(const QIcon &icon, const QString &text);
-    QAction * addAction(const QString &text, const QObject *receiver, const char *member, const QKeySequence &shortcut = 0);
-    QAction * addAction(const QIcon &icon, const QString &text, const QObject *receiver, const char *member, const QKeySequence &shortcut = 0);
-    void removeAction(QAction *act);
-    void clear();
-    QMenu * duplicate(QWidget *p);
+	MirrorMenu(QWidget* p);
+	void addAction(QAction* act);
+	QAction* addAction(const QString& text);
+	QAction* addAction(const QIcon& icon, const QString& text);
+	QAction* addAction(const QString& text, const QObject* receiver, const char* member, const QKeySequence& shortcut = 0);
+	QAction* addAction(const QIcon& icon, const QString& text, const QObject* receiver, const char* member, const QKeySequence& shortcut = 0);
+	void removeAction(QAction* act);
+	void clear();
+	QMenu* duplicate(QWidget* p);
 
 private:
-    void updateMenus();
-    void updateMenu(QMenu *menu);
+	void updateMenus();
+	void updateMenu(QMenu* menu);
 
 private Q_SLOTS:
-    void menuDestroyed(QObject *obj);
+	void menuDestroyed(QObject* obj);
 
 private:
-    QList<QMenu *> menus;
+	QList<QMenu*> menus;
 };
 
 #endif
-

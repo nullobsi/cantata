@@ -24,49 +24,78 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#include <QString>
-#include <QStringList>
+#include "utils.h"
 #include <QByteArray>
-#include <QSize>
 #include <QDateTime>
 #include <QSettings>
-#include "utils.h"
+#include <QSize>
+#include <QString>
+#include <QStringList>
 
-class Configuration : public QSettings
-{
+class Configuration : public QSettings {
 public:
-    static QLatin1String constMainGroup;
-    Configuration(const QString &group=constMainGroup);
-    ~Configuration() override;
-    
-    QString      get(const QString &key, const QString &def)     { return contains(key) ? value(key).toString() : def; }
-    QStringList  get(const QString &key, const QStringList &def) { return contains(key) ? value(key).toStringList() : def; }
-    bool         get(const QString &key, bool def)               { return contains(key) ? value(key).toBool() : def; }
-    int          get(const QString &key, int def)                { return contains(key) ? value(key).toInt() : def; }
-    unsigned int get(const QString &key, unsigned int def)       { return contains(key) ? value(key).toUInt() : def; }
-    QByteArray   get(const QString &key, const QByteArray &def)  { return contains(key) ? value(key).toByteArray() : def; }
-    QSize        get(const QString &key, const QSize &def)       { return contains(key) ? value(key).toSize() : def; }
-    QPoint       get(const QString &key, const QPoint &def)      { return contains(key) ? value(key).toPoint() : def; }
-    QDateTime    get(const QString &key, const QDateTime &def)   { return contains(key) ? value(key).toDateTime() : def; }
-    void         set(const QString &key, const QString &val)     { if (!hasEntry(key) || get(key, val)!=val) setValue(key, val); }
-    void         set(const QString &key, const char *val)        { if (!hasEntry(key) || get(key, QLatin1String(val))!=QLatin1String(val)) setValue(key, val); }
-    void         set(const QString &key, const QStringList &val) { if (!hasEntry(key) || get(key, val)!=val) setValue(key, val); }
-    void         set(const QString &key, bool val)               { if (!hasEntry(key) || get(key, val)!=val) setValue(key, val); }
-    void         set(const QString &key, int val)                { if (!hasEntry(key) || get(key, val)!=val) setValue(key, val); }
-    void         set(const QString &key, unsigned int val)       { if (!hasEntry(key) || get(key, val)!=val) setValue(key, val); }
-    void         set(const QString &key, const QByteArray &val)  { if (!hasEntry(key) || get(key, val)!=val) setValue(key, val); }
-    void         set(const QString &key, const QSize &val)       { if (!hasEntry(key) || get(key, val)!=val) setValue(key, val); }
-    void         set(const QString &key, const QPoint &val)      { if (!hasEntry(key) || get(key, val)!=val) setValue(key, val); }
-    void         set(const QString &key, const QDateTime &val)   { if (!hasEntry(key) || get(key, val)!=val) setValue(key, val); }
-    bool         hasGroup(const QString &grp)                    { return -1!=childGroups().indexOf(grp); }
-    void         removeGroup(const QString &grp)                 { remove(grp); }
-    bool         hasEntry(const QString &key)                    { return contains(key); }
-    void         removeEntry(const QString &key)                 { remove(key); }
-    int          get(const QString &key, int def, int min, int max);
-    QString      getFilePath(const QString &key, const QString &def);
-    void         setFilePath(const QString &key, const QString &val) { return set(key, Utils::homeToTilda(val)); }
-    QString      getDirPath(const QString &key, const QString &def);
-    void         setDirPath(const QString &key, const QString &val) { return set(key, Utils::homeToTilda(val)); }
+	static QLatin1String constMainGroup;
+	Configuration(const QString& group = constMainGroup);
+	~Configuration() override;
+
+	QString get(const QString& key, const QString& def) { return contains(key) ? value(key).toString() : def; }
+	QStringList get(const QString& key, const QStringList& def) { return contains(key) ? value(key).toStringList() : def; }
+	bool get(const QString& key, bool def) { return contains(key) ? value(key).toBool() : def; }
+	int get(const QString& key, int def) { return contains(key) ? value(key).toInt() : def; }
+	unsigned int get(const QString& key, unsigned int def) { return contains(key) ? value(key).toUInt() : def; }
+	QByteArray get(const QString& key, const QByteArray& def) { return contains(key) ? value(key).toByteArray() : def; }
+	QSize get(const QString& key, const QSize& def) { return contains(key) ? value(key).toSize() : def; }
+	QPoint get(const QString& key, const QPoint& def) { return contains(key) ? value(key).toPoint() : def; }
+	QDateTime get(const QString& key, const QDateTime& def) { return contains(key) ? value(key).toDateTime() : def; }
+	void set(const QString& key, const QString& val)
+	{
+		if (!hasEntry(key) || get(key, val) != val) setValue(key, val);
+	}
+	void set(const QString& key, const char* val)
+	{
+		if (!hasEntry(key) || get(key, QLatin1String(val)) != QLatin1String(val)) setValue(key, val);
+	}
+	void set(const QString& key, const QStringList& val)
+	{
+		if (!hasEntry(key) || get(key, val) != val) setValue(key, val);
+	}
+	void set(const QString& key, bool val)
+	{
+		if (!hasEntry(key) || get(key, val) != val) setValue(key, val);
+	}
+	void set(const QString& key, int val)
+	{
+		if (!hasEntry(key) || get(key, val) != val) setValue(key, val);
+	}
+	void set(const QString& key, unsigned int val)
+	{
+		if (!hasEntry(key) || get(key, val) != val) setValue(key, val);
+	}
+	void set(const QString& key, const QByteArray& val)
+	{
+		if (!hasEntry(key) || get(key, val) != val) setValue(key, val);
+	}
+	void set(const QString& key, const QSize& val)
+	{
+		if (!hasEntry(key) || get(key, val) != val) setValue(key, val);
+	}
+	void set(const QString& key, const QPoint& val)
+	{
+		if (!hasEntry(key) || get(key, val) != val) setValue(key, val);
+	}
+	void set(const QString& key, const QDateTime& val)
+	{
+		if (!hasEntry(key) || get(key, val) != val) setValue(key, val);
+	}
+	bool hasGroup(const QString& grp) { return -1 != childGroups().indexOf(grp); }
+	void removeGroup(const QString& grp) { remove(grp); }
+	bool hasEntry(const QString& key) { return contains(key); }
+	void removeEntry(const QString& key) { remove(key); }
+	int get(const QString& key, int def, int min, int max);
+	QString getFilePath(const QString& key, const QString& def);
+	void setFilePath(const QString& key, const QString& val) { return set(key, Utils::homeToTilda(val)); }
+	QString getDirPath(const QString& key, const QString& def);
+	void setDirPath(const QString& key, const QString& val) { return set(key, Utils::homeToTilda(val)); }
 };
 
 #endif

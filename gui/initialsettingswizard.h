@@ -24,42 +24,41 @@
 #ifndef INITIALSETTINGSWIZARD_H
 #define INITIALSETTINGSWIZARD_H
 
-#include "ui_initialsettingswizard.h"
-#include "mpd-interface/mpdconnection.h"
 #include "config.h"
+#include "mpd-interface/mpdconnection.h"
+#include "ui_initialsettingswizard.h"
 #include <QWizard>
 
-class InitialSettingsWizard : public QWizard, public Ui::InitialSettingsWizard
-{
-    Q_OBJECT
+class InitialSettingsWizard : public QWizard, public Ui::InitialSettingsWizard {
+	Q_OBJECT
 
 public:
-    InitialSettingsWizard(QWidget *p=nullptr);
-    ~InitialSettingsWizard() override;
-    MPDConnectionDetails getDetails();
+	InitialSettingsWizard(QWidget* p = nullptr);
+	~InitialSettingsWizard() override;
+	MPDConnectionDetails getDetails();
 
 Q_SIGNALS:
-    // These are for communicating with MPD object (which is in its own thread, so need to talk via signal/slots)
-    void setDetails(const MPDConnectionDetails &det);
+	// These are for communicating with MPD object (which is in its own thread, so need to talk via signal/slots)
+	void setDetails(const MPDConnectionDetails& det);
 
 private Q_SLOTS:
-    void connectToMpd();
-    void mpdConnectionStateChanged(bool c);
-    void showError(const QString &message);
-    void dbError(const QString &message);
-    void pageChanged(int p);
-    void accept() override;
-    void reject() override;
-    void controlNextButton();
-    #ifdef Avahi_FOUND
-    void adoptServerSettings(QString ip, QString port);
-    void detectMPDs();
-    #endif
+	void connectToMpd();
+	void mpdConnectionStateChanged(bool c);
+	void showError(const QString& message);
+	void dbError(const QString& message);
+	void pageChanged(int p);
+	void accept() override;
+	void reject() override;
+	void controlNextButton();
+#ifdef Avahi_FOUND
+	void adoptServerSettings(QString ip, QString port);
+	void detectMPDs();
+#endif
 
 private:
-    #ifdef Avahi_FOUND
-    QPushButton *discoveryButton;
-    #endif
+#ifdef Avahi_FOUND
+	QPushButton* discoveryButton;
+#endif
 };
 
 #endif

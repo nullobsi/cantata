@@ -23,14 +23,12 @@
 
 #include "deviceinterface_p.h"
 
-namespace Solid
-{
-    class BlockPrivate : public DeviceInterfacePrivate
-    {
-    public:
-        BlockPrivate()
-            : DeviceInterfacePrivate() { }
-    };
-}
+namespace Solid {
+class BlockPrivate : public DeviceInterfacePrivate {
+public:
+	BlockPrivate()
+		: DeviceInterfacePrivate() {}
+};
+}// namespace Solid
 
 #endif

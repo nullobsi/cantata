@@ -24,54 +24,53 @@
 #ifndef MPD_BROWSE_PAGE_H
 #define MPD_BROWSE_PAGE_H
 
-#include "widgets/singlepagewidget.h"
 #include "models/browsemodel.h"
+#include "widgets/singlepagewidget.h"
 
 class Action;
 
-class MpdBrowsePage : public SinglePageWidget
-{
-    Q_OBJECT
+class MpdBrowsePage : public SinglePageWidget {
+	Q_OBJECT
 public:
-    MpdBrowsePage(QWidget *p);
-    ~MpdBrowsePage() override;
+	MpdBrowsePage(QWidget* p);
+	~MpdBrowsePage() override;
 
-    void setEnabled(bool e) { model.setEnabled(e); }
-    bool isEnabled() const { return model.isEnabled(); }
-    void load() { model.load(); }
-    void clear() { model.clear(); }
-    QString name() const { return model.name(); }
-    QString title() const { return model.title(); }
-    QString descr() const { return model.descr(); }
-    const QIcon & icon() const { return model.icon(); }
-    QStringList selectedFiles(bool allowPlaylists=false) const override;
-    QList<Song> selectedSongs(bool allowPlaylists=false) const override;
-    #ifdef ENABLE_DEVICES_SUPPORT
-    void addSelectionToDevice(const QString &udi) override;
-    void deleteSongs() override;
-    #endif
-    void addSelectionToPlaylist(const QString &name=QString(), int action=MPDConnection::Append, quint8 priority=0, bool decreasePriority=false) override;
-    void showEvent(QShowEvent *e) override;
+	void setEnabled(bool e) { model.setEnabled(e); }
+	bool isEnabled() const { return model.isEnabled(); }
+	void load() { model.load(); }
+	void clear() { model.clear(); }
+	QString name() const { return model.name(); }
+	QString title() const { return model.title(); }
+	QString descr() const { return model.descr(); }
+	const QIcon& icon() const { return model.icon(); }
+	QStringList selectedFiles(bool allowPlaylists = false) const override;
+	QList<Song> selectedSongs(bool allowPlaylists = false) const override;
+#ifdef ENABLE_DEVICES_SUPPORT
+	void addSelectionToDevice(const QString& udi) override;
+	void deleteSongs() override;
+#endif
+	void addSelectionToPlaylist(const QString& name = QString(), int action = MPDConnection::Append, quint8 priority = 0, bool decreasePriority = false) override;
+	void showEvent(QShowEvent* e) override;
 
 Q_SIGNALS:
-    void addToDevice(const QString &from, const QString &to, const QList<Song> &songs);
-    void deleteSongs(const QString &from, const QList<Song> &songs);
+	void addToDevice(const QString& from, const QString& to, const QList<Song>& songs);
+	void deleteSongs(const QString& from, const QList<Song>& songs);
 
 public Q_SLOTS:
-    void itemDoubleClicked(const QModelIndex &);
-    void openFileManager();
+	void itemDoubleClicked(const QModelIndex&);
+	void openFileManager();
 
 private Q_SLOTS:
-    void updateToPlayQueue(const QModelIndex &idx, bool replace);
-    void headerClicked(int level);
+	void updateToPlayQueue(const QModelIndex& idx, bool replace);
+	void headerClicked(int level);
 
 private:
-    void doSearch() override { }
-    void controlActions() override;
+	void doSearch() override {}
+	void controlActions() override;
 
 private:
-    Action *browseAction;
-    BrowseModel model;
+	Action* browseAction;
+	BrowseModel model;
 };
 
 #endif

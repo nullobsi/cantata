@@ -15,15 +15,14 @@
  *
  *  @since 6.0
  */
-namespace KNotificationPermission
-{
+namespace KNotificationPermission {
 
 /** Check if the current application has permissions to show notifications. */
 Qt::PermissionStatus checkPermission();
 
 /** Request notification permissions. */
-void requestPermission(QObject *context, const std::function<void(Qt::PermissionStatus)> &callback);
+void requestPermission(QObject* context, const std::function<void(Qt::PermissionStatus)>& callback);
 
-}
+}// namespace KNotificationPermission
 
 #endif

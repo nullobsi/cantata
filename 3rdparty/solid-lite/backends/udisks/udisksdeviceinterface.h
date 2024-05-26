@@ -21,68 +21,63 @@
 #ifndef UDISKSDEVICEINTERFACE_H
 #define UDISKSDEVICEINTERFACE_H
 
-#include <ifaces/deviceinterface.h>
 #include "udisksdevice.h"
+#include <ifaces/deviceinterface.h>
 
 #include <QObject>
 #include <QStringList>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks
-{
+namespace Solid {
+namespace Backends {
+namespace UDisks {
 
-class DeviceInterface : public QObject, virtual public Solid::Ifaces::DeviceInterface
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::DeviceInterface)
+class DeviceInterface : public QObject, virtual public Solid::Ifaces::DeviceInterface {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::DeviceInterface)
 public:
-    DeviceInterface(UDisksDevice *device);
-    virtual ~DeviceInterface();
+	DeviceInterface(UDisksDevice* device);
+	virtual ~DeviceInterface();
 
 protected:
-    UDisksDevice *m_device;
+	UDisksDevice* m_device;
 
 public:
-    inline static QStringList toStringList(Solid::DeviceInterface::Type type)
-    {
-        QStringList list;
+	inline static QStringList toStringList(Solid::DeviceInterface::Type type)
+	{
+		QStringList list;
 
-        switch(type)
-        {
-        case Solid::DeviceInterface::GenericInterface:
-            list << "generic";
-            break;
-        //case Solid::DeviceInterface::Processor:
-            // Doesn't exist with UDisks
-        //    break;
-        case Solid::DeviceInterface::Block:
-            list << "block";
-            break;
-        case Solid::DeviceInterface::StorageAccess:
-            list << "volume";
-            break;
-        case Solid::DeviceInterface::StorageDrive:
-            list << "storage";
-            break;
-        case Solid::DeviceInterface::OpticalDrive:
-            list << "storage.cdrom";
-            break;
-        case Solid::DeviceInterface::StorageVolume:
-            list << "volume";
-            break;
-        case Solid::DeviceInterface::OpticalDisc:
-            list << "volume.disc";
-            break;
-        //case Solid::DeviceInterface::Camera:
-            // Doesn't exist with UDisks
-        //    break;
-        case Solid::DeviceInterface::PortableMediaPlayer:
-            // Doesn't exist with UDisks
-            break;
-        /*
+		switch (type) {
+		case Solid::DeviceInterface::GenericInterface:
+			list << "generic";
+			break;
+		//case Solid::DeviceInterface::Processor:
+		// Doesn't exist with UDisks
+		//    break;
+		case Solid::DeviceInterface::Block:
+			list << "block";
+			break;
+		case Solid::DeviceInterface::StorageAccess:
+			list << "volume";
+			break;
+		case Solid::DeviceInterface::StorageDrive:
+			list << "storage";
+			break;
+		case Solid::DeviceInterface::OpticalDrive:
+			list << "storage.cdrom";
+			break;
+		case Solid::DeviceInterface::StorageVolume:
+			list << "volume";
+			break;
+		case Solid::DeviceInterface::OpticalDisc:
+			list << "volume.disc";
+			break;
+		//case Solid::DeviceInterface::Camera:
+		// Doesn't exist with UDisks
+		//    break;
+		case Solid::DeviceInterface::PortableMediaPlayer:
+			// Doesn't exist with UDisks
+			break;
+		/*
         case Solid::DeviceInterface::NetworkInterface:
             // Doesn't exist with UDisks
             break;
@@ -115,36 +110,36 @@ public:
             // Doesn't exist with UDisks
             break;
         */
-        case Solid::DeviceInterface::Unknown:
-            break;
-        case Solid::DeviceInterface::Last:
-            break;
-        }
+		case Solid::DeviceInterface::Unknown:
+			break;
+		case Solid::DeviceInterface::Last:
+			break;
+		}
 
-        return list;
-    }
+		return list;
+	}
 
-    inline static Solid::DeviceInterface::Type fromString(const QString &capability)
-    {
-        if (capability == "generic")
-            return Solid::DeviceInterface::GenericInterface;
-        /*else if (capability == "processor")
+	inline static Solid::DeviceInterface::Type fromString(const QString& capability)
+	{
+		if (capability == "generic")
+			return Solid::DeviceInterface::GenericInterface;
+		/*else if (capability == "processor")
             return Solid::DeviceInterface::Processor; */
-        else if (capability == "block")
-            return Solid::DeviceInterface::Block;
-        else if (capability == "storage")
-            return Solid::DeviceInterface::StorageDrive;
-        else if (capability == "storage.cdrom")
-            return Solid::DeviceInterface::OpticalDrive;
-        else if (capability == "volume")
-            return Solid::DeviceInterface::StorageVolume;
-        else if (capability == "volume.disc")
-            return Solid::DeviceInterface::OpticalDisc;
-        /*else if (capability == "camera")
+		else if (capability == "block")
+			return Solid::DeviceInterface::Block;
+		else if (capability == "storage")
+			return Solid::DeviceInterface::StorageDrive;
+		else if (capability == "storage.cdrom")
+			return Solid::DeviceInterface::OpticalDrive;
+		else if (capability == "volume")
+			return Solid::DeviceInterface::StorageVolume;
+		else if (capability == "volume.disc")
+			return Solid::DeviceInterface::OpticalDisc;
+		/*else if (capability == "camera")
             return Solid::DeviceInterface::Camera;*/
-        else if (capability == "portable_audio_player")
-            return Solid::DeviceInterface::PortableMediaPlayer;
-        /*else if (capability == "net")
+		else if (capability == "portable_audio_player")
+			return Solid::DeviceInterface::PortableMediaPlayer;
+		/*else if (capability == "net")
             return Solid::DeviceInterface::NetworkInterface;
         else if (capability == "ac_adapter")
             return Solid::DeviceInterface::AcAdapter;
@@ -164,13 +159,13 @@ public:
             return Solid::DeviceInterface::SmartCardReader;
         else if (capability == "networkshare")
             return Solid::DeviceInterface::NetworkShare;*/
-        else
-            return Solid::DeviceInterface::Unknown;
-    }
+		else
+			return Solid::DeviceInterface::Unknown;
+	}
 };
 
-}
-}
-}
+}// namespace UDisks
+}// namespace Backends
+}// namespace Solid
 
-#endif // UDISKSDEVICEINTERFACE_H
+#endif// UDISKSDEVICEINTERFACE_H

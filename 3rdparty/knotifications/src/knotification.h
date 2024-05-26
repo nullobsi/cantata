@@ -32,57 +32,56 @@ class KNotificationActionPrivate;
  *
  * @since 6.0
  */
-class KNotificationAction : public QObject
-{
-    Q_OBJECT
-    /**
+class KNotificationAction : public QObject {
+	Q_OBJECT
+	/**
      * @copydoc label
      */
-    Q_PROPERTY(QString label READ label WRITE setLabel NOTIFY labelChanged)
+	Q_PROPERTY(QString label READ label WRITE setLabel NOTIFY labelChanged)
 
 public:
-    explicit KNotificationAction(QObject *parent = nullptr);
+	explicit KNotificationAction(QObject* parent = nullptr);
 
-    /**
+	/**
      * Creates an action with given label
      * @param label The label for the action
      */
-    explicit KNotificationAction(const QString &label);
+	explicit KNotificationAction(const QString& label);
 
-    ~KNotificationAction() override;
+	~KNotificationAction() override;
 
-    /**
+	/**
      * The user-facing label for the action
      */
-    QString label() const;
+	QString label() const;
 
-    /**
+	/**
      * Set the user-facing label for the action
      */
-    void setLabel(const QString &label);
+	void setLabel(const QString& label);
 
 Q_SIGNALS:
-    /**
+	/**
      * Emitted when the user activates the action
      */
-    void activated();
+	void activated();
 
-    /**
+	/**
      * Emitted when @p label changed.
      */
-    void labelChanged(const QString &label);
+	void labelChanged(const QString& label);
 
 private:
-    friend class KNotification;
-    friend class NotifyByPortalPrivate;
-    friend class NotifyByPopup;
-    friend class NotifyBySnore;
-    friend class NotifyByAndroid;
+	friend class KNotification;
+	friend class NotifyByPortalPrivate;
+	friend class NotifyByPopup;
+	friend class NotifyBySnore;
+	friend class NotifyByAndroid;
 
-    void setId(const QString &id);
-    QString id() const;
+	void setId(const QString& id);
+	QString id() const;
 
-    std::unique_ptr<KNotificationActionPrivate> const d;
+	std::unique_ptr<KNotificationActionPrivate> const d;
 };
 
 /**
@@ -90,94 +89,93 @@ private:
  *
  * KNotification is the main class for creating notifications.
  */
-class KNotification : public QObject
-{
-    Q_OBJECT
-    /**
+class KNotification : public QObject {
+	Q_OBJECT
+	/**
      * @copydoc setEventId
      * @since 5.88
      */
-    Q_PROPERTY(QString eventId READ eventId WRITE setEventId NOTIFY eventIdChanged)
-    /**
+	Q_PROPERTY(QString eventId READ eventId WRITE setEventId NOTIFY eventIdChanged)
+	/**
      * @copydoc setTitle
      * @since 5.88
      */
-    Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
-    /**
+	Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
+	/**
      * @copydoc setText
      * @since 5.88
      */
-    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
-    /**
+	Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+	/**
      * @copydoc setIconName
      * @since 5.88
      */
-    Q_PROPERTY(QString iconName READ iconName WRITE setIconName NOTIFY iconNameChanged)
-    /**
+	Q_PROPERTY(QString iconName READ iconName WRITE setIconName NOTIFY iconNameChanged)
+	/**
      * @copydoc setFlags
      * @since 5.88
      */
-    Q_PROPERTY(NotificationFlags flags READ flags WRITE setFlags NOTIFY flagsChanged)
-    /**
+	Q_PROPERTY(NotificationFlags flags READ flags WRITE setFlags NOTIFY flagsChanged)
+	/**
      * @copydoc setComponentName
      * @since 5.88
      */
-    Q_PROPERTY(QString componentName READ componentName WRITE setComponentName NOTIFY componentNameChanged)
-    /**
+	Q_PROPERTY(QString componentName READ componentName WRITE setComponentName NOTIFY componentNameChanged)
+	/**
      * @copydoc setUrls
      * @since 5.88
      */
-    Q_PROPERTY(QList<QUrl> urls READ urls WRITE setUrls NOTIFY urlsChanged)
-    /**
+	Q_PROPERTY(QList<QUrl> urls READ urls WRITE setUrls NOTIFY urlsChanged)
+	/**
      * @copydoc setUrgency
      * @since 5.88
      */
-    Q_PROPERTY(Urgency urgency READ urgency WRITE setUrgency NOTIFY urgencyChanged)
-    /**
+	Q_PROPERTY(Urgency urgency READ urgency WRITE setUrgency NOTIFY urgencyChanged)
+	/**
      * @copydoc setAutoDelete
      * @since 5.88
      */
-    Q_PROPERTY(bool autoDelete READ isAutoDelete WRITE setAutoDelete NOTIFY autoDeleteChanged)
-    /**
+	Q_PROPERTY(bool autoDelete READ isAutoDelete WRITE setAutoDelete NOTIFY autoDeleteChanged)
+	/**
      * @since 5.90
      */
-    Q_PROPERTY(QString xdgActivationToken READ xdgActivationToken NOTIFY xdgActivationTokenChanged)
-    /**
+	Q_PROPERTY(QString xdgActivationToken READ xdgActivationToken NOTIFY xdgActivationTokenChanged)
+	/**
      * @copydoc setHint
      * @since 5.101
      */
-    Q_PROPERTY(QVariantMap hints READ hints WRITE setHints NOTIFY hintsChanged)
+	Q_PROPERTY(QVariantMap hints READ hints WRITE setHints NOTIFY hintsChanged)
 
 public:
-    /**
+	/**
      * @see NotificationFlags
      */
-    enum NotificationFlag {
-        /**
+	enum NotificationFlag {
+		/**
          * The notification will be automatically closed after a timeout. (this is the default)
          */
-        CloseOnTimeout = 0x00,
+		CloseOnTimeout = 0x00,
 
-        /**
+		/**
          * The notification will NOT be automatically closed after a timeout.
          * You will have to track the notification, and close it with the
          * close function manually when the event is done, otherwise there will be a memory leak
          */
-        Persistent = 0x02,
+		Persistent = 0x02,
 
-        /**
+		/**
          * The audio plugin will loop the sound until the notification is closed
          */
-        LoopSound = 0x08,
+		LoopSound = 0x08,
 
-        /**
+		/**
          * Sends a hint to Plasma to skip grouping for this notification
          *
          * @since 5.18
          */
-        SkipGrouping = 0x10,
+		SkipGrouping = 0x10,
 
-        /**
+		/**
          * The notification will be automatically closed if the window() becomes
          * activated.
          *
@@ -185,48 +183,48 @@ public:
          *
          * @since 6.0
          */
-        CloseWhenWindowActivated = 0x20,
+		CloseWhenWindowActivated = 0x20,
 
-        /**
+		/**
          * @internal
          * The event is a standard kde event, and not an event of the application
          */
-        DefaultEvent = 0xF000,
+		DefaultEvent = 0xF000,
 
-    };
+	};
 
-    /**
+	/**
      * Stores a combination of #NotificationFlag values.
      */
-    Q_DECLARE_FLAGS(NotificationFlags, NotificationFlag)
-    Q_FLAG(NotificationFlags)
+	Q_DECLARE_FLAGS(NotificationFlags, NotificationFlag)
+	Q_FLAG(NotificationFlags)
 
-    /**
+	/**
      * default events you can use in the event function
      */
-    enum StandardEvent {
-        Notification,
-        Warning,
-        Error,
-        Catastrophe,
-    };
+	enum StandardEvent {
+		Notification,
+		Warning,
+		Error,
+		Catastrophe,
+	};
 
-    /**
+	/**
      * The urgency of a notification.
      *
      * @since 5.58
      * @sa setUrgency
      */
-    enum Urgency {
-        DefaultUrgency = -1,
-        LowUrgency = 10,
-        NormalUrgency = 50,
-        HighUrgency = 70,
-        CriticalUrgency = 90,
-    };
-    Q_ENUM(Urgency)
+	enum Urgency {
+		DefaultUrgency = -1,
+		LowUrgency = 10,
+		NormalUrgency = 50,
+		HighUrgency = 70,
+		CriticalUrgency = 90,
+	};
+	Q_ENUM(Urgency)
 
-    /**
+	/**
      * Create a new notification.
      *
      * You have to use sendEvent to show the notification.
@@ -239,43 +237,43 @@ public:
      * @param flags is a bitmask of NotificationFlag
      * @param parent parent object
      */
-    explicit KNotification(const QString &eventId, NotificationFlags flags = CloseOnTimeout, QObject *parent = nullptr);
+	explicit KNotification(const QString& eventId, NotificationFlags flags = CloseOnTimeout, QObject* parent = nullptr);
 
-    ~KNotification() override;
+	~KNotification() override;
 
-    /**
+	/**
      * @return the name of the event
      */
-    QString eventId() const;
-    /**
+	QString eventId() const;
+	/**
      * Set the event id, if not already passed to the constructor.
      * @since 5.88
      */
-    void setEventId(const QString &eventId);
+	void setEventId(const QString& eventId);
 
-    /**
+	/**
      * @return the notification title
      * @see setTitle
      * @since 4.3
      */
-    QString title() const;
+	QString title() const;
 
-    /**
+	/**
      * Set the title of the notification popup.
      * If no title is set, the application name will be used.
      *
      * @param title The title of the notification
      * @since 4.3
      */
-    void setTitle(const QString &title);
+	void setTitle(const QString& title);
 
-    /**
+	/**
      * @return the notification text
      * @see setText
      */
-    QString text() const;
+	QString text() const;
 
-    /**
+	/**
      * Set the notification text that will appear in the popup.
      *
      * In Plasma workspace, the text is shown in a QML label which uses Text.StyledText,
@@ -286,42 +284,42 @@ public:
      *
      * @param text The text to display in the notification popup
      */
-    void setText(const QString &text);
+	void setText(const QString& text);
 
-    /**
+	/**
      * \return the icon shown in the popup
      * \see setIconName
      * \since 5.4
      */
-    QString iconName() const;
+	QString iconName() const;
 
-    /**
+	/**
      * Set the icon that will be shown in the popup.
      *
      * @param icon the icon
      * @since 5.4
      */
-    void setIconName(const QString &icon);
+	void setIconName(const QString& icon);
 
-    /**
+	/**
      * \return the pixmap shown in the popup
      * \see setPixmap
      */
-    QPixmap pixmap() const;
-    /**
+	QPixmap pixmap() const;
+	/**
      * Set the pixmap that will be shown in the popup. If you want to use an icon from the icon theme use setIconName instead.
      *
      * @param pix the pixmap
      */
-    void setPixmap(const QPixmap &pix);
+	void setPixmap(const QPixmap& pix);
 
-    /**
+	/**
      * @return the default action, or nullptr if none is set
      * @since 6.0
      */
-    KNotificationAction *defaultAction() const;
+	KNotificationAction* defaultAction() const;
 
-    /**
+	/**
      * Add a default action that will be triggered when the notification is
      * activated (typically, by clicking on the notification popup). The default
      * action typically raises a window belonging to the application that sent it.
@@ -337,9 +335,9 @@ public:
      *
      * @since 6.0
      */
-    [[nodiscard]] KNotificationAction *addDefaultAction(const QString &label);
+	[[nodiscard]] KNotificationAction* addDefaultAction(const QString& label);
 
-    /**
+	/**
      * Add an action to the notification.
      *
      * The visual representation of actions depends
@@ -351,9 +349,9 @@ public:
      *
      * @since 6.0
      */
-    [[nodiscard]] KNotificationAction *addAction(const QString &label);
+	[[nodiscard]] KNotificationAction* addAction(const QString& label);
 
-    /**
+	/**
      * Removes all actions previously added by addAction()
      * from the notification.
      *
@@ -361,15 +359,15 @@ public:
      *
      * @since 6.0
      */
-    void clearActions();
+	void clearActions();
 
-    /**
+	/**
      * @return the inline reply action.
      * @since 5.81
      */
-    KNotificationReplyAction *replyAction() const;
+	KNotificationReplyAction* replyAction() const;
 
-    /**
+	/**
      * @brief Add an inline reply action to the notification.
      *
      * On supported platforms this lets the user type a reply to a notification,
@@ -389,40 +387,40 @@ public:
      * @param replyAction the reply action to set
      * @since 5.81
      */
-    void setReplyAction(std::unique_ptr<KNotificationReplyAction> replyAction);
+	void setReplyAction(std::unique_ptr<KNotificationReplyAction> replyAction);
 
-    /**
+	/**
      * @return the notification flags.
      */
-    NotificationFlags flags() const;
+	NotificationFlags flags() const;
 
-    /**
+	/**
      * Set the notification flags.
      * These must be set before calling sendEvent()
      */
-    void setFlags(const NotificationFlags &flags);
+	void setFlags(const NotificationFlags& flags);
 
-    /**
+	/**
      * Returns the component name used to determine the location of the configuration file.
      * @since 5.88
      */
-    QString componentName() const;
-    /**
+	QString componentName() const;
+	/**
      * The componentData is used to determine the location of the config file.
      *
      * If no componentName is set, the app name is used by default
      *
      * @param componentName the new component name
      */
-    void setComponentName(const QString &componentName);
+	void setComponentName(const QString& componentName);
 
-    /**
+	/**
      * URLs associated with this notification
      * @since 5.29
      */
-    QList<QUrl> urls() const;
+	QList<QUrl> urls() const;
 
-    /**
+	/**
      * Sets URLs associated with this notification
      *
      * For example, a screenshot application might want to provide the
@@ -434,15 +432,15 @@ public:
      * @param urls A list of URLs
      * @since 5.29
      */
-    void setUrls(const QList<QUrl> &urls);
+	void setUrls(const QList<QUrl>& urls);
 
-    /**
+	/**
      * The urgency of the notification.
      * @since 5.58
      */
-    Urgency urgency() const;
+	Urgency urgency() const;
 
-    /**
+	/**
      * Sets the urgency of the notification.
      *
      * This defines the importance of the notification. For example,
@@ -456,199 +454,199 @@ public:
      * @param urgency The urgency.
      * @since 5.58
      */
-    void setUrgency(Urgency urgency);
+	void setUrgency(Urgency urgency);
 
-    /**
+	/**
      * Sets the window associated with this notification.
      * This is relevant when using the CloseWhenWindowActivated flag.
      *
      * @since 6.0
      */
-    void setWindow(QWindow *window);
+	void setWindow(QWindow* window);
 
-    /**
+	/**
      * The window associated with this notification. nullptr by default.
      * @return the window set by setWindow()
      *
      * @since 6.0
      */
-    QWindow *window() const;
+	QWindow* window() const;
 
-    /**
+	/**
      * @internal
      * appname used for the D-Bus object
      */
-    QString appName() const;
+	QString appName() const;
 
-    /**
+	/**
      * Returns whether this notification object will be automatically deleted after closing.
      * @since 5.88
      */
-    bool isAutoDelete() const;
-    /**
+	bool isAutoDelete() const;
+	/**
      * Sets whether this notification object will be automatically deleted after closing.
      * This is on by default for C++, and off by default for QML.
      * @since 5.88
      */
-    void setAutoDelete(bool autoDelete);
+	void setAutoDelete(bool autoDelete);
 
-    /**
+	/**
      * Returns the activation token to use to activate a window.
      * @since 5.90
      */
-    QString xdgActivationToken() const;
+	QString xdgActivationToken() const;
 
 Q_SIGNALS:
-    /**
+	/**
      * Emitted when the notification is closed.
      *
      * Can be closed either by the user clicking the close button,
      * the timeout running out or when an action was triggered.
      */
-    void closed();
+	void closed();
 
-    /**
+	/**
      * The notification has been ignored
      */
-    void ignored();
+	void ignored();
 
-    /**
+	/**
      * Emitted when @c eventId changed.
      * @since 5.88
      */
-    void eventIdChanged();
-    /**
+	void eventIdChanged();
+	/**
      * Emitted when @c title changed.
      * @since 5.88
      */
-    void titleChanged();
-    /**
+	void titleChanged();
+	/**
      * Emitted when @c text changed.
      * @since 5.88
      */
-    void textChanged();
-    /**
+	void textChanged();
+	/**
      * Emitted when @c iconName changed.
      * @since 5.88
      */
-    void iconNameChanged();
-    /**
+	void iconNameChanged();
+	/**
      * Emitted when @c defaultAction changed.
      * @since 5.88
      */
-    void defaultActionChanged();
-    /**
+	void defaultActionChanged();
+	/**
      * Emitted when @c actions changed.
      * @since 5.88
      */
-    void actionsChanged();
-    /**
+	void actionsChanged();
+	/**
      * Emitted when @p flags changed.
      * @since 5.88
      */
-    void flagsChanged();
-    /**
+	void flagsChanged();
+	/**
      * Emitted when @p componentName changed.
      * @since 5.88
      */
-    void componentNameChanged();
-    /**
+	void componentNameChanged();
+	/**
      * Emitted when @p urls changed.
      * @since 5.88
      */
-    void urlsChanged();
-    /**
+	void urlsChanged();
+	/**
      * Emitted when @p urgency changed.
      * @since 5.88
      */
-    void urgencyChanged();
-    /**
+	void urgencyChanged();
+	/**
      * Emitted when @p autoDelete changed.
      * @since 5.88
      */
-    void autoDeleteChanged();
-    /**
+	void autoDeleteChanged();
+	/**
      * Emitted when @p xdgActivationToken changes.
      * @since 5.90
      */
-    void xdgActivationTokenChanged();
-    /**
+	void xdgActivationTokenChanged();
+	/**
      * Emitted when @p hints changes.
      * @since 5.101
      */
-    void hintsChanged();
+	void hintsChanged();
 
 public Q_SLOTS:
-    /**
+	/**
      * Close the notification without activating it.
      *
      * This will delete the notification.
      */
-    void close();
+	void close();
 
-    /**
+	/**
      * Send the notification to the server.
      *
      * This will cause all the configured plugins to execute their actions on this notification
      * (eg. a sound will play, a popup will show, a command will be executed etc).
      */
-    void sendEvent();
+	void sendEvent();
 
-    /**
+	/**
      * @since 5.57
      * Adds a custom hint to the notification. Those are key-value pairs that can be interpreted by the respective notification backend to trigger additional,
      * non-standard features.
      * @param hint the hint's key
      * @param value the hint's value
      */
-    Q_INVOKABLE void setHint(const QString &hint, const QVariant &value);
+	Q_INVOKABLE void setHint(const QString& hint, const QVariant& value);
 
-    /**
+	/**
      * @since 5.57
      * Returns the custom hints set by setHint()
      */
-    QVariantMap hints() const;
+	QVariantMap hints() const;
 
-    /**
+	/**
      * @since 5.101
      * Set custom hints on the notification.
      * @sa setHint
      */
-    void setHints(const QVariantMap &hints);
+	void setHints(const QVariantMap& hints);
 
 private:
-    friend class KNotificationManager;
-    friend class NotificationWrapper;
-    friend class NotifyByPopup;
-    friend class NotifyByPortal;
-    friend class NotifyByPortalPrivate;
-    friend class NotifyByExecute;
-    friend class NotifyBySnore;
-    friend class NotifyByAndroid;
-    friend class NotifyByMacOSNotificationCenter;
-    struct Private;
+	friend class KNotificationManager;
+	friend class NotificationWrapper;
+	friend class NotifyByPopup;
+	friend class NotifyByPortal;
+	friend class NotifyByPortalPrivate;
+	friend class NotifyByExecute;
+	friend class NotifyBySnore;
+	friend class NotifyByAndroid;
+	friend class NotifyByMacOSNotificationCenter;
+	struct Private;
 
-    void slotWindowActiveChanged();
+	void slotWindowActiveChanged();
 
-    /**
+	/**
      * @brief Activate the action specified action
      * If the action is zero, then the default action is activated
      */
-    void activate(const QString &action);
+	void activate(const QString& action);
 
-    /**
+	/**
      * @internal
      * the id given by the notification manager
      */
-    int id();
+	int id();
 
-    /**
+	/**
      * @internal
      * update the texts, the icon, and the actions of one existing notification
      */
-    void update();
+	void update();
 
-    /**
+	/**
      * The notification will automatically be closed if all presentations are finished.
      * if you want to show your own presentation in your application, you should use this
      * function, so it will not be automatically closed when there is nothing to show.
@@ -657,28 +655,28 @@ private:
      *
      * @see deref
      */
-    void ref();
+	void ref();
 
-    /**
+	/**
      * Remove a reference made with ref(). If the ref counter hits zero,
      * the notification will be closed and deleted.
      *
      * @see ref
      */
-    void deref();
+	void deref();
 
-    // Like setActions, but doesn't take ownership
-    void setActionsQml(QList<KNotificationAction *> actions);
-    void setDefaultActionQml(KNotificationAction *action);
-    QList<KNotificationAction *> actions() const;
+	// Like setActions, but doesn't take ownership
+	void setActionsQml(QList<KNotificationAction*> actions);
+	void setDefaultActionQml(KNotificationAction* action);
+	QList<KNotificationAction*> actions() const;
 
-    static QString standardEventToEventId(StandardEvent event);
-    static QString standardEventToIconName(StandardEvent event);
+	static QString standardEventToEventId(StandardEvent event);
+	static QString standardEventToIconName(StandardEvent event);
 
-    std::unique_ptr<Private> const d;
+	std::unique_ptr<Private> const d;
 
 public:
-    /**
+	/**
      * @brief emit an event
      *
      * This method creates the KNotification, setting every parameter, and fire the event.
@@ -697,14 +695,14 @@ public:
      * @param componentName used to determine the location of the config file.  by default, appname is used
      * @since 4.4
      */
-    static KNotification *event(const QString &eventId,
-                                const QString &title,
-                                const QString &text,
-                                const QPixmap &pixmap = QPixmap(),
-                                const NotificationFlags &flags = CloseOnTimeout,
-                                const QString &componentName = QString());
+	static KNotification* event(const QString& eventId,
+								const QString& title,
+								const QString& text,
+								const QPixmap& pixmap = QPixmap(),
+								const NotificationFlags& flags = CloseOnTimeout,
+								const QString& componentName = QString());
 
-    /**
+	/**
      * @brief emit a standard event
      *
      * @overload
@@ -717,13 +715,13 @@ public:
      * @param flags is a bitmask of NotificationFlag
      * @param componentName used to determine the location of the config file.  by default, plasma_workspace is used
      */
-    static KNotification *event(const QString &eventId,
-                                const QString &text = QString(),
-                                const QPixmap &pixmap = QPixmap(),
-                                const NotificationFlags &flags = CloseOnTimeout,
-                                const QString &componentName = QString());
+	static KNotification* event(const QString& eventId,
+								const QString& text = QString(),
+								const QPixmap& pixmap = QPixmap(),
+								const NotificationFlags& flags = CloseOnTimeout,
+								const QString& componentName = QString());
 
-    /**
+	/**
      * @brief emit a standard event
      *
      * @overload
@@ -735,10 +733,10 @@ public:
      * @param pixmap is a picture which may be shown in the popup
      * @param flags is a bitmask of NotificationFlag
      */
-    static KNotification *
-    event(StandardEvent eventId, const QString &text = QString(), const QPixmap &pixmap = QPixmap(), const NotificationFlags &flags = CloseOnTimeout);
+	static KNotification*
+	event(StandardEvent eventId, const QString& text = QString(), const QPixmap& pixmap = QPixmap(), const NotificationFlags& flags = CloseOnTimeout);
 
-    /**
+	/**
      * @brief emit a standard event
      *
      * @overload
@@ -752,10 +750,10 @@ public:
      * @param flags is a bitmask of NotificationFlag
      * @since 4.4
      */
-    static KNotification *
-    event(StandardEvent eventId, const QString &title, const QString &text, const QPixmap &pixmap, const NotificationFlags &flags = CloseOnTimeout);
+	static KNotification*
+	event(StandardEvent eventId, const QString& title, const QString& text, const QPixmap& pixmap, const NotificationFlags& flags = CloseOnTimeout);
 
-    /**
+	/**
      * @brief emit a standard event with the possibility of setting an icon by icon name
      *
      * @overload
@@ -770,14 +768,14 @@ public:
      * @param componentName used to determine the location of the config file.  by default, plasma_workspace is used
      * @since 5.4
      */
-    static KNotification *event(const QString &eventId,
-                                const QString &title,
-                                const QString &text,
-                                const QString &iconName,
-                                const NotificationFlags &flags = CloseOnTimeout,
-                                const QString &componentName = QString());
+	static KNotification* event(const QString& eventId,
+								const QString& title,
+								const QString& text,
+								const QString& iconName,
+								const NotificationFlags& flags = CloseOnTimeout,
+								const QString& componentName = QString());
 
-    /**
+	/**
      * @brief emit a standard event with the possibility of setting an icon by icon name
      *
      * @overload
@@ -791,10 +789,10 @@ public:
      * @param flags is a bitmask of NotificationFlag
      * @since 5.9
      */
-    static KNotification *
-    event(StandardEvent eventId, const QString &title, const QString &text, const QString &iconName, const NotificationFlags &flags = CloseOnTimeout);
+	static KNotification*
+	event(StandardEvent eventId, const QString& title, const QString& text, const QString& iconName, const NotificationFlags& flags = CloseOnTimeout);
 
-    /**
+	/**
      * @brief emit a standard event
      *
      * @overload
@@ -807,17 +805,17 @@ public:
      * @param flags is a bitmask of NotificationFlag
      * @since 5.9
      */
-    static KNotification *event(StandardEvent eventId, const QString &title, const QString &text, const NotificationFlags &flags = CloseOnTimeout);
+	static KNotification* event(StandardEvent eventId, const QString& title, const QString& text, const NotificationFlags& flags = CloseOnTimeout);
 
-    /**
+	/**
      * This is a simple substitution for QApplication::beep()
      *
      * @param reason a short text explaining what has happened (may be empty)
      */
-    static void beep(const QString &reason = QString());
+	static void beep(const QString& reason = QString());
 
-    // prevent warning
-    using QObject::event;
+	// prevent warning
+	using QObject::event;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(KNotification::NotificationFlags)

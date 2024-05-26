@@ -24,24 +24,19 @@
 #include <QObject>
 
 #define return_SOLID_CALL(Type, Object, Default, Method) \
-    Type t = qobject_cast<Type>(Object); \
-    if (t!=0) \
-    { \
-         return t->Method; \
-    } \
-    else \
-    { \
-         return Default; \
-    }
-
-
+	Type t = qobject_cast<Type>(Object);                 \
+	if (t != 0) {                                        \
+		return t->Method;                                \
+	}                                                    \
+	else {                                               \
+		return Default;                                  \
+	}
 
 #define SOLID_CALL(Type, Object, Method) \
-    Type t = qobject_cast<Type>(Object); \
-    if (t!=0) \
-    { \
-         t->Method; \
-    }
+	Type t = qobject_cast<Type>(Object); \
+	if (t != 0) {                        \
+		t->Method;                       \
+	}
 
 //
 // WARNING!!
@@ -55,68 +50,67 @@
  * being completely kdecore independent.
  */
 
-namespace Solid
-{
-    typedef void (*CleanUpFunction)();
+namespace Solid {
+typedef void (*CleanUpFunction)();
 
-    class CleanUpGlobalStatic
-    {
-    public:
-        Solid::CleanUpFunction func;
+class CleanUpGlobalStatic {
+public:
+	Solid::CleanUpFunction func;
 
-        inline ~CleanUpGlobalStatic() { func(); }
-    };
-}
+	inline ~CleanUpGlobalStatic() { func(); }
+};
+}// namespace Solid
 
 #ifdef Q_CC_MSVC
-# define SOLID_GLOBAL_STATIC_STRUCT_NAME(NAME) _solid_##NAME##__LINE__
+#define SOLID_GLOBAL_STATIC_STRUCT_NAME(NAME) _solid_##NAME##__LINE__
 #else
-# define SOLID_GLOBAL_STATIC_STRUCT_NAME(NAME)
+#define SOLID_GLOBAL_STATIC_STRUCT_NAME(NAME)
 #endif
 
 #define SOLID_GLOBAL_STATIC(TYPE, NAME) SOLID_GLOBAL_STATIC_WITH_ARGS(TYPE, NAME, ())
 
-#define SOLID_GLOBAL_STATIC_WITH_ARGS(TYPE, NAME, ARGS)                        \
-static QAtomicPointer<TYPE > _solid_static_##NAME = Q_BASIC_ATOMIC_INITIALIZER(0);\
-static bool _solid_static_##NAME##_destroyed;                                  \
-static struct SOLID_GLOBAL_STATIC_STRUCT_NAME(NAME)                            \
-{                                                                              \
-    bool isDestroyed()                                                         \
-    {                                                                          \
-        return _solid_static_##NAME##_destroyed;                               \
-    }                                                                          \
-    inline operator TYPE*()                                                    \
-    {                                                                          \
-        return operator->();                                                   \
-    }                                                                          \
-    inline TYPE *operator->()                                                  \
-    {                                                                          \
-        if (!_solid_static_##NAME.loadRelaxed()) {                             \
-            if (isDestroyed()) {                                               \
-                qFatal("Fatal Error: Accessed global static '%s *%s()' after destruction. " \
-                       "Defined at %s:%d", #TYPE, #NAME, __FILE__, __LINE__);  \
-            }                                                                  \
-            TYPE *x = new TYPE ARGS;                                           \
-            if (!_solid_static_##NAME.testAndSetOrdered(0, x)                  \
-                && _solid_static_##NAME.loadRelaxed() != x ) {                 \
-                delete x;                                                      \
-            } else {                                                           \
-                static Solid::CleanUpGlobalStatic cleanUpObject = { destroy }; \
-            }                                                                  \
-        }                                                                      \
-        return _solid_static_##NAME.loadRelaxed();                             \
-    }                                                                          \
-    inline TYPE &operator*()                                                   \
-    {                                                                          \
-        return *operator->();                                                  \
-    }                                                                          \
-    static void destroy()                                                      \
-    {                                                                          \
-        _solid_static_##NAME##_destroyed = true;                               \
-        TYPE *x = _solid_static_##NAME.loadRelaxed();                          \
-        _solid_static_##NAME.storeRelaxed(0);                                  \
-        delete x;                                                              \
-    }                                                                          \
-} NAME;
+#define SOLID_GLOBAL_STATIC_WITH_ARGS(TYPE, NAME, ARGS)                                         \
+	static QAtomicPointer<TYPE> _solid_static_##NAME = Q_BASIC_ATOMIC_INITIALIZER(0);           \
+	static bool _solid_static_##NAME##_destroyed;                                               \
+	static struct SOLID_GLOBAL_STATIC_STRUCT_NAME(NAME) {                                       \
+		bool isDestroyed()                                                                      \
+		{                                                                                       \
+			return _solid_static_##NAME##_destroyed;                                            \
+		}                                                                                       \
+		inline operator TYPE*()                                                                 \
+		{                                                                                       \
+			return operator->();                                                                \
+		}                                                                                       \
+		inline TYPE* operator->()                                                               \
+		{                                                                                       \
+			if (!_solid_static_##NAME.loadRelaxed()) {                                          \
+				if (isDestroyed()) {                                                            \
+					qFatal("Fatal Error: Accessed global static '%s *%s()' after destruction. " \
+						   "Defined at %s:%d",                                                  \
+						   #TYPE, #NAME, __FILE__, __LINE__);                                   \
+				}                                                                               \
+				TYPE* x = new TYPE ARGS;                                                        \
+				if (!_solid_static_##NAME.testAndSetOrdered(0, x)                               \
+					&& _solid_static_##NAME.loadRelaxed() != x) {                               \
+					delete x;                                                                   \
+				}                                                                               \
+				else {                                                                          \
+					static Solid::CleanUpGlobalStatic cleanUpObject = {destroy};                \
+				}                                                                               \
+			}                                                                                   \
+			return _solid_static_##NAME.loadRelaxed();                                          \
+		}                                                                                       \
+		inline TYPE& operator*()                                                                \
+		{                                                                                       \
+			return *operator->();                                                               \
+		}                                                                                       \
+		static void destroy()                                                                   \
+		{                                                                                       \
+			_solid_static_##NAME##_destroyed = true;                                            \
+			TYPE* x = _solid_static_##NAME.loadRelaxed();                                       \
+			_solid_static_##NAME.storeRelaxed(0);                                               \
+			delete x;                                                                           \
+		}                                                                                       \
+	} NAME;
 
 #endif

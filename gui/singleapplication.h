@@ -26,25 +26,24 @@
 
 #include "qtsingleapplication/qtsingleapplication.h"
 
-class SingleApplication : public QtSingleApplication    
-{
-    Q_OBJECT
+class SingleApplication : public QtSingleApplication {
+	Q_OBJECT
 
 public:
-    SingleApplication(int &argc, char **argv);
-    virtual ~SingleApplication() { }
+	SingleApplication(int& argc, char** argv);
+	virtual ~SingleApplication() {}
 
-    bool start(const QStringList &files);
-    void loadFiles(const QStringList &files);
+	bool start(const QStringList& files);
+	void loadFiles(const QStringList& files);
 
 private:
-    void load(const QStringList &files);
+	void load(const QStringList& files);
 
 private Q_SLOTS:
-    void message(const QString &m);
+	void message(const QString& m);
 
 Q_SIGNALS:
-    void reconnect();
+	void reconnect();
 };
 
 #endif

@@ -21,47 +21,47 @@
 #ifndef SHORTCUTSSETTINGSWIDGET_H
 #define SHORTCUTSSETTINGSWIDGET_H
 
-#include <QSortFilterProxyModel>
 #include "support/ui_shortcutssettingswidget.h"
+#include <QSortFilterProxyModel>
 
 class ActionCollection;
 class ShortcutsModel;
 
 class ShortcutsFilter : public QSortFilterProxyModel {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    ShortcutsFilter(QObject *parent = nullptr);
+	ShortcutsFilter(QObject* parent = nullptr);
 
 public Q_SLOTS:
-    void setFilterString(const QString &filterString);
+	void setFilterString(const QString& filterString);
 
 protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+	bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 
 private:
-    QString _filterString;
+	QString _filterString;
 };
 
 class ShortcutsSettingsWidget : public QWidget, private Ui::ShortcutsSettingsWidget {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    ShortcutsSettingsWidget(const QHash<QString, ActionCollection *> &actionCollections, QWidget *parent = nullptr);
+	ShortcutsSettingsWidget(const QHash<QString, ActionCollection*>& actionCollections, QWidget* parent = nullptr);
 
-    inline bool hasDefaults() const { return true; }
-    QTreeView * view();
+	inline bool hasDefaults() const { return true; }
+	QTreeView* view();
 
 public Q_SLOTS:
-    void save();
+	void save();
 
 private Q_SLOTS:
-    void on_searchEdit_textChanged(const QString &text);
-    void keySequenceChanged(const QKeySequence &seq, const QModelIndex &conflicting);
-    void setWidgetStates();
-    void toggledCustomOrDefault();
+	void on_searchEdit_textChanged(const QString& text);
+	void keySequenceChanged(const QKeySequence& seq, const QModelIndex& conflicting);
+	void setWidgetStates();
+	void toggledCustomOrDefault();
 
 private:
-    ShortcutsModel *_shortcutsModel;
-    ShortcutsFilter *_shortcutsFilter;
+	ShortcutsModel* _shortcutsModel;
+	ShortcutsFilter* _shortcutsFilter;
 };
 
-#endif // SHORTCUTSSETTINGSPAGE_H
+#endif// SHORTCUTSSETTINGSPAGE_H

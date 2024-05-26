@@ -34,66 +34,64 @@ class Spinner;
 class Action;
 class Thread;
 
-class WikipediaLoader : public QObject
-{
-    Q_OBJECT
+class WikipediaLoader : public QObject {
+	Q_OBJECT
 public:
-    WikipediaLoader();
-    ~WikipediaLoader() override;
+	WikipediaLoader();
+	~WikipediaLoader() override;
 
 public Q_SLOTS:
-    void load(const QByteArray &data);
+	void load(const QByteArray& data);
 
 Q_SIGNALS:
-    void entry(const QString &prefix, const QString &urlPrefix, const QString &lang, int prefIndex);
-    void finished();
+	void entry(const QString& prefix, const QString& urlPrefix, const QString& lang, int prefIndex);
+	void finished();
 
 private:
-    Thread *thread;
+	Thread* thread;
 };
 
-class WikipediaSettings : public ToggleList
-{
-    Q_OBJECT
+class WikipediaSettings : public ToggleList {
+	Q_OBJECT
 
-    enum State {
-        Initial,
-        Loading,
-        Loaded
-    };
+	enum State {
+		Initial,
+		Loading,
+		Loaded
+	};
 
 public:
-    static QString constSubDir;
+	static QString constSubDir;
 
-    WikipediaSettings(QWidget *p);
-    ~WikipediaSettings() override;
-    
-    void load();
-    void save();
-    void cancel();
-    void showEvent(QShowEvent *e) override;
+	WikipediaSettings(QWidget* p);
+	~WikipediaSettings() override;
+
+	void load();
+	void save();
+	void cancel();
+	void showEvent(QShowEvent* e) override;
 
 Q_SIGNALS:
-    void load(const QByteArray &data);
+	void load(const QByteArray& data);
 
 private Q_SLOTS:
-    void getLangs();
-    void parseLangs();
-    void addEntry(const QString &prefix, const QString &urlPrefix, const QString &lang, int prefIndex);
-    void loaderFinished();
+	void getLangs();
+	void parseLangs();
+	void addEntry(const QString& prefix, const QString& urlPrefix, const QString& lang, int prefIndex);
+	void loaderFinished();
 
 private:
-    void parseLangs(const QByteArray &data);
-    void showSpinner();
-    void hideSpinner();
+	void parseLangs(const QByteArray& data);
+	void showSpinner();
+	void hideSpinner();
 
 private:
-    State state;
-    NetworkJob *job;
-    Spinner *spinner;
-    Action *reload;
-    QMap<int, QListWidgetItem *> prefMap;
-    WikipediaLoader *loader;
+	State state;
+	NetworkJob* job;
+	Spinner* spinner;
+	Action* reload;
+	QMap<int, QListWidgetItem*> prefMap;
+	WikipediaLoader* loader;
 };
 
 #endif

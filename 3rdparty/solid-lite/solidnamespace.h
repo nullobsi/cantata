@@ -22,17 +22,16 @@
 #ifndef SOLID_SOLIDNAMESPACE_H
 #define SOLID_SOLIDNAMESPACE_H
 
-namespace Solid
-{
-    enum ErrorType {
-        NoError = 0,
-        UnauthorizedOperation,
-        DeviceBusy,
-        OperationFailed,
-        UserCanceled,
-        InvalidOption,
-        MissingDriver
-    };
+namespace Solid {
+enum ErrorType {
+	NoError = 0,
+	UnauthorizedOperation,
+	DeviceBusy,
+	OperationFailed,
+	UserCanceled,
+	InvalidOption,
+	MissingDriver
+};
 }
 
 #include <QMetaType>

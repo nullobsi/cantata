@@ -24,134 +24,128 @@
 #ifndef FILE_JOB_H
 #define FILE_JOB_H
 
+#include "deviceoptions.h"
+#include "mpd-interface/song.h"
 #include <QObject>
 #include <QSet>
-#include "mpd-interface/song.h"
-#include "deviceoptions.h"
 
 class QTemporaryFile;
 class Thread;
 class FileJob;
 
-class FileThread : public QObject
-{
-    Q_OBJECT
+class FileThread : public QObject {
+	Q_OBJECT
 public:
-    static FileThread * self();
+	static FileThread* self();
 
-    FileThread();
-    ~FileThread() override;
-    void addJob(FileJob *job);
-    void stop();
+	FileThread();
+	~FileThread() override;
+	void addJob(FileJob* job);
+	void stop();
+
 private:
-    Thread *thread;
+	Thread* thread;
 };
 
-class FileJob : public QObject
-{
-    Q_OBJECT
+class FileJob : public QObject {
+	Q_OBJECT
 
 public:
-    static void finished(QObject *obj) {
-        if (obj) {
-            obj->deleteLater();
-        }
-    }
+	static void finished(QObject* obj)
+	{
+		if (obj) {
+			obj->deleteLater();
+		}
+	}
 
-    FileJob();
-    ~FileJob() override { }
+	FileJob();
+	~FileJob() override {}
 
-    void setPercent(int pc);
-    bool wasStarted() const { return 0!=progressPercent && 100!=progressPercent; }
+	void setPercent(int pc);
+	bool wasStarted() const { return 0 != progressPercent && 100 != progressPercent; }
 
 Q_SIGNALS:
-    void percent(int pc);
-    void result(int status);
+	void percent(int pc);
+	void result(int status);
 
 public:
-    virtual void stop() { stopRequested=true; }
-    virtual void start();
+	virtual void stop() { stopRequested = true; }
+	virtual void start();
 
 protected Q_SLOTS:
-    virtual void run()=0;
+	virtual void run() = 0;
 
 protected:
-    bool stopRequested;
-    int progressPercent;
+	bool stopRequested;
+	int progressPercent;
 };
 
-class CopyJob : public FileJob
-{
-    Q_OBJECT
+class CopyJob : public FileJob {
+	Q_OBJECT
 
 public:
-    enum Options
-    {
-        OptsNone         = 0x00,
-        OptsApplyVaFix   = 0x01,
-        OptsUnApplyVaFix = 0x02,
-        OptsFixLocal     = 0x04  // Apply any fixes to a local temp file before sending...
-    };
+	enum Options {
+		OptsNone = 0x00,
+		OptsApplyVaFix = 0x01,
+		OptsUnApplyVaFix = 0x02,
+		OptsFixLocal = 0x04// Apply any fixes to a local temp file before sending...
+	};
 
-    CopyJob(const QString &src, const QString &dest, const DeviceOptions &d, int co, const Song &s)
-        : srcFile(src)
-        , destFile(dest)
-        , deviceOpts(d)
-        , copyOpts(co)
-        , song(s)
-        , temp(nullptr)
-        , copiedCover(false) {
-    }
-    ~CopyJob() override;
+	CopyJob(const QString& src, const QString& dest, const DeviceOptions& d, int co, const Song& s)
+		: srcFile(src), destFile(dest), deviceOpts(d), copyOpts(co), song(s), temp(nullptr), copiedCover(false)
+	{
+	}
+	~CopyJob() override;
 
-    bool coverCopied() const { return copiedCover; }
+	bool coverCopied() const { return copiedCover; }
 
 protected:
-    QString updateTagsLocal();
-    void updateTagsDest();
-    void copyCover(const QString &origSrcFile);
+	QString updateTagsLocal();
+	void updateTagsDest();
+	void copyCover(const QString& origSrcFile);
 
 private:
-    void run() override;
+	void run() override;
 
 protected:
-    QString srcFile;
-    QString destFile;
-    DeviceOptions deviceOpts;
-    int copyOpts;
-    Song song;
-    QTemporaryFile *temp;
-    bool copiedCover;
+	QString srcFile;
+	QString destFile;
+	DeviceOptions deviceOpts;
+	int copyOpts;
+	Song song;
+	QTemporaryFile* temp;
+	bool copiedCover;
 };
 
-class DeleteJob : public FileJob
-{
+class DeleteJob : public FileJob {
 public:
-    DeleteJob(const QString &file, bool rl=false)
-        : fileName(file)
-        , remLyrics(rl) {
-    }
+	DeleteJob(const QString& file, bool rl = false)
+		: fileName(file), remLyrics(rl)
+	{
+	}
+
 private:
-    void run() override;
+	void run() override;
+
 private:
-    QString fileName;
-    bool remLyrics;
+	QString fileName;
+	bool remLyrics;
 };
 
-class CleanJob : public FileJob
-{
+class CleanJob : public FileJob {
 public:
-    CleanJob(const QSet<QString> &d, const QString &b, const QString &cf)
-        : dirs(d)
-        , base(b)
-        , coverFile(cf) {
-    }
+	CleanJob(const QSet<QString>& d, const QString& b, const QString& cf)
+		: dirs(d), base(b), coverFile(cf)
+	{
+	}
+
 private:
-    void run() override;
+	void run() override;
+
 private:
-    QSet<QString> dirs;
-    QString base;
-    QString coverFile;
+	QSet<QString> dirs;
+	QString base;
+	QString coverFile;
 };
 
 #endif

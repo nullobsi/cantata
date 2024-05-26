@@ -24,10 +24,10 @@
 #ifndef TRAYITEM_H
 #define TRAYITEM_H
 
-#include <QObject>
-#include <QSystemTrayIcon>
 #include "knotification.h"
 #include "support/icon.h"
+#include <QObject>
+#include <QSystemTrayIcon>
 class QMenu;
 #include "config.h"
 
@@ -36,53 +36,54 @@ class QImage;
 struct Song;
 class Action;
 
-class TrayItem : public QObject
-{
-    Q_OBJECT
+class TrayItem : public QObject {
+	Q_OBJECT
 public:
-    TrayItem(MainWindow *p);
-    ~TrayItem() override { }
+	TrayItem(MainWindow* p);
+	~TrayItem() override {}
 
-    void setup();
-    #ifdef Q_OS_MAC
-    bool isActive() const { return false; }
-    void setIcon(const QIcon &) { }
-    void setToolTip(const QString &, const QString &, const QString &) { }
-    #else
-    bool isActive() const { return nullptr!=trayItem; }
-    void setIcon(const QIcon &icon) {
-        if (trayItem) {
-            trayItem->setIcon(icon);
-        }
-    }
-    void setToolTip(const QString &iconName, const QString &title, const QString &subTitle) {
-        if (trayItem) {
-            Q_UNUSED(iconName)
-            Q_UNUSED(subTitle)
-            trayItem->setToolTip(title);
-        }
-    }
-    #endif
-    void songChanged(const Song &song, bool isPlaying);
-    void updateConnections();
-    void updatePartitions();
-    void updateOutputs();
+	void setup();
+#ifdef Q_OS_MAC
+	bool isActive() const { return false; }
+	void setIcon(const QIcon&) {}
+	void setToolTip(const QString&, const QString&, const QString&) {}
+#else
+	bool isActive() const { return nullptr != trayItem; }
+	void setIcon(const QIcon& icon)
+	{
+		if (trayItem) {
+			trayItem->setIcon(icon);
+		}
+	}
+	void setToolTip(const QString& iconName, const QString& title, const QString& subTitle)
+	{
+		if (trayItem) {
+			Q_UNUSED(iconName)
+			Q_UNUSED(subTitle)
+			trayItem->setToolTip(title);
+		}
+	}
+#endif
+	void songChanged(const Song& song, bool isPlaying);
+	void updateConnections();
+	void updatePartitions();
+	void updateOutputs();
 
 private Q_SLOTS:
-    void trayItemClicked(QSystemTrayIcon::ActivationReason reason);
+	void trayItemClicked(QSystemTrayIcon::ActivationReason reason);
 
 private:
-    #ifndef Q_OS_MAC
+#ifndef Q_OS_MAC
 
-    MainWindow *mw;
-    QSystemTrayIcon *trayItem;
-    QMenu *trayItemMenu;
-    Action *connectionsAction;
-    Action *partitionsAction;
-    Action *outputsAction;
+	MainWindow* mw;
+	QSystemTrayIcon* trayItem;
+	QMenu* trayItemMenu;
+	Action* connectionsAction;
+	Action* partitionsAction;
+	Action* outputsAction;
 
-    #endif
-	KNotification *songNotif = nullptr;
+#endif
+	KNotification* songNotif = nullptr;
 };
 
 #endif

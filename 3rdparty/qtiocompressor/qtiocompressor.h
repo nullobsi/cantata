@@ -50,45 +50,48 @@
 #include <QIODevice>
 
 #if defined(Q_WS_WIN)
-#  if !defined(QT_QTIOCOMPRESSOR_EXPORT) && !defined(QT_QTIOCOMPRESSOR_IMPORT)
-#    define QT_QTIOCOMPRESSOR_EXPORT
-#  elif defined(QT_QTIOCOMPRESSOR_IMPORT)
-#    if defined(QT_QTIOCOMPRESSOR_EXPORT)
-#      undef QT_QTIOCOMPRESSOR_EXPORT
-#    endif
-#    define QT_QTIOCOMPRESSOR_EXPORT __declspec(dllimport)
-#  elif defined(QT_QTIOCOMPRESSOR_EXPORT)
-#    undef QT_QTIOCOMPRESSOR_EXPORT
-#    define QT_QTIOCOMPRESSOR_EXPORT __declspec(dllexport)
-#  endif
+#if !defined(QT_QTIOCOMPRESSOR_EXPORT) && !defined(QT_QTIOCOMPRESSOR_IMPORT)
+#define QT_QTIOCOMPRESSOR_EXPORT
+#elif defined(QT_QTIOCOMPRESSOR_IMPORT)
+#if defined(QT_QTIOCOMPRESSOR_EXPORT)
+#undef QT_QTIOCOMPRESSOR_EXPORT
+#endif
+#define QT_QTIOCOMPRESSOR_EXPORT __declspec(dllimport)
+#elif defined(QT_QTIOCOMPRESSOR_EXPORT)
+#undef QT_QTIOCOMPRESSOR_EXPORT
+#define QT_QTIOCOMPRESSOR_EXPORT __declspec(dllexport)
+#endif
 #else
-#  define QT_QTIOCOMPRESSOR_EXPORT
+#define QT_QTIOCOMPRESSOR_EXPORT
 #endif
 
 class QtIOCompressorPrivate;
-class QT_QTIOCOMPRESSOR_EXPORT QtIOCompressor : public QIODevice
-{
-    Q_OBJECT
+class QT_QTIOCOMPRESSOR_EXPORT QtIOCompressor : public QIODevice {
+	Q_OBJECT
 public:
-    enum StreamFormat { ZlibFormat, GzipFormat, RawZipFormat };
-    QtIOCompressor(QIODevice *device, int compressionLevel = 6, int bufferSize = 65500);
-    ~QtIOCompressor() override;
-    void setStreamFormat(StreamFormat format);
-    StreamFormat streamFormat() const;
-    static bool isGzipSupported();
-    bool isSequential() const override;
-    bool open(OpenMode mode) override;
-    void close() override;
-    void flush();
-    qint64 bytesAvailable() const override;
+	enum StreamFormat { ZlibFormat,
+						GzipFormat,
+						RawZipFormat };
+	QtIOCompressor(QIODevice* device, int compressionLevel = 6, int bufferSize = 65500);
+	~QtIOCompressor() override;
+	void setStreamFormat(StreamFormat format);
+	StreamFormat streamFormat() const;
+	static bool isGzipSupported();
+	bool isSequential() const override;
+	bool open(OpenMode mode) override;
+	void close() override;
+	void flush();
+	qint64 bytesAvailable() const override;
+
 protected:
-    qint64 readData(char * data, qint64 maxSize) override;
-    qint64 writeData(const char * data, qint64 maxSize) override;
+	qint64 readData(char* data, qint64 maxSize) override;
+	qint64 writeData(const char* data, qint64 maxSize) override;
+
 private:
-    static bool checkGzipSupport(const char * const versionString);
-    QtIOCompressorPrivate *d_ptr;
-    Q_DECLARE_PRIVATE(QtIOCompressor)
-    Q_DISABLE_COPY(QtIOCompressor)
+	static bool checkGzipSupport(const char* const versionString);
+	QtIOCompressorPrivate* d_ptr;
+	Q_DECLARE_PRIVATE(QtIOCompressor)
+	Q_DISABLE_COPY(QtIOCompressor)
 };
 
 #endif

@@ -27,36 +27,35 @@
 #include "fsdevice.h"
 #include "solid-lite/storageaccess.h"
 
-class UmsDevice : public FsDevice
-{
-    Q_OBJECT
+class UmsDevice : public FsDevice {
+	Q_OBJECT
 
 public:
-    UmsDevice(MusicLibraryModel *m, Solid::Device &dev);
-    ~UmsDevice() override;
+	UmsDevice(MusicLibraryModel* m, Solid::Device& dev);
+	~UmsDevice() override;
 
-    void connectionStateChanged() override;
-    void toggle() override;
-    bool isConnected() const override;
-    double usedCapacity() override;
-    QString capacityString() override;
-    qint64 freeSpace() override;
-    DevType devType() const override { return Ums; }
-    void saveOptions() override;
-    void configure(QWidget *parent) override;
-    bool supportsDisconnect() const override { return true; }
+	void connectionStateChanged() override;
+	void toggle() override;
+	bool isConnected() const override;
+	double usedCapacity() override;
+	QString capacityString() override;
+	qint64 freeSpace() override;
+	DevType devType() const override { return Ums; }
+	void saveOptions() override;
+	void configure(QWidget* parent) override;
+	bool supportsDisconnect() const override { return true; }
 
 private:
-    void setup();
+	void setup();
 
 private Q_SLOTS:
-    void saveProperties();
-    void saveProperties(const QString &newPath, const DeviceOptions &opts);
+	void saveProperties();
+	void saveProperties(const QString& newPath, const DeviceOptions& opts);
 
 private:
-    QString defaultName;
-    Solid::StorageAccess *access;
-    QStringList unusedParams;
+	QString defaultName;
+	Solid::StorageAccess* access;
+	QStringList unusedParams;
 };
 
 #endif

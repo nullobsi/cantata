@@ -21,38 +21,35 @@
 #ifndef UDISKS2BLOCK_H
 #define UDISKS2BLOCK_H
 
-#include <solid-lite/ifaces/block.h>
 #include "udisksdeviceinterface.h"
+#include <solid-lite/ifaces/block.h>
 
-#include <sys/types.h> // dev_t
+#include <sys/types.h>// dev_t
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks2
-{
+namespace Solid {
+namespace Backends {
+namespace UDisks2 {
 
-class Block: public DeviceInterface, virtual public Solid::Ifaces::Block
-{
+class Block : public DeviceInterface, virtual public Solid::Ifaces::Block {
 
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::Block)
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::Block)
 
 public:
-    Block(Device *dev);
-    ~Block() override;
+	Block(Device* dev);
+	~Block() override;
 
-    QString device() const override;
-    int deviceMinor() const override;
-    int deviceMajor() const override;
+	QString device() const override;
+	int deviceMinor() const override;
+	int deviceMajor() const override;
+
 private:
-    dev_t m_devNum;
-    QString m_devFile;
+	dev_t m_devNum;
+	QString m_devFile;
 };
 
-}
-}
-}
+}// namespace UDisks2
+}// namespace Backends
+}// namespace Solid
 
-#endif // UDISKS2BLOCK_H
+#endif// UDISKS2BLOCK_H

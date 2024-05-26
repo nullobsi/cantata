@@ -27,56 +27,55 @@
 #include <QAbstractItemModel>
 
 namespace Cantata {
-    enum Roles
-    {
-        // ItemView...
-        Role_MainText = Qt::UserRole+100,
-        Role_BriefMainText,
-        Role_SubText,
-        Role_TitleText,
-        Role_TitleSubText,
-        Role_TitleActions,
-        Role_Image,
-        Role_ListImage, // Should image been shown in list/tree view?
-        Role_CoverSong,
-        Role_GridCoverSong,
-        Role_Capacity,
-        Role_CapacityText,
-        Role_Actions,
-        Role_LoadCoverInUIThread,
+enum Roles {
+	// ItemView...
+	Role_MainText = Qt::UserRole + 100,
+	Role_BriefMainText,
+	Role_SubText,
+	Role_TitleText,
+	Role_TitleSubText,
+	Role_TitleActions,
+	Role_Image,
+	Role_ListImage,// Should image been shown in list/tree view?
+	Role_CoverSong,
+	Role_GridCoverSong,
+	Role_Capacity,
+	Role_CapacityText,
+	Role_Actions,
+	Role_LoadCoverInUIThread,
 
-        Role_TextColor,
+	Role_TextColor,
 
-        // GroupedView...
-        Role_Key,
-        Role_Id,
-        Role_Song,
-        Role_SongWithRating,
-        Role_AlbumDuration,
-        Role_Status,
-        Role_CurrentStatus,
-        Role_SongCount,
+	// GroupedView...
+	Role_Key,
+	Role_Id,
+	Role_Song,
+	Role_SongWithRating,
+	Role_AlbumDuration,
+	Role_Status,
+	Role_CurrentStatus,
+	Role_SongCount,
 
-        Role_IsCollection,
-        Role_CollectionId,
-        Role_DropAdjust,
+	Role_IsCollection,
+	Role_CollectionId,
+	Role_DropAdjust,
 
-        // PlayQueueView ...
-        Role_Decoration,
+	// PlayQueueView ...
+	Role_Decoration,
 
-        // TableView...
-        Role_Width,
-        Role_InitiallyHidden,
-        Role_Hideable,
-        Role_ContextMenuText,
-        Role_RatingCol,
+	// TableView...
+	Role_Width,
+	Role_InitiallyHidden,
+	Role_Hideable,
+	Role_ContextMenuText,
+	Role_RatingCol,
 
-        // CategorizedView
-        Role_CatergizedHasSubText,
+	// CategorizedView
+	Role_CatergizedHasSubText,
 
-        // PlayQueueModel...
-        Role_Time
-    };
+	// PlayQueueModel...
+	Role_Time
+};
 }
 
 #endif

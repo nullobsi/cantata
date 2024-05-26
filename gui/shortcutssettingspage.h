@@ -31,15 +31,15 @@ class QComboBox;
 class ToolButton;
 class QCheckBox;
 
-class ShortcutsSettingsPage : public QWidget
-{
+class ShortcutsSettingsPage : public QWidget {
 public:
-    ShortcutsSettingsPage(QWidget *p);
+	ShortcutsSettingsPage(QWidget* p);
 
-    void load();
-    void save();
+	void load();
+	void save();
+
 private:
-    ShortcutsSettingsWidget *shortcuts;
+	ShortcutsSettingsWidget* shortcuts;
 };
 
 #endif

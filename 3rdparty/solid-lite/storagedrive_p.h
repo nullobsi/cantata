@@ -23,14 +23,12 @@
 
 #include "deviceinterface_p.h"
 
-namespace Solid
-{
-    class StorageDrivePrivate : public DeviceInterfacePrivate
-    {
-    public:
-        StorageDrivePrivate()
-            : DeviceInterfacePrivate() { }
-    };
-}
+namespace Solid {
+class StorageDrivePrivate : public DeviceInterfacePrivate {
+public:
+	StorageDrivePrivate()
+		: DeviceInterfacePrivate() {}
+};
+}// namespace Solid
 
-#endif // SOLID_STORAGEDRIVE_P_H
+#endif// SOLID_STORAGEDRIVE_P_H

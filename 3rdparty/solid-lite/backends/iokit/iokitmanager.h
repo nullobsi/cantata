@@ -21,42 +21,37 @@
 #ifndef SOLID_BACKENDS_IOKIT_IOKITMANAGER_H
 #define SOLID_BACKENDS_IOKIT_IOKITMANAGER_H
 
-#include <solid-lite/ifaces/devicemanager.h>
 #include <solid-lite/deviceinterface.h>
+#include <solid-lite/ifaces/devicemanager.h>
 
-#include <QVariant>
 #include <QStringList>
+#include <QVariant>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace IOKit
-{
+namespace Solid {
+namespace Backends {
+namespace IOKit {
 class IOKitManagerPrivate;
 
-class IOKitManager : public Solid::Ifaces::DeviceManager
-{
-    Q_OBJECT
+class IOKitManager : public Solid::Ifaces::DeviceManager {
+	Q_OBJECT
 
 public:
-    IOKitManager(QObject *parent);
-    virtual ~IOKitManager();
+	IOKitManager(QObject* parent);
+	virtual ~IOKitManager();
 
-    virtual QString udiPrefix() const ;
-    virtual QSet<Solid::DeviceInterface::Type> supportedInterfaces() const;
+	virtual QString udiPrefix() const;
+	virtual QSet<Solid::DeviceInterface::Type> supportedInterfaces() const;
 
-    virtual QStringList allDevices();
-    virtual QStringList devicesFromQuery(const QString &parentUdi,
-                                         Solid::DeviceInterface::Type type);
-    virtual QObject *createDevice(const QString &udi);
+	virtual QStringList allDevices();
+	virtual QStringList devicesFromQuery(const QString& parentUdi,
+										 Solid::DeviceInterface::Type type);
+	virtual QObject* createDevice(const QString& udi);
 
 private:
-    IOKitManagerPrivate *d;
+	IOKitManagerPrivate* d;
 };
-}
-}
-}
+}// namespace IOKit
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_IOKIT_IOKITMANAGER_H
-
+#endif// SOLID_BACKENDS_IOKIT_IOKITMANAGER_H

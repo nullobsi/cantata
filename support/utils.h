@@ -25,115 +25,114 @@
 #define UTILS_H
 
 #include "thread.h"
-#include <math.h>
-#include <sys/types.h>
-#include <QtGlobal>
-#include <QString>
-#include <QLatin1Char>
 #include <QDir>
 #include <QFont>
+#include <QLatin1Char>
 #include <QPainterPath>
+#include <QString>
+#include <QtGlobal>
+#include <math.h>
 #include <stdlib.h>
+#include <sys/types.h>
 
 class QString;
 class QWidget;
 class QUrl;
 class QRectF;
 
-namespace Utils
-{
-    extern const QLatin1Char constDirSep;
-    extern const QLatin1String constDirSepStr;
-    extern const char * constDirSepCharStr;
+namespace Utils {
+extern const QLatin1Char constDirSep;
+extern const QLatin1String constDirSepStr;
+extern const char* constDirSepCharStr;
 
-    inline bool equal(double d1, double d2, double precision=0.0001)
-    {
-        return (fabs(d1 - d2) < precision);
-    }
+inline bool equal(double d1, double d2, double precision = 0.0001)
+{
+	return (fabs(d1 - d2) < precision);
+}
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-    template <typename T>
-    QSet<T> listToSet(const QList<T> &list) { return QSet<T>(list.cbegin(), list.cend()); }
+template<typename T>
+QSet<T> listToSet(const QList<T>& list) { return QSet<T>(list.cbegin(), list.cend()); }
 #else
-    template <typename T>
-    static inline QSet<T> listToSet(const QList<T> &list) { return list.toSet(); }
+template<typename T>
+static inline QSet<T> listToSet(const QList<T>& list) { return list.toSet(); }
 #endif
 
-    extern QString fixPath(const QString &d, bool ensureEndsInSlash=true);
-    #ifdef Q_OS_WIN
-    inline QString homeToTilda(const QString &s) { return s; }
-    inline QString tildaToHome(const QString &s) { return s; }
-    #else
-    extern QString homeToTilda(const QString &s);
-    extern QString tildaToHome(const QString &s);
-    #endif
+extern QString fixPath(const QString& d, bool ensureEndsInSlash = true);
+#ifdef Q_OS_WIN
+inline QString homeToTilda(const QString& s) { return s; }
+inline QString tildaToHome(const QString& s) { return s; }
+#else
+extern QString homeToTilda(const QString& s);
+extern QString tildaToHome(const QString& s);
+#endif
 
-    extern QString getDir(const QString &file, bool addSlash=true);
-    extern QString getFile(const QString &file);
-    extern QString getExtension(const QString &file);
-    extern QString changeExtension(const QString &file, const QString &extension);
-    extern bool isDirReadable(const QString &dir);
+extern QString getDir(const QString& file, bool addSlash = true);
+extern QString getFile(const QString& file);
+extern QString getExtension(const QString& file);
+extern QString changeExtension(const QString& file, const QString& extension);
+extern bool isDirReadable(const QString& dir);
 
-    inline void msleep(int msecs) { Thread::msleep(msecs); }
-    inline void sleep() { msleep(100); }
+inline void msleep(int msecs) { Thread::msleep(msecs); }
+inline void sleep() { msleep(100); }
 
-    extern QString strippedText(QString s);
-    extern QString stripAcceleratorMarkers(QString label);
-    extern QMap<QString, QString> hashParams(const QString &url);
-    extern QString addHashParam(const QString &url, const QString &key, const QString &val);
-    extern QString removeHash(const QString &url);
+extern QString strippedText(QString s);
+extern QString stripAcceleratorMarkers(QString label);
+extern QMap<QString, QString> hashParams(const QString& url);
+extern QString addHashParam(const QString& url, const QString& key, const QString& val);
+extern QString removeHash(const QString& url);
 
-    // Convert path to a format suitable fo rUI - e.g. use native separators, and remove any trailing separator
-    extern QString convertPathForDisplay(const QString &dir, bool isFolder=true);
-    // Convert path from a UI field - convert to / separators, and add a trailing separator (if isFolder)
-    extern QString convertPathFromDisplay(const QString &dir, bool isFolder=true);
-    #ifndef Q_OS_WIN
-    extern gid_t getGroupId(const char *groupName="users"); // Return 0 if user is not in group, otherwise returns group ID
-    #endif
-    extern void setFilePerms(const QString &file, const char *groupName="users");
-    extern bool makeDir(const QString &dir, int mode);
-    extern bool createWorldReadableDir(const QString &dir, const QString &base, const char *groupName="users");
+// Convert path to a format suitable fo rUI - e.g. use native separators, and remove any trailing separator
+extern QString convertPathForDisplay(const QString& dir, bool isFolder = true);
+// Convert path from a UI field - convert to / separators, and add a trailing separator (if isFolder)
+extern QString convertPathFromDisplay(const QString& dir, bool isFolder = true);
+#ifndef Q_OS_WIN
+extern gid_t getGroupId(const char* groupName = "users");// Return 0 if user is not in group, otherwise returns group ID
+#endif
+extern void setFilePerms(const QString& file, const char* groupName = "users");
+extern bool makeDir(const QString& dir, int mode);
+extern bool createWorldReadableDir(const QString& dir, const QString& base, const char* groupName = "users");
 
-    extern QString findExe(const QString &appname, const QString &pathstr=QString());
-    extern QString formatByteSize(double size);
-    inline QString formatNumber(double number, int precision) { return QString::number(number, 'f', precision); }
-    extern QString formatDuration(const quint32 totalseconds);
-    extern QString formatTime(const quint32 seconds, bool zeroIsUnknown=false);
-    inline QString escapeActionText(const QString &text) { return QString(text).replace(QLatin1String("&"), QLatin1String("&&")); }
+extern QString findExe(const QString& appname, const QString& pathstr = QString());
+extern QString formatByteSize(double size);
+inline QString formatNumber(double number, int precision) { return QString::number(number, 'f', precision); }
+extern QString formatDuration(const quint32 totalseconds);
+extern QString formatTime(const quint32 seconds, bool zeroIsUnknown = false);
+inline QString escapeActionText(const QString& text) { return QString(text).replace(QLatin1String("&"), QLatin1String("&&")); }
 
-    extern QString cleanPath(const QString &p);
-    extern QString dataDir(const QString &sub=QString(), bool create=false);
-    extern QString cacheDir(const QString &sub=QString(), bool create=true);
-    extern QString systemDir(const QString &sub);
-    extern QString helper(const QString &app);
-    extern bool moveFile(const QString &from, const QString &to);
-    extern void moveDir(const QString &from, const QString &to);
-    extern void clearOldCache(const QString &sub, int maxAge);
-    extern void touchFile(const QString &fileName);
+extern QString cleanPath(const QString& p);
+extern QString dataDir(const QString& sub = QString(), bool create = false);
+extern QString cacheDir(const QString& sub = QString(), bool create = true);
+extern QString systemDir(const QString& sub);
+extern QString helper(const QString& app);
+extern bool moveFile(const QString& from, const QString& to);
+extern void moveDir(const QString& from, const QString& to);
+extern void clearOldCache(const QString& sub, int maxAge);
+extern void touchFile(const QString& fileName);
 
-    extern double smallFontFactor(const QFont &f);
-    extern QFont smallFont(QFont f);
-    extern int layoutSpacing(QWidget *w);
-    extern double screenDpiScale();
-    inline bool isHighDpi() { return screenDpiScale()>1.35; }
-    inline int scaleForDpi(int v) { return qRound(screenDpiScale()*v); }
-    extern bool limitedHeight(QWidget *w);
-    extern void resizeWindow(QWidget *w, bool preserveWidth=true, bool preserveHeight=true);
-    extern void raiseWindow(QWidget *w);
-    extern QSize minSize(const QSize &fst, const QSize &snd);
+extern double smallFontFactor(const QFont& f);
+extern QFont smallFont(QFont f);
+extern int layoutSpacing(QWidget* w);
+extern double screenDpiScale();
+inline bool isHighDpi() { return screenDpiScale() > 1.35; }
+inline int scaleForDpi(int v) { return qRound(screenDpiScale() * v); }
+extern bool limitedHeight(QWidget* w);
+extern void resizeWindow(QWidget* w, bool preserveWidth = true, bool preserveHeight = true);
+extern void raiseWindow(QWidget* w);
+extern QSize minSize(const QSize& fst, const QSize& snd);
 
-    enum Desktop {
-        KDE,
-        Gnome,
-        Unity,
-        Other
-    };
-    extern Desktop currentDe();
-    extern bool useSystemTray();
-    extern QPainterPath buildPath(const QRectF &r, double radius);
-    extern QColor clampColor(const QColor &col);
-    extern QColor monoIconColor();
-    extern int compare(const QString &a, const QString &b);
-}
+enum Desktop {
+	KDE,
+	Gnome,
+	Unity,
+	Other
+};
+extern Desktop currentDe();
+extern bool useSystemTray();
+extern QPainterPath buildPath(const QRectF& r, double radius);
+extern QColor clampColor(const QColor& col);
+extern QColor monoIconColor();
+extern int compare(const QString& a, const QString& b);
+}// namespace Utils
 
 #endif

@@ -26,28 +26,24 @@
 
 #include "kcategorizedsortfilterproxymodel.h"
 
-class KCategorizedSortFilterProxyModelPrivate
-{
+class KCategorizedSortFilterProxyModelPrivate {
 public:
-    KCategorizedSortFilterProxyModelPrivate()
-        : sortColumn(0)
-        , sortOrder(Qt::AscendingOrder)
-        , categorizedModel(false)
-        , sortCategoriesByNaturalComparison(true)
-    {
-        m_collator.setNumericMode(true);
-        m_collator.setCaseSensitivity(Qt::CaseSensitive);
-    }
+	KCategorizedSortFilterProxyModelPrivate()
+		: sortColumn(0), sortOrder(Qt::AscendingOrder), categorizedModel(false), sortCategoriesByNaturalComparison(true)
+	{
+		m_collator.setNumericMode(true);
+		m_collator.setCaseSensitivity(Qt::CaseSensitive);
+	}
 
-    ~KCategorizedSortFilterProxyModelPrivate()
-    {
-    }
+	~KCategorizedSortFilterProxyModelPrivate()
+	{
+	}
 
-    int sortColumn;
-    Qt::SortOrder sortOrder;
-    bool categorizedModel;
-    bool sortCategoriesByNaturalComparison;
-    QCollator m_collator;
+	int sortColumn;
+	Qt::SortOrder sortOrder;
+	bool categorizedModel;
+	bool sortCategoriesByNaturalComparison;
+	QCollator m_collator;
 };
 
 #endif

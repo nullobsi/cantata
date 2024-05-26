@@ -29,35 +29,33 @@
 class ToolButton;
 class QTimer;
 
-class MessageOverlay : public QWidget
-{
-    Q_OBJECT
+class MessageOverlay : public QWidget {
+	Q_OBJECT
 
 public:
-    MessageOverlay(QObject *p);
-    ~MessageOverlay() override { }
+	MessageOverlay(QObject* p);
+	~MessageOverlay() override {}
 
-    void setWidget(QWidget *widget);
-    void setText(const QString &txt, int timeout=-1, bool allowCancel=true);
-    void paintEvent(QPaintEvent *) override;
+	void setWidget(QWidget* widget);
+	void setText(const QString& txt, int timeout = -1, bool allowCancel = true);
+	void paintEvent(QPaintEvent*) override;
 
 Q_SIGNALS:
-    void cancel();
+	void cancel();
 
 private Q_SLOTS:
-    void timeout();
+	void timeout();
 
 private:
-    bool eventFilter(QObject *o, QEvent *e) override;
-    void setSizeAndPosition();
+	bool eventFilter(QObject* o, QEvent* e) override;
+	void setSizeAndPosition();
 
 private:
-    int spacing;
-    QString text;
-    ToolButton *cancelButton;
-    QTimer *timer;
-    bool closeOnLeft;
+	int spacing;
+	QString text;
+	ToolButton* cancelButton;
+	QTimer* timer;
+	bool closeOnLeft;
 };
 
 #endif
-

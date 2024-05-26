@@ -27,21 +27,20 @@
 #include "widgets/toolbutton.h"
 #include <QIcon>
 
-class ScrobblingLove : public ToolButton
-{
-    Q_OBJECT
+class ScrobblingLove : public ToolButton {
+	Q_OBJECT
 public:
-    ScrobblingLove(QWidget *p);
-    ~ScrobblingLove() override { }
+	ScrobblingLove(QWidget* p);
+	~ScrobblingLove() override {}
 
 private Q_SLOTS:
-    void sendLove();
-    void songChanged(bool valid);
-    void scrobblerChanged();
+	void sendLove();
+	void songChanged(bool valid);
+	void scrobblerChanged();
 
 private:
-    QIcon love;
-    QIcon loved;
+	QIcon love;
+	QIcon loved;
 };
 
 #endif

@@ -25,59 +25,58 @@
 #define API_KEYS_H
 
 #include <QMap>
+#include <QObject>
 #include <QString>
 #include <QUrlQuery>
-#include <QObject>
 #include <time.h>
 
 class QNetworkReply;
 
-class ApiKeys : public QObject
-{
-    Q_OBJECT
+class ApiKeys : public QObject {
+	Q_OBJECT
 
 public:
-    static ApiKeys * self();
+	static ApiKeys* self();
 
-    enum Service {
-        LastFm,
-        FanArt,
-        ShoutCast,
-        //SoundCloud,
+	enum Service {
+		LastFm,
+		FanArt,
+		ShoutCast,
+		//SoundCloud,
 
-        NumServices
-    };
+		NumServices
+	};
 
-    struct Details {
-        Details(Service s, const QString &n, const QString &k, const QString &u)
-            : srv(s), name(n), key(k), url(u) { }
-        Service srv;
-        QString name;
-        QString key;
-        QString url;
-    };
+	struct Details {
+		Details(Service s, const QString& n, const QString& k, const QString& u)
+			: srv(s), name(n), key(k), url(u) {}
+		Service srv;
+		QString name;
+		QString key;
+		QString url;
+	};
 
-    ApiKeys();
+	ApiKeys();
 
-    void load();
-    void save();
-    QList<Details> getDetails();
-    const QString &get(Service srv);
-    void set(Service srv, const QString &key);
-    void addKey(QUrlQuery &query, Service srv);
-    QString addKey(const QString &url, Service srv);
-    void setLimitReached(Service srv);
-    bool isLimitReached(Service srv);
-    bool isLimitReached(const QNetworkReply *job, Service srv);
+	void load();
+	void save();
+	QList<Details> getDetails();
+	const QString& get(Service srv);
+	void set(Service srv, const QString& key);
+	void addKey(QUrlQuery& query, Service srv);
+	QString addKey(const QString& url, Service srv);
+	void setLimitReached(Service srv);
+	bool isLimitReached(Service srv);
+	bool isLimitReached(const QNetworkReply* job, Service srv);
 
 Q_SIGNALS:
-    void error(const QString &str);
+	void error(const QString& str);
 
 private:
-    QMap<QString, time_t> limitReached; // Set of keys where API limit has been reached
-    QString defaultKeys[NumServices];
-    QString userKeys[NumServices];
-    QString queryItems[NumServices];
+	QMap<QString, time_t> limitReached;// Set of keys where API limit has been reached
+	QString defaultKeys[NumServices];
+	QString userKeys[NumServices];
+	QString queryItems[NumServices];
 };
 
 #endif

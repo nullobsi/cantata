@@ -24,116 +24,112 @@
 #ifndef STREAMSPAGE_H
 #define STREAMSPAGE_H
 
-#include "widgets/singlepagewidget.h"
-#include "widgets/stackedpagewidget.h"
-#include "models/streamsproxymodel.h"
+#include "gui/page.h"
 #include "models/streamsearchmodel.h"
 #include "models/streamsmodel.h"
-#include "gui/page.h"
+#include "models/streamsproxymodel.h"
+#include "widgets/singlepagewidget.h"
+#include "widgets/stackedpagewidget.h"
 #include <QSet>
 
 class Action;
 class QAction;
 class NetworkReply;
 
-struct StreamItem
-{
-    StreamItem(const QString &u=QString(), const QString &mn=QString()) : url(u), modifiedName(mn)  { }
-    QString url;
-    QString modifiedName;
+struct StreamItem {
+	StreamItem(const QString& u = QString(), const QString& mn = QString()) : url(u), modifiedName(mn) {}
+	QString url;
+	QString modifiedName;
 };
 
-class StreamsBrowsePage : public SinglePageWidget
-{
-    Q_OBJECT
+class StreamsBrowsePage : public SinglePageWidget {
+	Q_OBJECT
 
 public:
-    StreamsBrowsePage(QWidget *p);
-    ~StreamsBrowsePage() override;
+	StreamsBrowsePage(QWidget* p);
+	~StreamsBrowsePage() override;
 
-    void addSelectionToPlaylist(const QString &name=QString(), int action=MPDConnection::Append, quint8 priority=0, bool decreasePriority=false) override;
-    void showEvent(QShowEvent *e) override;
+	void addSelectionToPlaylist(const QString& name = QString(), int action = MPDConnection::Append, quint8 priority = 0, bool decreasePriority = false) override;
+	void showEvent(QShowEvent* e) override;
 
 Q_SIGNALS:
-    void error(const QString &str);
-    void showPreferencesPage(const QString &page);
-    void searchForStreams();
+	void error(const QString& str);
+	void showPreferencesPage(const QString& page);
+	void searchForStreams();
 
 public Q_SLOTS:
-    void removeItems() override;
-    void controlActions() override;
-    void addToFavourites(const QList<StreamItem> &items);
+	void removeItems() override;
+	void controlActions() override;
+	void addToFavourites(const QList<StreamItem>& items);
 
 private Q_SLOTS:
-    void importXml();
-    void exportXml();
-    void addStream();
-    void addBookmark();
-    void reload();
-    void edit();
-    void itemDoubleClicked(const QModelIndex &index);
-    void expandFavourites();
-    void addedToFavourites(const QString &name);
-    void tuneInResolved();
-    void headerClicked(int level);
+	void importXml();
+	void exportXml();
+	void addStream();
+	void addBookmark();
+	void reload();
+	void edit();
+	void itemDoubleClicked(const QModelIndex& index);
+	void expandFavourites();
+	void addedToFavourites(const QString& name);
+	void tuneInResolved();
+	void headerClicked(int level);
 
 private:
-    void doSearch() override;
-    void addItemsToPlayQueue(const QModelIndexList &indexes, int action, quint8 priority=0, bool decreasePriority=false);
-    void addToFavourites();
+	void doSearch() override;
+	void addItemsToPlayQueue(const QModelIndexList& indexes, int action, quint8 priority = 0, bool decreasePriority = false);
+	void addToFavourites();
 
 private:
-    Action *importAction;
-    Action *exportAction;
-    Action *addAction;
-    Action *editAction;
-    Action *searchAction;
-    StreamsProxyModel proxy;
-    QSet<NetworkJob *> resolveJobs;
-    friend class StreamsPage;
+	Action* importAction;
+	Action* exportAction;
+	Action* addAction;
+	Action* editAction;
+	Action* searchAction;
+	StreamsProxyModel proxy;
+	QSet<NetworkJob*> resolveJobs;
+	friend class StreamsPage;
 };
 
-class StreamSearchPage : public SinglePageWidget
-{
-    Q_OBJECT
+class StreamSearchPage : public SinglePageWidget {
+	Q_OBJECT
 public:
-    StreamSearchPage(QWidget *p);
-    ~StreamSearchPage() override;
-    void showEvent(QShowEvent *e) override;
+	StreamSearchPage(QWidget* p);
+	~StreamSearchPage() override;
+	void showEvent(QShowEvent* e) override;
 
 Q_SIGNALS:
-    void addToFavourites(const QList<StreamItem> &items);
+	void addToFavourites(const QList<StreamItem>& items);
 
 private Q_SLOTS:
-    void headerClicked(int level);
-    void addedToFavourites(const QString &name);
+	void headerClicked(int level);
+	void addedToFavourites(const QString& name);
 
 private:
-    void doSearch() override;
-    void addSelectionToPlaylist(const QString &name=QString(), int action=MPDConnection::Append, quint8 priority=0, bool decreasePriority=false) override;
-    void addToFavourites();
+	void doSearch() override;
+	void addSelectionToPlaylist(const QString& name = QString(), int action = MPDConnection::Append, quint8 priority = 0, bool decreasePriority = false) override;
+	void addToFavourites();
 
 private:
-    StreamsProxyModel proxy;
-    StreamSearchModel model;
-    friend class StreamsPage;
+	StreamsProxyModel proxy;
+	StreamSearchModel model;
+	friend class StreamsPage;
 };
 
-class StreamsPage : public StackedPageWidget
-{
-    Q_OBJECT
+class StreamsPage : public StackedPageWidget {
+	Q_OBJECT
 public:
-    StreamsPage(QWidget *p);
-    ~StreamsPage() override;
+	StreamsPage(QWidget* p);
+	~StreamsPage() override;
 
 private Q_SLOTS:
-    void searchForStreams();
-    void closeSearch();
-    void addToFavourites();
+	void searchForStreams();
+	void closeSearch();
+	void addToFavourites();
 
 private:
-    StreamsBrowsePage *browse;
-    StreamSearchPage *search;
+	StreamsBrowsePage* browse;
+	StreamSearchPage* search;
 };
 
 #endif

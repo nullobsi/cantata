@@ -28,11 +28,11 @@
 #include <qglobal.h>
 
 #if defined Q_OS_WIN
-    #include "application_win.h"
+#include "application_win.h"
 #elif defined Q_OS_MAC
-    #include "application_mac.h"
+#include "application_mac.h"
 #else
-    #include "application_qt.h"
+#include "application_qt.h"
 #endif
 
 #endif

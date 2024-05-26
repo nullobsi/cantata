@@ -24,41 +24,40 @@
 #ifndef POWERMANAGEMENT_H
 #define POWERMANAGEMENT_H
 
-#include <QObject>
 #include <QDBusUnixFileDescriptor>
+#include <QObject>
 
 class OrgKdeSolidPowerManagementPolicyAgentInterface;
 class OrgFreedesktopPowerManagementInhibitInterface;
 class OrgFreedesktopUPowerInterface;
 class OrgFreedesktopLogin1ManagerInterface;
-    
-class PowerManagement : public QObject
-{
-    Q_OBJECT
+
+class PowerManagement : public QObject {
+	Q_OBJECT
 
 public:
-    static PowerManagement * self();
-    PowerManagement();
+	static PowerManagement* self();
+	PowerManagement();
 
-    void setInhibitSuspend(bool i);
-    void beginSuppressingSleep();
-    void stopSuppressingSleep();
+	void setInhibitSuspend(bool i);
+	void beginSuppressingSleep();
+	void stopSuppressingSleep();
 
 Q_SIGNALS:
-    void resuming();
+	void resuming();
 
 private Q_SLOTS:
-    void mpdStatusUpdated();
-    void prepareForSleep(bool s);
+	void mpdStatusUpdated();
+	void prepareForSleep(bool s);
 
 private:
-    bool inhibitSuspendWhilstPlaying;
-    int cookie;
-    QDBusUnixFileDescriptor descriptor;
-    OrgKdeSolidPowerManagementPolicyAgentInterface *policy;
-    OrgFreedesktopPowerManagementInhibitInterface *inhibit;
-    OrgFreedesktopUPowerInterface *upower;
-    OrgFreedesktopLogin1ManagerInterface *login1;
+	bool inhibitSuspendWhilstPlaying;
+	int cookie;
+	QDBusUnixFileDescriptor descriptor;
+	OrgKdeSolidPowerManagementPolicyAgentInterface* policy;
+	OrgFreedesktopPowerManagementInhibitInterface* inhibit;
+	OrgFreedesktopUPowerInterface* upower;
+	OrgFreedesktopLogin1ManagerInterface* login1;
 };
 
 #endif

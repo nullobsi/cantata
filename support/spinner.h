@@ -26,33 +26,32 @@
 
 #include <QWidget>
 class QTimer;
-class Spinner : public QWidget
-{
-    Q_OBJECT
+class Spinner : public QWidget {
+	Q_OBJECT
 
 public:
-    Spinner(QObject *p, bool inMiddle=false);
-    ~Spinner() override { }
+	Spinner(QObject* p, bool inMiddle = false);
+	~Spinner() override {}
 
-    void setWidget(QWidget *widget);
-    void start();
-    void stop();
-    void paintEvent(QPaintEvent *event) override;
-    bool isActive() const { return active; }
+	void setWidget(QWidget* widget);
+	void start();
+	void stop();
+	void paintEvent(QPaintEvent* event) override;
+	bool isActive() const { return active; }
 
 private Q_SLOTS:
-    void timeout();
+	void timeout();
 
 private:
-    void setPosition();
+	void setPosition();
 
 private:
-    QTimer *timer;
-    int space;
-    int value;
-    bool active;
-    bool central;
-    bool onView;
+	QTimer* timer;
+	int space;
+	int value;
+	bool active;
+	bool central;
+	bool onView;
 };
 
 #endif

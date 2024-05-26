@@ -26,18 +26,19 @@
 
 #include <QStyledItemDelegate>
 
-class BasicItemDelegate : public QStyledItemDelegate
-{
+class BasicItemDelegate : public QStyledItemDelegate {
 public:
-    static void drawLine(QPainter *p, const QRect &r, const QColor &color, bool fadeStart=true, bool fadeEnd=true, double alpha=0.1);
-    BasicItemDelegate(QObject *p);
-    ~BasicItemDelegate() override;
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+	static void drawLine(QPainter* p, const QRect& r, const QColor& color, bool fadeStart = true, bool fadeEnd = true, double alpha = 0.1);
+	BasicItemDelegate(QObject* p);
+	~BasicItemDelegate() override;
+	void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+
 private:
-    bool eventFilter(QObject *object, QEvent *event) override;
+	bool eventFilter(QObject* object, QEvent* event) override;
+
 protected:
-    bool trackMouse;
-    bool underMouse;
+	bool trackMouse;
+	bool underMouse;
 };
 
 #endif

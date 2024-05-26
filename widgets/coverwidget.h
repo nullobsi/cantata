@@ -24,48 +24,46 @@
 #ifndef COVERWIDGET_H
 #define COVERWIDGET_H
 
-#include <QWidget>
 #include <QLabel>
+#include <QWidget>
 
-class CoverLabel : public QLabel
-{
-    Q_OBJECT
+class CoverLabel : public QLabel {
+	Q_OBJECT
 public:
-    CoverLabel(QWidget *p);
+	CoverLabel(QWidget* p);
 
-    void updateToolTip(bool isEvent);
-    bool event(QEvent *event) override;
-    void paintEvent(QPaintEvent *) override;
-    void updatePix();
-    void deletePix();
+	void updateToolTip(bool isEvent);
+	bool event(QEvent* event) override;
+	void paintEvent(QPaintEvent*) override;
+	void updatePix();
+	void deletePix();
 
 private:
-    QPoint lastTtPos;
-    bool pressed;
-    QPixmap pix;
+	QPoint lastTtPos;
+	bool pressed;
+	QPixmap pix;
 };
 
-class CoverWidget : public QWidget
-{
-    Q_OBJECT
+class CoverWidget : public QWidget {
+	Q_OBJECT
 
 public:
-    CoverWidget(QWidget *p);
-    ~CoverWidget() override;
+	CoverWidget(QWidget* p);
+	~CoverWidget() override;
 
-    void setSize(int min);
-    void setEnabled(bool e);
+	void setSize(int min);
+	void setEnabled(bool e);
 
-    void emitClicked() { emit clicked(); }
+	void emitClicked() { emit clicked(); }
 
 Q_SIGNALS:
-    void clicked();
+	void clicked();
 
 private Q_SLOTS:
-    void coverImage(const QImage &);
+	void coverImage(const QImage&);
 
 private:
-    CoverLabel *label;
+	CoverLabel* label;
 };
 
 #endif

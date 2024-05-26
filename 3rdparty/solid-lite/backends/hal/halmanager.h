@@ -21,48 +21,44 @@
 #ifndef SOLID_BACKENDS_HAL_HALMANAGER_H
 #define SOLID_BACKENDS_HAL_HALMANAGER_H
 
-#include <solid-lite/ifaces/devicemanager.h>
 #include <solid-lite/deviceinterface.h>
+#include <solid-lite/ifaces/devicemanager.h>
 
-#include <QVariant>
 #include <QStringList>
+#include <QVariant>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace Hal
-{
+namespace Solid {
+namespace Backends {
+namespace Hal {
 class HalManagerPrivate;
 
-class HalManager : public Solid::Ifaces::DeviceManager
-{
-    Q_OBJECT
+class HalManager : public Solid::Ifaces::DeviceManager {
+	Q_OBJECT
 
 public:
-    HalManager(QObject *parent);
-    ~HalManager() override;
+	HalManager(QObject* parent);
+	~HalManager() override;
 
-    QString udiPrefix() const override ;
-    QSet<Solid::DeviceInterface::Type> supportedInterfaces() const override;
+	QString udiPrefix() const override;
+	QSet<Solid::DeviceInterface::Type> supportedInterfaces() const override;
 
-    bool deviceExists(const QString &udi);
-    QStringList allDevices() override;
+	bool deviceExists(const QString& udi);
+	QStringList allDevices() override;
 
-    QStringList devicesFromQuery(const QString &parentUdi,
-                                         Solid::DeviceInterface::Type type) override;
+	QStringList devicesFromQuery(const QString& parentUdi,
+								 Solid::DeviceInterface::Type type) override;
 
-    QObject *createDevice(const QString &udi) override;
+	QObject* createDevice(const QString& udi) override;
 
 private Q_SLOTS:
-    void slotDeviceAdded(const QString &udi);
-    void slotDeviceRemoved(const QString &udi);
+	void slotDeviceAdded(const QString& udi);
+	void slotDeviceRemoved(const QString& udi);
 
 private:
-    HalManagerPrivate *d;
+	HalManagerPrivate* d;
 };
-}
-}
-}
+}// namespace Hal
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_HAL_HALMANAGER_H
+#endif// SOLID_BACKENDS_HAL_HALMANAGER_H

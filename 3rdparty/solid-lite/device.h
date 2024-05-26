@@ -23,19 +23,18 @@
 
 #include <QVariant>
 
-#include <QMap>
 #include <QList>
+#include <QMap>
 #include <QSharedData>
 
 #include <solid-lite/solid_export.h>
 
 #include <solid-lite/deviceinterface.h>
 
-namespace Solid
-{
-    class DevicePrivate;
+namespace Solid {
+class DevicePrivate;
 
-    /**
+/**
      * This class allows applications to deal with devices available in the
      * underlying system.
      *
@@ -45,17 +44,16 @@ namespace Solid
      *
      * @author Kevin Ottens <ervin@kde.org>
      */
-    class SOLID_EXPORT Device
-    {
-    public:
-        /**
+class SOLID_EXPORT Device {
+public:
+	/**
          * Retrieves all the devices available in the underlying system.
          *
          * @return the list of the devices available
          */
-        static QList<Device> allDevices();
+	static QList<Device> allDevices();
 
-        /**
+	/**
          * Retrieves a list of devices of the system given matching the given
          * constraints (parent and device interface type)
          *
@@ -66,10 +64,10 @@ namespace Solid
          * @return the list of devices corresponding to the given constraints
          * @see Solid::Predicate
          */
-        static QList<Device> listFromType(const DeviceInterface::Type &type,
-                                          const QString &parentUdi = QString());
+	static QList<Device> listFromType(const DeviceInterface::Type& type,
+									  const QString& parentUdi = QString());
 
-        /**
+	/**
          * Retrieves a list of devices of the system given matching the given
          * constraints (parent and predicate)
          *
@@ -79,59 +77,55 @@ namespace Solid
          * @return the list of devices corresponding to the given constraints
          * @see Solid::Predicate
          */
-        static QList<Device> listFromQuery(const Predicate &predicate,
-                                           const QString &parentUdi = QString());
+	static QList<Device> listFromQuery(const Predicate& predicate,
+									   const QString& parentUdi = QString());
 
-        /**
+	/**
          * Convenience function see above.
          *
          * @param predicate
          * @param parentUdi
          * @return the list of devices
          */
-        static QList<Device> listFromQuery(const QString &predicate,
-                                           const QString &parentUdi = QString());
+	static QList<Device> listFromQuery(const QString& predicate,
+									   const QString& parentUdi = QString());
 
-
-        /**
+	/**
          * Constructs a device for a given Universal Device Identifier (UDI).
          *
          * @param udi the udi of the device to create
          */
-        explicit Device(const QString &udi = QString());
+	explicit Device(const QString& udi = QString());
 
-        /**
+	/**
          * Constructs a copy of a device.
          *
          * @param device the device to copy
          */
-        Device(const Device &device);
+	Device(const Device& device);
 
-        /**
+	/**
          * Destroys the device.
          */
-        ~Device();
+	~Device();
 
-
-
-        /**
+	/**
          * Assigns a device to this device and returns a reference to it.
          *
          * @param device the device to assign
          * @return a reference to the device
          */
-        Device &operator=(const Device &device);
+	Device& operator=(const Device& device);
 
-        /**
+	/**
          * Indicates if this device is valid.
          * A device is considered valid if it's available in the system.
          *
          * @return true if this device is available, false otherwise
          */
-        bool isValid() const;
+	bool isValid() const;
 
-
-        /**
+	/**
          * Retrieves the Universal Device Identifier (UDI).
          *
          * \warning Don't use the UDI for anything except communication with Solid. Also don't store
@@ -143,132 +137,132 @@ namespace Solid
          *
          * @return the udi of the device
          */
-        QString udi() const;
+	QString udi() const;
 
-        /**
+	/**
          * Retrieves the Universal Device Identifier (UDI)
          * of the Device's parent.
          *
          * @return the udi of the device's parent
          */
-        QString parentUdi() const;
+	QString parentUdi() const;
 
-
-        /**
+	/**
          * Retrieves the parent of the Device.
          *
          * @return the device's parent
          * @see parentUdi()
          */
-        Device parent() const;
+	Device parent() const;
 
-
-
-        /**
+	/**
          * Retrieves the name of the device vendor.
          *
          * @return the vendor name
          */
-        QString vendor() const;
+	QString vendor() const;
 
-        /**
+	/**
          * Retrieves the name of the product corresponding to this device.
          *
          * @return the product name
          */
-        QString product() const;
+	QString product() const;
 
-        /**
+	/**
          * Retrieves the name of the icon representing this device.
          * The naming follows the freedesktop.org specification.
          *
          * @return the icon name
          */
-        QString icon() const;
+	QString icon() const;
 
-        /**
+	/**
          * Retrieves the names of the emblems representing the state of this device.
          * The naming follows the freedesktop.org specification.
          *
          * @return the emblem names
          * @since 4.4
          */
-        QStringList emblems() const;
+	QStringList emblems() const;
 
-        /**
+	/**
          * Retrieves the description of device.
          *
          * @return the description
          * @since 4.4
          */
-        QString description() const;
+	QString description() const;
 
-        /**
+	/**
          * Tests if a device interface is available from the device.
          *
          * @param type the device interface type to query
          * @return true if the device interface is available, false otherwise
          */
-        bool isDeviceInterface(const DeviceInterface::Type &type) const;
+	bool isDeviceInterface(const DeviceInterface::Type& type) const;
 
-        /**
+	/**
          * Retrieves a specialized interface to interact with the device corresponding to
          * a particular device interface.
          *
          * @param type the device interface type
          * @returns a pointer to the device interface interface if it exists, 0 otherwise
          */
-        DeviceInterface *asDeviceInterface(const DeviceInterface::Type &type);
+	DeviceInterface* asDeviceInterface(const DeviceInterface::Type& type);
 
-        /**
+	/**
          * Retrieves a specialized interface to interact with the device corresponding to
          * a particular device interface.
          *
          * @param type the device interface type
          * @returns a pointer to the device interface interface if it exists, 0 otherwise
          */
-        const DeviceInterface *asDeviceInterface(const DeviceInterface::Type &type) const;
+	const DeviceInterface* asDeviceInterface(const DeviceInterface::Type& type) const;
 
-        /**
+	/**
          * Retrieves a specialized interface to interact with the device corresponding
          * to a given device interface.
          *
          * @returns a pointer to the device interface if it exists, 0 otherwise
          */
-        template <class DevIface> DevIface *as()
-        {
-            DeviceInterface::Type type = DevIface::deviceInterfaceType();
-            DeviceInterface *iface = asDeviceInterface(type);
-            return qobject_cast<DevIface *>(iface);
-        }
+	template<class DevIface>
+	DevIface* as()
+	{
+		DeviceInterface::Type type = DevIface::deviceInterfaceType();
+		DeviceInterface* iface = asDeviceInterface(type);
+		return qobject_cast<DevIface*>(iface);
+	}
 
-        /**
+	/**
          * Retrieves a specialized interface to interact with the device corresponding
          * to a given device interface.
          *
          * @returns a pointer to the device interface if it exists, 0 otherwise
          */
-        template <class DevIface> const DevIface *as() const
-        {
-            DeviceInterface::Type type = DevIface::deviceInterfaceType();
-            const DeviceInterface *iface = asDeviceInterface(type);
-            return qobject_cast<const DevIface *>(iface);
-        }
+	template<class DevIface>
+	const DevIface* as() const
+	{
+		DeviceInterface::Type type = DevIface::deviceInterfaceType();
+		const DeviceInterface* iface = asDeviceInterface(type);
+		return qobject_cast<const DevIface*>(iface);
+	}
 
-        /**
+	/**
          * Tests if a device provides a given device interface.
          *
          * @returns true if the interface is available, false otherwise
          */
-        template <class DevIface> bool is() const
-        {
-            return isDeviceInterface(DevIface::deviceInterfaceType());
-        }
+	template<class DevIface>
+	bool is() const
+	{
+		return isDeviceInterface(DevIface::deviceInterfaceType());
+	}
 
-    private:
-        QExplicitlySharedDataPointer<DevicePrivate> d;
-        friend class DeviceManagerPrivate;
-    };
-}
+private:
+	QExplicitlySharedDataPointer<DevicePrivate> d;
+	friend class DeviceManagerPrivate;
+};
+}// namespace Solid
 
 #endif

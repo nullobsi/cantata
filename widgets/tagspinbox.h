@@ -26,18 +26,17 @@
 
 #include "emptyspinbox.h"
 
-class TagSpinBox : public EmptySpinBox
-{
-    Q_OBJECT
+class TagSpinBox : public EmptySpinBox {
+	Q_OBJECT
 public:
-    static QString variousStr();
+	static QString variousStr();
 
-    TagSpinBox(QWidget *parent);
-    QSize sizeHint() const override;
-    void setVarious(bool v);
+	TagSpinBox(QWidget* parent);
+	QSize sizeHint() const override;
+	void setVarious(bool v);
 
 private:
-    bool isVarious;
+	bool isVarious;
 };
 
 #endif

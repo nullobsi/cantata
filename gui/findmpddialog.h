@@ -21,24 +21,22 @@
 #include "avahidiscovery.h"
 #include "ui_findmpddialog.h"
 
-class FindMpdDialog : public QDialog, private Ui::FindMpdDialog
-{
-    Q_OBJECT
+class FindMpdDialog : public QDialog, private Ui::FindMpdDialog {
+	Q_OBJECT
 
 public:
-    FindMpdDialog(QWidget *p);
+	FindMpdDialog(QWidget* p);
 
 Q_SIGNALS:
-    void serverChosen(QString ip, QString port);
+	void serverChosen(QString ip, QString port);
 
 public Q_SLOTS:
-    void addMpd(QString name, QString address, int port);
-    void removeMpd(QString name);
-    void okClicked();
+	void addMpd(QString name, QString address, int port);
+	void removeMpd(QString name);
+	void okClicked();
 
 private:
-    QScopedPointer<AvahiDiscovery> avahi;
+	QScopedPointer<AvahiDiscovery> avahi;
 };
 
-
-#endif // FINDMPDDIALOG_H
+#endif// FINDMPDDIALOG_H

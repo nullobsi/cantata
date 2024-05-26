@@ -29,17 +29,16 @@
 class QAction;
 class MPDStatus;
 
-class DockMenu : public QMenu
-{
-    Q_OBJECT
+class DockMenu : public QMenu {
+	Q_OBJECT
 public:
-    DockMenu(QWidget *w);
-    virtual ~DockMenu() { }
+	DockMenu(QWidget* w);
+	virtual ~DockMenu() {}
 
-    void update(MPDStatus * const status);
+	void update(MPDStatus* const status);
 
 private:
-    QAction *playPauseAction;
+	QAction* playPauseAction;
 };
 
 #endif

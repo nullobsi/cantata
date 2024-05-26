@@ -22,81 +22,77 @@
 #ifndef UDISKSSTORAGEACCESS_H
 #define UDISKSSTORAGEACCESS_H
 
-#include <solid-lite/ifaces/storageaccess.h>
 #include "udisksdeviceinterface.h"
+#include <solid-lite/ifaces/storageaccess.h>
 
-#include <QDBusMessage>
 #include <QDBusError>
+#include <QDBusMessage>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDisks
-{
-class UDisksStorageAccess : public DeviceInterface, virtual public Solid::Ifaces::StorageAccess
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::StorageAccess)
+namespace Solid {
+namespace Backends {
+namespace UDisks {
+class UDisksStorageAccess : public DeviceInterface, virtual public Solid::Ifaces::StorageAccess {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::StorageAccess)
 
 public:
-    UDisksStorageAccess(UDisksDevice *device);
-    virtual ~UDisksStorageAccess();
+	UDisksStorageAccess(UDisksDevice* device);
+	virtual ~UDisksStorageAccess();
 
-    virtual bool isAccessible() const;
-    virtual QString filePath() const;
-    virtual bool isIgnored() const;
-    virtual bool setup();
-    virtual bool teardown();
+	virtual bool isAccessible() const;
+	virtual QString filePath() const;
+	virtual bool isIgnored() const;
+	virtual bool setup();
+	virtual bool teardown();
 
 Q_SIGNALS:
-    void accessibilityChanged(bool accessible, const QString &udi);
-    void setupDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
-    void teardownDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
-    void setupRequested(const QString &udi);
-    void teardownRequested(const QString &udi);
+	void accessibilityChanged(bool accessible, const QString& udi);
+	void setupDone(Solid::ErrorType error, QVariant errorData, const QString& udi);
+	void teardownDone(Solid::ErrorType error, QVariant errorData, const QString& udi);
+	void setupRequested(const QString& udi);
+	void teardownRequested(const QString& udi);
 
 public Q_SLOTS:
-    Q_SCRIPTABLE Q_NOREPLY void passphraseReply( const QString & passphrase );
+	Q_SCRIPTABLE Q_NOREPLY void passphraseReply(const QString& passphrase);
 
 private Q_SLOTS:
-    void slotChanged();
-    void slotDBusReply( const QDBusMessage & reply );
-    void slotDBusError( const QDBusError & error );
+	void slotChanged();
+	void slotDBusReply(const QDBusMessage& reply);
+	void slotDBusError(const QDBusError& error);
 
-    void connectDBusSignals();
+	void connectDBusSignals();
 
-    void slotSetupRequested();
-    void slotSetupDone(int error, const QString &errorString);
-    void slotTeardownRequested();
-    void slotTeardownDone(int error, const QString &errorString);
-
-private:
-    /// @return true if this device is luks and unlocked
-    bool isLuksDevice() const;
-
-    void updateCache();
-
-    bool mount();
-    bool unmount();
-
-    bool requestPassphrase();
-    void callCryptoSetup( const QString & passphrase );
-    bool callCryptoTeardown( bool actOnParent=false );
-
-    QString generateReturnObjectPath();
+	void slotSetupRequested();
+	void slotSetupDone(int error, const QString& errorString);
+	void slotTeardownRequested();
+	void slotTeardownDone(int error, const QString& errorString);
 
 private:
-    bool m_isAccessible;
-    bool m_setupInProgress;
-    bool m_teardownInProgress;
-    bool m_passphraseRequested;
-    QString m_lastReturnObject;
+	/// @return true if this device is luks and unlocked
+	bool isLuksDevice() const;
 
-    static const int s_unmountTimeout = 0x7fffffff;
+	void updateCache();
+
+	bool mount();
+	bool unmount();
+
+	bool requestPassphrase();
+	void callCryptoSetup(const QString& passphrase);
+	bool callCryptoTeardown(bool actOnParent = false);
+
+	QString generateReturnObjectPath();
+
+private:
+	bool m_isAccessible;
+	bool m_setupInProgress;
+	bool m_teardownInProgress;
+	bool m_passphraseRequested;
+	QString m_lastReturnObject;
+
+	static const int s_unmountTimeout = 0x7fffffff;
 };
-}
-}
-}
+}// namespace UDisks
+}// namespace Backends
+}// namespace Solid
 
-#endif // UDISKSSTORAGEACCESS_H
+#endif// UDISKSSTORAGEACCESS_H

@@ -24,21 +24,21 @@
 #ifndef CDALBUM_H
 #define CDALBUM_H
 
-#include <QString>
-#include <QList>
 #include "mpd-interface/song.h"
+#include <QList>
+#include <QString>
 
 struct CdAlbum {
-    CdAlbum() : isDefault(false), year(0), disc(0)  { }
-    bool isNull() const { return 0==year && 0==disc && tracks.isEmpty() && name.isEmpty() && artist.isEmpty() && composer.isEmpty() && genre.isEmpty(); }
-    bool isDefault;
-    QString name;
-    QString artist;
-    QString composer;
-    QString genre;
-    int year;
-    int disc;
-    QList<Song> tracks;
+	CdAlbum() : isDefault(false), year(0), disc(0) {}
+	bool isNull() const { return 0 == year && 0 == disc && tracks.isEmpty() && name.isEmpty() && artist.isEmpty() && composer.isEmpty() && genre.isEmpty(); }
+	bool isDefault;
+	QString name;
+	QString artist;
+	QString composer;
+	QString genre;
+	int year;
+	int disc;
+	QList<Song> tracks;
 };
 
 #endif

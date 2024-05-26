@@ -22,18 +22,18 @@
 #define SOLID_BACKENDS_UDISKS_H
 
 /* UDisks */
-#define UD_DBUS_SERVICE                 "org.freedesktop.UDisks"
-#define UD_DBUS_PATH                    "/org/freedesktop/UDisks"
-#define UD_DBUS_INTERFACE_DISKS         "org.freedesktop.UDisks"
-#define UD_DBUS_INTERFACE_DISKS_DEVICE  "org.freedesktop.UDisks.Device"
-#define UD_UDI_DISKS_PREFIX             "/org/freedesktop/UDisks"
+#define UD_DBUS_SERVICE "org.freedesktop.UDisks"
+#define UD_DBUS_PATH "/org/freedesktop/UDisks"
+#define UD_DBUS_INTERFACE_DISKS "org.freedesktop.UDisks"
+#define UD_DBUS_INTERFACE_DISKS_DEVICE "org.freedesktop.UDisks.Device"
+#define UD_UDI_DISKS_PREFIX "/org/freedesktop/UDisks"
 
 /* errors */
-#define UD_ERROR_UNAUTHORIZED            "org.freedesktop.PolicyKit.Error.NotAuthorized"
-#define UD_ERROR_BUSY                    "org.freedesktop.UDisks.Error.Busy"
-#define UD_ERROR_FAILED                  "org.freedesktop.UDisks.Error.Failed"
-#define UD_ERROR_CANCELED                "org.freedesktop.UDisks.Error.Cancelled"
-#define UD_ERROR_INVALID_OPTION          "org.freedesktop.UDisks.Error.InvalidOption"
-#define UD_ERROR_MISSING_DRIVER          "org.freedesktop.UDisks.Error.FilesystemDriverMissing"
+#define UD_ERROR_UNAUTHORIZED "org.freedesktop.PolicyKit.Error.NotAuthorized"
+#define UD_ERROR_BUSY "org.freedesktop.UDisks.Error.Busy"
+#define UD_ERROR_FAILED "org.freedesktop.UDisks.Error.Failed"
+#define UD_ERROR_CANCELED "org.freedesktop.UDisks.Error.Cancelled"
+#define UD_ERROR_INVALID_OPTION "org.freedesktop.UDisks.Error.InvalidOption"
+#define UD_ERROR_MISSING_DRIVER "org.freedesktop.UDisks.Error.FilesystemDriverMissing"
 
-#endif // SOLID_BACKENDS_UDISKS_H
+#endif// SOLID_BACKENDS_UDISKS_H

@@ -27,20 +27,17 @@
 #include "config.h"
 #include <taglib/fileref.h>
 
-namespace Meta
-{
-namespace Tag
-{
-class FileTypeResolver : public TagLib::FileRef::FileTypeResolver
-{
-    TagLib::File *createFile(TagLib::FileName fileName,
-                             bool readAudioProperties,
-                             TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const override;
+namespace Meta {
+namespace Tag {
+class FileTypeResolver : public TagLib::FileRef::FileTypeResolver {
+	TagLib::File* createFile(TagLib::FileName fileName,
+							 bool readAudioProperties,
+							 TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const override;
 
 public:
-    virtual ~FileTypeResolver() {}
+	virtual ~FileTypeResolver() {}
 };
-}
-}
+}// namespace Tag
+}// namespace Meta
 
 #endif

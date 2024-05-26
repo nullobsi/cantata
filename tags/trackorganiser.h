@@ -24,9 +24,9 @@
 #ifndef TRACKORGANISER_H
 #define TRACKORGANISER_H
 
+#include "config.h"
 #include "ui_trackorganiser.h"
 #include "widgets/songdialog.h"
-#include "config.h"
 #ifdef ENABLE_DEVICES_SUPPORT
 #include "devices/device.h"
 #else
@@ -36,53 +36,52 @@
 class FilenameSchemeDialog;
 class Action;
 
-class TrackOrganiser : public SongDialog, Ui::TrackOrganiser
-{
-    Q_OBJECT
+class TrackOrganiser : public SongDialog, Ui::TrackOrganiser {
+	Q_OBJECT
 
 public:
-    static int instanceCount();
+	static int instanceCount();
 
-    TrackOrganiser(QWidget *parent);
-    ~TrackOrganiser() override;
+	TrackOrganiser(QWidget* parent);
+	~TrackOrganiser() override;
 
-    void show(const QList<Song> &songs, const QString &udi, bool forceUpdate=false);
+	void show(const QList<Song>& songs, const QString& udi, bool forceUpdate = false);
 
 Q_SIGNALS:
-    // These are for communicating with MPD object (which is in its own thread, so need to talk via signal/slots)
-    void update();
+	// These are for communicating with MPD object (which is in its own thread, so need to talk via signal/slots)
+	void update();
 
 private Q_SLOTS:
-    void configureFilenameScheme();
-    void updateView();
-    void startRename();
-    void renameFile();
-    void controlRemoveAct();
-    void removeItems();
-    void showRatingsMessage();
-    void setFilenameScheme(const QString &text);
+	void configureFilenameScheme();
+	void updateView();
+	void startRename();
+	void renameFile();
+	void controlRemoveAct();
+	void removeItems();
+	void showRatingsMessage();
+	void setFilenameScheme(const QString& text);
 
 private:
-    void saveOptions();
-    void slotButtonClicked(int button) override;
-    void readOptions();
-    #ifdef ENABLE_DEVICES_SUPPORT
-    Device * getDevice(QWidget *p=nullptr);
-    #endif
-    void doUpdate();
-    void finish(bool ok);
+	void saveOptions();
+	void slotButtonClicked(int button) override;
+	void readOptions();
+#ifdef ENABLE_DEVICES_SUPPORT
+	Device* getDevice(QWidget* p = nullptr);
+#endif
+	void doUpdate();
+	void finish(bool ok);
 
 private:
-    FilenameSchemeDialog *schemeDlg;
-    QList<Song> origSongs;
-    QString deviceUdi;
-    Action *removeAct;
-    int index;
-    bool autoSkip;
-    bool paused;
-    bool updated;
-    bool alwaysUpdate;
-    DeviceOptions opts;
+	FilenameSchemeDialog* schemeDlg;
+	QList<Song> origSongs;
+	QString deviceUdi;
+	Action* removeAct;
+	int index;
+	bool autoSkip;
+	bool paused;
+	bool updated;
+	bool alwaysUpdate;
+	DeviceOptions opts;
 };
 
 #endif

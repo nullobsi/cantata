@@ -24,11 +24,11 @@
 #ifndef _RGDIALOG_H_
 #define _RGDIALOG_H_
 
-#include <QFont>
-#include "widgets/songdialog.h"
 #include "albumscanner.h"
-#include "tags/tags.h"
 #include "config.h"
+#include "tags/tags.h"
+#include "widgets/songdialog.h"
+#include <QFont>
 
 class QComboBox;
 class QTreeWidget;
@@ -40,75 +40,74 @@ class Device;
 class TagReader;
 class Action;
 
-class RgDialog : public SongDialog
-{
-    Q_OBJECT
+class RgDialog : public SongDialog {
+	Q_OBJECT
 
 public:
-    static int instanceCount();
+	static int instanceCount();
 
-    RgDialog(QWidget *parent);
-    virtual ~RgDialog();
+	RgDialog(QWidget* parent);
+	virtual ~RgDialog();
 
-    void show(const QList<Song> &songs, const QString &udi, bool autoScan=false);
+	void show(const QList<Song>& songs, const QString& udi, bool autoScan = false);
 
 Q_SIGNALS:
-    // These are for communicating with MPD object (which is in its own thread, so need to talk via signal/slots)
-    void update();
+	// These are for communicating with MPD object (which is in its own thread, so need to talk via signal/slots)
+	void update();
 
 private:
-    void slotButtonClicked(int button);
-    void startScanning();
-    void stopScanning();
-    void createScanner(const QList<int> &indexes);
-    void clearScanners();
-    void startReadingTags();
-    void stopReadingTags();
-    bool saveTags();
-    void updateView();
-    #ifdef ENABLE_DEVICES_SUPPORT
-    Device * getDevice(const QString &udi, QWidget *p);
-    #endif
-    void closeEvent(QCloseEvent *event);
+	void slotButtonClicked(int button);
+	void startScanning();
+	void stopScanning();
+	void createScanner(const QList<int>& indexes);
+	void clearScanners();
+	void startReadingTags();
+	void stopReadingTags();
+	bool saveTags();
+	void updateView();
+#ifdef ENABLE_DEVICES_SUPPORT
+	Device* getDevice(const QString& udi, QWidget* p);
+#endif
+	void closeEvent(QCloseEvent* event);
 
 private Q_SLOTS:
-    void scannerProgress(int p);
-    void scannerDone();
-    void songTags(int index, Tags::ReplayGain tags);
-    void tagReaderDone();
-    void toggleDisplay();
-    void controlRemoveAct();
-    void removeItems();
+	void scannerProgress(int p);
+	void scannerDone();
+	void songTags(int index, Tags::ReplayGain tags);
+	void tagReaderDone();
+	void toggleDisplay();
+	void controlRemoveAct();
+	void removeItems();
 
 private:
-    enum State {
-        State_Idle,
-        State_ScanningTags,
-        State_ScanningFiles,
-        State_Saving
-    };
+	enum State {
+		State_Idle,
+		State_ScanningTags,
+		State_ScanningFiles,
+		State_Saving
+	};
 
-    QComboBox *combo;
-    QTreeWidget *view;
-    QLabel *statusLabel;
-    QProgressBar *progress;
-    Action *removeAct;
-    State state;
-    QString base;
-    QList<Song> origSongs;
+	QComboBox* combo;
+	QTreeWidget* view;
+	QLabel* statusLabel;
+	QProgressBar* progress;
+	Action* removeAct;
+	State state;
+	QString base;
+	QList<Song> origSongs;
 
-    QMap<AlbumScanner *, int> scanners;
-    int totalToScan;
+	QMap<AlbumScanner*, int> scanners;
+	int totalToScan;
 
-    QMap<int, Tags::ReplayGain> origTags;
-    QMap<int, Tags::ReplayGain> tagsToSave;
-    TagReader *tagReader;
+	QMap<int, Tags::ReplayGain> origTags;
+	QMap<int, Tags::ReplayGain> tagsToSave;
+	TagReader* tagReader;
 
-    bool autoScanTags;
+	bool autoScanTags;
 
-    QSet<int> removedItems;
+	QSet<int> removedItems;
 
-    QFont italic;
+	QFont italic;
 };
 
 #endif

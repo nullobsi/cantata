@@ -24,53 +24,50 @@
 #ifndef _SCANNER_H_
 #define _SCANNER_H_
 
-#include "jobcontroller.h"
 #include "ebur128.h"
+#include "jobcontroller.h"
 
 class Input;
 
-class TrackScanner : public StandardJob
-{
-    Q_OBJECT
+class TrackScanner : public StandardJob {
+	Q_OBJECT
 
 public:
-    struct Data
-    {
-        Data()
-            : loudness(0.0)
-            , peak(0.0)
-            , truePeak(0.0) {
-        }
-        double peakValue() const { return truePeak>peak ? truePeak : peak; }
-        double loudness;
-        double peak;
-        double truePeak;
-    };
+	struct Data {
+		Data()
+			: loudness(0.0), peak(0.0), truePeak(0.0)
+		{
+		}
+		double peakValue() const { return truePeak > peak ? truePeak : peak; }
+		double loudness;
+		double peak;
+		double truePeak;
+	};
 
-    static Data global(const QList<TrackScanner *> &scanners);
-    static double clamp(double v);
-    static double reference(double v);
+	static Data global(const QList<TrackScanner*>& scanners);
+	static double clamp(double v);
+	static double reference(double v);
 
-    static void init();
+	static void init();
 
-    TrackScanner(int i);
-    ~TrackScanner();
+	TrackScanner(int i);
+	~TrackScanner();
 
-    void setFile(const QString &fileName);
-    const Data & results() const { return data; }
-    int index() const { return idx; }
-    bool ok() const { return data.peakValue()>0.00001; }
+	void setFile(const QString& fileName);
+	const Data& results() const { return data; }
+	int index() const { return idx; }
+	bool ok() const { return data.peakValue() > 0.00001; }
 
 private:
-    void run();
-    void setFinishedStatus(bool f);
+	void run();
+	void setFinishedStatus(bool f);
 
 private:
-    int idx;
-    ebur128_state *state;
-    Data data;
-    QString file;
-    Input *input;
+	int idx;
+	ebur128_state* state;
+	Data data;
+	QString file;
+	Input* input;
 };
 
 #endif

@@ -26,11 +26,10 @@
 
 #include "searchwidget.h"
 
-class PlayQueueSearchWidget : public SearchWidget
-{
+class PlayQueueSearchWidget : public SearchWidget {
 public:
-    PlayQueueSearchWidget(QWidget *p) : SearchWidget(p, 1) { }
-    ~PlayQueueSearchWidget() override { }
+	PlayQueueSearchWidget(QWidget* p) : SearchWidget(p, 1) {}
+	~PlayQueueSearchWidget() override {}
 };
 
 #endif

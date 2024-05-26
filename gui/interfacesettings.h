@@ -26,42 +26,40 @@
 
 #include "ui_interfacesettings.h"
 
-
-class InterfaceSettings : public QWidget, private Ui::InterfaceSettings
-{
-    Q_OBJECT
+class InterfaceSettings : public QWidget, private Ui::InterfaceSettings {
+	Q_OBJECT
 
 public:
-    InterfaceSettings(QWidget *p);
-    ~InterfaceSettings() override { }
+	InterfaceSettings(QWidget* p);
+	~InterfaceSettings() override {}
 
-    void load();
-    void save();
+	void load();
+	void save();
 
-    void showEvent(QShowEvent *e) override;
-    void showPage(const QString &page);
-    QSize sizeHint() const override;
+	void showEvent(QShowEvent* e) override;
+	void showPage(const QString& page);
+	QSize sizeHint() const override;
 
 private:
-    void addView(const QString &v, const QString &prop);
+	void addView(const QString& v, const QString& prop);
 
 private Q_SLOTS:
-    void playQueueViewChanged();
-    void forceSingleClickChanged();
-    void enableStartupState();
-    void langChanged();
-    void styleChanged();
-    void viewItemChanged(QListWidgetItem *changedItem);
-    void sbAutoHideChanged();
-    void setPlayQueueBackgroundOpacityLabel();
-    void setPlayQueueBackgroundBlurLabel();
-    void enablePlayQueueBackgroundOptions();
-    void systemTrayCheckBoxToggled();
-    void systemTrayPopupToggled();
-    void storeCoversInMpdDirToggled();
+	void playQueueViewChanged();
+	void forceSingleClickChanged();
+	void enableStartupState();
+	void langChanged();
+	void styleChanged();
+	void viewItemChanged(QListWidgetItem* changedItem);
+	void sbAutoHideChanged();
+	void setPlayQueueBackgroundOpacityLabel();
+	void setPlayQueueBackgroundBlurLabel();
+	void enablePlayQueueBackgroundOptions();
+	void systemTrayCheckBoxToggled();
+	void systemTrayPopupToggled();
+	void storeCoversInMpdDirToggled();
 
 private:
-    bool loaded;
+	bool loaded;
 };
 
 #endif

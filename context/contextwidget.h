@@ -20,16 +20,16 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
- 
+
 #ifndef CONTEXT_WIDGET_H
 #define CONTEXT_WIDGET_H
 
-#include <QWidget>
-#include <QPixmap>
+#include "mpd-interface/song.h"
 #include <QColor>
+#include <QPixmap>
 #include <QPropertyAnimation>
 #include <QSplitter>
-#include "mpd-interface/song.h"
+#include <QWidget>
 
 class ArtistView;
 class AlbumView;
@@ -43,125 +43,122 @@ class QButtonGroup;
 class QWheelEvent;
 class OnlineView;
 
-class ViewSelector : public QWidget
-{
-    Q_OBJECT
+class ViewSelector : public QWidget {
+	Q_OBJECT
 public:
-    ViewSelector(QWidget *p);
-    ~ViewSelector() override { }
-    void addItem(const QString &label, const QVariant &data);
-    QVariant itemData(int index) const;
-    int count() { return buttons.count(); }
-    int currentIndex() const;
-    void setCurrentIndex(int index);
+	ViewSelector(QWidget* p);
+	~ViewSelector() override {}
+	void addItem(const QString& label, const QVariant& data);
+	QVariant itemData(int index) const;
+	int count() { return buttons.count(); }
+	int currentIndex() const;
+	void setCurrentIndex(int index);
 
 private:
-    void wheelEvent(QWheelEvent *ev) override;
-    void paintEvent(QPaintEvent *) override;
+	void wheelEvent(QWheelEvent* ev) override;
+	void paintEvent(QPaintEvent*) override;
 
 private Q_SLOTS:
-    void buttonActivated();
+	void buttonActivated();
 
 Q_SIGNALS:
-    void activated(int);
+	void activated(int);
 
 private:
-    QButtonGroup *group;
-    QList<QToolButton *> buttons;
+	QButtonGroup* group;
+	QList<QToolButton*> buttons;
 };
 
-class ThinSplitter : public QSplitter
-{
-    Q_OBJECT
+class ThinSplitter : public QSplitter {
+	Q_OBJECT
 public:
-    ThinSplitter(QWidget *parent);
-    QSplitterHandle *createHandle() override;
+	ThinSplitter(QWidget* parent);
+	QSplitterHandle* createHandle() override;
 
 public Q_SLOTS:
-    void reset();
+	void reset();
 
 private:
-    QAction *resetAct;
+	QAction* resetAct;
 };
 
-class ContextWidget : public QWidget
-{
-    Q_OBJECT
-    Q_PROPERTY(float fade READ fade WRITE setFade)
+class ContextWidget : public QWidget {
+	Q_OBJECT
+	Q_PROPERTY(float fade READ fade WRITE setFade)
 
 public:
-    static void enableDebug();
+	static void enableDebug();
 
-    static const QLatin1String constBackdropFileName;
-    static const QLatin1String constCacheDir;
+	static const QLatin1String constBackdropFileName;
+	static const QLatin1String constCacheDir;
 
-    ContextWidget(QWidget *parent=nullptr);
+	ContextWidget(QWidget* parent = nullptr);
 
-    void readConfig();
-    void saveConfig();
-    void useDarkBackground(bool u);
-    void update(const Song &s);
-    void showEvent(QShowEvent *e) override;
-    void paintEvent(QPaintEvent *e) override;
-    float fade() { return fadeValue; }
-    void setFade(double value);
-    void updateImage(QImage img);
-    void search();
+	void readConfig();
+	void saveConfig();
+	void useDarkBackground(bool u);
+	void update(const Song& s);
+	void showEvent(QShowEvent* e) override;
+	void paintEvent(QPaintEvent* e) override;
+	float fade() { return fadeValue; }
+	void setFade(double value);
+	void updateImage(QImage img);
+	void search();
 
 private:
-    void updatePalette();
+	void updatePalette();
 
 Q_SIGNALS:
-    void findArtist(const QString &artist);
-    void findAlbum(const QString &artist, const QString &album);
-    void playSong(const QString &file);
+	void findArtist(const QString& artist);
+	void findAlbum(const QString& artist, const QString& album);
+	void playSong(const QString& file);
 
 private Q_SLOTS:
-    void musicbrainzResponse();
-    void fanArtResponse();
-    void downloadResponse();
+	void musicbrainzResponse();
+	void fanArtResponse();
+	void downloadResponse();
 
 private:
-    void setWide(bool w);
-    void resizeEvent(QResizeEvent *e) override;
-    void cancel();
-    void updateBackdrop(bool force=false);
-    void getBackdrop();
-    void getFanArtBackdrop();
-    void getMusicbrainzId(const QString &artist);
-    void createBackdrop();
-    void resizeBackdrop();
-    NetworkJob * getReply(QObject *obj);
+	void setWide(bool w);
+	void resizeEvent(QResizeEvent* e) override;
+	void cancel();
+	void updateBackdrop(bool force = false);
+	void getBackdrop();
+	void getFanArtBackdrop();
+	void getMusicbrainzId(const QString& artist);
+	void createBackdrop();
+	void resizeBackdrop();
+	NetworkJob* getReply(QObject* obj);
 
 private:
-    bool shown;
-    NetworkJob *job;
-    bool alwaysCollapsed;
-    int backdropType;
-    int backdropOpacity;
-    int backdropBlur;
-    QString customBackdropFile;
-    bool darkBackground;
-    Song currentSong;
-    QImage currentImage;
-    QPixmap oldBackdrop;
-    QPixmap currentBackdrop;
-    QString currentArtist;
-    QString updateArtist;
-    ArtistView *artist;
-    AlbumView *album;
-    SongView *song;
-    QColor appLinkColor;
-    double fadeValue;
-    QPropertyAnimation animator;
-    int minWidth;
-    bool isWide;
-    QStackedWidget *mainStack;
-    QStackedWidget *stack;
-    QWidget *standardContext;
-    OnlineView *onlineContext;
-    ThinSplitter *splitter;
-    ViewSelector *viewSelector;
+	bool shown;
+	NetworkJob* job;
+	bool alwaysCollapsed;
+	int backdropType;
+	int backdropOpacity;
+	int backdropBlur;
+	QString customBackdropFile;
+	bool darkBackground;
+	Song currentSong;
+	QImage currentImage;
+	QPixmap oldBackdrop;
+	QPixmap currentBackdrop;
+	QString currentArtist;
+	QString updateArtist;
+	ArtistView* artist;
+	AlbumView* album;
+	SongView* song;
+	QColor appLinkColor;
+	double fadeValue;
+	QPropertyAnimation animator;
+	int minWidth;
+	bool isWide;
+	QStackedWidget* mainStack;
+	QStackedWidget* stack;
+	QWidget* standardContext;
+	OnlineView* onlineContext;
+	ThinSplitter* splitter;
+	ViewSelector* viewSelector;
 };
 
 #endif

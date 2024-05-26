@@ -27,14 +27,13 @@
 #include "singleapplication.h"
 #include <QAbstractNativeEventFilter>
 
-class Application : public SingleApplication, public QAbstractNativeEventFilter
-{
+class Application : public SingleApplication, public QAbstractNativeEventFilter {
 public:
-    static void init();
-    static void fixSize(QWidget *widget);
-    Application(int &argc, char **argv);
-    virtual ~Application() { }
-    bool nativeEventFilter(const QByteArray &, void *message, qintptr *result);
+	static void init();
+	static void fixSize(QWidget* widget);
+	Application(int& argc, char** argv);
+	virtual ~Application() {}
+	bool nativeEventFilter(const QByteArray&, void* message, qintptr* result);
 };
 
 #endif

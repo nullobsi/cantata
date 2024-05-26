@@ -21,55 +21,51 @@
 #ifndef SOLID_BACKENDS_IOKIT_IOKITDEVICE_H
 #define SOLID_BACKENDS_IOKIT_IOKITDEVICE_H
 
-#include <solid-lite/ifaces/device.h>
 #include <IOKit/IOKitLib.h>
+#include <solid-lite/ifaces/device.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace IOKit
-{
+namespace Solid {
+namespace Backends {
+namespace IOKit {
 class IOKitDevicePrivate;
 class IOKitManager;
 
-class IOKitDevice : public Solid::Ifaces::Device
-{
-    Q_OBJECT
+class IOKitDevice : public Solid::Ifaces::Device {
+	Q_OBJECT
 
 public:
-    IOKitDevice(const QString &udi);
-    virtual ~IOKitDevice();
+	IOKitDevice(const QString& udi);
+	virtual ~IOKitDevice();
 
-    virtual QString udi() const;
-    virtual QString parentUdi() const;
+	virtual QString udi() const;
+	virtual QString parentUdi() const;
 
-    virtual QString vendor() const;
-    virtual QString product() const;
-    virtual QString icon() const;
-    virtual QStringList emblems() const;
-    virtual QString description() const;
+	virtual QString vendor() const;
+	virtual QString product() const;
+	virtual QString icon() const;
+	virtual QStringList emblems() const;
+	virtual QString description() const;
 
-    virtual QVariant property(const QString &key) const;
+	virtual QVariant property(const QString& key) const;
 
-    virtual QMap<QString, QVariant> allProperties() const;
+	virtual QMap<QString, QVariant> allProperties() const;
 
-    virtual bool propertyExists(const QString &key) const;
+	virtual bool propertyExists(const QString& key) const;
 
-    virtual bool queryDeviceInterface(const Solid::DeviceInterface::Type &type) const;
-    virtual QObject *createDeviceInterface(const Solid::DeviceInterface::Type &type);
+	virtual bool queryDeviceInterface(const Solid::DeviceInterface::Type& type) const;
+	virtual QObject* createDeviceInterface(const Solid::DeviceInterface::Type& type);
 
 Q_SIGNALS:
-    void propertyChanged(const QMap<QString,int> &changes);
-    void conditionRaised(const QString &condition, const QString &reason);
+	void propertyChanged(const QMap<QString, int>& changes);
+	void conditionRaised(const QString& condition, const QString& reason);
 
 private:
-    friend class IOKitManager;
-    IOKitDevice(const QString &udi, const io_registry_entry_t &entry);
-    IOKitDevicePrivate * const d;
+	friend class IOKitManager;
+	IOKitDevice(const QString& udi, const io_registry_entry_t& entry);
+	IOKitDevicePrivate* const d;
 };
-}
-}
-}
+}// namespace IOKit
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_IOKIT_IOKITDEVICE_H
+#endif// SOLID_BACKENDS_IOKIT_IOKITDEVICE_H

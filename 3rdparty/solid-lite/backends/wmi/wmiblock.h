@@ -21,30 +21,26 @@
 #ifndef SOLID_BACKENDS_WMI_BLOCK_H
 #define SOLID_BACKENDS_WMI_BLOCK_H
 
-#include <solid-lite/ifaces/block.h>
 #include "wmideviceinterface.h"
+#include <solid-lite/ifaces/block.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace Wmi
-{
-class Block : public DeviceInterface, virtual public Solid::Ifaces::Block
-{
-    Q_OBJECT
-    Q_INTERFACES(Solid::Ifaces::Block)
+namespace Solid {
+namespace Backends {
+namespace Wmi {
+class Block : public DeviceInterface, virtual public Solid::Ifaces::Block {
+	Q_OBJECT
+	Q_INTERFACES(Solid::Ifaces::Block)
 
 public:
-    Block(WmiDevice *device);
-    virtual ~Block();
+	Block(WmiDevice* device);
+	virtual ~Block();
 
-    virtual int deviceMajor() const;
-    virtual int deviceMinor() const;
-    virtual QString device() const;
+	virtual int deviceMajor() const;
+	virtual int deviceMinor() const;
+	virtual QString device() const;
 };
-}
-}
-}
+}// namespace Wmi
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_WMI_BLOCK_H
+#endif// SOLID_BACKENDS_WMI_BLOCK_H

@@ -24,19 +24,18 @@
 #ifndef PAUSABLETIMER_H
 #define PAUSABLETIMER_H
 
-#include <QTimer>
 #include <QElapsedTimer>
+#include <QTimer>
 
-class PausableTimer : public QTimer
-{
+class PausableTimer : public QTimer {
 public:
-    PausableTimer();
-    void start();
-    void pause();
+	PausableTimer();
+	void start();
+	void pause();
 
 private:
-    QElapsedTimer elapsedTimer;
-    qint64 timePaused;
+	QElapsedTimer elapsedTimer;
+	qint64 timePaused;
 };
 
 #endif

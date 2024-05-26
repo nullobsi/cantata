@@ -24,14 +24,12 @@
 
 #include "deviceinterface_p.h"
 
-namespace Solid
-{
-    class PortableMediaPlayerPrivate : public DeviceInterfacePrivate
-    {
-    public:
-        PortableMediaPlayerPrivate()
-            : DeviceInterfacePrivate() { }
-    };
-}
+namespace Solid {
+class PortableMediaPlayerPrivate : public DeviceInterfacePrivate {
+public:
+	PortableMediaPlayerPrivate()
+		: DeviceInterfacePrivate() {}
+};
+}// namespace Solid
 
 #endif

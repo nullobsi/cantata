@@ -34,51 +34,41 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-
 /* Tokens.  */
 #ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
+#define YYTOKENTYPE
+/* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
-   enum yytokentype {
-     EQ = 258,
-     MASK = 259,
-     AND = 260,
-     OR = 261,
-     IS = 262,
-     VAL_BOOL = 263,
-     VAL_STRING = 264,
-     VAL_ID = 265,
-     VAL_NUM = 266,
-     VAL_FLOAT = 267
-   };
+enum yytokentype {
+	EQ = 258,
+	MASK = 259,
+	AND = 260,
+	OR = 261,
+	IS = 262,
+	VAL_BOOL = 263,
+	VAL_STRING = 264,
+	VAL_ID = 265,
+	VAL_NUM = 266,
+	VAL_FLOAT = 267
+};
 #endif
 
-
-
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
-{
+#if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
+typedef union YYSTYPE {
 
 /* Line 1676 of yacc.c  */
 #line 22 "predicate_parser.y"
 
-     char valb;
-     int vali;
-     double vald;
-     char *name;
-     void *ptr;
-
-
+	char valb;
+	int vali;
+	double vald;
+	char* name;
+	void* ptr;
 
 /* Line 1676 of yacc.c  */
 #line 74 "predicate_parser.tab.h"
 } YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
-# define YYSTYPE_IS_DECLARED 1
+#define YYSTYPE_IS_TRIVIAL 1
+#define yystype YYSTYPE /* obsolescent; will be withdrawn */
+#define YYSTYPE_IS_DECLARED 1
 #endif
-
-
-
-

@@ -20,17 +20,16 @@ class KNotifyConfigPrivate;
  * @author Olivier Goffart <ogoffart@kde.org>
  * @author Kai Uwe Broulik <kde@broulik.de>
  */
-class KNotifyConfig
-{
+class KNotifyConfig {
 public:
 	KNotifyConfig(const QString& id);
 
-    /**
+	/**
      * the name of the notification
      */
-    QString eventId() const;
+	QString eventId() const;
 
-    /**
+	/**
      * @return entry from the relevant Global notifyrc config group
      *
      * This will return the configuration from the user for the given key.
@@ -38,9 +37,9 @@ public:
      *
      * return a null string if the entry doesn't exist
      */
-    QString readGlobalEntry(const QString &key) const;
+	QString readGlobalEntry(const QString& key) const;
 
-    /**
+	/**
      * @return entry from the relevant Event/ notifyrc config group
      *
      * This will return the configuration from the user for the given key.
@@ -48,19 +47,19 @@ public:
      *
      * return a null string if the entry doesn't exist
      */
-    QString readEntry(const QString &key) const;
+	QString readEntry(const QString& key) const;
 
-    /**
+	/**
      * @return path entry from the relevant Event/ notifyrc config group
      *
      * This will return the configuration from the user for the given key
      * and interpret it as a path.
      */
-    QString readPathEntry(const QString &key) const;
+	QString readPathEntry(const QString& key) const;
 
-	void setEntry(const QString &key, const QString &val);
+	void setEntry(const QString& key, const QString& val);
 
-	static void setGlobalEntry(const QString &key, const QString& val);
+	static void setGlobalEntry(const QString& key, const QString& val);
 
 private:
 	QString m_eventId;

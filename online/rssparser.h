@@ -24,41 +24,37 @@
 #ifndef RSSPARSER_H
 #define RSSPARSER_H
 
-#include <QUrl>
-#include <QString>
-#include <QList>
-#include <QList>
 #include <QDateTime>
+#include <QList>
+#include <QString>
+#include <QUrl>
 
 class QIODevice;
 
-namespace RssParser
-{
+namespace RssParser {
 
-struct Episode
-{
-    Episode() : duration(0), video(false) { }
-    QString name;
-    QString description;
-    QDateTime publicationDate;
-    unsigned int duration;
-    QUrl url;
-    bool video;
+struct Episode {
+	Episode() : duration(0), video(false) {}
+	QString name;
+	QString description;
+	QDateTime publicationDate;
+	unsigned int duration;
+	QUrl url;
+	bool video;
 };
 
-struct Channel
-{
-    Channel() : video(false) { }
-    QString name;
-    QUrl image;
-    QList<Episode> episodes;
-    QString description;
-    bool video;
-    bool isValid() const { return !name.isEmpty(); }
+struct Channel {
+	Channel() : video(false) {}
+	QString name;
+	QUrl image;
+	QList<Episode> episodes;
+	QString description;
+	bool video;
+	bool isValid() const { return !name.isEmpty(); }
 };
 
-Channel parse(QIODevice *dev, bool getEpisodes=true, bool getDescription=false);
+Channel parse(QIODevice* dev, bool getEpisodes = true, bool getDescription = false);
 
-}
+}// namespace RssParser
 
 #endif

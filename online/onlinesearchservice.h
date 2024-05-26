@@ -24,25 +24,24 @@
 #ifndef ONLINESEARCH_SERVICE_H
 #define ONLINESEARCH_SERVICE_H
 
-#include "onlineservice.h"
 #include "models/searchmodel.h"
+#include "onlineservice.h"
 
 class NetworkJob;
 
-class OnlineSearchService : public SearchModel, public OnlineService
-{
-    Q_OBJECT
+class OnlineSearchService : public SearchModel, public OnlineService {
+	Q_OBJECT
 public:
-    OnlineSearchService(QObject *p);
-    ~OnlineSearchService() override { cancel(); }
+	OnlineSearchService(QObject* p);
+	~OnlineSearchService() override { cancel(); }
 
-    QVariant data(const QModelIndex &index, int role) const override;
-    Song & fixPath(Song &s) const override;
-    void search(const QString &key, const QString &value) override =0;
-    virtual void cancel();
+	QVariant data(const QModelIndex& index, int role) const override;
+	Song& fixPath(Song& s) const override;
+	void search(const QString& key, const QString& value) override = 0;
+	virtual void cancel();
 
 protected:
-    NetworkJob *job;
+	NetworkJob* job;
 };
 
 #endif

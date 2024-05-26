@@ -28,28 +28,31 @@
 #include "support/lineedit.h"
 #include <QAbstractItemView>
 
-class CompletionCombo : public ComboBox
-{
+class CompletionCombo : public ComboBox {
 public:
-    CompletionCombo(QWidget *p)
-        : ComboBox(p) {
-        setEditable(true);
-        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
-        view()->setTextElideMode(Qt::ElideRight);
-    }
+	CompletionCombo(QWidget* p)
+		: ComboBox(p)
+	{
+		setEditable(true);
+		setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+		setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
+		view()->setTextElideMode(Qt::ElideRight);
+	}
 
-    void setText(const QString &text) {
-        if (lineEdit()) qobject_cast<QLineEdit*>(lineEdit())->setText(text);
-    }
+	void setText(const QString& text)
+	{
+		if (lineEdit()) qobject_cast<QLineEdit*>(lineEdit())->setText(text);
+	}
 
-    QString text() const {
-        return lineEdit() ? qobject_cast<QLineEdit*>(lineEdit())->text() : QString();
-    }
+	QString text() const
+	{
+		return lineEdit() ? qobject_cast<QLineEdit*>(lineEdit())->text() : QString();
+	}
 
-    void setPlaceholderText(const QString &text) {
-        if (lineEdit()) qobject_cast<QLineEdit*>(lineEdit())->setPlaceholderText(text);
-    }
+	void setPlaceholderText(const QString& text)
+	{
+		if (lineEdit()) qobject_cast<QLineEdit*>(lineEdit())->setPlaceholderText(text);
+	}
 };
 
 #endif

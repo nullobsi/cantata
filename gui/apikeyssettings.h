@@ -29,21 +29,20 @@
 class QTreeWidget;
 class QTreeWidgetItem;
 
-class ApiKeysSettings : public QWidget
-{
-    Q_OBJECT
+class ApiKeysSettings : public QWidget {
+	Q_OBJECT
 
 public:
-    ApiKeysSettings(QWidget *p);
-    ~ApiKeysSettings() override { }
+	ApiKeysSettings(QWidget* p);
+	~ApiKeysSettings() override {}
 
-    void save();
+	void save();
 
 private Q_SLOTS:
-    void itemClicked(QTreeWidgetItem *item, int column);
+	void itemClicked(QTreeWidgetItem* item, int column);
 
 private:
-    QTreeWidget *tree;
+	QTreeWidget* tree;
 };
 
 #endif

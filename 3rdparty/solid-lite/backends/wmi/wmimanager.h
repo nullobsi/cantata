@@ -22,81 +22,73 @@
 #ifndef SOLID_BACKENDS_WMI_WMIMANAGER_H
 #define SOLID_BACKENDS_WMI_WMIMANAGER_H
 
-#include <solid-lite/ifaces/devicemanager.h>
 #include <solid-lite/deviceinterface.h>
+#include <solid-lite/ifaces/devicemanager.h>
 
-#include <QVariant>
 #include <QStringList>
+#include <QVariant>
 
 #include <Wbemidl.h>
 
-namespace Solid
-{
-namespace Backends
-{
-namespace Wmi
-{
+namespace Solid {
+namespace Backends {
+namespace Wmi {
 class WmiManagerPrivate;
 
-class WmiManager : public Solid::Ifaces::DeviceManager
-{
-    Q_OBJECT
+class WmiManager : public Solid::Ifaces::DeviceManager {
+	Q_OBJECT
 
 public:
+	class WmiEventSink : public IWbemObjectSink {
+	public:
+		WmiEventSink(class WmiManager* parent, const QString& query, const QList<Solid::DeviceInterface::Type>& types);
+		~WmiEventSink();
 
-    class WmiEventSink : public IWbemObjectSink
-    {
-    public:
-        WmiEventSink(class WmiManager* parent,const QString &query,const QList<Solid::DeviceInterface::Type> &types);
-        ~WmiEventSink();
+		virtual ulong STDMETHODCALLTYPE AddRef();
+		virtual ulong STDMETHODCALLTYPE Release();
 
-        virtual ulong STDMETHODCALLTYPE AddRef();
-        virtual ulong STDMETHODCALLTYPE Release();
+		virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppv);
 
-        virtual HRESULT  STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppv);
+		virtual HRESULT STDMETHODCALLTYPE Indicate(long lObjectCount, IWbemClassObject** apObjArray);
 
-        virtual HRESULT STDMETHODCALLTYPE Indicate(long lObjectCount,IWbemClassObject **apObjArray);
+		virtual HRESULT STDMETHODCALLTYPE SetStatus(long lFlags, HRESULT hResult, BSTR strParam, IWbemClassObject* pObjParam);
 
-        virtual HRESULT STDMETHODCALLTYPE SetStatus(long lFlags,HRESULT hResult,BSTR strParam,IWbemClassObject *pObjParam);
+		const QString& query() const;
 
-        const QString& query() const;
+	private:
+		WmiManager* m_parent;
+		QString m_query;
+		QList<Solid::DeviceInterface::Type> m_types;
+		long m_count;
+	};
 
-    private:
-        WmiManager *m_parent;
-        QString m_query;
-        QList<Solid::DeviceInterface::Type> m_types;
-        long m_count;
+	WmiManager(QObject* parent = 0);
+	virtual ~WmiManager();
 
-    };
+	virtual QString udiPrefix() const;
+	virtual QSet<Solid::DeviceInterface::Type> supportedInterfaces() const;
 
-    WmiManager(QObject *parent=0);
-    virtual ~WmiManager();
+	virtual QStringList allDevices();
+	virtual bool deviceExists(const QString& udi);
 
-    virtual QString udiPrefix() const ;
-    virtual QSet<Solid::DeviceInterface::Type> supportedInterfaces() const;
+	virtual QStringList devicesFromQuery(const QString& parentUdi,
+										 Solid::DeviceInterface::Type type);
 
-    virtual QStringList allDevices();
-    virtual bool deviceExists(const QString &udi);
-
-    virtual QStringList devicesFromQuery(const QString &parentUdi,
-                                         Solid::DeviceInterface::Type type);
-
-    virtual QObject *createDevice(const QString &udi);
-
+	virtual QObject* createDevice(const QString& udi);
 
 private Q_SLOTS:
-    void slotDeviceAdded(const QString &udi);
-    void slotDeviceRemoved(const QString &udi);
+	void slotDeviceAdded(const QString& udi);
+	void slotDeviceRemoved(const QString& udi);
 
 private:
-    QStringList findDeviceStringMatch(const QString &key, const QString &value);
-    QStringList findDeviceByDeviceInterface(Solid::DeviceInterface::Type type);
+	QStringList findDeviceStringMatch(const QString& key, const QString& value);
+	QStringList findDeviceByDeviceInterface(Solid::DeviceInterface::Type type);
 
-    WmiManagerPrivate *d;
-    friend class WmiManagerPrivate;
+	WmiManagerPrivate* d;
+	friend class WmiManagerPrivate;
 };
-}
-}
-}
+}// namespace Wmi
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_WMI_WMIMANAGER_H
+#endif// SOLID_BACKENDS_WMI_WMIMANAGER_H

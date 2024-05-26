@@ -28,38 +28,36 @@
 #include <QFileSystemModel>
 #include <QSortFilterProxyModel>
 
-class LocalBrowseModel : public QFileSystemModel
-{
-    Q_OBJECT
+class LocalBrowseModel : public QFileSystemModel {
+	Q_OBJECT
 
 public:
-    LocalBrowseModel(const QString &name, const QString &title, const QString &descr, const QIcon &icon, QObject *p);
+	LocalBrowseModel(const QString& name, const QString& title, const QString& descr, const QIcon& icon, QObject* p);
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+	QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-    QString name() const { return pathName; }
-    QString title() const { return pathTitle; }
-    QString descr() const { return pathDescr; }
-    const QIcon & icon() const { return icn; }
+	QString name() const { return pathName; }
+	QString title() const { return pathTitle; }
+	QString descr() const { return pathDescr; }
+	const QIcon& icon() const { return icn; }
 
 private:
-    QString pathName;
-    QString pathTitle;
-    QString pathDescr;
-    QIcon icn;
+	QString pathName;
+	QString pathTitle;
+	QString pathDescr;
+	QIcon icn;
 };
 
-class FileSystemProxyModel : public QSortFilterProxyModel
-{
+class FileSystemProxyModel : public QSortFilterProxyModel {
 public:
-    FileSystemProxyModel(LocalBrowseModel *p);
+	FileSystemProxyModel(LocalBrowseModel* p);
 
 protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
+	bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const override;
+	bool lessThan(const QModelIndex& left, const QModelIndex& right) const override;
 
 private:
-    LocalBrowseModel *m;
+	LocalBrowseModel* m;
 };
 
 #endif

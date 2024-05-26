@@ -24,22 +24,21 @@
 #ifndef PROXYSETTINGS_H
 #define PROXYSETTINGS_H
 
-#include <QWidget>
 #include "ui_proxysettings.h"
+#include <QWidget>
 
-class ProxySettings : public QWidget, public Ui::ProxySettings
-{
-  Q_OBJECT
+class ProxySettings : public QWidget, public Ui::ProxySettings {
+	Q_OBJECT
 
 public:
-    ProxySettings(QWidget *parent);
-    ~ProxySettings();
+	ProxySettings(QWidget* parent);
+	~ProxySettings();
 
-    void load();
-    void save();
+	void load();
+	void save();
 
 private Q_SLOTS:
-    void toggleMode();
+	void toggleMode();
 };
 
 #endif

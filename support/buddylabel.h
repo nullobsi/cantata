@@ -26,16 +26,15 @@
 
 #include <QLabel>
 
-class BuddyLabel : public QLabel
-{
+class BuddyLabel : public QLabel {
 public:
-    BuddyLabel(const QString &text, QWidget *p, QWidget *b=nullptr);
-    BuddyLabel(QWidget *p, QWidget *b=nullptr);
-    ~BuddyLabel() override { }
+	BuddyLabel(const QString& text, QWidget* p, QWidget* b = nullptr);
+	BuddyLabel(QWidget* p, QWidget* b = nullptr);
+	~BuddyLabel() override {}
 
 protected:
-    bool event(QEvent *e) override;
-    void mouseReleaseEvent(QMouseEvent *) override;
+	bool event(QEvent* e) override;
+	void mouseReleaseEvent(QMouseEvent*) override;
 };
 
 #endif

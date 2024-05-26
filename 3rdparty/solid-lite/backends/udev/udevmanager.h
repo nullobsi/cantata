@@ -25,40 +25,36 @@
 
 #include "../shared/udevqt.h"
 
-namespace Solid
-{
-namespace Backends
-{
-namespace UDev
-{
-class UDevManager : public Solid::Ifaces::DeviceManager
-{
-    Q_OBJECT
+namespace Solid {
+namespace Backends {
+namespace UDev {
+class UDevManager : public Solid::Ifaces::DeviceManager {
+	Q_OBJECT
 
 public:
-    UDevManager(QObject *parent);
-    ~UDevManager() override;
+	UDevManager(QObject* parent);
+	~UDevManager() override;
 
-    QString udiPrefix() const override;
-    QSet<Solid::DeviceInterface::Type> supportedInterfaces() const override;
+	QString udiPrefix() const override;
+	QSet<Solid::DeviceInterface::Type> supportedInterfaces() const override;
 
-    QStringList allDevices() override;
+	QStringList allDevices() override;
 
-    QStringList devicesFromQuery(const QString &parentUdi,
-                                         Solid::DeviceInterface::Type type) override;
+	QStringList devicesFromQuery(const QString& parentUdi,
+								 Solid::DeviceInterface::Type type) override;
 
-    QObject *createDevice(const QString &udi) override;
+	QObject* createDevice(const QString& udi) override;
 
 private Q_SLOTS:
-    void slotDeviceAdded(const UdevQt::Device &device);
-    void slotDeviceRemoved(const UdevQt::Device &device);
+	void slotDeviceAdded(const UdevQt::Device& device);
+	void slotDeviceRemoved(const UdevQt::Device& device);
 
 private:
-    class Private;
-    Private *const d;
+	class Private;
+	Private* const d;
 };
-}
-}
-}
+}// namespace UDev
+}// namespace Backends
+}// namespace Solid
 
-#endif // SOLID_BACKENDS_UDEV_UDEVMANAGER_H
+#endif// SOLID_BACKENDS_UDEV_UDEVMANAGER_H
