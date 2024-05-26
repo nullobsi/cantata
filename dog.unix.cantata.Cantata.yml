@@ -12,6 +12,7 @@ finish-args:
   - --filesystem=xdg-music
   - --filesystem=/run/mpd
   - --filesystem=xdg-run/mpd
+  - --talk-name=org.kde.StatusNotifierWatcher
 modules:
   - name: cantata
     buildsystem: cmake-ninja
