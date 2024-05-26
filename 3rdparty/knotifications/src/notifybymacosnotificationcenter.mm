@@ -102,6 +102,19 @@ void NotifyByMacOSNotificationCenter::notify(KNotification *notification, const 
 {
     Q_UNUSED(notifyConfig);
 
+	int prevIntId = -1;
+
+	for (auto [key, value] : MacOSNotificationCenterPrivate::instance()->m_notifications.asKeyValueRange()) {
+		if (value == notification)
+		{
+			prevIntId = key;
+		}
+	}
+
+	if (prevIntId != -1) {
+		close(notification);
+	}
+
     int internalId = MacOSNotificationCenterPrivate::instance()->m_internalCounter++;
     NSUserNotification *osxNotification = [[[NSUserNotification alloc] init] autorelease];
     NSString *notificationId = [NSString stringWithFormat: @"%d", notification->id()];
@@ -163,7 +176,7 @@ void NotifyByMacOSNotificationCenter::close(KNotification *notification)
     for (NSUserNotification *deliveredNotification in deliveredNotifications) {
         if ([deliveredNotification.userInfo[@"id"] intValue] == notification->id()) {
             // Remove KNotification in mapping
-            int internalId = [deliveredNotification.userInfo[@"id"] intValue];
+            int internalId = [deliveredNotification.userInfo[@"internalId"] intValue];
 
             MacOSNotificationCenterPrivate::instance()->m_notifications.remove(internalId);
 
