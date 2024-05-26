@@ -22,95 +22,100 @@
  */
 
 #include "metaengine.h"
-#include "wikipediaengine.h"
 #include "lastfmengine.h"
+#include "wikipediaengine.h"
 
 #include <QDebug>
-static bool debugEnabled=false;
-#define DBUG if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
+static bool debugEnabled = false;
+#define DBUG \
+	if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
 void MetaEngine::enableDebug()
 {
-    debugEnabled=true;
+	debugEnabled = true;
 }
 
 static const QLatin1String constBlankResp("-");
 
-MetaEngine::MetaEngine(QObject *p)
-    : ContextEngine(p)
+MetaEngine::MetaEngine(QObject* p)
+	: ContextEngine(p)
 {
-    wiki=new WikipediaEngine(this);
-    lastfm=new LastFmEngine(this);
-    connect(wiki, SIGNAL(searchResult(QString,QString)), SLOT(wikiResponse(QString,QString)));
-    connect(lastfm, SIGNAL(searchResult(QString,QString)), SLOT(lastFmResponse(QString,QString)));
+	wiki = new WikipediaEngine(this);
+	lastfm = new LastFmEngine(this);
+	connect(wiki, SIGNAL(searchResult(QString, QString)), SLOT(wikiResponse(QString, QString)));
+	connect(lastfm, SIGNAL(searchResult(QString, QString)), SLOT(lastFmResponse(QString, QString)));
 }
 
 QStringList MetaEngine::getLangs() const
 {
-    QStringList langs=wiki->getLangs();
-    langs.append(LastFmEngine::constLang);
-    return langs;
+	QStringList langs = wiki->getLangs();
+	langs.append(LastFmEngine::constLang);
+	return langs;
 }
 
-QString MetaEngine::getPrefix(const QString &key) const
+QString MetaEngine::getPrefix(const QString& key) const
 {
-    return key==LastFmEngine::constLang ? LastFmEngine::constLang : wiki->getPrefix(key);
+	return key == LastFmEngine::constLang ? LastFmEngine::constLang : wiki->getPrefix(key);
 }
 
 QString MetaEngine::translateLinks(QString text) const
 {
-    return lastfm->translateLinks(wiki->translateLinks(text));
+	return lastfm->translateLinks(wiki->translateLinks(text));
 }
 
-void MetaEngine::search(const QStringList &query, Mode mode)
+void MetaEngine::search(const QStringList& query, Mode mode)
 {
-    DBUG <<  query << (int)mode;
-    responses.clear();
-    wiki->cancel();
-    lastfm->cancel();
-    wiki->search(query, mode);
-    lastfm->search(query, mode);
+	DBUG << query << (int)mode;
+	responses.clear();
+	wiki->cancel();
+	lastfm->cancel();
+	wiki->search(query, mode);
+	lastfm->search(query, mode);
 }
 
-void MetaEngine::wikiResponse(const QString &html, const QString &lang)
+void MetaEngine::wikiResponse(const QString& html, const QString& lang)
 {
-    DBUG <<  html.isEmpty() << lang.isEmpty();
-    if (!html.isEmpty()) {
-        // Got a wikipedia reponse, use it!
-        DBUG <<  "Got wiki response!";
-        lastfm->cancel();
-        emit searchResult(html, lang);
-        responses.clear();
-    } else if (responses[LastFm].html.isEmpty()) {
-        DBUG <<  "Wiki empty, but not received last.fm";
-        // Wikipedia response is empty, but have not received last.fm reply yet.
-        // So, indicate that Wikipedia was empty - and wait for last.fm
-        responses[Wiki]=Response(constBlankResp, lang);
-    } else if (constBlankResp==responses[LastFm].html) {
-        DBUG <<  "Both responses empty";
-        // Last.fm is empty as well :-(
-        emit searchResult(QString(), QString());
-        responses.clear();
-    } else {
-        // Got a last.fm response, use that!
-        DBUG <<  "Wiki empty, last.fm not - so use last.fm";
-        emit searchResult(responses[LastFm].html, responses[LastFm].lang);
-        responses.clear();
-    }
+	DBUG << html.isEmpty() << lang.isEmpty();
+	if (!html.isEmpty()) {
+		// Got a wikipedia reponse, use it!
+		DBUG << "Got wiki response!";
+		lastfm->cancel();
+		emit searchResult(html, lang);
+		responses.clear();
+	}
+	else if (responses[LastFm].html.isEmpty()) {
+		DBUG << "Wiki empty, but not received last.fm";
+		// Wikipedia response is empty, but have not received last.fm reply yet.
+		// So, indicate that Wikipedia was empty - and wait for last.fm
+		responses[Wiki] = Response(constBlankResp, lang);
+	}
+	else if (constBlankResp == responses[LastFm].html) {
+		DBUG << "Both responses empty";
+		// Last.fm is empty as well :-(
+		emit searchResult(QString(), QString());
+		responses.clear();
+	}
+	else {
+		// Got a last.fm response, use that!
+		DBUG << "Wiki empty, last.fm not - so use last.fm";
+		emit searchResult(responses[LastFm].html, responses[LastFm].lang);
+		responses.clear();
+	}
 }
 
-void MetaEngine::lastFmResponse(const QString &html, const QString &lang)
+void MetaEngine::lastFmResponse(const QString& html, const QString& lang)
 {
-    DBUG <<  html.isEmpty() << lang.isEmpty();
-    if (constBlankResp==responses[Wiki].html) {
-        // Wikipedia failed, so use last.fm response...
-        DBUG <<  "Wiki failed, so use last.fm";
-        emit searchResult(html, lang);
-        responses.clear();
-    } else if (responses[Wiki].html.isEmpty()) {
-        // No Wikipedia response yet, so save last.fm response...
-        DBUG <<  "No wiki response, save last.fm";
-        responses[LastFm]=Response(html.isEmpty() ? constBlankResp : html, lang);
-    }
+	DBUG << html.isEmpty() << lang.isEmpty();
+	if (constBlankResp == responses[Wiki].html) {
+		// Wikipedia failed, so use last.fm response...
+		DBUG << "Wiki failed, so use last.fm";
+		emit searchResult(html, lang);
+		responses.clear();
+	}
+	else if (responses[Wiki].html.isEmpty()) {
+		// No Wikipedia response yet, so save last.fm response...
+		DBUG << "No wiki response, save last.fm";
+		responses[LastFm] = Response(html.isEmpty() ? constBlankResp : html, lang);
+	}
 }
 
 #include "moc_metaengine.cpp"

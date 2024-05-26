@@ -23,83 +23,84 @@
 #include "valueslider.h"
 #include <QGridLayout>
 
-ValueSlider::ValueSlider(QWidget *parent)
-    : QWidget(parent)
+ValueSlider::ValueSlider(QWidget* parent)
+	: QWidget(parent)
 {
-    defaultSetting=0;
-    QGridLayout *layout = new QGridLayout(this);
-    valueTypeLabel = new QLabel(this);
-    valueTypeLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    layout->addWidget(valueTypeLabel, 0, 0, 1, 3);
-    slider = new QSlider(this);
-    slider->setOrientation(Qt::Horizontal);
-    slider->setTickPosition(QSlider::TicksBelow);
-    slider->setTickInterval(1);
-    slider->setPageStep(2);
-    slider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    layout->addWidget(slider, 1, 0, 1, 3);
-    leftLabel = new QLabel(this);
-    layout->addWidget(leftLabel, 2, 0, 1, 1);
-    midLabel = new QLabel(this);
-    connect(slider, SIGNAL(valueChanged(int)),  this, SLOT(onSliderChanged(int)));
-    rightLabel = new QLabel(this);
-    rightLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    layout->addWidget(rightLabel, 2, 2, 1, 1);
-    layout->addWidget(midLabel, 3, 0, 1, 3);
-    valueTypeLabel->setBuddy(slider);
-    midLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	defaultSetting = 0;
+	QGridLayout* layout = new QGridLayout(this);
+	valueTypeLabel = new QLabel(this);
+	valueTypeLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	layout->addWidget(valueTypeLabel, 0, 0, 1, 3);
+	slider = new QSlider(this);
+	slider->setOrientation(Qt::Horizontal);
+	slider->setTickPosition(QSlider::TicksBelow);
+	slider->setTickInterval(1);
+	slider->setPageStep(2);
+	slider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	layout->addWidget(slider, 1, 0, 1, 3);
+	leftLabel = new QLabel(this);
+	layout->addWidget(leftLabel, 2, 0, 1, 1);
+	midLabel = new QLabel(this);
+	connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChanged(int)));
+	rightLabel = new QLabel(this);
+	rightLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+	layout->addWidget(rightLabel, 2, 2, 1, 1);
+	layout->addWidget(midLabel, 3, 0, 1, 3);
+	valueTypeLabel->setBuddy(slider);
+	midLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 }
 
-void ValueSlider::setValues(const Encoders::Encoder &enc)
+void ValueSlider::setValues(const Encoders::Encoder& enc)
 {
-    slider->setToolTip(enc.tooltip);
-    valueTypeLabel->setToolTip(enc.tooltip);
-    slider->setWhatsThis(enc.tooltip);
-    valueTypeLabel->setWhatsThis(enc.tooltip);
-    leftLabel->setText(QString());
-    midLabel->setText(QString());
-    rightLabel->setText(QString());
-    valueTypeLabel->setText(QString());
-    settings=enc.values;
-    defaultSetting=0;
-    if (enc.values.count()>1) {
-        defaultSetting=enc.defaultValueIndex;
-        valueTypeLabel->setText(enc.valueLabel);
-        slider->setRange(0, enc.values.count()-1);
-        slider->setValue(defaultSetting);
-        onSliderChanged(defaultSetting);
-        leftLabel->setText(enc.low);
-        rightLabel->setText(enc.high);
-    }
-    onSliderChanged(defaultSetting);
+	slider->setToolTip(enc.tooltip);
+	valueTypeLabel->setToolTip(enc.tooltip);
+	slider->setWhatsThis(enc.tooltip);
+	valueTypeLabel->setWhatsThis(enc.tooltip);
+	leftLabel->setText(QString());
+	midLabel->setText(QString());
+	rightLabel->setText(QString());
+	valueTypeLabel->setText(QString());
+	settings = enc.values;
+	defaultSetting = 0;
+	if (enc.values.count() > 1) {
+		defaultSetting = enc.defaultValueIndex;
+		valueTypeLabel->setText(enc.valueLabel);
+		slider->setRange(0, enc.values.count() - 1);
+		slider->setValue(defaultSetting);
+		onSliderChanged(defaultSetting);
+		leftLabel->setText(enc.low);
+		rightLabel->setText(enc.high);
+	}
+	onSliderChanged(defaultSetting);
 }
 
 void ValueSlider::setValue(int value)
 {
-    if (settings.count()>1) {
-        bool increase=settings.at(0).value<settings.at(1).value;
-        int index=0;
-        for (const Encoders::Setting &s: settings) {
-            if ((increase && s.value>=value) || (!increase && s.value<=value)) {
-                break;
-            } else {
-                index++;
-            }
-        }
-        slider->setValue(index);
-    }
+	if (settings.count() > 1) {
+		bool increase = settings.at(0).value < settings.at(1).value;
+		int index = 0;
+		for (const Encoders::Setting& s : settings) {
+			if ((increase && s.value >= value) || (!increase && s.value <= value)) {
+				break;
+			}
+			else {
+				index++;
+			}
+		}
+		slider->setValue(index);
+	}
 }
 
 void ValueSlider::onSliderChanged(int value)
 {
-    QString text=value<settings.count() ? settings.at(value).descr : QString();
+	QString text = value < settings.count() ? settings.at(value).descr : QString();
 
-    if (value==defaultSetting) {
-        text += tr(" (recommended)");
-    }
+	if (value == defaultSetting) {
+		text += tr(" (recommended)");
+	}
 
-    midLabel->setText(text);
-    emit valueChanged(value);
+	midLabel->setText(text);
+	emit valueChanged(value);
 }
 
 #include "moc_valueslider.cpp"

@@ -93,8 +93,8 @@ public:
 
 	struct Album {
 		Album(const QString& n = QString(), const QString& i = QString(), const QString& s = QString(),
-			  const QString& a = QString(), const QString& as = QString(),
-			  int y = 0, int tc = 0, int d = 0, int lm = 0, bool onlyUseId = false)
+		      const QString& a = QString(), const QString& as = QString(),
+		      int y = 0, int tc = 0, int d = 0, int lm = 0, bool onlyUseId = false)
 			: name(n), id(i), sort(s), artist(a), artistSort(as), year(y), trackCount(tc), duration(d), lastModified(lm), identifyById(onlyUseId) {}
 		QString name;
 		QString id;

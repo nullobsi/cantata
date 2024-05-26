@@ -23,4 +23,3 @@
 Solid::Ifaces::GenericInterface::~GenericInterface()
 {
 }
-

@@ -24,42 +24,38 @@
 
 using namespace Solid::Backends::Wmi;
 
-Block::Block(WmiDevice *device)
-    : DeviceInterface(device)
+Block::Block(WmiDevice* device)
+	: DeviceInterface(device)
 {
-
 }
 
 Block::~Block()
 {
-
 }
 
 int Block::deviceMajor() const
 {
-    return 0;
+	return 0;
 }
 
 int Block::deviceMinor() const
 {
-    return 0;
+	return 0;
 }
 
 QString Block::device() const
 {
-    QString drive;
-    switch(m_device->type()){
-    case Solid::DeviceInterface::StorageVolume:
-    {
-        drive = WmiDevice::win32LogicalDiskByDiskPartitionID(m_device->property("DeviceID").toString()).getProperty("DeviceID").toString();
-    }
-        break;
-    case Solid::DeviceInterface::OpticalDrive:
-    case Solid::DeviceInterface::OpticalDisc:
-        drive = m_device->property("Drive").toString();
-        break;
-    }
-    return drive;
+	QString drive;
+	switch (m_device->type()) {
+	case Solid::DeviceInterface::StorageVolume: {
+		drive = WmiDevice::win32LogicalDiskByDiskPartitionID(m_device->property("DeviceID").toString()).getProperty("DeviceID").toString();
+	} break;
+	case Solid::DeviceInterface::OpticalDrive:
+	case Solid::DeviceInterface::OpticalDisc:
+		drive = m_device->property("Drive").toString();
+		break;
+	}
+	return drive;
 }
 
 #include "backends/wmi/moc_wmiblock.cpp"

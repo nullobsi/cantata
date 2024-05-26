@@ -25,24 +25,22 @@
 #include "gui/stdactions.h"
 #include "roles.h"
 
-QVariant ActionModel::data(const QModelIndex &index, int role) const
+QVariant ActionModel::data(const QModelIndex& index, int role) const
 {
-    QVariant v;
-    Q_UNUSED(index)
-    switch(role) {
-    case Cantata::Role_Actions: {
-        v.setValue(QList<Action *>() << StdActions::self()->replacePlayQueueAction << StdActions::self()->appendToPlayQueueAction);
-        }
-        break;
-    case Cantata::Role_RatingCol:
-        return -1;
-    case Cantata::Role_TitleText:
-        return data(index, Qt::DisplayRole);
-    default:
-        break;
-    }
-    return v;
+	QVariant v;
+	Q_UNUSED(index)
+	switch (role) {
+	case Cantata::Role_Actions: {
+		v.setValue(QList<Action*>() << StdActions::self()->replacePlayQueueAction << StdActions::self()->appendToPlayQueueAction);
+	} break;
+	case Cantata::Role_RatingCol:
+		return -1;
+	case Cantata::Role_TitleText:
+		return data(index, Qt::DisplayRole);
+	default:
+		break;
+	}
+	return v;
 }
-
 
 #include "moc_actionmodel.cpp"

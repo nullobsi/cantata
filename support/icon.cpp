@@ -23,80 +23,87 @@
 
 #include "icon.h"
 #include "utils.h"
-#include <QMessageBox>
 #include <QApplication>
+#include <QMessageBox>
 #include <QToolButton>
 
 int Icon::stdSize(int v)
 {
-    if (v<19) {
-        return 16;
-    } else if (v<=28) {
-        return 22;
-    } else if (v<=40) {
-        return 32;
-    } else if (v<=56) {
-        return 48;
-    } else if (v<=90) {
-        return 64;
-    }
+	if (v < 19) {
+		return 16;
+	}
+	else if (v <= 28) {
+		return 22;
+	}
+	else if (v <= 40) {
+		return 32;
+	}
+	else if (v <= 56) {
+		return 48;
+	}
+	else if (v <= 90) {
+		return 64;
+	}
 
-    if (Utils::isHighDpi()) {
-        if (v<=160) {
-            return 128;
-        } else {
-            return 256;
-        }
-    }
-    return 128;
+	if (Utils::isHighDpi()) {
+		if (v <= 160) {
+			return 128;
+		}
+		else {
+			return 256;
+		}
+	}
+	return 128;
 }
 
 int Icon::dlgIconSize()
 {
-    static int size=-1;
+	static int size = -1;
 
-    if (-1==size) {
-        QMessageBox *box=new QMessageBox(nullptr);
-        box->setVisible(false);
-        box->setIcon(QMessageBox::Information);
-        box->ensurePolished();
-        QPixmap pix=box->iconPixmap();
-        if (pix.isNull() || pix.width()<16) {
-            size=stdSize(QFontMetricsF(QApplication::font()).height()*3.5);
-        } else {
-            size=pix.width();
-        }
-        box->deleteLater();
-    }
-    return size;
+	if (-1 == size) {
+		QMessageBox* box = new QMessageBox(nullptr);
+		box->setVisible(false);
+		box->setIcon(QMessageBox::Information);
+		box->ensurePolished();
+		QPixmap pix = box->iconPixmap();
+		if (pix.isNull() || pix.width() < 16) {
+			size = stdSize(QFontMetricsF(QApplication::font()).height() * 3.5);
+		}
+		else {
+			size = pix.width();
+		}
+		box->deleteLater();
+	}
+	return size;
 }
 
-void Icon::init(QToolButton *btn, bool setFlat)
+void Icon::init(QToolButton* btn, bool setFlat)
 {
-    static int size=-1;
+	static int size = -1;
 
-    if (-1==size) {
-        size=QFontMetricsF(QApplication::font()).height();
-        if (size>22) {
-            size=stdSize(size*1.1);
-        } else {
-            size=16;
-        }
-    }
-    btn->setIconSize(QSize(size, size));
-    if (setFlat) {
-        btn->setAutoRaise(true);
-    }
+	if (-1 == size) {
+		size = QFontMetricsF(QApplication::font()).height();
+		if (size > 22) {
+			size = stdSize(size * 1.1);
+		}
+		else {
+			size = 16;
+		}
+	}
+	btn->setIconSize(QSize(size, size));
+	if (setFlat) {
+		btn->setAutoRaise(true);
+	}
 }
 
-QPixmap Icon::getScaledPixmap(const QIcon &icon, int w, int h, int base)
+QPixmap Icon::getScaledPixmap(const QIcon& icon, int w, int h, int base)
 {
-    QList<QSize> sizes=icon.availableSizes();
-    for (const QSize &s: sizes) {
-        if (s.width()==w && s.height()==h) {
-            return icon.pixmap(s);
-        }
-    }
+	QList<QSize> sizes = icon.availableSizes();
+	for (const QSize& s : sizes) {
+		if (s.width() == w && s.height() == h) {
+			return icon.pixmap(s);
+		}
+	}
 
-    return icon.pixmap(base, base).scaled(w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+	return icon.pixmap(base, base).scaled(w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 }

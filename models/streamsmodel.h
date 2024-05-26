@@ -67,7 +67,7 @@ public:
 		};
 
 		CategoryItem(const QString& u, const QString& n = QString(), CategoryItem* p = nullptr, const QIcon& i = QIcon(),
-					 const QString& cn = QString(), const QString& bn = QString(), bool modName = false)
+		             const QString& cn = QString(), const QString& bn = QString(), bool modName = false)
 			: Item(u, n, p), state(Initial), isAll(false), isBookmarks(false), supportsBookmarks(false),
 			  canBookmark(false), addCatToModifiedName(modName), icon(i), cacheName(cn),
 			  bookmarksName(bn), configName(cn.isEmpty() ? bn : cn) {}
@@ -117,14 +117,14 @@ public:
 
 	struct IceCastCategoryItem : public CategoryItem {
 		IceCastCategoryItem(const QString& u, const QString& n = QString(), CategoryItem* p = nullptr, const QIcon& i = QIcon(),
-							const QString& cn = QString(), const QString& bn = QString())
+		                    const QString& cn = QString(), const QString& bn = QString())
 			: CategoryItem(u, n, p, i, cn, bn) {}
 		void addHeaders(QNetworkRequest& req) override;
 	};
 
 	struct ShoutCastCategoryItem : public CategoryItem {
 		ShoutCastCategoryItem(const QString& u, const QString& n = QString(), CategoryItem* p = nullptr, const QIcon& i = QIcon(),
-							  const QString& cn = QString(), const QString& bn = QString())
+		                      const QString& cn = QString(), const QString& bn = QString())
 			: CategoryItem(u, n, p, i, cn, bn) {}
 		void addHeaders(QNetworkRequest& req) override;
 		NetworkJob* fetchSecondardyUrl() override;

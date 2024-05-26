@@ -41,13 +41,13 @@ enum Type {
 };
 
 extern ButtonCode questionYesNoCancel(QWidget* parent, const QString& message, const QString& title = QString(),
-									  const GuiItem& yesText = StdGuiItem::yes(), const GuiItem& noText = StdGuiItem::no(), bool showCancel = true, bool isWarning = false);
+                                      const GuiItem& yesText = StdGuiItem::yes(), const GuiItem& noText = StdGuiItem::no(), bool showCancel = true, bool isWarning = false);
 inline ButtonCode questionYesNo(QWidget* parent, const QString& message, const QString& title = QString(), const GuiItem& yesText = StdGuiItem::yes(), const GuiItem& noText = StdGuiItem::no())
 {
 	return questionYesNoCancel(parent, message, title, yesText, noText, false);
 }
 inline ButtonCode warningYesNoCancel(QWidget* parent, const QString& message, const QString& title = QString(),
-									 const GuiItem& yesText = StdGuiItem::yes(), const GuiItem& noText = StdGuiItem::no())
+                                     const GuiItem& yesText = StdGuiItem::yes(), const GuiItem& noText = StdGuiItem::no())
 {
 	return questionYesNoCancel(parent, message, title, yesText, noText, true, true);
 }

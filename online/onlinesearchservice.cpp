@@ -25,50 +25,49 @@
 #include "models/roles.h"
 #include "network/networkaccessmanager.h"
 
-OnlineSearchService::OnlineSearchService(QObject *p)
-    : SearchModel(p)
-    , job(nullptr)
+OnlineSearchService::OnlineSearchService(QObject* p)
+	: SearchModel(p), job(nullptr)
 {
 }
 
-QVariant OnlineSearchService::data(const QModelIndex &index, int role) const
+QVariant OnlineSearchService::data(const QModelIndex& index, int role) const
 {
-    if (!index.isValid()) {
-        switch (role) {
-        case Cantata::Role_TitleText:
-            return title();
-        case Cantata::Role_SubText:
-            return job ? tr("Searching...") : descr();
-        case Qt::DecorationRole:
-            return icon();
-        default:
-            break;
-        }
-    }
-    switch (role) {
-    case Cantata::Role_ListImage:
-        return false;
-    case Cantata::Role_CoverSong:
-        return QVariant();
-    default:
-        break;
-    }
-    return SearchModel::data(index, role);
+	if (!index.isValid()) {
+		switch (role) {
+		case Cantata::Role_TitleText:
+			return title();
+		case Cantata::Role_SubText:
+			return job ? tr("Searching...") : descr();
+		case Qt::DecorationRole:
+			return icon();
+		default:
+			break;
+		}
+	}
+	switch (role) {
+	case Cantata::Role_ListImage:
+		return false;
+	case Cantata::Role_CoverSong:
+		return QVariant();
+	default:
+		break;
+	}
+	return SearchModel::data(index, role);
 }
 
-Song & OnlineSearchService::fixPath(Song &s) const
+Song& OnlineSearchService::fixPath(Song& s) const
 {
-    s.setIsFromOnlineService(name());
-    s.album=title();
-    return encode(s);
+	s.setIsFromOnlineService(name());
+	s.album = title();
+	return encode(s);
 }
 
 void OnlineSearchService::cancel()
 {
-    if (job) {
-        job->cancelAndDelete();
-        job=nullptr;
-    }
+	if (job) {
+		job->cancelAndDelete();
+		job = nullptr;
+	}
 }
 
 #include "moc_onlinesearchservice.cpp"

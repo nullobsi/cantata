@@ -23,54 +23,54 @@
 
 #include "taghelper.h"
 #include "tags.h"
-#include <QDataStream>
-#include <QVariant>
 #include <QCoreApplication>
+#include <QDataStream>
 #include <QLocalServer>
 #include <QLocalSocket>
-#include <QTimer>
 #include <QThread>
+#include <QTimer>
+#include <QVariant>
 #ifdef Q_OS_WIN
 #include <windows.h>
 #else
-#include <sys/types.h>
 #include <signal.h>
+#include <sys/types.h>
 #include <unistd.h>
 #endif
-#include <stdlib.h>
 #include <QDebug>
-static bool debugEnabled=false;
-#define DBUG if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
+#include <stdlib.h>
+static bool debugEnabled = false;
+#define DBUG \
+	if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
 
 void TagHelper::enableDebug()
 {
-    debugEnabled=true;
+	debugEnabled = true;
 }
 
 static QString socketName;
 
 static void deleteSocket()
 {
-    // Just in case Cantata has crashed, ensure we delete the socket...
-    if (!socketName.isEmpty()) {
-        QLocalServer::removeServer(socketName);
-    }
+	// Just in case Cantata has crashed, ensure we delete the socket...
+	if (!socketName.isEmpty()) {
+		QLocalServer::removeServer(socketName);
+	}
 }
 
-TagHelper::TagHelper(const QString &sockName, int parent)
-    : parentPid(parent)
-    , dataSize(0)
+TagHelper::TagHelper(const QString& sockName, int parent)
+	: parentPid(parent), dataSize(0)
 {
-    socket=new QLocalSocket(this);
-    socket->connectToServer(sockName);
-    connect(socket, SIGNAL(readyRead()), SLOT(dataReady()));
-    connect(socket, SIGNAL(disconnected()), qApp, SLOT(quit()));
-    QTimer *timer=new QTimer(this);
-    timer->setSingleShot(false);
-    timer->start(5000);
-    connect(timer, SIGNAL(timeout()), SLOT(checkParent()));
-    socketName=sockName;
-    atexit(deleteSocket);
+	socket = new QLocalSocket(this);
+	socket->connectToServer(sockName);
+	connect(socket, SIGNAL(readyRead()), SLOT(dataReady()));
+	connect(socket, SIGNAL(disconnected()), qApp, SLOT(quit()));
+	QTimer* timer = new QTimer(this);
+	timer->setSingleShot(false);
+	timer->start(5000);
+	connect(timer, SIGNAL(timeout()), SLOT(checkParent()));
+	socketName = sockName;
+	atexit(deleteSocket);
 }
 
 TagHelper::~TagHelper()
@@ -79,102 +79,115 @@ TagHelper::~TagHelper()
 
 void TagHelper::dataReady()
 {
-    DBUG << dataSize;
-    while (socket->bytesAvailable()) {
-        if (0==dataSize) {
-            QDataStream stream(socket);
-            stream >> dataSize;
-            if (dataSize<=0) {
-                qApp->exit();
-                return;
-            }
-        }
+	DBUG << dataSize;
+	while (socket->bytesAvailable()) {
+		if (0 == dataSize) {
+			QDataStream stream(socket);
+			stream >> dataSize;
+			if (dataSize <= 0) {
+				qApp->exit();
+				return;
+			}
+		}
 
-        data+=socket->read(dataSize-data.length());
-        DBUG << data.length() << "/" << dataSize;
-        if (data.length() == dataSize) {
-            process();
-        }
-    }
+		data += socket->read(dataSize - data.length());
+		DBUG << data.length() << "/" << dataSize;
+		if (data.length() == dataSize) {
+			process();
+		}
+	}
 }
 
 void TagHelper::checkParent()
 {
-    // If parent process (Cantata) has terminated, then we need to exit...
-    #ifdef Q_OS_WIN
-    if (0==OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, parentPid)) {
-        qApp->exit();
-    }
-    #else
-    if (0!=::kill(parentPid, 0)) {
-        qApp->exit();
-    }
-    #endif
+// If parent process (Cantata) has terminated, then we need to exit...
+#ifdef Q_OS_WIN
+	if (0 == OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, parentPid)) {
+		qApp->exit();
+	}
+#else
+	if (0 != ::kill(parentPid, 0)) {
+		qApp->exit();
+	}
+#endif
 }
 
 void TagHelper::process()
 {
-    QByteArray response;
-    QDataStream inStream(data);
-    QDataStream outStream(&response, QIODevice::WriteOnly);
-    QString request;
-    QString fileName;
+	QByteArray response;
+	QDataStream inStream(data);
+	QDataStream outStream(&response, QIODevice::WriteOnly);
+	QString request;
+	QString fileName;
 
-    inStream >> request >> fileName;
+	inStream >> request >> fileName;
 
-    DBUG << "REQ" << request << fileName;
-    if (QLatin1String("read")==request) {
-        outStream << Tags::read(fileName);
-    } else if (QLatin1String("readImage")==request) {
-        outStream << Tags::readImage(fileName);
-    } else if (QLatin1String("readLyrics")==request) {
-        outStream << Tags::readLyrics(fileName);
-    } else if (QLatin1String("readComment")==request) {
-        outStream << Tags::readComment(fileName);
-    } else if (QLatin1String("updateArtistAndTitle")==request) {
-        Song song;
-        outStream << (int)Tags::updateArtistAndTitle(fileName, song);
-    } else if (QLatin1String("update")==request) {
-        Song from;
-        Song to;
-        int id3Ver;
-        bool saveComment;
-        inStream >> from >> to >> id3Ver >> saveComment;
-        outStream << (int)Tags::update(fileName, from, to, id3Ver, saveComment);
-    } else if (QLatin1String("readReplaygain")==request) {
-        Tags::ReplayGain rg=Tags::readReplaygain(fileName);
-        outStream << rg;
-    } else if (QLatin1String("updateReplaygain")==request) {
-        Tags::ReplayGain rg;
-        inStream >> rg;
-        outStream << (int)Tags::updateReplaygain(fileName, rg);
-    } else if (QLatin1String("embedImage")==request) {
-        QByteArray cover;
-        inStream >> cover;
-        outStream << (int)Tags::embedImage(fileName, cover);
-    } else if (QLatin1String("oggMimeType")==request) {
-        outStream << Tags::oggMimeType(fileName);
-    } else if (QLatin1String("readRating")==request) {
-        outStream << Tags::readRating(fileName);
-    } else if (QLatin1String("updateRating")==request) {
-        int rating=-1;
-        inStream >> rating;
-        outStream << (int)Tags::updateRating(fileName, rating);
-    } else if (QLatin1String("readAll")==request) {
-        outStream << Tags::readAll(fileName);
-    } else {
-        qApp->exit();
-    }
+	DBUG << "REQ" << request << fileName;
+	if (QLatin1String("read") == request) {
+		outStream << Tags::read(fileName);
+	}
+	else if (QLatin1String("readImage") == request) {
+		outStream << Tags::readImage(fileName);
+	}
+	else if (QLatin1String("readLyrics") == request) {
+		outStream << Tags::readLyrics(fileName);
+	}
+	else if (QLatin1String("readComment") == request) {
+		outStream << Tags::readComment(fileName);
+	}
+	else if (QLatin1String("updateArtistAndTitle") == request) {
+		Song song;
+		outStream << (int)Tags::updateArtistAndTitle(fileName, song);
+	}
+	else if (QLatin1String("update") == request) {
+		Song from;
+		Song to;
+		int id3Ver;
+		bool saveComment;
+		inStream >> from >> to >> id3Ver >> saveComment;
+		outStream << (int)Tags::update(fileName, from, to, id3Ver, saveComment);
+	}
+	else if (QLatin1String("readReplaygain") == request) {
+		Tags::ReplayGain rg = Tags::readReplaygain(fileName);
+		outStream << rg;
+	}
+	else if (QLatin1String("updateReplaygain") == request) {
+		Tags::ReplayGain rg;
+		inStream >> rg;
+		outStream << (int)Tags::updateReplaygain(fileName, rg);
+	}
+	else if (QLatin1String("embedImage") == request) {
+		QByteArray cover;
+		inStream >> cover;
+		outStream << (int)Tags::embedImage(fileName, cover);
+	}
+	else if (QLatin1String("oggMimeType") == request) {
+		outStream << Tags::oggMimeType(fileName);
+	}
+	else if (QLatin1String("readRating") == request) {
+		outStream << Tags::readRating(fileName);
+	}
+	else if (QLatin1String("updateRating") == request) {
+		int rating = -1;
+		inStream >> rating;
+		outStream << (int)Tags::updateRating(fileName, rating);
+	}
+	else if (QLatin1String("readAll") == request) {
+		outStream << Tags::readAll(fileName);
+	}
+	else {
+		qApp->exit();
+	}
 
-    DBUG << "RESP" << response.size();
-    QDataStream writeStream(socket);
-    writeStream << qint32(response.length());
-    if (!response.isEmpty()) {
-        writeStream.writeRawData(response.data(), response.length());
-    }
-    socket->flush();
-    data.clear();
-    dataSize=0;
+	DBUG << "RESP" << response.size();
+	QDataStream writeStream(socket);
+	writeStream << qint32(response.length());
+	if (!response.isEmpty()) {
+		writeStream.writeRawData(response.data(), response.length());
+	}
+	socket->flush();
+	data.clear();
+	dataSize = 0;
 }
 
 #include "moc_taghelper.cpp"

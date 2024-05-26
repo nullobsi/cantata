@@ -27,83 +27,81 @@
 #include <QStringList>
 #include <stdlib.h>
 
-const char * NetworkProxyFactory::constSettingsGroup = "Proxy";
+const char* NetworkProxyFactory::constSettingsGroup = "Proxy";
 
-static QList<QNetworkProxy> getSystemProxyForQuery(const QNetworkProxyQuery &query)
+static QList<QNetworkProxy> getSystemProxyForQuery(const QNetworkProxyQuery& query)
 {
-    return QNetworkProxyFactory::systemProxyForQuery(query);
+	return QNetworkProxyFactory::systemProxyForQuery(query);
 }
 
 #ifdef ENABLE_PROXY_CONFIG
 NetworkProxyFactory::NetworkProxyFactory()
-    : mode(Mode_System)
-    , type(QNetworkProxy::HttpProxy)
-    , port(8080)
+	: mode(Mode_System), type(QNetworkProxy::HttpProxy), port(8080)
 {
-    QNetworkProxyFactory::setApplicationProxyFactory(this);
-    reloadSettings();
+	QNetworkProxyFactory::setApplicationProxyFactory(this);
+	reloadSettings();
 }
 #else
 NetworkProxyFactory::NetworkProxyFactory()
 {
-    QNetworkProxyFactory::setApplicationProxyFactory(this);
+	QNetworkProxyFactory::setApplicationProxyFactory(this);
 }
 #endif
 
-NetworkProxyFactory * NetworkProxyFactory::self()
+NetworkProxyFactory* NetworkProxyFactory::self()
 {
-    static NetworkProxyFactory *instance=nullptr;
-    if (!instance) {
-        instance = new NetworkProxyFactory;
-    }
+	static NetworkProxyFactory* instance = nullptr;
+	if (!instance) {
+		instance = new NetworkProxyFactory;
+	}
 
-    return instance;
+	return instance;
 }
 
 #ifdef ENABLE_PROXY_CONFIG
 void NetworkProxyFactory::reloadSettings()
 {
-    QMutexLocker l(&mutex);
+	QMutexLocker l(&mutex);
 
-    QSettings s;
-    s.beginGroup(constSettingsGroup);
+	QSettings s;
+	s.beginGroup(constSettingsGroup);
 
-    mode = Mode(s.value("mode", Mode_System).toInt());
-    type = QNetworkProxy::ProxyType(s.value("type", QNetworkProxy::HttpProxy).toInt());
-    hostname = s.value("hostname").toString();
-    port = s.value("port", 8080).toInt();
-    username = s.value("username").toString();
-    password = s.value("password").toString();
+	mode = Mode(s.value("mode", Mode_System).toInt());
+	type = QNetworkProxy::ProxyType(s.value("type", QNetworkProxy::HttpProxy).toInt());
+	hostname = s.value("hostname").toString();
+	port = s.value("port", 8080).toInt();
+	username = s.value("username").toString();
+	password = s.value("password").toString();
 }
 #endif
 
 QList<QNetworkProxy> NetworkProxyFactory::queryProxy(const QNetworkProxyQuery& query)
 {
-    #ifdef ENABLE_PROXY_CONFIG
-    QMutexLocker l(&mutex);
-    QNetworkProxy ret;
+#ifdef ENABLE_PROXY_CONFIG
+	QMutexLocker l(&mutex);
+	QNetworkProxy ret;
 
-    switch (mode) {
-    case Mode_System:
-        return getSystemProxyForQuery(query);
-    case Mode_Direct:
-        ret.setType(QNetworkProxy::NoProxy);
-        break;
-    case Mode_Manual:
-        ret.setType(type);
-        ret.setHostName(hostname);
-        ret.setPort(port);
-        if (!username.isEmpty()) {
-            ret.setUser(username);
-        }
-        if (!password.isEmpty()) {
-            ret.setPassword(password);
-        }
-        break;
-    }
+	switch (mode) {
+	case Mode_System:
+		return getSystemProxyForQuery(query);
+	case Mode_Direct:
+		ret.setType(QNetworkProxy::NoProxy);
+		break;
+	case Mode_Manual:
+		ret.setType(type);
+		ret.setHostName(hostname);
+		ret.setPort(port);
+		if (!username.isEmpty()) {
+			ret.setUser(username);
+		}
+		if (!password.isEmpty()) {
+			ret.setPassword(password);
+		}
+		break;
+	}
 
-    return QList<QNetworkProxy>() << ret;
-    #else
-    return getSystemProxyForQuery(query);
-    #endif
+	return QList<QNetworkProxy>() << ret;
+#else
+	return getSystemProxyForQuery(query);
+#endif
 }

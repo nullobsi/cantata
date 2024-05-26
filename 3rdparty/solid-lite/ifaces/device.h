@@ -153,8 +153,8 @@ public:
          * @param errorString message describing a potential error
          */
 	void broadcastActionDone(const QString& actionName,
-							 int error = Solid::NoError,
-							 const QString& errorString = QString()) const;
+	                         int error = Solid::NoError,
+	                         const QString& errorString = QString()) const;
 
 private:
 	QString deviceDBusPath() const;

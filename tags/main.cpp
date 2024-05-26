@@ -21,46 +21,46 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QCoreApplication>
-#include <QStringList>
-#include <QDateTime>
-#include <iostream>
-#include "tags.h"
 #include "taghelper.h"
+#include "tags.h"
+#include <QCoreApplication>
+#include <QDateTime>
+#include <QStringList>
+#include <iostream>
 
 // Defined in support/utils.cpp - and used by song.cpp!
 const QLatin1Char Utils::constDirSep('/');
 
 #ifdef Q_OS_WIN
 #include <windows.h>
-static long __stdcall exceptionHandler(EXCEPTION_POINTERS *p)
+static long __stdcall exceptionHandler(EXCEPTION_POINTERS* p)
 {
-    Q_UNUSED(p)
-    ::exit(0);
+	Q_UNUSED(p)
+	::exit(0);
 }
 #endif
 
-static void cantataQtMsgHandler(QtMsgType, const QMessageLogContext &, const QString &msg)
+static void cantataQtMsgHandler(QtMsgType, const QMessageLogContext&, const QString& msg)
 {
-    std::cout << QDateTime::currentDateTime().toString(Qt::ISODate).replace("T", " ").toLatin1().constData()
-              << " - " << msg.toLocal8Bit().constData() << std::endl;
+	std::cout << QDateTime::currentDateTime().toString(Qt::ISODate).replace("T", " ").toLatin1().constData()
+			  << " - " << msg.toLocal8Bit().constData() << std::endl;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-    #ifdef Q_OS_WIN
-    // Prevent windows crash dialog from appearing...
-    SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)exceptionHandler);
-    #endif
-    QCoreApplication app(argc, argv);
-    if (3==app.arguments().length() || 4==app.arguments().length()) {
-        if (4==app.arguments().length() && "true" == app.arguments().at(3)) {
-            qInstallMessageHandler(cantataQtMsgHandler);
-            TagHelper::enableDebug();
-            Tags::enableDebug();
-        }
-        new TagHelper(app.arguments().at(1), app.arguments().at(2).toInt());
-        return app.exec();
-    }
-    return 0;
+#ifdef Q_OS_WIN
+	// Prevent windows crash dialog from appearing...
+	SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)exceptionHandler);
+#endif
+	QCoreApplication app(argc, argv);
+	if (3 == app.arguments().length() || 4 == app.arguments().length()) {
+		if (4 == app.arguments().length() && "true" == app.arguments().at(3)) {
+			qInstallMessageHandler(cantataQtMsgHandler);
+			TagHelper::enableDebug();
+			Tags::enableDebug();
+		}
+		new TagHelper(app.arguments().at(1), app.arguments().at(2).toInt());
+		return app.exec();
+	}
+	return 0;
 }

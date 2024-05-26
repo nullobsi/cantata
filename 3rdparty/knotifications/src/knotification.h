@@ -696,11 +696,11 @@ public:
      * @since 4.4
      */
 	static KNotification* event(const QString& eventId,
-								const QString& title,
-								const QString& text,
-								const QPixmap& pixmap = QPixmap(),
-								const NotificationFlags& flags = CloseOnTimeout,
-								const QString& componentName = QString());
+	                            const QString& title,
+	                            const QString& text,
+	                            const QPixmap& pixmap = QPixmap(),
+	                            const NotificationFlags& flags = CloseOnTimeout,
+	                            const QString& componentName = QString());
 
 	/**
      * @brief emit a standard event
@@ -716,10 +716,10 @@ public:
      * @param componentName used to determine the location of the config file.  by default, plasma_workspace is used
      */
 	static KNotification* event(const QString& eventId,
-								const QString& text = QString(),
-								const QPixmap& pixmap = QPixmap(),
-								const NotificationFlags& flags = CloseOnTimeout,
-								const QString& componentName = QString());
+	                            const QString& text = QString(),
+	                            const QPixmap& pixmap = QPixmap(),
+	                            const NotificationFlags& flags = CloseOnTimeout,
+	                            const QString& componentName = QString());
 
 	/**
      * @brief emit a standard event
@@ -769,11 +769,11 @@ public:
      * @since 5.4
      */
 	static KNotification* event(const QString& eventId,
-								const QString& title,
-								const QString& text,
-								const QString& iconName,
-								const NotificationFlags& flags = CloseOnTimeout,
-								const QString& componentName = QString());
+	                            const QString& title,
+	                            const QString& text,
+	                            const QString& iconName,
+	                            const NotificationFlags& flags = CloseOnTimeout,
+	                            const QString& componentName = QString());
 
 	/**
      * @brief emit a standard event with the possibility of setting an icon by icon name

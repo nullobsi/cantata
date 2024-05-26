@@ -41,8 +41,8 @@ public:
 	static int instanceCount();
 
 	TagEditor(QWidget* parent, const QList<Song>& songs,
-			  const QSet<QString>& existingArtists, const QSet<QString>& existingAlbumArtists, const QSet<QString>& existingComposers,
-			  const QSet<QString>& existingAlbums, const QSet<QString>& existingGenres, const QString& udi);
+	          const QSet<QString>& existingArtists, const QSet<QString>& existingAlbumArtists, const QSet<QString>& existingComposers,
+	          const QSet<QString>& existingAlbums, const QSet<QString>& existingGenres, const QString& udi);
 	~TagEditor() override;
 
 Q_SIGNALS:

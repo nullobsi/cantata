@@ -22,107 +22,109 @@
  */
 
 #include "genrecombo.h"
-#include "toolbutton.h"
-#include "support/actioncollection.h"
 #include "support/action.h"
+#include "support/actioncollection.h"
+#include "toolbutton.h"
 #include <QEvent>
 #include <algorithm>
 
-static Action *action=nullptr;
+static Action* action = nullptr;
 
-GenreCombo::GenreCombo(QWidget *p)
-     : ComboBox(p)
+GenreCombo::GenreCombo(QWidget* p)
+	: ComboBox(p)
 {
-    setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    update(QSet<QString>());
-    setEditable(false);
-    setFocusPolicy(Qt::NoFocus);
-    if (!action) {
-        action=ActionCollection::get()->createAction("genrefilter", tr("Filter On Genre"), nullptr);
-        action->setShortcut(Qt::ControlModifier|Qt::Key_G);
-    }
-    addAction(action);
-    connect(action, SIGNAL(triggered()), SLOT(showEntries()));
+	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+	update(QSet<QString>());
+	setEditable(false);
+	setFocusPolicy(Qt::NoFocus);
+	if (!action) {
+		action = ActionCollection::get()->createAction("genrefilter", tr("Filter On Genre"), nullptr);
+		action->setShortcut(Qt::ControlModifier | Qt::Key_G);
+	}
+	addAction(action);
+	connect(action, SIGNAL(triggered()), SLOT(showEntries()));
 }
 
-void GenreCombo::update(const QSet<QString> &g)
+void GenreCombo::update(const QSet<QString>& g)
 {
-    if (count() && g==genres) {
-        return;
-    }
+	if (count() && g == genres) {
+		return;
+	}
 
-    QSet<QString> mg=g;
-    mg.remove(QString());
-    if (mg.count()!=g.count() && count() && mg==genres) {
-        return;
-    }
+	QSet<QString> mg = g;
+	mg.remove(QString());
+	if (mg.count() != g.count() && count() && mg == genres) {
+		return;
+	}
 
-    genres=mg;
-    QStringList entries=g.values();
-    std::sort(entries.begin(), entries.end());
-    entries.prepend(tr("All Genres"));
+	genres = mg;
+	QStringList entries = g.values();
+	std::sort(entries.begin(), entries.end());
+	entries.prepend(tr("All Genres"));
 
-    if (count()==entries.count()) {
-        bool noChange=true;
-        for (int i=0; i<count(); ++i) {
-            if (itemText(i)!=entries.at(i)) {
-                noChange=false;
-                break;
-            }
-        }
-        if (noChange) {
-            return;
-        }
-    }
+	if (count() == entries.count()) {
+		bool noChange = true;
+		for (int i = 0; i < count(); ++i) {
+			if (itemText(i) != entries.at(i)) {
+				noChange = false;
+				break;
+			}
+		}
+		if (noChange) {
+			return;
+		}
+	}
 
-    QString currentFilter = currentIndex() ? currentText() : QString();
+	QString currentFilter = currentIndex() ? currentText() : QString();
 
-    clear();
-    addItems(entries);
-    if (0==genres.count()) {
-        setCurrentIndex(0);
-    } else {
-        if (!currentFilter.isEmpty()) {
-            bool found=false;
-            for (int i=1; i<count() && !found; ++i) {
-                if (itemText(i) == currentFilter) {
-                    setCurrentIndex(i);
-                    found=true;
-                }
-            }
-            if (!found) {
-                setCurrentIndex(0);
-            }
-        }
-    }
-    setEnabled(count()>1);
-    // If we are 'hidden' then we need to ingore mouse events - so that these get passed to parent widget.
-    // The Oxygen's window drag still functions...
-    setAttribute(Qt::WA_TransparentForMouseEvents, count()<2);
+	clear();
+	addItems(entries);
+	if (0 == genres.count()) {
+		setCurrentIndex(0);
+	}
+	else {
+		if (!currentFilter.isEmpty()) {
+			bool found = false;
+			for (int i = 1; i < count() && !found; ++i) {
+				if (itemText(i) == currentFilter) {
+					setCurrentIndex(i);
+					found = true;
+				}
+			}
+			if (!found) {
+				setCurrentIndex(0);
+			}
+		}
+	}
+	setEnabled(count() > 1);
+	// If we are 'hidden' then we need to ingore mouse events - so that these get passed to parent widget.
+	// The Oxygen's window drag still functions...
+	setAttribute(Qt::WA_TransparentForMouseEvents, count() < 2);
 }
 
 void GenreCombo::showEntries()
 {
-    if (isVisible()) {
-        showPopup();
-    }
+	if (isVisible()) {
+		showPopup();
+	}
 }
 
-void GenreCombo::paintEvent(QPaintEvent *e)
+void GenreCombo::paintEvent(QPaintEvent* e)
 {
-    if (count()>1) {
-        ComboBox::paintEvent(e);
-    } else {
-        QWidget::paintEvent(e);
-    }
+	if (count() > 1) {
+		ComboBox::paintEvent(e);
+	}
+	else {
+		QWidget::paintEvent(e);
+	}
 }
 
-bool GenreCombo::event(QEvent *event)
+bool GenreCombo::event(QEvent* event)
 {
-    if (QEvent::ToolTip==event->type() && toolTip()!=action->toolTip()) {
-        setToolTip(action->toolTip());
-    }
-    return ComboBox::event(event);
+	if (QEvent::ToolTip == event->type() && toolTip() != action->toolTip()) {
+		setToolTip(action->toolTip());
+	}
+	return ComboBox::event(event);
 }
 
 #include "moc_genrecombo.cpp"

@@ -31,129 +31,132 @@ GLOBAL_STATIC(ApiKeys, instance)
 static const int constMaxLimitAge = 30 * 60;
 
 ApiKeys::ApiKeys()
-{    
-    defaultKeys[LastFm]="5a854b839b10f8d46e630e8287c2299b";
-    defaultKeys[FanArt]="ee86404cb429fa27ac32a1a3c117b006";
-    defaultKeys[ShoutCast]="fa1669MuiRPorUBw";
-    //defaultKeys[SoundCloud]="0cb23dce473528973ce74815bd36a334";
+{
+	defaultKeys[LastFm] = "5a854b839b10f8d46e630e8287c2299b";
+	defaultKeys[FanArt] = "ee86404cb429fa27ac32a1a3c117b006";
+	defaultKeys[ShoutCast] = "fa1669MuiRPorUBw";
+	//defaultKeys[SoundCloud]="0cb23dce473528973ce74815bd36a334";
 
-    queryItems[LastFm]="api_key";
-    queryItems[FanArt]="api_key";
-    queryItems[ShoutCast]="k";
-    //queryItems[SoundCloud]="client_id";
-    load();
+	queryItems[LastFm] = "api_key";
+	queryItems[FanArt] = "api_key";
+	queryItems[ShoutCast] = "k";
+	//queryItems[SoundCloud]="client_id";
+	load();
 }
 
 void ApiKeys::load()
 {
-    Configuration cfg("ApiKeys");
-    QList<Details> keys = getDetails();
+	Configuration cfg("ApiKeys");
+	QList<Details> keys = getDetails();
 
-    for (const auto &k: keys) {
-        set(k.srv, cfg.get(k.name, QString()));
-    }
+	for (const auto& k : keys) {
+		set(k.srv, cfg.get(k.name, QString()));
+	}
 }
 
 void ApiKeys::save()
 {
-    Configuration cfg("ApiKeys");
-    QList<Details> keys = getDetails();
+	Configuration cfg("ApiKeys");
+	QList<Details> keys = getDetails();
 
-    for (const auto &k: keys) {
-        if (k.key.isEmpty()) {
-            cfg.remove(k.name);
-        } else {
-            cfg.set(k.name, k.key);
-        }
-    }
+	for (const auto& k : keys) {
+		if (k.key.isEmpty()) {
+			cfg.remove(k.name);
+		}
+		else {
+			cfg.set(k.name, k.key);
+		}
+	}
 }
 
 QList<ApiKeys::Details> ApiKeys::getDetails()
 {
-    QList<Details> list;
-    list.append(Details(LastFm, "LastFM", userKeys[LastFm], "https://www.last.fm/api"));
-    list.append(Details(FanArt, "FanArt", userKeys[FanArt], "https://fanart.tv/get-an-api-key/"));
-    list.append(Details(ShoutCast, "SHOUTcast", userKeys[ShoutCast], "https://shoutcast.com/Developer"));
-    //list.append(Details(SoundCloud, "Soundcloud", userKeys[SoundCloud], "https://developers.soundcloud.com/"));
-    return list;
+	QList<Details> list;
+	list.append(Details(LastFm, "LastFM", userKeys[LastFm], "https://www.last.fm/api"));
+	list.append(Details(FanArt, "FanArt", userKeys[FanArt], "https://fanart.tv/get-an-api-key/"));
+	list.append(Details(ShoutCast, "SHOUTcast", userKeys[ShoutCast], "https://shoutcast.com/Developer"));
+	//list.append(Details(SoundCloud, "Soundcloud", userKeys[SoundCloud], "https://developers.soundcloud.com/"));
+	return list;
 }
 
-const QString & ApiKeys::get(Service srv)
+const QString& ApiKeys::get(Service srv)
 {
-    if (srv>=0 && srv<NumServices) {
-        return userKeys[srv].isEmpty() ? defaultKeys[srv] : userKeys[srv];
-    } else {
-        return defaultKeys[0];
-    }
+	if (srv >= 0 && srv < NumServices) {
+		return userKeys[srv].isEmpty() ? defaultKeys[srv] : userKeys[srv];
+	}
+	else {
+		return defaultKeys[0];
+	}
 }
 
-void ApiKeys::set(Service srv, const QString &key)
+void ApiKeys::set(Service srv, const QString& key)
 {
-    if (srv>=0 && srv<NumServices) {
-        userKeys[srv]=key.trimmed();
-    }
+	if (srv >= 0 && srv < NumServices) {
+		userKeys[srv] = key.trimmed();
+	}
 }
 
-void ApiKeys::addKey(QUrlQuery &query, Service srv)
+void ApiKeys::addKey(QUrlQuery& query, Service srv)
 {
-    if (srv>=0 && srv<NumServices) {
-        query.addQueryItem(queryItems[srv], get(srv));
-    }
+	if (srv >= 0 && srv < NumServices) {
+		query.addQueryItem(queryItems[srv], get(srv));
+	}
 }
 
-QString ApiKeys::addKey(const QString &url, Service srv)
+QString ApiKeys::addKey(const QString& url, Service srv)
 {
-    if (srv>=0 && srv<NumServices) {
-        if (-1==url.indexOf("?")) {
-            return url+"?"+queryItems[srv]+"="+get(srv);
-        } else {
-            return url+"&"+queryItems[srv]+"="+get(srv);
-        }
-    }
-    return url;
+	if (srv >= 0 && srv < NumServices) {
+		if (-1 == url.indexOf("?")) {
+			return url + "?" + queryItems[srv] + "=" + get(srv);
+		}
+		else {
+			return url + "&" + queryItems[srv] + "=" + get(srv);
+		}
+	}
+	return url;
 }
 
 void ApiKeys::setLimitReached(Service srv)
 {
-    limitReached.insert(get(srv), time(nullptr));
+	limitReached.insert(get(srv), time(nullptr));
 }
 
 bool ApiKeys::isLimitReached(Service srv)
 {
-    time_t now=time(nullptr);
+	time_t now = time(nullptr);
 
-    const auto it=limitReached.find(get(srv));
-    if (it != limitReached.constEnd()) {
-        if ((now-it.value())>constMaxLimitAge) {
-            limitReached.erase(it);
-            return false;
-        }
-        return true;
-    }
-    return false;
+	const auto it = limitReached.find(get(srv));
+	if (it != limitReached.constEnd()) {
+		if ((now - it.value()) > constMaxLimitAge) {
+			limitReached.erase(it);
+			return false;
+		}
+		return true;
+	}
+	return false;
 }
 
-bool ApiKeys::isLimitReached(const QNetworkReply *job, Service srv)
+bool ApiKeys::isLimitReached(const QNetworkReply* job, Service srv)
 {
-    if (isLimitReached(srv)) {
-        return true;
-    }
-    if (!job) {
-        return false;
-    }
+	if (isLimitReached(srv)) {
+		return true;
+	}
+	if (!job) {
+		return false;
+	}
 
-    bool reached = false;
-    // TODO: Error codes for services???
-    // switch (srv) {
-    // default:
-    //     break;
-    // }
+	bool reached = false;
+	// TODO: Error codes for services???
+	// switch (srv) {
+	// default:
+	//     break;
+	// }
 
-    if (reached) {
-        setLimitReached(srv);
-        emit error(tr("The API call limit has been exceeded for %1, please try again later or register for your own API key.").arg(getDetails().at(srv).name));
-    }
-    return reached;
+	if (reached) {
+		setLimitReached(srv);
+		emit error(tr("The API call limit has been exceeded for %1, please try again later or register for your own API key.").arg(getDetails().at(srv).name));
+	}
+	return reached;
 }
 
 #include "moc_apikeys.cpp"

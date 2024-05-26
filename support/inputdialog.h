@@ -40,19 +40,19 @@ public:
 	InputDialog(const QString& caption, const QString& label, int value, int minValue, int maxValue, int step, QWidget* parent);
 
 	static QString getText(const QString& caption, const QString& label, QLineEdit::EchoMode echoMode, const QString& value = QString(),
-						   const QStringList& options = QStringList(), bool* ok = nullptr, QWidget* parent = nullptr);
+	                       const QStringList& options = QStringList(), bool* ok = nullptr, QWidget* parent = nullptr);
 
 	static int getInteger(const QString& caption, const QString& label, int value = 0, int minValue = INT_MIN, int maxValue = INT_MAX,
-						  int step = 1, int base = 10, bool* ok = nullptr, QWidget* parent = nullptr);
+	                      int step = 1, int base = 10, bool* ok = nullptr, QWidget* parent = nullptr);
 
 	static QString getText(const QString& caption, const QString& label, const QString& value = QString(),
-						   const QStringList& options = QStringList(), bool* ok = nullptr, QWidget* parent = nullptr)
+	                       const QStringList& options = QStringList(), bool* ok = nullptr, QWidget* parent = nullptr)
 	{
 		return getText(caption, label, QLineEdit::Normal, value, options, ok, parent);
 	}
 
 	static QString getText(const QString& caption, const QString& label, QLineEdit::EchoMode echoMode, const QString& value,
-						   bool* ok, QWidget* parent)
+	                       bool* ok, QWidget* parent)
 	{
 		return getText(caption, label, echoMode, value, QStringList(), ok, parent);
 	}

@@ -22,107 +22,109 @@
  */
 
 #include "menubutton.h"
-#include "support/icon.h"
 #include "icons.h"
+#include "support/icon.h"
 #include <QAction>
-#include <QMenu>
-#include <QEvent>
 #include <QApplication>
-#include <QScreen>
+#include <QEvent>
+#include <QMenu>
 #include <QProxyStyle>
+#include <QScreen>
 
 #ifdef Q_OS_WIN
-#include <windows.h>
 #include <VersionHelpers.h>
+#include <windows.h>
 #ifndef _WIN32_WINNT_WIN10
 #define _WIN32_WINNT_WIN10 0x0A00
 #endif
 #endif
 
-MenuButton::MenuButton(QWidget *parent)
-    : ToolButton(parent)
+MenuButton::MenuButton(QWidget* parent)
+	: ToolButton(parent)
 {
-    setPopupMode(QToolButton::InstantPopup);
-    setIcon(Icons::self()->menuIcon);
-    setToolTip(tr("Menu"));
-    installEventFilter(this);
+	setPopupMode(QToolButton::InstantPopup);
+	setIcon(Icons::self()->menuIcon);
+	setToolTip(tr("Menu"));
+	installEventFilter(this);
 }
 
 void MenuButton::controlState()
 {
-    if (!menu()) {
-        return;
-    }
-    for (QAction *a: menu()->actions()) {
-        if (a->isEnabled() && a->isVisible() && !a->isSeparator()) {
-            setEnabled(true);
-            return;
-        }
-    }
-    setEnabled(false);
+	if (!menu()) {
+		return;
+	}
+	for (QAction* a : menu()->actions()) {
+		if (a->isEnabled() && a->isVisible() && !a->isSeparator()) {
+			setEnabled(true);
+			return;
+		}
+	}
+	setEnabled(false);
 }
 
-void MenuButton::setAlignedMenu(QMenu *m)
+void MenuButton::setAlignedMenu(QMenu* m)
 {
-    QToolButton::setMenu(m);
-    #ifdef Q_OS_WIN
-    if (!IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WIN10), LOBYTE(_WIN32_WINNT_WIN10), 0)) {
-        return;
-    }
-    #endif
-    m->installEventFilter(this);
+	QToolButton::setMenu(m);
+#ifdef Q_OS_WIN
+	if (!IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_WIN10), LOBYTE(_WIN32_WINNT_WIN10), 0)) {
+		return;
+	}
+#endif
+	m->installEventFilter(this);
 }
 
 void MenuButton::addSeparator()
 {
-    QAction *sep=new QAction(this);
-    sep->setSeparator(true);
-    addAction(sep);
+	QAction* sep = new QAction(this);
+	sep->setSeparator(true);
+	addAction(sep);
 }
 
-bool MenuButton::eventFilter(QObject *o, QEvent *e)
+bool MenuButton::eventFilter(QObject* o, QEvent* e)
 {
-    if (QEvent::Show==e->type()) {
-        if (qobject_cast<QMenu *>(o)) {
-            static int shadowAdjust = -1;
-            if (-1==shadowAdjust) {
-                // Kvantum style adds its own shadows, which makes the menu appear in the wrong place.
-                // However, Kvatum sill set a property on the style object to indicate the size of
-                // the shadows. Use this to adjust positioning.
-                QProxyStyle *proxy=qobject_cast<QProxyStyle *>(style());
-                QStyle *check=proxy && proxy->baseStyle() ? proxy->baseStyle() : style();
-                QList<int> shadows = check ? check->property("menu_shadow").value<QList<int> >() : QList<int>();
-                shadowAdjust = 4 == shadows.length() ? shadows.at(2) : 0;
-                if (shadowAdjust<0 || shadowAdjust>18) {
-                    shadowAdjust = 0;
-                }
-            }
-            QMenu *mnu=static_cast<QMenu *>(o);
-            QPoint p=parentWidget()->mapToGlobal(pos());
-            int newPos=isRightToLeft()
-                    ? p.x()
-                    : ((p.x()+width()+shadowAdjust)-mnu->width());
+	if (QEvent::Show == e->type()) {
+		if (qobject_cast<QMenu*>(o)) {
+			static int shadowAdjust = -1;
+			if (-1 == shadowAdjust) {
+				// Kvantum style adds its own shadows, which makes the menu appear in the wrong place.
+				// However, Kvatum sill set a property on the style object to indicate the size of
+				// the shadows. Use this to adjust positioning.
+				QProxyStyle* proxy = qobject_cast<QProxyStyle*>(style());
+				QStyle* check = proxy && proxy->baseStyle() ? proxy->baseStyle() : style();
+				QList<int> shadows = check ? check->property("menu_shadow").value<QList<int>>() : QList<int>();
+				shadowAdjust = 4 == shadows.length() ? shadows.at(2) : 0;
+				if (shadowAdjust < 0 || shadowAdjust > 18) {
+					shadowAdjust = 0;
+				}
+			}
+			QMenu* mnu = static_cast<QMenu*>(o);
+			QPoint p = parentWidget()->mapToGlobal(pos());
+			int newPos = isRightToLeft()
+					? p.x()
+					: ((p.x() + width() + shadowAdjust) - mnu->width());
 
-            if (newPos<0) {
-                newPos=0;
-            } else {
-                QScreen *sc = QGuiApplication::primaryScreen();
-                if (sc) {
-                    QRect geo=sc->availableGeometry();
-                    int maxWidth=geo.x()+geo.width();
-                    if (maxWidth>0 && (newPos+mnu->width())>maxWidth) {
-                        newPos=maxWidth-mnu->width();
-                    }
-                }
-            }
-            mnu->move(newPos, mnu->y());
-        } else if (o==this) {
-            setMinimumWidth(height());
-            removeEventFilter(this);
-        }
-    }
+			if (newPos < 0) {
+				newPos = 0;
+			}
+			else {
+				QScreen* sc = QGuiApplication::primaryScreen();
+				if (sc) {
+					QRect geo = sc->availableGeometry();
+					int maxWidth = geo.x() + geo.width();
+					if (maxWidth > 0 && (newPos + mnu->width()) > maxWidth) {
+						newPos = maxWidth - mnu->width();
+					}
+				}
+			}
+			mnu->move(newPos, mnu->y());
+		}
+		else if (o == this) {
+			setMinimumWidth(height());
+			removeEventFilter(this);
+		}
+	}
 
-    return ToolButton::eventFilter(o, e);
+	return ToolButton::eventFilter(o, e);
 }
 
 #include "moc_menubutton.cpp"

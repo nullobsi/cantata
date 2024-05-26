@@ -22,54 +22,54 @@
  */
 
 #include "onlineservicespage.h"
-#include "onlinedbwidget.h"
 #include "jamendoservice.h"
 #include "magnatuneservice.h"
+#include "onlinedbwidget.h"
 //#include "soundcloudservice.h"
+#include "models/streamsmodel.h"
 #include "onlinesearchwidget.h"
 #include "podcastservice.h"
 #include "podcastwidget.h"
 #include "streams/streamspage.h"
-#include "models/streamsmodel.h"
 #include "support/configuration.h"
 
-OnlineServicesPage::OnlineServicesPage(QWidget *p)
-    : MultiPageWidget(p)
+OnlineServicesPage::OnlineServicesPage(QWidget* p)
+	: MultiPageWidget(p)
 {
-    addPage(StreamsModel::self()->name(), StreamsModel::self()->icon(), StreamsModel::self()->title(), StreamsModel::self()->descr(), new StreamsPage(this));
+	addPage(StreamsModel::self()->name(), StreamsModel::self()->icon(), StreamsModel::self()->title(), StreamsModel::self()->descr(), new StreamsPage(this));
 
-    JamendoService *jamendo=new JamendoService(this);
-    addPage(jamendo->name(), jamendo->icon(), jamendo->title(), jamendo->descr(), new OnlineDbWidget(jamendo, this));
-    connect(jamendo, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
+	JamendoService* jamendo = new JamendoService(this);
+	addPage(jamendo->name(), jamendo->icon(), jamendo->title(), jamendo->descr(), new OnlineDbWidget(jamendo, this));
+	connect(jamendo, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
 
-    MagnatuneService *magnatune=new MagnatuneService(this);
-    addPage(magnatune->name(), magnatune->icon(), magnatune->title(), magnatune->descr(), new OnlineDbWidget(magnatune, this));
-    connect(magnatune, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
+	MagnatuneService* magnatune = new MagnatuneService(this);
+	addPage(magnatune->name(), magnatune->icon(), magnatune->title(), magnatune->descr(), new OnlineDbWidget(magnatune, this));
+	connect(magnatune, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
 
-    //SoundCloudService *soundcloud=new SoundCloudService(this);
-    //addPage(soundcloud->name(), soundcloud->icon(), soundcloud->title(), soundcloud->descr(), new OnlineSearchWidget(soundcloud, this));
+	//SoundCloudService *soundcloud=new SoundCloudService(this);
+	//addPage(soundcloud->name(), soundcloud->icon(), soundcloud->title(), soundcloud->descr(), new OnlineSearchWidget(soundcloud, this));
 
-    addPage(PodcastService::self()->name(), PodcastService::self()->icon(), PodcastService::self()->title(), PodcastService::self()->descr(), new PodcastWidget(PodcastService::self(), this));
-    connect(PodcastService::self(), SIGNAL(error(QString)), this, SIGNAL(error(QString)));
+	addPage(PodcastService::self()->name(), PodcastService::self()->icon(), PodcastService::self()->title(), PodcastService::self()->descr(), new PodcastWidget(PodcastService::self(), this));
+	connect(PodcastService::self(), SIGNAL(error(QString)), this, SIGNAL(error(QString)));
 
-    Configuration config(metaObject()->className());
-    load(config);
+	Configuration config(metaObject()->className());
+	load(config);
 }
 
 OnlineServicesPage::~OnlineServicesPage()
 {
-    Configuration config(metaObject()->className());
-    save(config);
+	Configuration config(metaObject()->className());
+	save(config);
 }
 
 bool OnlineServicesPage::isDownloading()
 {
-    return PodcastService::self()->isDownloading();
+	return PodcastService::self()->isDownloading();
 }
 
 void OnlineServicesPage::cancelAll()
 {
-    PodcastService::self()->cancelAll();
+	PodcastService::self()->cancelAll();
 }
 
 #include "moc_onlineservicespage.cpp"

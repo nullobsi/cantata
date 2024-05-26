@@ -24,50 +24,49 @@
 #include "soliddefs_p.h"
 #include <solid-lite/ifaces/opticaldrive.h>
 
-Solid::OpticalDrive::OpticalDrive(QObject *backendObject)
-    : StorageDrive(*new OpticalDrivePrivate(), backendObject)
+Solid::OpticalDrive::OpticalDrive(QObject* backendObject)
+	: StorageDrive(*new OpticalDrivePrivate(), backendObject)
 {
-    connect(backendObject, SIGNAL(ejectPressed(QString)),
-            this, SIGNAL(ejectPressed(QString)));
-    connect(backendObject, SIGNAL(ejectDone(Solid::ErrorType,QVariant,QString)),
-            this, SIGNAL(ejectDone(Solid::ErrorType,QVariant,QString)));
-    connect(backendObject, SIGNAL(ejectRequested(QString)),
-            this, SIGNAL(ejectRequested(QString)));
+	connect(backendObject, SIGNAL(ejectPressed(QString)),
+	        this, SIGNAL(ejectPressed(QString)));
+	connect(backendObject, SIGNAL(ejectDone(Solid::ErrorType, QVariant, QString)),
+	        this, SIGNAL(ejectDone(Solid::ErrorType, QVariant, QString)));
+	connect(backendObject, SIGNAL(ejectRequested(QString)),
+	        this, SIGNAL(ejectRequested(QString)));
 }
 
 Solid::OpticalDrive::~OpticalDrive()
 {
-
 }
 
 Solid::OpticalDrive::MediumTypes Solid::OpticalDrive::supportedMedia() const
 {
-    Q_D(const OpticalDrive);
-    return_SOLID_CALL(Ifaces::OpticalDrive *, d->backendObject(), MediumTypes(), supportedMedia());
+	Q_D(const OpticalDrive);
+	return_SOLID_CALL(Ifaces::OpticalDrive*, d->backendObject(), MediumTypes(), supportedMedia());
 }
 
 int Solid::OpticalDrive::readSpeed() const
 {
-    Q_D(const OpticalDrive);
-    return_SOLID_CALL(Ifaces::OpticalDrive *, d->backendObject(), 0, readSpeed());
+	Q_D(const OpticalDrive);
+	return_SOLID_CALL(Ifaces::OpticalDrive*, d->backendObject(), 0, readSpeed());
 }
 
 int Solid::OpticalDrive::writeSpeed() const
 {
-    Q_D(const OpticalDrive);
-    return_SOLID_CALL(Ifaces::OpticalDrive *, d->backendObject(), 0, writeSpeed());
+	Q_D(const OpticalDrive);
+	return_SOLID_CALL(Ifaces::OpticalDrive*, d->backendObject(), 0, writeSpeed());
 }
 
 QList<int> Solid::OpticalDrive::writeSpeeds() const
 {
-    Q_D(const OpticalDrive);
-    return_SOLID_CALL(Ifaces::OpticalDrive *, d->backendObject(), QList<int>(), writeSpeeds());
+	Q_D(const OpticalDrive);
+	return_SOLID_CALL(Ifaces::OpticalDrive*, d->backendObject(), QList<int>(), writeSpeeds());
 }
 
 bool Solid::OpticalDrive::eject()
 {
-    Q_D(OpticalDrive);
-    return_SOLID_CALL(Ifaces::OpticalDrive *, d->backendObject(), false, eject());
+	Q_D(OpticalDrive);
+	return_SOLID_CALL(Ifaces::OpticalDrive*, d->backendObject(), false, eject());
 }
 
 #include "moc_opticaldrive.cpp"

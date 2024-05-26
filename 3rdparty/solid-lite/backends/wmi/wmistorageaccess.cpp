@@ -21,95 +21,91 @@
 
 #include "wmistorageaccess.h"
 
-#include <QDebug>
 #include <QApplication>
+#include <QDebug>
 #include <QWidget>
 
 #include <unistd.h>
 
 using namespace Solid::Backends::Wmi;
 
-StorageAccess::StorageAccess(WmiDevice *device)
-    : DeviceInterface(device), m_setupInProgress(false), m_teardownInProgress(false),
-      m_passphraseRequested(false)
+StorageAccess::StorageAccess(WmiDevice* device)
+	: DeviceInterface(device), m_setupInProgress(false), m_teardownInProgress(false),
+	  m_passphraseRequested(false)
 {
-    connect(device, SIGNAL(propertyChanged(QMap<QString,int>)),
-             this, SLOT(slotPropertyChanged(QMap<QString,int>)));
-//    qDebug()<<"StorageAccess"<<m_device->type();
+	connect(device, SIGNAL(propertyChanged(QMap<QString, int>)),
+	        this, SLOT(slotPropertyChanged(QMap<QString, int>)));
+	//    qDebug()<<"StorageAccess"<<m_device->type();
 
-    m_logicalDisk = WmiDevice::win32LogicalDiskByDiskPartitionID(m_device->property("DeviceID").toString());
+	m_logicalDisk = WmiDevice::win32LogicalDiskByDiskPartitionID(m_device->property("DeviceID").toString());
 }
 
 StorageAccess::~StorageAccess()
 {
-
 }
-
 
 bool StorageAccess::isAccessible() const
 {
-    return !m_logicalDisk.isNull();
+	return !m_logicalDisk.isNull();
 }
 
 QString StorageAccess::filePath() const
 {
-    QString path = m_logicalDisk.getProperty("DeviceID").toString();
-    if(!path.isNull())
-        path.append("\\");
-    return path;
+	QString path = m_logicalDisk.getProperty("DeviceID").toString();
+	if (!path.isNull())
+		path.append("\\");
+	return path;
 }
 
 bool Solid::Backends::Wmi::StorageAccess::isIgnored() const
 {
-    return m_logicalDisk.isNull();
+	return m_logicalDisk.isNull();
 }
 
 bool StorageAccess::setup()
 {
-    if (m_teardownInProgress || m_setupInProgress) {
-        return false;
-    }
-    m_setupInProgress = true;
+	if (m_teardownInProgress || m_setupInProgress) {
+		return false;
+	}
+	m_setupInProgress = true;
 
-
-    // if (m_device->property("info.interfaces").toStringList().contains("org.freedesktop.Wmi.Device.Volume.Crypto")) {
-        // return requestPassphrase();
-    // } else if (FstabHandling::isInFstab(m_device->property("block.device").toString())) {
-        // return callSystemMount();
-    // } else {
-        // return callWmiVolumeMount();
-    // }
-    return false;
+	// if (m_device->property("info.interfaces").toStringList().contains("org.freedesktop.Wmi.Device.Volume.Crypto")) {
+	// return requestPassphrase();
+	// } else if (FstabHandling::isInFstab(m_device->property("block.device").toString())) {
+	// return callSystemMount();
+	// } else {
+	// return callWmiVolumeMount();
+	// }
+	return false;
 }
 
 bool StorageAccess::teardown()
 {
-    if (m_teardownInProgress || m_setupInProgress) {
-        return false;
-    }
-    m_teardownInProgress = true;
+	if (m_teardownInProgress || m_setupInProgress) {
+		return false;
+	}
+	m_teardownInProgress = true;
 
-    // if (m_device->property("info.interfaces").toStringList().contains("org.freedesktop.Wmi.Device.Volume.Crypto")) {
-        // return callCryptoTeardown();
-    // } else if (FstabHandling::isInFstab(m_device->property("block.device").toString())) {
-        // return callSystemUnmount();
-    // } else {
-        // return callWmiVolumeUnmount();
-    // }
-    return false;
+	// if (m_device->property("info.interfaces").toStringList().contains("org.freedesktop.Wmi.Device.Volume.Crypto")) {
+	// return callCryptoTeardown();
+	// } else if (FstabHandling::isInFstab(m_device->property("block.device").toString())) {
+	// return callSystemUnmount();
+	// } else {
+	// return callWmiVolumeUnmount();
+	// }
+	return false;
 }
 
-void StorageAccess::slotPropertyChanged(const QMap<QString,int> &changes)
+void StorageAccess::slotPropertyChanged(const QMap<QString, int>& changes)
 {
-    if (changes.contains("volume.is_mounted"))
-    {
-        emit accessibilityChanged(isAccessible(), m_device->udi());
-    }
+	if (changes.contains("volume.is_mounted")) {
+		emit accessibilityChanged(isAccessible(), m_device->udi());
+	}
 }
 
 void Solid::Backends::Wmi::StorageAccess::slotProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-/*
+	/*
     Q_UNUSED(exitStatus);
     if (m_setupInProgress) {
         m_setupInProgress = false;
@@ -138,71 +134,71 @@ void Solid::Backends::Wmi::StorageAccess::slotProcessFinished(int exitCode, QPro
 
 QString generateReturnObjectPath()
 {
-    static int number = 1;
+	static int number = 1;
 
-    return "/org/kde/solid/WmiStorageAccess_"+QString::number(number++);
+	return "/org/kde/solid/WmiStorageAccess_" + QString::number(number++);
 }
 
 bool StorageAccess::callWmiVolumeMount()
 {
-    // QDBusConnection c = QDBusConnection::systemBus();
-    // QString udi = m_device->udi();
-    // QDBusMessage msg = QDBusMessage::createMethodCall("org.freedesktop.Wmi", udi,
-                                                      // "org.freedesktop.Wmi.Device.Volume",
-                                                      // "Mount");
-    // QStringList options;
-    // QStringList wmiOptions = m_device->property("volume.mount.valid_options").toStringList();
+	// QDBusConnection c = QDBusConnection::systemBus();
+	// QString udi = m_device->udi();
+	// QDBusMessage msg = QDBusMessage::createMethodCall("org.freedesktop.Wmi", udi,
+	// "org.freedesktop.Wmi.Device.Volume",
+	// "Mount");
+	// QStringList options;
+	// QStringList wmiOptions = m_device->property("volume.mount.valid_options").toStringList();
 
-    // if (wmiOptions.contains("uid=")) {
-        // options << "uid="+QString::number(::getuid());
-    // }
+	// if (wmiOptions.contains("uid=")) {
+	// options << "uid="+QString::number(::getuid());
+	// }
 
-    // msg << "" << "" << options;
+	// msg << "" << "" << options;
 
-    // return c.callWithCallback(msg, this,
-                              // SLOT(slotDBusReply(QDBusMessage)),
-                              // SLOT(slotDBusError(QDBusError)));
-    return false;
+	// return c.callWithCallback(msg, this,
+	// SLOT(slotDBusReply(QDBusMessage)),
+	// SLOT(slotDBusError(QDBusError)));
+	return false;
 }
 
 bool StorageAccess::callWmiVolumeUnmount()
 {
-    // QDBusConnection c = QDBusConnection::systemBus();
-    // QString udi = m_device->udi();
-    // QDBusMessage msg = QDBusMessage::createMethodCall("org.freedesktop.Wmi", udi,
-                                                      // "org.freedesktop.Wmi.Device.Volume",
-                                                      // "Unmount");
+	// QDBusConnection c = QDBusConnection::systemBus();
+	// QString udi = m_device->udi();
+	// QDBusMessage msg = QDBusMessage::createMethodCall("org.freedesktop.Wmi", udi,
+	// "org.freedesktop.Wmi.Device.Volume",
+	// "Unmount");
 
-    // msg << QStringList();
+	// msg << QStringList();
 
-    // return c.callWithCallback(msg, this,
-                              // SLOT(slotDBusReply(QDBusMessage)),
-                              // SLOT(slotDBusError(QDBusError)));
-    return false;
+	// return c.callWithCallback(msg, this,
+	// SLOT(slotDBusReply(QDBusMessage)),
+	// SLOT(slotDBusError(QDBusError)));
+	return false;
 }
 
 bool Solid::Backends::Wmi::StorageAccess::callSystemMount()
 {
-/*
+	/*
     const QString device = m_device->property("block.device").toString();
     m_process = FstabHandling::callSystemCommand("mount", device,
                                                  this, SLOT(slotProcessFinished(int,QProcess::ExitStatus)));
 
     return m_process!=0;
 */
-    return 0;
+	return 0;
 }
 
 bool Solid::Backends::Wmi::StorageAccess::callSystemUnmount()
 {
-/*
+	/*
     const QString device = m_device->property("block.device").toString();
     m_process = FstabHandling::callSystemCommand("umount", device,
                                                  this, SLOT(slotProcessFinished(int,QProcess::ExitStatus)));
 
     return m_process!=0;
 */
-    return 0;
+	return 0;
 }
 
 #include "backends/wmi/moc_wmistorageaccess.cpp"

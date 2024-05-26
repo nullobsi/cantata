@@ -44,7 +44,7 @@ struct Encoder {
 	{
 	}
 	Encoder(const QString& n, const QString& d, const QString& t, const QString& e, const QString& a, const QString& c,
-			const QString& f, const QString& v, const QList<Setting>& vs, const QString& l, const QString& h, int def, int mult = 1)
+	        const QString& f, const QString& v, const QList<Setting>& vs, const QString& l, const QString& h, int def, int mult = 1)
 		: name(n), description(d), tooltip(t), extension(e), app(a), codec(c), param(f), valueLabel(v), values(vs), low(l), high(h), defaultValueIndex(def), ffmpegValueMultiplier(mult), transcoder(true)
 	{
 	}

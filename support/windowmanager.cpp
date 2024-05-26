@@ -47,6 +47,7 @@
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QMouseEvent>
+#include <QProgressBar>
 #include <QStatusBar>
 #include <QStyle>
 #include <QStyleOptionGroupBox>
@@ -55,562 +56,562 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QTreeView>
-#include <QProgressBar>
 
-static inline bool isToolBar(QWidget *w)
+static inline bool isToolBar(QWidget* w)
 {
-    return qobject_cast<QToolBar*>(w) || 0==strcmp(w->metaObject()->className(), "ToolBar");
+	return qobject_cast<QToolBar*>(w) || 0 == strcmp(w->metaObject()->className(), "ToolBar");
 }
 
-static inline void addEventFilter(QObject *object, QObject *filter)
+static inline void addEventFilter(QObject* object, QObject* filter)
 {
-    object->removeEventFilter(filter);
-    object->installEventFilter(filter);
+	object->removeEventFilter(filter);
+	object->installEventFilter(filter);
 }
 
-WindowManager::WindowManager(QObject *parent)
-    : QObject(parent)
-    , _useWMMoveResize(false)
-    , _dragMode(WM_DRAG_NONE)
-    , _dragDistance(QApplication::startDragDistance())
-    , _dragDelay(QApplication::startDragTime())
-    , _dragAboutToStart(false)
-    , _dragInProgress(false)
-    , _locked(false)
-    #ifndef Q_OS_MAC
-    , _cursorOverride(false)
-    #endif
+WindowManager::WindowManager(QObject* parent)
+	: QObject(parent), _useWMMoveResize(false), _dragMode(WM_DRAG_NONE), _dragDistance(QApplication::startDragDistance()), _dragDelay(QApplication::startDragTime()), _dragAboutToStart(false), _dragInProgress(false), _locked(false)
+#ifndef Q_OS_MAC
+	  ,
+	  _cursorOverride(false)
+#endif
 {
-    // install application wise event filter
-    _appEventFilter = new AppEventFilter(this);
-    qApp->installEventFilter(_appEventFilter);
+	// install application wise event filter
+	_appEventFilter = new AppEventFilter(this);
+	qApp->installEventFilter(_appEventFilter);
 }
 
 void WindowManager::initialize(int windowDrag)
 {
-    setDragMode(windowDrag);
-    setDragDelay(QApplication::startDragTime());
+	setDragMode(windowDrag);
+	setDragDelay(QApplication::startDragTime());
 }
 
-void WindowManager::registerWidgetAndChildren(QWidget *w)
+void WindowManager::registerWidgetAndChildren(QWidget* w)
 {
-    QObjectList children=w->children();
+	QObjectList children = w->children();
 
-    for (QObject *o: children) {
-        if (qobject_cast<QWidget *>(o)) {
-            registerWidgetAndChildren((QWidget *)o);
-        }
-    }
-    registerWidget(w);
+	for (QObject* o : children) {
+		if (qobject_cast<QWidget*>(o)) {
+			registerWidgetAndChildren((QWidget*)o);
+		}
+	}
+	registerWidget(w);
 }
 
-void WindowManager::registerWidget(QWidget *widget)
+void WindowManager::registerWidget(QWidget* widget)
 {
-    if (isBlackListed(widget)) {
-        addEventFilter(widget, this);
-    } else if (isDragable(widget)) {
-        addEventFilter(widget, this);
-    }
+	if (isBlackListed(widget)) {
+		addEventFilter(widget, this);
+	}
+	else if (isDragable(widget)) {
+		addEventFilter(widget, this);
+	}
 }
 
-void WindowManager::unregisterWidget(QWidget *widget)
+void WindowManager::unregisterWidget(QWidget* widget)
 {
-    if (widget) {
-        widget->removeEventFilter(this);
-    }
+	if (widget) {
+		widget->removeEventFilter(this);
+	}
 }
 
-bool WindowManager::eventFilter(QObject *object, QEvent *event)
+bool WindowManager::eventFilter(QObject* object, QEvent* event)
 {
-    if (!enabled()) {
-        return false;
-    }
+	if (!enabled()) {
+		return false;
+	}
 
-    switch (event->type())
-    {
-    case QEvent::MouseButtonPress:
-        return mousePressEvent(object, event);
-        break;
-    case QEvent::MouseMove:
-        if (object == _target.data()) {
-            return mouseMoveEvent(object, event);
-        }
-        break;
-    case QEvent::MouseButtonRelease:
-        if (_target) {
-            return mouseReleaseEvent(object, event);
-        }
-        break;
-    default:
-        break;
-    }
-    return false;
+	switch (event->type()) {
+	case QEvent::MouseButtonPress:
+		return mousePressEvent(object, event);
+		break;
+	case QEvent::MouseMove:
+		if (object == _target.data()) {
+			return mouseMoveEvent(object, event);
+		}
+		break;
+	case QEvent::MouseButtonRelease:
+		if (_target) {
+			return mouseReleaseEvent(object, event);
+		}
+		break;
+	default:
+		break;
+	}
+	return false;
 }
 
-void WindowManager::timerEvent(QTimerEvent *event)
+void WindowManager::timerEvent(QTimerEvent* event)
 {
-    if (event->timerId() == _dragTimer.timerId()) {
-        _dragTimer.stop();
-        if (_target) {
-            startDrag(_target.data(), _globalDragPoint);
-        }
-    } else {
-        return QObject::timerEvent(event);
-    }
+	if (event->timerId() == _dragTimer.timerId()) {
+		_dragTimer.stop();
+		if (_target) {
+			startDrag(_target.data(), _globalDragPoint);
+		}
+	}
+	else {
+		return QObject::timerEvent(event);
+	}
 }
 
-bool WindowManager::mousePressEvent(QObject *object, QEvent *event)
+bool WindowManager::mousePressEvent(QObject* object, QEvent* event)
 {
-    // cast event and check buttons/modifiers
-    QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-    if (!(Qt::NoModifier==mouseEvent->modifiers() && Qt::LeftButton==mouseEvent->button())) {
-        return false;
-    }
+	// cast event and check buttons/modifiers
+	QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+	if (!(Qt::NoModifier == mouseEvent->modifiers() && Qt::LeftButton == mouseEvent->button())) {
+		return false;
+	}
 
-    // check lock
-    if (isLocked()) {
-        return false;
-    } else {
-        setLocked(true);
-    }
+	// check lock
+	if (isLocked()) {
+		return false;
+	}
+	else {
+		setLocked(true);
+	}
 
-    // cast to widget
-    QWidget *widget = static_cast<QWidget*>(object);
+	// cast to widget
+	QWidget* widget = static_cast<QWidget*>(object);
 
-    // check if widget can be dragged from current position
-    if (isBlackListed(widget) || !canDrag(widget)) {
-        return false;
-    }
+	// check if widget can be dragged from current position
+	if (isBlackListed(widget) || !canDrag(widget)) {
+		return false;
+	}
 
-    // retrieve widget's child at event position
-    QPoint position(mouseEvent->pos());
-    QWidget *child = widget->childAt(position);
-    if (!canDrag(widget, child, position)) {
-        return false;
-    }
+	// retrieve widget's child at event position
+	QPoint position(mouseEvent->pos());
+	QWidget* child = widget->childAt(position);
+	if (!canDrag(widget, child, position)) {
+		return false;
+	}
 
-    // save target and drag point
-    _target = widget;
-    _dragPoint = position;
-    _globalDragPoint = mouseEvent->globalPosition();
-    _dragAboutToStart = true;
+	// save target and drag point
+	_target = widget;
+	_dragPoint = position;
+	_globalDragPoint = mouseEvent->globalPosition();
+	_dragAboutToStart = true;
 
-    // send a move event to the current child with same position
-    // if received, it is caught to actually start the drag
-    QPointF localPoint(_dragPoint);
-    if (child) {
-        localPoint = child->mapFrom(widget, localPoint);
-    } else {
-        child = widget;
-    }
-    QMouseEvent localMouseEvent(QEvent::MouseMove, localPoint, _globalDragPoint, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-    qApp->sendEvent(child, &localMouseEvent);
-    // never eat event
-    return false;
+	// send a move event to the current child with same position
+	// if received, it is caught to actually start the drag
+	QPointF localPoint(_dragPoint);
+	if (child) {
+		localPoint = child->mapFrom(widget, localPoint);
+	}
+	else {
+		child = widget;
+	}
+	QMouseEvent localMouseEvent(QEvent::MouseMove, localPoint, _globalDragPoint, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+	qApp->sendEvent(child, &localMouseEvent);
+	// never eat event
+	return false;
 }
 
-bool WindowManager::mouseMoveEvent(QObject *object, QEvent *event)
+bool WindowManager::mouseMoveEvent(QObject* object, QEvent* event)
 {
-    Q_UNUSED(object)
+	Q_UNUSED(object)
 
-    // stop timer
-    if (_dragTimer.isActive()){
-        _dragTimer.stop();
-    }
+	// stop timer
+	if (_dragTimer.isActive()) {
+		_dragTimer.stop();
+	}
 
-    // cast event and check drag distance
-    QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-    if (!_dragInProgress) {
-        if (_dragAboutToStart) {
-            if (mouseEvent->globalPosition() == _globalDragPoint) {
-                // start timer,
-                _dragAboutToStart = false;
-                if (_dragTimer.isActive()) {
-                    _dragTimer.stop();
-                }
-                _dragTimer.start(_dragDelay, this);
-
-            } else {
-                resetDrag();
-            }
-        } else if (QPointF(mouseEvent->globalPosition() - _globalDragPoint).manhattanLength() >= _dragDistance) {
-            _dragTimer.start(0, this);
-        }
-        return true;
-    } else if (!useWMMoveResize()) {
-        // use QWidget::move for the grabbing
-        /* this works only if the sending object and the target are identical */
-        QWidget *window(_target.data()->window());
-        window->move(window->pos() + mouseEvent->pos() - _dragPoint);
-        return true;
-    } else {
-        return false;
-    }
+	// cast event and check drag distance
+	QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+	if (!_dragInProgress) {
+		if (_dragAboutToStart) {
+			if (mouseEvent->globalPosition() == _globalDragPoint) {
+				// start timer,
+				_dragAboutToStart = false;
+				if (_dragTimer.isActive()) {
+					_dragTimer.stop();
+				}
+				_dragTimer.start(_dragDelay, this);
+			}
+			else {
+				resetDrag();
+			}
+		}
+		else if (QPointF(mouseEvent->globalPosition() - _globalDragPoint).manhattanLength() >= _dragDistance) {
+			_dragTimer.start(0, this);
+		}
+		return true;
+	}
+	else if (!useWMMoveResize()) {
+		// use QWidget::move for the grabbing
+		/* this works only if the sending object and the target are identical */
+		QWidget* window(_target.data()->window());
+		window->move(window->pos() + mouseEvent->pos() - _dragPoint);
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
-bool WindowManager::mouseReleaseEvent(QObject *object, QEvent *event)
+bool WindowManager::mouseReleaseEvent(QObject* object, QEvent* event)
 {
-    Q_UNUSED(object)
-    Q_UNUSED(event)
-    resetDrag();
-    return false;
+	Q_UNUSED(object)
+	Q_UNUSED(event)
+	resetDrag();
+	return false;
 }
 
-bool WindowManager::isDragable(QWidget *widget)
+bool WindowManager::isDragable(QWidget* widget)
 {
-    // check widget
-    if (!widget) {
-        return false;
-    }
+	// check widget
+	if (!widget) {
+		return false;
+	}
 
-    // accepted default types
-    if ((qobject_cast<QDialog*>(widget) && widget->isWindow()) || (qobject_cast<QMainWindow*>(widget) && widget->isWindow()) || qobject_cast<QGroupBox*>(widget)) {
-        return true;
-    }
+	// accepted default types
+	if ((qobject_cast<QDialog*>(widget) && widget->isWindow()) || (qobject_cast<QMainWindow*>(widget) && widget->isWindow()) || qobject_cast<QGroupBox*>(widget)) {
+		return true;
+	}
 
-    // more accepted types, provided they are not dock widget titles
-    if ((qobject_cast<QMenuBar*>(widget) || qobject_cast<QTabBar*>(widget) || qobject_cast<QStatusBar*>(widget) || isToolBar(widget)) &&
-         !isDockWidgetTitle(widget)) {
-        return true;
-    }
+	// more accepted types, provided they are not dock widget titles
+	if ((qobject_cast<QMenuBar*>(widget) || qobject_cast<QTabBar*>(widget) || qobject_cast<QStatusBar*>(widget) || isToolBar(widget)) && !isDockWidgetTitle(widget)) {
+		return true;
+	}
 
-    // flat toolbuttons
-    if (QToolButton *toolButton = qobject_cast<QToolButton*>(widget)) {
-        if (toolButton->autoRaise()) {
-            return true;
-        }
-    }
+	// flat toolbuttons
+	if (QToolButton* toolButton = qobject_cast<QToolButton*>(widget)) {
+		if (toolButton->autoRaise()) {
+			return true;
+		}
+	}
 
-    // viewports
-    /*
+	// viewports
+	/*
         one needs to check that
         1/ the widget parent is a scrollarea
         2/ it matches its parent viewport
         3/ the parent is not blacklisted
         */
-    if (QListView *listView = qobject_cast<QListView*>(widget->parentWidget())) {
-        if (listView->viewport() == widget && !isBlackListed(listView)) {
-            return true;
-        }
-    }
+	if (QListView* listView = qobject_cast<QListView*>(widget->parentWidget())) {
+		if (listView->viewport() == widget && !isBlackListed(listView)) {
+			return true;
+		}
+	}
 
-    if (QTreeView *treeView = qobject_cast<QTreeView*>(widget->parentWidget())) {
-        if (treeView->viewport() == widget && !isBlackListed(treeView)) {
-            return true;
-        }
-    }
+	if (QTreeView* treeView = qobject_cast<QTreeView*>(widget->parentWidget())) {
+		if (treeView->viewport() == widget && !isBlackListed(treeView)) {
+			return true;
+		}
+	}
 
-    /*
+	/*
         catch labels in status bars.
         this is because of kstatusbar
         who captures buttonPress/release events
         */
-    if (QLabel *label = qobject_cast<QLabel*>(widget)) {
-        if (label->textInteractionFlags().testFlag(Qt::TextSelectableByMouse)) {
-            return false;
-        }
+	if (QLabel* label = qobject_cast<QLabel*>(widget)) {
+		if (label->textInteractionFlags().testFlag(Qt::TextSelectableByMouse)) {
+			return false;
+		}
 
-        QWidget *parent = label->parentWidget();
-        while (parent) {
-            if (qobject_cast<QStatusBar*>(parent)) {
-                return true;
-            }
-            parent = parent->parentWidget();
-        }
-    }
+		QWidget* parent = label->parentWidget();
+		while (parent) {
+			if (qobject_cast<QStatusBar*>(parent)) {
+				return true;
+			}
+			parent = parent->parentWidget();
+		}
+	}
 
-    return false;
+	return false;
 }
 
-bool WindowManager::isBlackListed(QWidget *widget)
+bool WindowManager::isBlackListed(QWidget* widget)
 {
-    QVariant propertyValue(widget->property("_kde_no_window_grab"));
-    return propertyValue.isValid() && propertyValue.toBool();
+	QVariant propertyValue(widget->property("_kde_no_window_grab"));
+	return propertyValue.isValid() && propertyValue.toBool();
 }
 
-bool WindowManager::canDrag(QWidget *widget)
+bool WindowManager::canDrag(QWidget* widget)
 {
-    // check if enabled
-    if (!enabled()) {
-        return false;
-    }
+	// check if enabled
+	if (!enabled()) {
+		return false;
+	}
 
-    // assume isDragable widget is already passed
-    // check some special cases where drag should not be effective
+	// assume isDragable widget is already passed
+	// check some special cases where drag should not be effective
 
-    // check mouse grabber
-    if (QWidget::mouseGrabber()) {
-        return false;
-    }
+	// check mouse grabber
+	if (QWidget::mouseGrabber()) {
+		return false;
+	}
 
-    /*
+	/*
         check cursor shape.
         Assume that a changed cursor means that some action is in progress
         and should prevent the drag
         */
-    if (Qt::ArrowCursor!=widget->cursor().shape()) {
-        return false;
-    }
+	if (Qt::ArrowCursor != widget->cursor().shape()) {
+		return false;
+	}
 
-    // accept
-    return true;
+	// accept
+	return true;
 }
 
-bool WindowManager::canDrag(QWidget *widget, QWidget *child, const QPoint &position)
+bool WindowManager::canDrag(QWidget* widget, QWidget* child, const QPoint& position)
 {
-    // retrieve child at given position and check cursor again
-    if (child && Qt::ArrowCursor!=child->cursor().shape()) {
-        return false;
-    }
+	// retrieve child at given position and check cursor again
+	if (child && Qt::ArrowCursor != child->cursor().shape()) {
+		return false;
+	}
 
-    /*
+	/*
         check against children from which drag should never be enabled,
         even if mousePress/Move has been passed to the parent
         */
-    if (child && (qobject_cast<QComboBox*>(child) || qobject_cast<QProgressBar*>(child))) {
-        return false;
-    }
+	if (child && (qobject_cast<QComboBox*>(child) || qobject_cast<QProgressBar*>(child))) {
+		return false;
+	}
 
-    // tool buttons
-    if (QToolButton *toolButton = qobject_cast<QToolButton*>(widget)) {
-        if (dragMode() < WM_DRAG_ALL && !isToolBar(widget->parentWidget())) {
-            return false;
-        }
-        return toolButton->autoRaise() && !toolButton->isEnabled();
-    }
+	// tool buttons
+	if (QToolButton* toolButton = qobject_cast<QToolButton*>(widget)) {
+		if (dragMode() < WM_DRAG_ALL && !isToolBar(widget->parentWidget())) {
+			return false;
+		}
+		return toolButton->autoRaise() && !toolButton->isEnabled();
+	}
 
-    // check menubar
-    if (QMenuBar *menuBar = qobject_cast<QMenuBar*>(widget)) {
-        // check if there is an active action
-        if (menuBar->activeAction() && menuBar->activeAction()->isEnabled()) {
-            return false;
-        }
+	// check menubar
+	if (QMenuBar* menuBar = qobject_cast<QMenuBar*>(widget)) {
+		// check if there is an active action
+		if (menuBar->activeAction() && menuBar->activeAction()->isEnabled()) {
+			return false;
+		}
 
-        // check if action at position exists and is enabled
-        if (QAction *action = menuBar->actionAt(position)) {
-            if (action->isSeparator()) {
-                return true;
-            }
-            if (action->isEnabled()) {
-                return false;
-            }
-        }
+		// check if action at position exists and is enabled
+		if (QAction* action = menuBar->actionAt(position)) {
+			if (action->isSeparator()) {
+				return true;
+			}
+			if (action->isEnabled()) {
+				return false;
+			}
+		}
 
-        // return true in all other cases
-        return true;
-    }
+		// return true in all other cases
+		return true;
+	}
 
-    bool toolbar=isToolBar(widget);
-    if (dragMode() < WM_DRAG_MENU_AND_TOOLBAR && toolbar) {
-        return false;
-    }
+	bool toolbar = isToolBar(widget);
+	if (dragMode() < WM_DRAG_MENU_AND_TOOLBAR && toolbar) {
+		return false;
+	}
 
-    /*
+	/*
         in MINIMAL mode, anything that has not been already accepted
         and does not come from a toolbar is rejected
         */
-    if (dragMode() < WM_DRAG_ALL) {
-        return toolbar;
-    }
+	if (dragMode() < WM_DRAG_ALL) {
+		return toolbar;
+	}
 
-    /* following checks are relevant only for WD_FULL mode */
+	/* following checks are relevant only for WD_FULL mode */
 
-    // tabbar. Make sure no tab is under the cursor
-    if (QTabBar *tabBar = qobject_cast<QTabBar*>(widget)) {
-        return -1==tabBar->tabAt(position);
-    }
+	// tabbar. Make sure no tab is under the cursor
+	if (QTabBar* tabBar = qobject_cast<QTabBar*>(widget)) {
+		return -1 == tabBar->tabAt(position);
+	}
 
-    /*
+	/*
         check groupboxes
         prevent drag if unchecking grouboxes
         */
-    if (QGroupBox *groupBox = qobject_cast<QGroupBox*>(widget)) {
-        // non checkable group boxes are always ok
-        if (!groupBox->isCheckable()) {
-            return true;
-        }
-        // gather options to retrieve checkbox subcontrol rect
-        QStyleOptionGroupBox opt;
-        opt.initFrom(groupBox);
-        if (groupBox->isFlat()) {
-            opt.features |= QStyleOptionFrame::Flat;
-        }
-        opt.lineWidth = 1;
-        opt.midLineWidth = 0;
-        opt.text = groupBox->title();
-        opt.textAlignment = groupBox->alignment();
-        opt.subControls = (QStyle::SC_GroupBoxFrame | QStyle::SC_GroupBoxCheckBox);
-        if (!groupBox->title().isEmpty()) {
-            opt.subControls |= QStyle::SC_GroupBoxLabel;
-        }
+	if (QGroupBox* groupBox = qobject_cast<QGroupBox*>(widget)) {
+		// non checkable group boxes are always ok
+		if (!groupBox->isCheckable()) {
+			return true;
+		}
+		// gather options to retrieve checkbox subcontrol rect
+		QStyleOptionGroupBox opt;
+		opt.initFrom(groupBox);
+		if (groupBox->isFlat()) {
+			opt.features |= QStyleOptionFrame::Flat;
+		}
+		opt.lineWidth = 1;
+		opt.midLineWidth = 0;
+		opt.text = groupBox->title();
+		opt.textAlignment = groupBox->alignment();
+		opt.subControls = (QStyle::SC_GroupBoxFrame | QStyle::SC_GroupBoxCheckBox);
+		if (!groupBox->title().isEmpty()) {
+			opt.subControls |= QStyle::SC_GroupBoxLabel;
+		}
 
-        opt.state |= (groupBox->isChecked() ? QStyle::State_On : QStyle::State_Off);
+		opt.state |= (groupBox->isChecked() ? QStyle::State_On : QStyle::State_Off);
 
-        // check against groupbox checkbox
-        if (groupBox->style()->subControlRect(QStyle::CC_GroupBox, &opt, QStyle::SC_GroupBoxCheckBox, groupBox).contains(position)) {
-            return false;
-        }
+		// check against groupbox checkbox
+		if (groupBox->style()->subControlRect(QStyle::CC_GroupBox, &opt, QStyle::SC_GroupBoxCheckBox, groupBox).contains(position)) {
+			return false;
+		}
 
-        // check against groupbox label
-        if (!groupBox->title().isEmpty() && groupBox->style()->subControlRect(QStyle::CC_GroupBox, &opt, QStyle::SC_GroupBoxLabel, groupBox).contains(position)) {
-            return false;
-        }
+		// check against groupbox label
+		if (!groupBox->title().isEmpty() && groupBox->style()->subControlRect(QStyle::CC_GroupBox, &opt, QStyle::SC_GroupBoxLabel, groupBox).contains(position)) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    // labels
-    if (QLabel *label = qobject_cast<QLabel*>(widget)) { if (label->textInteractionFlags().testFlag(Qt::TextSelectableByMouse)) {
-            return false;
-        }
-    }
+	// labels
+	if (QLabel* label = qobject_cast<QLabel*>(widget)) {
+		if (label->textInteractionFlags().testFlag(Qt::TextSelectableByMouse)) {
+			return false;
+		}
+	}
 
-    // abstract item views
-    QAbstractItemView *itemView(NULL);
-    if ((itemView = qobject_cast<QListView*>(widget->parentWidget())) || (itemView = qobject_cast<QTreeView*>(widget->parentWidget()))) {
-        if (widget == itemView->viewport()) {
-            // QListView
-            if (QFrame::NoFrame!=itemView->frameShape()) {
-                return false;
-            } else if (QAbstractItemView::NoSelection!=itemView->selectionMode() &&
-                       QAbstractItemView::SingleSelection!=itemView->selectionMode() &&
-                       itemView->model() && itemView->model()->rowCount()) {
-                return false;
-            } else if (itemView->model() && itemView->indexAt(position).isValid()) {
-                return false;
-            }
-        }
-    } else if ((itemView = qobject_cast<QAbstractItemView*>(widget->parentWidget()))) {
-        if (widget == itemView->viewport()) {
-            // QAbstractItemView
-            if (QFrame::NoFrame!=itemView->frameShape()) {
-                return false;
-            } else if (itemView->indexAt(position).isValid()) {
-                return false;
-            }
-        }
-    }
-    return true;
+	// abstract item views
+	QAbstractItemView* itemView(NULL);
+	if ((itemView = qobject_cast<QListView*>(widget->parentWidget())) || (itemView = qobject_cast<QTreeView*>(widget->parentWidget()))) {
+		if (widget == itemView->viewport()) {
+			// QListView
+			if (QFrame::NoFrame != itemView->frameShape()) {
+				return false;
+			}
+			else if (QAbstractItemView::NoSelection != itemView->selectionMode() && QAbstractItemView::SingleSelection != itemView->selectionMode() && itemView->model() && itemView->model()->rowCount()) {
+				return false;
+			}
+			else if (itemView->model() && itemView->indexAt(position).isValid()) {
+				return false;
+			}
+		}
+	}
+	else if ((itemView = qobject_cast<QAbstractItemView*>(widget->parentWidget()))) {
+		if (widget == itemView->viewport()) {
+			// QAbstractItemView
+			if (QFrame::NoFrame != itemView->frameShape()) {
+				return false;
+			}
+			else if (itemView->indexAt(position).isValid()) {
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 void WindowManager::resetDrag(void)
 {
-    #ifndef Q_OS_MAC
-    if ((!useWMMoveResize()) && _target && _cursorOverride) {
-        qApp->restoreOverrideCursor();
-        _cursorOverride = false;
-    }
-    #endif
+#ifndef Q_OS_MAC
+	if ((!useWMMoveResize()) && _target && _cursorOverride) {
+		qApp->restoreOverrideCursor();
+		_cursorOverride = false;
+	}
+#endif
 
-    _target.clear();
-    if (_dragTimer.isActive()) {
-        _dragTimer.stop();
-
-    }
-    _dragPoint = QPoint();
-    _globalDragPoint = QPoint();
-    _dragAboutToStart = false;
-    _dragInProgress = false;
+	_target.clear();
+	if (_dragTimer.isActive()) {
+		_dragTimer.stop();
+	}
+	_dragPoint = QPoint();
+	_globalDragPoint = QPoint();
+	_dragAboutToStart = false;
+	_dragInProgress = false;
 }
 
-void WindowManager::startDrag(QWidget *widget, const QPointF& position)
+void WindowManager::startDrag(QWidget* widget, const QPointF& position)
 {
-    if (!(enabled() && widget)) {
-        return;
-    }
-    if (QWidget::mouseGrabber()) {
-        return;
-    }
+	if (!(enabled() && widget)) {
+		return;
+	}
+	if (QWidget::mouseGrabber()) {
+		return;
+	}
 
-    // ungrab pointer
-    if (useWMMoveResize()) {
-        Q_UNUSED(position)
-    }
+	// ungrab pointer
+	if (useWMMoveResize()) {
+		Q_UNUSED(position)
+	}
 
-    #ifndef Q_OS_MAC
-    if (!useWMMoveResize() && !_cursorOverride) {
-        qApp->setOverrideCursor(Qt::DragMoveCursor);
-        _cursorOverride = true;
-    }
-    #endif
+#ifndef Q_OS_MAC
+	if (!useWMMoveResize() && !_cursorOverride) {
+		qApp->setOverrideCursor(Qt::DragMoveCursor);
+		_cursorOverride = true;
+	}
+#endif
 
-    _dragInProgress = true;
-    return;
+	_dragInProgress = true;
+	return;
 }
 
 bool WindowManager::supportWMMoveResize(void) const
 {
-    return false;
+	return false;
 }
 
-bool WindowManager::isDockWidgetTitle(const QWidget *widget) const
+bool WindowManager::isDockWidgetTitle(const QWidget* widget) const
 {
-    if (!widget) {
-        return false;
-    }
-    if (const QDockWidget *dockWidget = qobject_cast<const QDockWidget*>(widget->parent())) {
-        return widget == dockWidget->titleBarWidget();
-    } else {
-       return false;
-    }
+	if (!widget) {
+		return false;
+	}
+	if (const QDockWidget* dockWidget = qobject_cast<const QDockWidget*>(widget->parent())) {
+		return widget == dockWidget->titleBarWidget();
+	}
+	else {
+		return false;
+	}
 }
 
-bool WindowManager::AppEventFilter::eventFilter(QObject *object, QEvent *event)
+bool WindowManager::AppEventFilter::eventFilter(QObject* object, QEvent* event)
 {
-    if (QEvent::MouseButtonRelease==event->type()) {
-        // stop drag timer
-        if (_parent->_dragTimer.isActive()) {
-            _parent->resetDrag();
-        }
+	if (QEvent::MouseButtonRelease == event->type()) {
+		// stop drag timer
+		if (_parent->_dragTimer.isActive()) {
+			_parent->resetDrag();
+		}
 
-        // unlock
-        if (_parent->isLocked()) {
-            _parent->setLocked(false);
-        }
-    }
+		// unlock
+		if (_parent->isLocked()) {
+			_parent->setLocked(false);
+		}
+	}
 
-    if (!_parent->enabled()) {
-        return false;
-    }
+	if (!_parent->enabled()) {
+		return false;
+	}
 
-    /*
+	/*
         if a drag is in progress, the widget will not receive any event
         we trigger on the first MouseMove or MousePress events that are received
         by any widget in the application to detect that the drag is finished
         */
-    if (_parent->useWMMoveResize() && _parent->_dragInProgress && _parent->_target && (QEvent::MouseMove==event->type() || QEvent::MouseButtonPress==event->type())) {
-        return appMouseEvent(object, event);
-    }
+	if (_parent->useWMMoveResize() && _parent->_dragInProgress && _parent->_target && (QEvent::MouseMove == event->type() || QEvent::MouseButtonPress == event->type())) {
+		return appMouseEvent(object, event);
+	}
 
-    return false;
+	return false;
 }
 
-bool WindowManager::AppEventFilter::appMouseEvent(QObject *object, QEvent *event)
+bool WindowManager::AppEventFilter::appMouseEvent(QObject* object, QEvent* event)
 {
-    Q_UNUSED(object)
+	Q_UNUSED(object)
 
-    // store target window (see later)
-    QWidget *window(_parent->_target.data()->window());
+	// store target window (see later)
+	QWidget* window(_parent->_target.data()->window());
 
-    /*
+	/*
         post some mouseRelease event to the target, in order to counter balance
         the mouse press that triggered the drag. Note that it triggers a resetDrag
         */
-    QMouseEvent mouseEvent(QEvent::MouseButtonRelease, _parent->_dragPoint, _parent->_globalDragPoint, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-    qApp->sendEvent(_parent->_target.data(), &mouseEvent);
+	QMouseEvent mouseEvent(QEvent::MouseButtonRelease, _parent->_dragPoint, _parent->_globalDragPoint, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+	qApp->sendEvent(_parent->_target.data(), &mouseEvent);
 
-    if (QEvent::MouseMove==event->type()) {
-        /*
+	if (QEvent::MouseMove == event->type()) {
+		/*
             HACK: quickly move the main cursor out of the window and back
             this is needed to get the focus right for the window children
             the origin of this issue is unknown at the moment
             */
-        const QPoint cursor = QCursor::pos();
-        QCursor::setPos(window->mapToGlobal(window->rect().topRight()) + QPoint(1, 0));
-        QCursor::setPos(cursor);
-
-    }
-    return true;
+		const QPoint cursor = QCursor::pos();
+		QCursor::setPos(window->mapToGlobal(window->rect().topRight()) + QPoint(1, 0));
+		QCursor::setPos(cursor);
+	}
+	return true;
 }
 
 #include "moc_windowmanager.cpp"

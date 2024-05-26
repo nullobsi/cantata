@@ -22,50 +22,50 @@
  */
 
 #include "smartplaylists.h"
-#include "support/monoicon.h"
-#include "support/globalstatic.h"
 #include "models/roles.h"
+#include "support/globalstatic.h"
+#include "support/monoicon.h"
 
 GLOBAL_STATIC(SmartPlaylists, instance)
 
 SmartPlaylists::SmartPlaylists()
-    : RulesPlaylists(FontAwesome::graduationcap, "smart")
+	: RulesPlaylists(FontAwesome::graduationcap, "smart")
 {
 }
 
 QString SmartPlaylists::name() const
 {
-    return QLatin1String("smart");
+	return QLatin1String("smart");
 }
 
 QString SmartPlaylists::title() const
 {
-    return tr("Smart Playlists");
+	return tr("Smart Playlists");
 }
 
 QString SmartPlaylists::descr() const
 {
-    return tr("Rules based playlists");
+	return tr("Rules based playlists");
 }
 
-QVariant SmartPlaylists::data(const QModelIndex &index, int role) const
+QVariant SmartPlaylists::data(const QModelIndex& index, int role) const
 {
-    if (!index.isValid()) {
-        return RulesPlaylists::data(index, role);
-    }
+	if (!index.isValid()) {
+		return RulesPlaylists::data(index, role);
+	}
 
-    if (index.parent().isValid() || index.row()>=entryList.count()) {
-        return QVariant();
-    }
+	if (index.parent().isValid() || index.row() >= entryList.count()) {
+		return QVariant();
+	}
 
-    switch (role) {
-    case Qt::DecorationRole:
-        return icn;
-    case Cantata::Role_Actions:
-        return ActionModel::data(index, role);
-    default:
-        return RulesPlaylists::data(index, role);
-    }
+	switch (role) {
+	case Qt::DecorationRole:
+		return icn;
+	case Cantata::Role_Actions:
+		return ActionModel::data(index, role);
+	default:
+		return RulesPlaylists::data(index, role);
+	}
 }
 
 #include "moc_smartplaylists.cpp"

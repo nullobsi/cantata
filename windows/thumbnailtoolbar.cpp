@@ -22,86 +22,86 @@
  */
 
 #include "thumbnailtoolbar.h"
-#include "gui/stdactions.h"
 #include "gui/settings.h"
-#include "widgets/icons.h"
+#include "gui/stdactions.h"
 #include "support/action.h"
+#include "widgets/icons.h"
 #include <QWinThumbnailToolButton>
 
-ThumbnailToolBar::ThumbnailToolBar(QWidget *p)
-    : QWinThumbnailToolBar(p)
+ThumbnailToolBar::ThumbnailToolBar(QWidget* p)
+	: QWinThumbnailToolBar(p)
 {
-    setWindow(p->windowHandle());
-    prevButton=createButton(StdActions::self()->prevTrackAction);
-    playPauseButton=createButton(StdActions::self()->playPauseTrackAction);
-    stopButton=createButton(StdActions::self()->stopPlaybackAction);
-    nextButton=createButton(StdActions::self()->nextTrackAction);
-    readSettings();
-    status=MPDStatus::self();
-    update();
+	setWindow(p->windowHandle());
+	prevButton = createButton(StdActions::self()->prevTrackAction);
+	playPauseButton = createButton(StdActions::self()->playPauseTrackAction);
+	stopButton = createButton(StdActions::self()->stopPlaybackAction);
+	nextButton = createButton(StdActions::self()->nextTrackAction);
+	readSettings();
+	status = MPDStatus::self();
+	update();
 }
 
 void ThumbnailToolBar::readSettings()
 {
-    stopButton->setVisible(Settings::self()->showStopButton());
+	stopButton->setVisible(Settings::self()->showStopButton());
 }
 
-void ThumbnailToolBar::updateCurrentSong(const Song &song)
+void ThumbnailToolBar::updateCurrentSong(const Song& song)
 {
-    qint32 lastSongId = currentSong.id;
-    currentSong = song;
+	qint32 lastSongId = currentSong.id;
+	currentSong = song;
 
-    if (song.id!=lastSongId && !status.isNull() && song.id==status->songId()) {
-        update();
-    }
+	if (song.id != lastSongId && !status.isNull() && song.id == status->songId()) {
+		update();
+	}
 }
 
-void ThumbnailToolBar::updateStatus(MPDStatus * const status)
+void ThumbnailToolBar::updateStatus(MPDStatus* const status)
 {
-    if (status!=this->status) {
-        this->status = status;
-    }
-    if (status->songId()==currentSong.id || status->songId()==-1) {
-        update();
-    }
+	if (status != this->status) {
+		this->status = status;
+	}
+	if (status->songId() == currentSong.id || status->songId() == -1) {
+		update();
+	}
 }
 
 void ThumbnailToolBar::update()
 {
-    playPauseButton->setEnabled(!status.isNull() && status->playlistLength()>0);
+	playPauseButton->setEnabled(!status.isNull() && status->playlistLength() > 0);
 
-    MPDState state = status.isNull() ? MPDState_Inactive : status->state();
-    switch (state) {
-    case MPDState_Playing:
-        playPauseButton->setIcon(Icons::self()->toolbarPauseIcon);
-        stopButton->setEnabled(true);
-        nextButton->setEnabled(status->nextSongId()!=-1);
-        prevButton->setEnabled(status->playlistLength()>1 || status->timeTotal()>5 || currentSong.time>5);
-        break;
-    case MPDState_Inactive:
-    case MPDState_Stopped:
-        playPauseButton->setIcon(Icons::self()->toolbarPlayIcon);
-        stopButton->setEnabled(false);
-        nextButton->setEnabled(false);
-        prevButton->setEnabled(false);
-        break;
-    case MPDState_Paused:
-        playPauseButton->setIcon(Icons::self()->toolbarPlayIcon);
-        stopButton->setEnabled(0!=status->playlistLength());
-        nextButton->setEnabled(status->nextSongId()!=-1);
-        prevButton->setEnabled(status->playlistLength()>1 || status->timeTotal()>5 || currentSong.time>5);
-    default:
-        break;
-    }
+	MPDState state = status.isNull() ? MPDState_Inactive : status->state();
+	switch (state) {
+	case MPDState_Playing:
+		playPauseButton->setIcon(Icons::self()->toolbarPauseIcon);
+		stopButton->setEnabled(true);
+		nextButton->setEnabled(status->nextSongId() != -1);
+		prevButton->setEnabled(status->playlistLength() > 1 || status->timeTotal() > 5 || currentSong.time > 5);
+		break;
+	case MPDState_Inactive:
+	case MPDState_Stopped:
+		playPauseButton->setIcon(Icons::self()->toolbarPlayIcon);
+		stopButton->setEnabled(false);
+		nextButton->setEnabled(false);
+		prevButton->setEnabled(false);
+		break;
+	case MPDState_Paused:
+		playPauseButton->setIcon(Icons::self()->toolbarPlayIcon);
+		stopButton->setEnabled(0 != status->playlistLength());
+		nextButton->setEnabled(status->nextSongId() != -1);
+		prevButton->setEnabled(status->playlistLength() > 1 || status->timeTotal() > 5 || currentSong.time > 5);
+	default:
+		break;
+	}
 }
 
-QWinThumbnailToolButton * ThumbnailToolBar::createButton(Action *act)
+QWinThumbnailToolButton* ThumbnailToolBar::createButton(Action* act)
 {
-    QWinThumbnailToolButton *btn = new QWinThumbnailToolButton(this);
-    btn->setToolTip(act->text());
-    btn->setIcon(act->icon());
-    btn->setEnabled(false);
-    QObject::connect(btn, SIGNAL(clicked()), act, SIGNAL(triggered()));
-    addButton(btn);
-    return btn;
+	QWinThumbnailToolButton* btn = new QWinThumbnailToolButton(this);
+	btn->setToolTip(act->text());
+	btn->setIcon(act->icon());
+	btn->setEnabled(false);
+	QObject::connect(btn, SIGNAL(clicked()), act, SIGNAL(triggered()));
+	addButton(btn);
+	return btn;
 }

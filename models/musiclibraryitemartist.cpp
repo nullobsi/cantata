@@ -24,134 +24,133 @@
  * along with QtMPC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "musiclibraryitemroot.h"
 #include "musiclibraryitemartist.h"
-#include "musiclibraryitemalbum.h"
-#include "musiclibraryitemsong.h"
 #include "mpd-interface/mpdparseutils.h"
+#include "musiclibraryitemalbum.h"
+#include "musiclibraryitemroot.h"
+#include "musiclibraryitemsong.h"
 #include "widgets/icons.h"
 #ifdef ENABLE_DEVICES_SUPPORT
 #include "devices/device.h"
 #endif
 #include "support/utils.h"
 
-bool MusicLibraryItemArtist::lessThan(const MusicLibraryItem *a, const MusicLibraryItem *b)
+bool MusicLibraryItemArtist::lessThan(const MusicLibraryItem* a, const MusicLibraryItem* b)
 {
-    const MusicLibraryItemArtist *aa=static_cast<const MusicLibraryItemArtist *>(a);
-    const MusicLibraryItemArtist *ab=static_cast<const MusicLibraryItemArtist *>(b);
+	const MusicLibraryItemArtist* aa = static_cast<const MusicLibraryItemArtist*>(a);
+	const MusicLibraryItemArtist* ab = static_cast<const MusicLibraryItemArtist*>(b);
 
-//    if (aa->isVarious() != ab->isVarious()) {
-//        return aa->isVarious() > ab->isVarious();
-//    }
-    return Utils::compare(aa->sortString(), ab->sortString())<0;
+	//    if (aa->isVarious() != ab->isVarious()) {
+	//        return aa->isVarious() > ab->isVarious();
+	//    }
+	return Utils::compare(aa->sortString(), ab->sortString()) < 0;
 }
 
-MusicLibraryItemArtist::MusicLibraryItemArtist(const Song &song, MusicLibraryItemContainer *parent)
-    : MusicLibraryItemContainer(song.albumArtistOrComposer(), parent)
-    , m_sortString(song.hasAlbumArtistSort() ? song.albumArtistSort() : QString())
-    , m_actualArtist(song.useComposer() ? song.albumArtist() : QString())
+MusicLibraryItemArtist::MusicLibraryItemArtist(const Song& song, MusicLibraryItemContainer* parent)
+	: MusicLibraryItemContainer(song.albumArtistOrComposer(), parent), m_sortString(song.hasAlbumArtistSort() ? song.albumArtistSort() : QString()), m_actualArtist(song.useComposer() ? song.albumArtist() : QString())
 {
 }
 
-MusicLibraryItemAlbum * MusicLibraryItemArtist::album(const Song &s, bool create)
+MusicLibraryItemAlbum* MusicLibraryItemArtist::album(const Song& s, bool create)
 {
-    MusicLibraryItemAlbum *albumItem=getAlbum(s.albumId());
-    return albumItem ? albumItem : (create ? createAlbum(s) : nullptr);
+	MusicLibraryItemAlbum* albumItem = getAlbum(s.albumId());
+	return albumItem ? albumItem : (create ? createAlbum(s) : nullptr);
 }
 
-MusicLibraryItemAlbum * MusicLibraryItemArtist::createAlbum(const Song &s)
+MusicLibraryItemAlbum* MusicLibraryItemArtist::createAlbum(const Song& s)
 {
-    // If grouping via composer - then album name *might* need to include artist name (if this is different to composer)
-    // So, when creating an album entry we need to use the "Album (Artist)" value for display/sort, and still store just
-    // "Album" (for saving to cache, tag editing, etc.)
-    QString albumId=s.albumId();
-    MusicLibraryItemAlbum *item=new MusicLibraryItemAlbum(s, this);
-    m_indexes.insert(albumId, m_childItems.count());
-    m_childItems.append(item);
-    return item;
+	// If grouping via composer - then album name *might* need to include artist name (if this is different to composer)
+	// So, when creating an album entry we need to use the "Album (Artist)" value for display/sort, and still store just
+	// "Album" (for saving to cache, tag editing, etc.)
+	QString albumId = s.albumId();
+	MusicLibraryItemAlbum* item = new MusicLibraryItemAlbum(s, this);
+	m_indexes.insert(albumId, m_childItems.count());
+	m_childItems.append(item);
+	return item;
 }
 
-void MusicLibraryItemArtist::remove(MusicLibraryItemAlbum *album)
+void MusicLibraryItemArtist::remove(MusicLibraryItemAlbum* album)
 {
-    int index=m_childItems.indexOf(album);
+	int index = m_childItems.indexOf(album);
 
-    if (index<0 || index>=m_childItems.count()) {
-        return;
-    }
+	if (index < 0 || index >= m_childItems.count()) {
+		return;
+	}
 
-    QHash<QString, int>::Iterator it=m_indexes.begin();
-    QHash<QString, int>::Iterator end=m_indexes.end();
+	QHash<QString, int>::Iterator it = m_indexes.begin();
+	QHash<QString, int>::Iterator end = m_indexes.end();
 
-    for (; it!=end; ++it) {
-        if ((*it)>index) {
-            (*it)--;
-        }
-    }
-    m_indexes.remove(album->albumId());
-    delete m_childItems.takeAt(index);
-    resetRows();
+	for (; it != end; ++it) {
+		if ((*it) > index) {
+			(*it)--;
+		}
+	}
+	m_indexes.remove(album->albumId());
+	delete m_childItems.takeAt(index);
+	resetRows();
 }
 
 Song MusicLibraryItemArtist::coverSong() const
 {
-    Song song;
-    song.albumartist=song.title=m_itemData; // If title is empty, then Song::isUnknown() will be true!!!
+	Song song;
+	song.albumartist = song.title = m_itemData;// If title is empty, then Song::isUnknown() will be true!!!
 
-    if (childCount()) {
-        MusicLibraryItemAlbum *firstAlbum=static_cast<MusicLibraryItemAlbum *>(childItem(0));
-        MusicLibraryItemSong *firstSong=firstAlbum ? static_cast<MusicLibraryItemSong *>(firstAlbum->childItem(0)) : nullptr;
+	if (childCount()) {
+		MusicLibraryItemAlbum* firstAlbum = static_cast<MusicLibraryItemAlbum*>(childItem(0));
+		MusicLibraryItemSong* firstSong = firstAlbum ? static_cast<MusicLibraryItemSong*>(firstAlbum->childItem(0)) : nullptr;
 
-        if (firstSong) {
-            song.file=firstSong->file();
-            //if (Song::useComposer() && !firstSong->song().composer().isEmpty()) {
-                song.albumartist=firstSong->song().albumArtist();
-            //}
-            song.addGenre(firstSong->song().firstGenre());
-            song.setComposer(firstSong->song().composer());
-        }
-    }
-    if (!m_actualArtist.isEmpty() && song.useComposer()) {
-        song.setComposerImageRequest();
-    } else {
-        song.setArtistImageRequest();
-    }
-    return song;
+		if (firstSong) {
+			song.file = firstSong->file();
+			//if (Song::useComposer() && !firstSong->song().composer().isEmpty()) {
+			song.albumartist = firstSong->song().albumArtist();
+			//}
+			song.addGenre(firstSong->song().firstGenre());
+			song.setComposer(firstSong->song().composer());
+		}
+	}
+	if (!m_actualArtist.isEmpty() && song.useComposer()) {
+		song.setComposerImageRequest();
+	}
+	else {
+		song.setArtistImageRequest();
+	}
+	return song;
 }
 
-MusicLibraryItemAlbum * MusicLibraryItemArtist::getAlbum(const QString &key) const
+MusicLibraryItemAlbum* MusicLibraryItemArtist::getAlbum(const QString& key) const
 {
-    if (m_indexes.count()==m_childItems.count()) {
-        if (m_childItems.isEmpty()) {
-            return nullptr;
-        }
+	if (m_indexes.count() == m_childItems.count()) {
+		if (m_childItems.isEmpty()) {
+			return nullptr;
+		}
 
-        QHash<QString, int>::ConstIterator idx=m_indexes.find(key);
+		QHash<QString, int>::ConstIterator idx = m_indexes.find(key);
 
-        if (m_indexes.end()==idx) {
-            return nullptr;
-        }
+		if (m_indexes.end() == idx) {
+			return nullptr;
+		}
 
-        // Check index value is within range
-        if (*idx>=0 && *idx<m_childItems.count()) {
-            MusicLibraryItemAlbum *a=static_cast<MusicLibraryItemAlbum *>(m_childItems.at(*idx));
-            // Check id actually matches!
-            if (a->albumId()==key) {
-                return a;
-            }
-        }
-    }
+		// Check index value is within range
+		if (*idx >= 0 && *idx < m_childItems.count()) {
+			MusicLibraryItemAlbum* a = static_cast<MusicLibraryItemAlbum*>(m_childItems.at(*idx));
+			// Check id actually matches!
+			if (a->albumId() == key) {
+				return a;
+			}
+		}
+	}
 
-    // Something wrong with m_indexes??? So, refresh them...
-    MusicLibraryItemAlbum *al=nullptr;
-    m_indexes.clear();
-    QList<MusicLibraryItem *>::ConstIterator it=m_childItems.constBegin();
-    QList<MusicLibraryItem *>::ConstIterator end=m_childItems.constEnd();
-    for (int i=0; it!=end; ++it, ++i) {
-        MusicLibraryItemAlbum *currenAlbum=static_cast<MusicLibraryItemAlbum *>(*it);
-        if (!al && currenAlbum->albumId()==key) {
-            al=currenAlbum;
-        }
-        m_indexes.insert(currenAlbum->albumId(), i);
-    }
-    return al;
+	// Something wrong with m_indexes??? So, refresh them...
+	MusicLibraryItemAlbum* al = nullptr;
+	m_indexes.clear();
+	QList<MusicLibraryItem*>::ConstIterator it = m_childItems.constBegin();
+	QList<MusicLibraryItem*>::ConstIterator end = m_childItems.constEnd();
+	for (int i = 0; it != end; ++it, ++i) {
+		MusicLibraryItemAlbum* currenAlbum = static_cast<MusicLibraryItemAlbum*>(*it);
+		if (!al && currenAlbum->albumId() == key) {
+			al = currenAlbum;
+		}
+		m_indexes.insert(currenAlbum->albumId(), i);
+	}
+	return al;
 }

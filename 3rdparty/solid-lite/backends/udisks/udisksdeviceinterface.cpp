@@ -22,10 +22,9 @@
 
 using namespace Solid::Backends::UDisks;
 
-DeviceInterface::DeviceInterface(UDisksDevice *device)
-    : QObject(device), m_device(device)
+DeviceInterface::DeviceInterface(UDisksDevice* device)
+	: QObject(device), m_device(device)
 {
-
 }
 
 DeviceInterface::~DeviceInterface()

@@ -22,102 +22,102 @@
  */
 
 #include "jobcontroller.h"
-#include "support/thread.h"
 #include "support/globalstatic.h"
+#include "support/thread.h"
 
 Job::Job()
-    : abortRequested(false)
-    , finished(false)
+	: abortRequested(false), finished(false)
 {
 }
 
 void Job::setFinished(bool f)
 {
-    finished=f;
-    emit done();
+	finished = f;
+	emit done();
 }
 
 StandardJob::StandardJob()
-    : thread(0)
+	: thread(0)
 {
 }
 
 void StandardJob::start()
 {
-    if (!thread) {
-        thread=new Thread(metaObject()->className());
-        moveToThread(thread);
-        thread->start();
-        connect(this, SIGNAL(exec()), this, SLOT(run()), Qt::QueuedConnection);
-        emit exec();
-    }
+	if (!thread) {
+		thread = new Thread(metaObject()->className());
+		moveToThread(thread);
+		thread->start();
+		connect(this, SIGNAL(exec()), this, SLOT(run()), Qt::QueuedConnection);
+		emit exec();
+	}
 }
 
 void StandardJob::stop()
 {
-    requestAbort();
-    if (thread) {
-        thread->stop();
-        thread=0;
-    }
-    deleteLater();
+	requestAbort();
+	if (thread) {
+		thread->stop();
+		thread = 0;
+	}
+	deleteLater();
 }
 
 GLOBAL_STATIC(JobController, instance)
 
 JobController::JobController()
-    : maxActive(1)
+	: maxActive(1)
 {
 }
 
 void JobController::setMaxActive(int m)
 {
-    maxActive=m;
+	maxActive = m;
 }
 
-void JobController::add(Job *job)
+void JobController::add(Job* job)
 {
-    jobs.append(job);
-    startJobs();
+	jobs.append(job);
+	startJobs();
 }
 
-void JobController::finishedWith(Job *job)
+void JobController::finishedWith(Job* job)
 {
-    active.removeAll(job);
-    jobs.removeAll(job);
-    job->stop();
+	active.removeAll(job);
+	jobs.removeAll(job);
+	job->stop();
 }
 
 void JobController::startJobs()
 {
-    while (active.count()<maxActive && !jobs.isEmpty()) {
-        Job *job=jobs.takeAt(0);
-        active.append(job);
-        connect(job, SIGNAL(done()), this, SLOT(jobDone()), Qt::QueuedConnection);
-        job->start();
-    }
+	while (active.count() < maxActive && !jobs.isEmpty()) {
+		Job* job = jobs.takeAt(0);
+		active.append(job);
+		connect(job, SIGNAL(done()), this, SLOT(jobDone()), Qt::QueuedConnection);
+		job->start();
+	}
 }
 
-void JobController::cancel() {
-    for (Job *j: active) {
-        disconnect(j, SIGNAL(done()), this, SLOT(jobDone()));
-        j->stop();
-    }
-    active.clear();
-    for (Job *j: jobs) {
-        j->deleteLater();
-    }
-    jobs.clear();
+void JobController::cancel()
+{
+	for (Job* j : active) {
+		disconnect(j, SIGNAL(done()), this, SLOT(jobDone()));
+		j->stop();
+	}
+	active.clear();
+	for (Job* j : jobs) {
+		j->deleteLater();
+	}
+	jobs.clear();
 }
 
 void JobController::jobDone()
 {
-    QObject *s=sender();
+	QObject* s = sender();
 
-    if (s && dynamic_cast<Job *>(s)) {
-        active.removeAll(static_cast<Job *>(s));
-    }
-    startJobs();
+	if (s && dynamic_cast<Job*>(s)) {
+		active.removeAll(static_cast<Job*>(s));
+	}
+	startJobs();
 }
 
 #include "moc_jobcontroller.cpp"

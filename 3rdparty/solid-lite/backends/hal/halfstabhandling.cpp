@@ -20,13 +20,13 @@
 
 #include "halfstabhandling.h"
 
+#include <QElapsedTimer>
 #include <QFile>
 #include <QMultiHash>
 #include <QObject>
 #include <QProcess>
 #include <QRegularExpression>
 #include <QTextStream>
-#include <QElapsedTimer>
 
 #include <solid-lite/soliddefs_p.h>
 
@@ -45,151 +45,152 @@
 typedef QMultiHash<QString, QString> QStringMultiHash;
 SOLID_GLOBAL_STATIC(QStringMultiHash, globalMountPointsCache)
 
-QString _k_resolveSymLink(const QString &filename)
+QString _k_resolveSymLink(const QString& filename)
 {
-    QString resolved = filename;
-    QString tmp = QFile::symLinkTarget(filename);
+	QString resolved = filename;
+	QString tmp = QFile::symLinkTarget(filename);
 
-    while (!tmp.isEmpty()) {
-        resolved = tmp;
-        tmp = QFile::symLinkTarget(resolved);
-    }
+	while (!tmp.isEmpty()) {
+		resolved = tmp;
+		tmp = QFile::symLinkTarget(resolved);
+	}
 
-    return resolved;
+	return resolved;
 }
 
-bool _k_isNetworkFileSystem(const QString &fstype, const QString &devName)
+bool _k_isNetworkFileSystem(const QString& fstype, const QString& devName)
 {
-    if (fstype == "nfs"
-     || fstype == "nfs4"
-     || fstype == "smbfs"
-     || fstype == "cifs"
-     || devName.startsWith(QLatin1String("//"))) {
-        return true;
-    }
-    return false;
+	if (fstype == "nfs"
+	    || fstype == "nfs4"
+	    || fstype == "smbfs"
+	    || fstype == "cifs"
+	    || devName.startsWith(QLatin1String("//"))) {
+		return true;
+	}
+	return false;
 }
-
 
 void _k_updateMountPointsCache()
 {
-    static bool firstCall = true;
-    static QElapsedTimer elapsedTimer;
+	static bool firstCall = true;
+	static QElapsedTimer elapsedTimer;
 
-    if (firstCall) {
-        firstCall = false;
-        elapsedTimer.start();
-    } else if (elapsedTimer.elapsed()>10000) {
-        elapsedTimer.restart();
-    } else {
-        return;
-    }
+	if (firstCall) {
+		firstCall = false;
+		elapsedTimer.start();
+	}
+	else if (elapsedTimer.elapsed() > 10000) {
+		elapsedTimer.restart();
+	}
+	else {
+		return;
+	}
 
-    globalMountPointsCache->clear();
+	globalMountPointsCache->clear();
 
 #ifdef HAVE_SETMNTENT
 
-    struct mntent *fstab;
-    if ((fstab = setmntent(FSTAB, "r")) == 0) {
-        return;
-    }
+	struct mntent* fstab;
+	if ((fstab = setmntent(FSTAB, "r")) == 0) {
+		return;
+	}
 
-    struct mntent *fe;
-    while ((fe = getmntent(fstab)) != 0) {
-        if (!_k_isNetworkFileSystem(fe->mnt_type, fe->mnt_fsname)) {
-            const QString device = _k_resolveSymLink(QFile::decodeName(fe->mnt_fsname));
-            const QString mountpoint = _k_resolveSymLink(QFile::decodeName(fe->mnt_dir));
+	struct mntent* fe;
+	while ((fe = getmntent(fstab)) != 0) {
+		if (!_k_isNetworkFileSystem(fe->mnt_type, fe->mnt_fsname)) {
+			const QString device = _k_resolveSymLink(QFile::decodeName(fe->mnt_fsname));
+			const QString mountpoint = _k_resolveSymLink(QFile::decodeName(fe->mnt_dir));
 
-            globalMountPointsCache->insert(device, mountpoint);
-        }
-    }
+			globalMountPointsCache->insert(device, mountpoint);
+		}
+	}
 
-    endmntent(fstab);
+	endmntent(fstab);
 
 #else
 
-    QFile fstab(FSTAB);
-    if (!fstab.open(QIODevice::ReadOnly)) {
-        return;
-    }
+	QFile fstab(FSTAB);
+	if (!fstab.open(QIODevice::ReadOnly)) {
+		return;
+	}
 
-    QTextStream stream(&fstab);
-    QString line;
+	QTextStream stream(&fstab);
+	QString line;
 
-    while (!stream.atEnd()) {
-        line = stream.readLine().simplified();
-        if (line.isEmpty() || line.startsWith('#')) {
-            continue;
-        }
+	while (!stream.atEnd()) {
+		line = stream.readLine().simplified();
+		if (line.isEmpty() || line.startsWith('#')) {
+			continue;
+		}
 
-        // not empty or commented out by '#'
-        const QStringList items = line.split(' ');
+		// not empty or commented out by '#'
+		const QStringList items = line.split(' ');
 
 #ifdef Q_OS_SOLARIS
-        if (items.count() < 5) {
-            continue;
-        }
+		if (items.count() < 5) {
+			continue;
+		}
 #else
-        if (items.count() < 4) {
-            continue;
-        }
+		if (items.count() < 4) {
+			continue;
+		}
 #endif
-        //prevent accessing a blocking directory
-        if (!_k_isNetworkFileSystem(items.at(2), items.at(0))) {
-            const QString device = _k_resolveSymLink(items.at(0));
-            const QString mountpoint = _k_resolveSymLink(items.at(1));
+		//prevent accessing a blocking directory
+		if (!_k_isNetworkFileSystem(items.at(2), items.at(0))) {
+			const QString device = _k_resolveSymLink(items.at(0));
+			const QString mountpoint = _k_resolveSymLink(items.at(1));
 
-            globalMountPointsCache->insert(device, mountpoint);
-        }
-    }
+			globalMountPointsCache->insert(device, mountpoint);
+		}
+	}
 
-    fstab.close();
+	fstab.close();
 #endif
 }
 
-bool Solid::Backends::Hal::FstabHandling::isInFstab(const QString &device)
+bool Solid::Backends::Hal::FstabHandling::isInFstab(const QString& device)
 {
-    _k_updateMountPointsCache();
-    const QString deviceToFind = _k_resolveSymLink(device);
+	_k_updateMountPointsCache();
+	const QString deviceToFind = _k_resolveSymLink(device);
 
-    return globalMountPointsCache->contains(deviceToFind);
+	return globalMountPointsCache->contains(deviceToFind);
 }
 
-QStringList Solid::Backends::Hal::FstabHandling::possibleMountPoints(const QString &device)
+QStringList Solid::Backends::Hal::FstabHandling::possibleMountPoints(const QString& device)
 {
-    _k_updateMountPointsCache();
-    const QString deviceToFind = _k_resolveSymLink(device);
+	_k_updateMountPointsCache();
+	const QString deviceToFind = _k_resolveSymLink(device);
 
-    return globalMountPointsCache->values(deviceToFind);
+	return globalMountPointsCache->values(deviceToFind);
 }
 
-QProcess *Solid::Backends::Hal::FstabHandling::callSystemCommand(const QString &commandName,
-                                                                 const QStringList &args,
-                                                                 QObject *obj, const char *slot)
+QProcess* Solid::Backends::Hal::FstabHandling::callSystemCommand(const QString& commandName,
+                                                                 const QStringList& args,
+                                                                 QObject* obj, const char* slot)
 {
-    QStringList env = QProcess::systemEnvironment();
-    env.replaceInStrings(QRegularExpression("^PATH=(.*)", QRegularExpression::CaseInsensitiveOption), "PATH=/sbin:/bin:/usr/sbin/:/usr/bin");
+	QStringList env = QProcess::systemEnvironment();
+	env.replaceInStrings(QRegularExpression("^PATH=(.*)", QRegularExpression::CaseInsensitiveOption), "PATH=/sbin:/bin:/usr/sbin/:/usr/bin");
 
-    QProcess *process = new QProcess(obj);
+	QProcess* process = new QProcess(obj);
 
-    QObject::connect(process, SIGNAL(finished(int,QProcess::ExitStatus)),
-                     obj, slot);
+	QObject::connect(process, SIGNAL(finished(int, QProcess::ExitStatus)),
+	                 obj, slot);
 
-    process->setEnvironment(env);
-    process->start(commandName, args);
+	process->setEnvironment(env);
+	process->start(commandName, args);
 
-    if (process->waitForStarted()) {
-        return process;
-    } else {
-        delete process;
-        return nullptr;
-    }
+	if (process->waitForStarted()) {
+		return process;
+	}
+	else {
+		delete process;
+		return nullptr;
+	}
 }
 
-QProcess *Solid::Backends::Hal::FstabHandling::callSystemCommand(const QString &commandName,
-                                                                 const QString &device,
-                                                                 QObject *obj, const char *slot)
+QProcess* Solid::Backends::Hal::FstabHandling::callSystemCommand(const QString& commandName,
+                                                                 const QString& device,
+                                                                 QObject* obj, const char* slot)
 {
-    return callSystemCommand(commandName, QStringList() << device, obj, slot);
+	return callSystemCommand(commandName, QStringList() << device, obj, slot);
 }
-

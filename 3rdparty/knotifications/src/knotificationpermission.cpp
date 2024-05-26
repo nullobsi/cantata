@@ -11,34 +11,34 @@
 
 Qt::PermissionStatus KNotificationPermission::checkPermission()
 {
-    if (QtAndroidPrivate::androidSdkVersion() < 33) {
-        return Qt::PermissionStatus::Granted;
-    }
+	if (QtAndroidPrivate::androidSdkVersion() < 33) {
+		return Qt::PermissionStatus::Granted;
+	}
 
-    return QtAndroidPrivate::checkPermission(QStringLiteral("")).result() == QtAndroidPrivate::PermissionResult::Authorized ? Qt::PermissionStatus::Granted
-                                                                                                                            : Qt::PermissionStatus::Denied;
+	return QtAndroidPrivate::checkPermission(QStringLiteral("")).result() == QtAndroidPrivate::PermissionResult::Authorized ? Qt::PermissionStatus::Granted
+																															: Qt::PermissionStatus::Denied;
 }
 
-void KNotificationPermission::requestPermission(QObject *context, const std::function<void(Qt::PermissionStatus)> &callback)
+void KNotificationPermission::requestPermission(QObject* context, const std::function<void(Qt::PermissionStatus)>& callback)
 {
-    if (QtAndroidPrivate::androidSdkVersion() < 33) {
-        callback(Qt::PermissionStatus::Granted);
-    }
+	if (QtAndroidPrivate::androidSdkVersion() < 33) {
+		callback(Qt::PermissionStatus::Granted);
+	}
 
-    QtAndroidPrivate::requestPermission(QStringLiteral("android.permission.POST_NOTIFICATIONS"))
-        .then(context, [&callback](QtAndroidPrivate::PermissionResult res) {
-            callback(res == QtAndroidPrivate::PermissionResult::Authorized ? Qt::PermissionStatus::Granted : Qt::PermissionStatus::Denied);
-        });
+	QtAndroidPrivate::requestPermission(QStringLiteral("android.permission.POST_NOTIFICATIONS"))
+			.then(context, [&callback](QtAndroidPrivate::PermissionResult res) {
+				callback(res == QtAndroidPrivate::PermissionResult::Authorized ? Qt::PermissionStatus::Granted : Qt::PermissionStatus::Denied);
+			});
 }
 
 #else
 Qt::PermissionStatus KNotificationPermission::checkPermission()
 {
-    return Qt::PermissionStatus::Granted;
+	return Qt::PermissionStatus::Granted;
 }
 
-void KNotificationPermission::requestPermission([[maybe_unused]] QObject *context, const std::function<void(Qt::PermissionStatus)> &callback)
+void KNotificationPermission::requestPermission([[maybe_unused]] QObject* context, const std::function<void(Qt::PermissionStatus)>& callback)
 {
-    callback(Qt::PermissionStatus::Granted);
+	callback(Qt::PermissionStatus::Granted);
 }
 #endif

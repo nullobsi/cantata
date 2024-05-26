@@ -25,22 +25,22 @@
 #include "gui/stdactions.h"
 #include "mpd-interface/mpdstatus.h"
 
-DockMenu::DockMenu(QWidget *p)
-    : QMenu(p)
+DockMenu::DockMenu(QWidget* p)
+	: QMenu(p)
 {
-    setAsDockMenu();
-    addAction(StdActions::self()->prevTrackAction);
-    playPauseAction=addAction(tr("Play"));
-    addAction(StdActions::self()->stopPlaybackAction);
-    addAction(StdActions::self()->stopAfterCurrentTrackAction);
-    addAction(StdActions::self()->nextTrackAction);
-    connect(playPauseAction, SIGNAL(triggered()), StdActions::self()->playPauseTrackAction, SIGNAL(triggered()));
+	setAsDockMenu();
+	addAction(StdActions::self()->prevTrackAction);
+	playPauseAction = addAction(tr("Play"));
+	addAction(StdActions::self()->stopPlaybackAction);
+	addAction(StdActions::self()->stopAfterCurrentTrackAction);
+	addAction(StdActions::self()->nextTrackAction);
+	connect(playPauseAction, SIGNAL(triggered()), StdActions::self()->playPauseTrackAction, SIGNAL(triggered()));
 }
 
-void DockMenu::update(MPDStatus * const status)
+void DockMenu::update(MPDStatus* const status)
 {
-    playPauseAction->setEnabled(status->playlistLength()>0);
-    playPauseAction->setText(MPDState_Playing==status->state() ? tr("Pause") : tr("Play"));
+	playPauseAction->setEnabled(status->playlistLength() > 0);
+	playPauseAction->setText(MPDState_Playing == status->state() ? tr("Pause") : tr("Play"));
 }
 
 #include "moc_dockmenu.cpp"

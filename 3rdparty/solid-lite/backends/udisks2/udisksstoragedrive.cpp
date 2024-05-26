@@ -28,12 +28,12 @@
 
 using namespace Solid::Backends::UDisks2;
 
-StorageDrive::StorageDrive(Device *dev)
-    : Block(dev)
+StorageDrive::StorageDrive(Device* dev)
+	: Block(dev)
 {
-    UdevQt::Client client(this);
-    m_udevDevice = client.deviceByDeviceFile(device());
-    m_udevDevice.deviceProperties();
+	UdevQt::Client client(this);
+	m_udevDevice = client.deviceByDeviceFile(device());
+	m_udevDevice.deviceProperties();
 }
 
 StorageDrive::~StorageDrive()
@@ -42,33 +42,32 @@ StorageDrive::~StorageDrive()
 
 qulonglong StorageDrive::size() const
 {
-    return m_device->prop("Size").toULongLong();
+	return m_device->prop("Size").toULongLong();
 }
 
 bool StorageDrive::isHotpluggable() const
 {
-    const Solid::StorageDrive::Bus _bus = bus();
-    return _bus == Solid::StorageDrive::Usb || _bus == Solid::StorageDrive::Ieee1394;
+	const Solid::StorageDrive::Bus _bus = bus();
+	return _bus == Solid::StorageDrive::Usb || _bus == Solid::StorageDrive::Ieee1394;
 }
 
 bool StorageDrive::isRemovable() const
 {
-    return m_device->prop("MediaRemovable").toBool() || m_device->prop("Removable").toBool();
+	return m_device->prop("MediaRemovable").toBool() || m_device->prop("Removable").toBool();
 }
 
 Solid::StorageDrive::DriveType StorageDrive::driveType() const
 {
-    const QStringList mediaTypes = m_device->prop("MediaCompatibility").toStringList();
+	const QStringList mediaTypes = m_device->prop("MediaCompatibility").toStringList();
 
-    if ( m_device->isOpticalDrive() ) // optical disks
-    {
-        return Solid::StorageDrive::CdromDrive;
-    }
-    else if ( mediaTypes.contains( "floppy" ) )
-    {
-        return Solid::StorageDrive::Floppy;
-    }
-#if 0 // TODO add to Solid
+	if (m_device->isOpticalDrive())// optical disks
+	{
+		return Solid::StorageDrive::CdromDrive;
+	}
+	else if (mediaTypes.contains("floppy")) {
+		return Solid::StorageDrive::Floppy;
+	}
+#if 0// TODO add to Solid
     else if ( mediaTypes.contains( "floppy_jaz" ) )
     {
         return Solid::StorageDrive::Jaz;
@@ -82,57 +81,48 @@ Solid::StorageDrive::DriveType StorageDrive::driveType() const
         return Solid::StorageDrive::Flash;
     }
 #endif
-    else if ( mediaTypes.contains( "flash_cf" ) )
-    {
-        return Solid::StorageDrive::CompactFlash;
-    }
-    else if ( mediaTypes.contains( "flash_ms" ) )
-    {
-        return Solid::StorageDrive::MemoryStick;
-    }
-    else if ( mediaTypes.contains( "flash_sm" ) )
-    {
-        return Solid::StorageDrive::SmartMedia;
-    }
-    else if ( mediaTypes.contains( "flash_sd" ) || mediaTypes.contains( "flash_sdhc" )
-              || mediaTypes.contains( "flash_mmc" ) || mediaTypes.contains("flash_sdxc") )
-    {
-        return Solid::StorageDrive::SdMmc;
-    }
-    // FIXME: udisks2 doesn't know about xD cards
-    else
-    {
-        return Solid::StorageDrive::HardDisk;
-    }
+	else if (mediaTypes.contains("flash_cf")) {
+		return Solid::StorageDrive::CompactFlash;
+	}
+	else if (mediaTypes.contains("flash_ms")) {
+		return Solid::StorageDrive::MemoryStick;
+	}
+	else if (mediaTypes.contains("flash_sm")) {
+		return Solid::StorageDrive::SmartMedia;
+	}
+	else if (mediaTypes.contains("flash_sd") || mediaTypes.contains("flash_sdhc")
+	         || mediaTypes.contains("flash_mmc") || mediaTypes.contains("flash_sdxc")) {
+		return Solid::StorageDrive::SdMmc;
+	}
+	// FIXME: udisks2 doesn't know about xD cards
+	else {
+		return Solid::StorageDrive::HardDisk;
+	}
 }
 
 Solid::StorageDrive::Bus StorageDrive::bus() const
 {
-    const QString bus = m_device->prop("ConnectionBus").toString();
-    const QString udevBus = m_udevDevice.deviceProperty("ID_BUS").toString();
+	const QString bus = m_device->prop("ConnectionBus").toString();
+	const QString udevBus = m_udevDevice.deviceProperty("ID_BUS").toString();
 
-    //qDebug() << "bus:" << bus << "udev bus:" << udevBus;
+	//qDebug() << "bus:" << bus << "udev bus:" << udevBus;
 
-    if (udevBus == "ata")
-    {
-        if (m_udevDevice.deviceProperty("ID_ATA_SATA").toInt() == 1) // serial ATA
-            return Solid::StorageDrive::Sata;
-        else  // parallel (classical) ATA
-            return Solid::StorageDrive::Ide;
-    }
-    else if (bus == "usb")
-    {
-        return Solid::StorageDrive::Usb;
-    }
-    else if (bus == "ieee1394")
-    {
-        return Solid::StorageDrive::Ieee1394;
-    }
-    else if (udevBus == "scsi")
-    {
-        return Solid::StorageDrive::Scsi;
-    }
-#if 0  // TODO add these to Solid
+	if (udevBus == "ata") {
+		if (m_udevDevice.deviceProperty("ID_ATA_SATA").toInt() == 1)// serial ATA
+			return Solid::StorageDrive::Sata;
+		else// parallel (classical) ATA
+			return Solid::StorageDrive::Ide;
+	}
+	else if (bus == "usb") {
+		return Solid::StorageDrive::Usb;
+	}
+	else if (bus == "ieee1394") {
+		return Solid::StorageDrive::Ieee1394;
+	}
+	else if (udevBus == "scsi") {
+		return Solid::StorageDrive::Scsi;
+	}
+#if 0// TODO add these to Solid
     else if ( bus == "sdio" )
     {
         return Solid::StorageDrive::SDIO;
@@ -142,6 +132,6 @@ Solid::StorageDrive::Bus StorageDrive::bus() const
         return Solid::StorageDrive::Virtual;
     }
 #endif
-    else
-        return Solid::StorageDrive::Platform;
+	else
+		return Solid::StorageDrive::Platform;
 }

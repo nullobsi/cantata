@@ -76,7 +76,7 @@
  */
 const char* qxtVersion()
 {
-    return QXT_VERSION_STR;
+	return QXT_VERSION_STR;
 }
 
 /*!

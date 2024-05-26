@@ -22,18 +22,17 @@
  */
 #include "searchproxymodel.h"
 
-SearchProxyModel::SearchProxyModel(QObject *parent)
-    : ProxyModel(parent)
+SearchProxyModel::SearchProxyModel(QObject* parent)
+	: ProxyModel(parent)
 {
-    setDynamicSortFilter(true);
-    setFilterCaseSensitivity(Qt::CaseInsensitive);
-    setSortCaseSensitivity(Qt::CaseInsensitive);
-    setSortLocaleAware(true);
-    sort(0);
+	setDynamicSortFilter(true);
+	setFilterCaseSensitivity(Qt::CaseInsensitive);
+	setSortCaseSensitivity(Qt::CaseInsensitive);
+	setSortLocaleAware(true);
+	sort(0);
 }
 
-bool SearchProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+bool SearchProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
 {
-    return *static_cast<const Song *>(left.internalPointer()) < *static_cast<const Song *>(right.internalPointer());
+	return *static_cast<const Song*>(left.internalPointer()) < *static_cast<const Song*>(right.internalPointer());
 }
-

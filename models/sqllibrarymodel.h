@@ -109,7 +109,7 @@ public:
 	class AlbumItem : public CollectionItem {
 	public:
 		AlbumItem(const QString& ar, const QString& i, const QString& txt = QString(), const QString& sub = QString(),
-				  const QString& tSub = QString(), CollectionItem* p = nullptr, int cat = -1)
+		          const QString& tSub = QString(), CollectionItem* p = nullptr, int cat = -1)
 			: CollectionItem(T_Album, i, txt, sub, p), artistId(ar), titleSub(tSub), category(cat) {}
 		~AlbumItem() override {}
 

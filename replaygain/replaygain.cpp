@@ -29,143 +29,144 @@
 // Work-around possible locale issues by forcing usage of '.' as separator
 static QString formatDouble(double d)
 {
-    return QString::number(d, 'f', 10).replace(",", ".");
+	return QString::number(d, 'f', 10).replace(",", ".");
 }
 
-ReplayGain::ReplayGain(const QStringList &fileNames)
-    : QObject(0)
-    , files(fileNames)
-    , lastProgress(-1)
-    , totalScanned(0)
+ReplayGain::ReplayGain(const QStringList& fileNames)
+	: QObject(0), files(fileNames), lastProgress(-1), totalScanned(0)
 {
-    TrackScanner::init();
-    JobController::self()->setMaxActive(8);
+	TrackScanner::init();
+	JobController::self()->setMaxActive(8);
 }
 
 ReplayGain::~ReplayGain()
 {
-    clearScanners();
+	clearScanners();
 }
 
 void ReplayGain::scan()
 {
-    for (int i=0; i<files.count(); ++i) {
-        if (scanners.count()<100) {
-            createScanner(i);
-        } else {
-            toScan.append(i);
-        }
-    }
+	for (int i = 0; i < files.count(); ++i) {
+		if (scanners.count() < 100) {
+			createScanner(i);
+		}
+		else {
+			toScan.append(i);
+		}
+	}
 }
 
 void ReplayGain::createScanner(int index)
 {
-    TrackScanner *s=new TrackScanner(index);
-    s->setFile(files.at(index));
-    connect(s, SIGNAL(progress(int)), this, SLOT(scannerProgress(int)));
-    connect(s, SIGNAL(done()), this, SLOT(scannerDone()));
-    scanners.insert(index, s);
-    JobController::self()->add(s);
+	TrackScanner* s = new TrackScanner(index);
+	s->setFile(files.at(index));
+	connect(s, SIGNAL(progress(int)), this, SLOT(scannerProgress(int)));
+	connect(s, SIGNAL(done()), this, SLOT(scannerDone()));
+	scanners.insert(index, s);
+	JobController::self()->add(s);
 }
 
 void ReplayGain::clearScanners()
 {
-    JobController::self()->cancel();
-    QMap<int, TrackScanner *>::ConstIterator it(scanners.constBegin());
-    QMap<int, TrackScanner *>::ConstIterator end(scanners.constEnd());
+	JobController::self()->cancel();
+	QMap<int, TrackScanner*>::ConstIterator it(scanners.constBegin());
+	QMap<int, TrackScanner*>::ConstIterator end(scanners.constEnd());
 
-    for (; it!=end; ++it) {
-        it.value()->stop();
-    }
-    scanners.clear();
-    toScan.clear();
-    tracks.clear();
+	for (; it != end; ++it) {
+		it.value()->stop();
+	}
+	scanners.clear();
+	toScan.clear();
+	tracks.clear();
 }
 
 void ReplayGain::showProgress()
 {
-    int finished=0;
-    Q_UNUSED(finished)
-    quint64 totalProgress=0;
-    QMap<int, Track>::iterator it=tracks.begin();
-    QMap<int, Track>::iterator end=tracks.end();
+	int finished = 0;
+	Q_UNUSED(finished)
+	quint64 totalProgress = 0;
+	QMap<int, Track>::iterator it = tracks.begin();
+	QMap<int, Track>::iterator end = tracks.end();
 
-    for (; it!=end; ++it) {
-        if ((*it).finished) {
-            finished++;
-        }
-        totalProgress+=(*it).finished ? 100 : (*it).progress;
-    }
-    int progress=(totalProgress/files.count())+0.5;
-    progress=(progress/5)*5;
-    if (progress!=lastProgress) {
-        lastProgress=progress;
-        printf("PROGRESS: %02d\n", lastProgress);
-        fflush(stdout);
-    }
+	for (; it != end; ++it) {
+		if ((*it).finished) {
+			finished++;
+		}
+		totalProgress += (*it).finished ? 100 : (*it).progress;
+	}
+	int progress = (totalProgress / files.count()) + 0.5;
+	progress = (progress / 5) * 5;
+	if (progress != lastProgress) {
+		lastProgress = progress;
+		printf("PROGRESS: %02d\n", lastProgress);
+		fflush(stdout);
+	}
 }
 
 void ReplayGain::showResults()
 {
-    QList<TrackScanner *> okScanners;
-    for (int i=0; i<files.count(); ++i) {
-        TrackScanner *s=scanners[i];
-        const Track &t=tracks[i];
-        if (t.success && s->ok()) {
-            printf("TRACK: %d %s %s\n", i, formatDouble(TrackScanner::reference(s->results().loudness)).toLatin1().constData(),
-                                           formatDouble(s->results().peakValue()).toLatin1().constData());
-            okScanners.append(s);
-        } else {
-            printf("TRACK: %d FAILED\n", i);
-        }
-    }
+	QList<TrackScanner*> okScanners;
+	for (int i = 0; i < files.count(); ++i) {
+		TrackScanner* s = scanners[i];
+		const Track& t = tracks[i];
+		if (t.success && s->ok()) {
+			printf("TRACK: %d %s %s\n", i, formatDouble(TrackScanner::reference(s->results().loudness)).toLatin1().constData(),
+			       formatDouble(s->results().peakValue()).toLatin1().constData());
+			okScanners.append(s);
+		}
+		else {
+			printf("TRACK: %d FAILED\n", i);
+		}
+	}
 
-    if (okScanners.isEmpty()) {
-        printf("ALBUM: FAILED\n");
-    } else {
-        TrackScanner::Data album=TrackScanner::global(okScanners);
-        printf("ALBUM: %s %s\n", formatDouble(TrackScanner::reference(album.loudness)).toLatin1().constData(),
-                                 formatDouble(album.peak).toLatin1().constData());
-    }
-    fflush(stdout);
+	if (okScanners.isEmpty()) {
+		printf("ALBUM: FAILED\n");
+	}
+	else {
+		TrackScanner::Data album = TrackScanner::global(okScanners);
+		printf("ALBUM: %s %s\n", formatDouble(TrackScanner::reference(album.loudness)).toLatin1().constData(),
+		       formatDouble(album.peak).toLatin1().constData());
+	}
+	fflush(stdout);
 
-    QCoreApplication::exit(0);
+	QCoreApplication::exit(0);
 }
 
 void ReplayGain::scannerProgress(int p)
 {
-    TrackScanner *s=qobject_cast<TrackScanner *>(sender());
-    if (!s) {
-        return;
-    }
+	TrackScanner* s = qobject_cast<TrackScanner*>(sender());
+	if (!s) {
+		return;
+	}
 
-    tracks[s->index()].progress=p;
-    showProgress();
+	tracks[s->index()].progress = p;
+	showProgress();
 }
 
 void ReplayGain::scannerDone()
 {
-    TrackScanner *s=qobject_cast<TrackScanner *>(sender());
-    if (!s) {
-        return;
-    }
-    Track &track=tracks[s->index()];
-    if (!track.finished) {
-        track.finished=true;
-        track.success=s->success();
-        track.progress=100;
-        showProgress();
-        totalScanned++;
-    }
+	TrackScanner* s = qobject_cast<TrackScanner*>(sender());
+	if (!s) {
+		return;
+	}
+	Track& track = tracks[s->index()];
+	if (!track.finished) {
+		track.finished = true;
+		track.success = s->success();
+		track.progress = 100;
+		showProgress();
+		totalScanned++;
+	}
 
-    if (toScan.isEmpty()) {
-        if (totalScanned==files.count()) {
-            showResults();
-        }
-    } else {
-        int index=toScan.takeAt(0);
-        createScanner(index);
-    }
+	if (toScan.isEmpty()) {
+		if (totalScanned == files.count()) {
+			showResults();
+		}
+	}
+	else {
+		int index = toScan.takeAt(0);
+		createScanner(index);
+	}
 }
 
 #include "moc_replaygain.cpp"

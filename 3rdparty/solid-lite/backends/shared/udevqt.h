@@ -117,7 +117,7 @@ public:
 class ClientPrivate {
 public:
 	enum ListenToWhat { ListenToList,
-						ListenToNone };
+		                ListenToNone };
 
 	ClientPrivate(Client* q_);
 	~ClientPrivate();

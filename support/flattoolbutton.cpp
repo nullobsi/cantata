@@ -24,35 +24,35 @@
 #include "flattoolbutton.h"
 #include "utils.h"
 #include <QPainter>
-#include <QStylePainter>
 #include <QStyleOptionToolButton>
+#include <QStylePainter>
 
-FlatToolButton::FlatToolButton(QWidget *parent)
-    : QToolButton(parent)
+FlatToolButton::FlatToolButton(QWidget* parent)
+	: QToolButton(parent)
 {
-    setStyleSheet("QToolButton {border: 0}");
+	setStyleSheet("QToolButton {border: 0}");
 }
 
-void FlatToolButton::paintEvent(QPaintEvent *e)
+void FlatToolButton::paintEvent(QPaintEvent* e)
 {
-    Q_UNUSED(e);
-    if (isChecked() || isDown()) {
-        QPainter p(this);
-        QColor col(palette().color(QPalette::WindowText));
-        QRect r(rect());
-        QPainterPath path=Utils::buildPath(QRectF(r.x()+0.5, r.y()+0.5, r.width()-1, r.height()-1), 2.5);
-        p.setRenderHint(QPainter::Antialiasing, true);
-        col.setAlphaF(0.4);
-        p.setPen(col);
-        p.drawPath(path);
-        col.setAlphaF(0.1);
-        p.fillPath(path, col);
-    }
-    QStylePainter p(this);
-    QStyleOptionToolButton opt;
-    initStyleOption(&opt);
-//    if (isDown()) {
-//        opt.state&=QStyle::State_Sunken;
-//    }
-    p.drawComplexControl(QStyle::CC_ToolButton, opt);
+	Q_UNUSED(e);
+	if (isChecked() || isDown()) {
+		QPainter p(this);
+		QColor col(palette().color(QPalette::WindowText));
+		QRect r(rect());
+		QPainterPath path = Utils::buildPath(QRectF(r.x() + 0.5, r.y() + 0.5, r.width() - 1, r.height() - 1), 2.5);
+		p.setRenderHint(QPainter::Antialiasing, true);
+		col.setAlphaF(0.4);
+		p.setPen(col);
+		p.drawPath(path);
+		col.setAlphaF(0.1);
+		p.fillPath(path, col);
+	}
+	QStylePainter p(this);
+	QStyleOptionToolButton opt;
+	initStyleOption(&opt);
+	//    if (isDown()) {
+	//        opt.state&=QStyle::State_Sunken;
+	//    }
+	p.drawComplexControl(QStyle::CC_ToolButton, opt);
 }

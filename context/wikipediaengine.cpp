@@ -22,592 +22,603 @@
  */
 
 #include "wikipediaengine.h"
-#include "network/networkaccessmanager.h"
-#include "gui/settings.h"
-#include "gui/covers.h"
 #include "config.h"
+#include "gui/covers.h"
+#include "gui/settings.h"
+#include "network/networkaccessmanager.h"
+#include <QRegularExpression>
 #include <QUrlQuery>
 #include <QXmlStreamReader>
-#include <QRegularExpression>
 
 #include <QDebug>
-static bool debugEnabled=false;
-#define DBUG if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
+static bool debugEnabled = false;
+#define DBUG \
+	if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
 void WikipediaEngine::enableDebug()
 {
-    debugEnabled=true;
+	debugEnabled = true;
 }
 
-static const char * constModeProperty="mode";
-static const char * constQueryProperty="query";
+static const char* constModeProperty = "mode";
+static const char* constQueryProperty = "query";
 
-static QString wikipediaSpecialExport(const QString &lang)
+static QString wikipediaSpecialExport(const QString& lang)
 {
-    static QMap<QString, QString> links;
+	static QMap<QString, QString> links;
 
-    if (links.isEmpty()) {
-        links.insert(QLatin1String("de"), QString("Spezial:Exportieren"));
-        links.insert(QLatin1String("ru"), QString("Служебная:Экспорт"));
-    }
+	if (links.isEmpty()) {
+		links.insert(QLatin1String("de"), QString("Spezial:Exportieren"));
+		links.insert(QLatin1String("ru"), QString("Служебная:Экспорт"));
+	}
 
-    QMap<QString, QString>::ConstIterator it=links.find(lang);
-    return "/"+(it==links.constEnd() ? QLatin1String("Special:Export") : it.value())+"/";
+	QMap<QString, QString>::ConstIterator it = links.find(lang);
+	return "/" + (it == links.constEnd() ? QLatin1String("Special:Export") : it.value()) + "/";
 }
 
-static QString fixWikiLink(const QUrl &url)
+static QString fixWikiLink(const QUrl& url)
 {
-    QString lang=url.host().split(".").first();
-    QString path=url.path();
-    QString fixed(path);
-    fixed=fixed.replace("/wiki"+wikipediaSpecialExport(lang), "/wiki/");
-    if (path==fixed) {
-        QStringList parts=fixed.split("/", CANTATA_SKIP_EMPTY);
-        if (parts.length()>1) {
-            parts.removeAt(1);
-            fixed=parts.join("/");
-        }
-    }
-    QUrl u(url);
-    u.setPath(fixed);
-    return u.toString();
+	QString lang = url.host().split(".").first();
+	QString path = url.path();
+	QString fixed(path);
+	fixed = fixed.replace("/wiki" + wikipediaSpecialExport(lang), "/wiki/");
+	if (path == fixed) {
+		QStringList parts = fixed.split("/", CANTATA_SKIP_EMPTY);
+		if (parts.length() > 1) {
+			parts.removeAt(1);
+			fixed = parts.join("/");
+		}
+	}
+	QUrl u(url);
+	u.setPath(fixed);
+	return u.toString();
 }
 
-static QString strip(const QString &string, QString open, QString close, QString inner=QString())
+static QString strip(const QString& string, QString open, QString close, QString inner = QString())
 {
-    QString result;
-    int next, /*lastLeft, */left = 0;
-    int pos = string.indexOf(open, 0, Qt::CaseInsensitive);
+	QString result;
+	int next, /*lastLeft, */ left = 0;
+	int pos = string.indexOf(open, 0, Qt::CaseInsensitive);
 
-    if (pos < 0) {
-        return string;
-    }
+	if (pos < 0) {
+		return string;
+	}
 
-    if (inner.isEmpty()) {
-        inner = open;
-    }
+	if (inner.isEmpty()) {
+		inner = open;
+	}
 
-    while (pos > -1) {
-        result += string.mid(left, pos - left);
-//         lastLeft = left;
-        left = string.indexOf(close, pos);
-        if (left < 0) { // opens, but doesn't close
-            break;
-        } else {
-            next = pos;
-            while (next > -1 && left > -1) {
-                // search for inner iterations
-                int count = 0;
-                int lastNext = next;
-                while ((next = string.indexOf(inner, next+inner.length())) < left && next > -1) {
-                    // count inner section openers
-                    lastNext = next;
-                    ++count;
-                }
-                next = lastNext; // set back next to last inside opener for next iteration
+	while (pos > -1) {
+		result += string.mid(left, pos - left);
+		//         lastLeft = left;
+		left = string.indexOf(close, pos);
+		if (left < 0) {// opens, but doesn't close
+			break;
+		}
+		else {
+			next = pos;
+			while (next > -1 && left > -1) {
+				// search for inner iterations
+				int count = 0;
+				int lastNext = next;
+				while ((next = string.indexOf(inner, next + inner.length())) < left && next > -1) {
+					// count inner section openers
+					lastNext = next;
+					++count;
+				}
+				next = lastNext;// set back next to last inside opener for next iteration
 
-                if (!count) { // no inner sections, skip
-                    break;
-                }
+				if (!count) {// no inner sections, skip
+					break;
+				}
 
-                for (int i = 0; i < count; ++i) { // shift section closers by inside section amount
-                    left = string.indexOf(close, left+close.length());
-                }
-                // "continue" - search for next inner section
-            }
+				for (int i = 0; i < count; ++i) {// shift section closers by inside section amount
+					left = string.indexOf(close, left + close.length());
+				}
+				// "continue" - search for next inner section
+			}
 
-            if (left < 0) { // section does not close, skip here
-                break;
-            }
+			if (left < 0) {// section does not close, skip here
+				break;
+			}
 
-            left += close.length(); // extend close to next search start
-        }
+			left += close.length();// extend close to next search start
+		}
 
-        if (left < 0) { // section does not close, skip here
-            break;
-        }
+		if (left < 0) {// section does not close, skip here
+			break;
+		}
 
-        pos = string.indexOf(open, left); // search next 1st level section opener
-    }
+		pos = string.indexOf(open, left);// search next 1st level section opener
+	}
 
-    if (left > -1) { // append last part
-        result += string.mid(left);
-    }
+	if (left > -1) {// append last part
+		result += string.mid(left);
+	}
 
-    return result;
+	return result;
 }
 
 static QString stripEmptySections(QString answer)
 {
-    QStringList headers=QStringList() << "h3" << "h2" << "b";
-    for (const QString &h1: headers) {
-        for (const QString &h2: headers) {
-            int end=-1;
-            do {
-                end=answer.indexOf("</"+h1+"><"+h2+">");
-                int realEnd=end+3+h1.length();
-                if (-1==end) {
-                    end=answer.indexOf("</"+h1+"><br><br><"+h2+">");
-                    realEnd=end+11+h1.length();
-                }
-                if (-1!=end) {
-                    int start=answer.lastIndexOf("<"+h1+">", end);
-                    if (-1!=start) {
-                        answer=answer.left(start)+answer.mid(realEnd);
-                    }
-                }
-            } while(-1!=end);
-        }
-    }
-    return answer;
+	QStringList headers = QStringList() << "h3"
+										<< "h2"
+										<< "b";
+	for (const QString& h1 : headers) {
+		for (const QString& h2 : headers) {
+			int end = -1;
+			do {
+				end = answer.indexOf("</" + h1 + "><" + h2 + ">");
+				int realEnd = end + 3 + h1.length();
+				if (-1 == end) {
+					end = answer.indexOf("</" + h1 + "><br><br><" + h2 + ">");
+					realEnd = end + 11 + h1.length();
+				}
+				if (-1 != end) {
+					int start = answer.lastIndexOf("<" + h1 + ">", end);
+					if (-1 != start) {
+						answer = answer.left(start) + answer.mid(realEnd);
+					}
+				}
+			} while (-1 != end);
+		}
+	}
+	return answer;
 }
 
 static QString stripLastEmptySection(QString answer)
 {
-    QStringList headers=QStringList() << "h3" << "h2" << "b";
-    bool modified=false;
-    do {
-        modified=false;
-        for (const QString &h: headers) {
-            if (answer.endsWith("</"+h+">") || answer.endsWith("</"+h+"> ") || answer.endsWith("</"+h+">  ")) {
-                int start=answer.lastIndexOf("<"+h+">", answer.length()-4);
-                if (-1!=start) {
-                    answer=answer.left(start);
-                    modified=true;
-                }
-            }
-        }
-    } while (modified);
-    return answer;
+	QStringList headers = QStringList() << "h3"
+										<< "h2"
+										<< "b";
+	bool modified = false;
+	do {
+		modified = false;
+		for (const QString& h : headers) {
+			if (answer.endsWith("</" + h + ">") || answer.endsWith("</" + h + "> ") || answer.endsWith("</" + h + ">  ")) {
+				int start = answer.lastIndexOf("<" + h + ">", answer.length() - 4);
+				if (-1 != start) {
+					answer = answer.left(start);
+					modified = true;
+				}
+			}
+		}
+	} while (modified);
+	return answer;
 }
 
-static QString wikiToHtml(QString answer, bool introOnly, const QUrl &url)
+static QString wikiToHtml(QString answer, bool introOnly, const QUrl& url)
 {
-    QString u=fixWikiLink(url);
-    int start = answer.indexOf('>', answer.indexOf("<text"))+1;
-    static const QRegularExpression endR("\\n[^\\n]*\\n\\{\\{reflist", QRegularExpression::CaseInsensitiveOption);
-    int end = answer.lastIndexOf(endR);
-    if (end < start) {
-        end = INT_MAX;
-    }
-    static const QRegularExpression refEx("\\n[^\\n]*\\n&lt;references", QRegularExpression::CaseInsensitiveOption);
-    int e = answer.lastIndexOf(refEx);
-    if (e > start && e < end) {
-        end = e;
-    }
-    static const QRegularExpression sourceEX("\n==\\s*Sources\\s*==");
-    e = answer.lastIndexOf(sourceEX);
-    if (e > start && e < end) {
-        end = e;
-    }
-    static const QRegularExpression notesEX("\n==\\s*Notes\\s*==");
-    e = answer.lastIndexOf(notesEX);
-    if (e > start && e < end) {
-        end = e;
-    }
-    static const QRegularExpression refsEX("\n==\\s*References\\s*==");
-    e = answer.lastIndexOf(refEx);
-    if (e > start && e < end) {
-        end = e;
-    }
-    static const QRegularExpression externalEX("\n==\\s*External links\\s*==");
-    e = answer.lastIndexOf(externalEX);
-    if (e > start && e < end) {
-        end = e;
-    }
-    if (end < start) {
-        end = answer.lastIndexOf("</text");
-    }
+	QString u = fixWikiLink(url);
+	int start = answer.indexOf('>', answer.indexOf("<text")) + 1;
+	static const QRegularExpression endR("\\n[^\\n]*\\n\\{\\{reflist", QRegularExpression::CaseInsensitiveOption);
+	int end = answer.lastIndexOf(endR);
+	if (end < start) {
+		end = INT_MAX;
+	}
+	static const QRegularExpression refEx("\\n[^\\n]*\\n&lt;references", QRegularExpression::CaseInsensitiveOption);
+	int e = answer.lastIndexOf(refEx);
+	if (e > start && e < end) {
+		end = e;
+	}
+	static const QRegularExpression sourceEX("\n==\\s*Sources\\s*==");
+	e = answer.lastIndexOf(sourceEX);
+	if (e > start && e < end) {
+		end = e;
+	}
+	static const QRegularExpression notesEX("\n==\\s*Notes\\s*==");
+	e = answer.lastIndexOf(notesEX);
+	if (e > start && e < end) {
+		end = e;
+	}
+	static const QRegularExpression refsEX("\n==\\s*References\\s*==");
+	e = answer.lastIndexOf(refEx);
+	if (e > start && e < end) {
+		end = e;
+	}
+	static const QRegularExpression externalEX("\n==\\s*External links\\s*==");
+	e = answer.lastIndexOf(externalEX);
+	if (e > start && e < end) {
+		end = e;
+	}
+	if (end < start) {
+		end = answer.lastIndexOf("</text");
+	}
 
-    answer = answer.mid(start, end - start); // strip header/footer
-//    answer = strip(answer, "({{", "}})"); // strip wiki internal stuff
-    answer = strip(answer, "{{", "}}"); // strip wiki internal stuff
-    answer.replace("&lt;", "<").replace("&gt;", ">");
-    answer = strip(answer, "<!--", "-->"); // strip comments
-    static const QRegularExpression reftagEX("<ref[^>]*/>");
-    answer.remove(reftagEX); // strip inline refereces
-    answer = strip(answer, "<ref", "</ref>", "<ref"); // strip refereces
-//     answer = strip(answer, "<ref ", "</ref>", "<ref"); // strip argumented refereces
-    answer = strip(answer, "[[File:", "]]", "[["); // strip images etc
-    answer = strip(answer, "[[Image:", "]]", "[["); // strip images etc
+	answer = answer.mid(start, end - start);// strip header/footer
+											//    answer = strip(answer, "({{", "}})"); // strip wiki internal stuff
+	answer = strip(answer, "{{", "}}");     // strip wiki internal stuff
+	answer.replace("&lt;", "<").replace("&gt;", ">");
+	answer = strip(answer, "<!--", "-->");// strip comments
+	static const QRegularExpression reftagEX("<ref[^>]*/>");
+	answer.remove(reftagEX);                         // strip inline refereces
+	answer = strip(answer, "<ref", "</ref>", "<ref");// strip refereces
+													 //     answer = strip(answer, "<ref ", "</ref>", "<ref"); // strip argumented refereces
+	answer = strip(answer, "[[File:", "]]", "[[");   // strip images etc
+	answer = strip(answer, "[[Image:", "]]", "[[");  // strip images etc
 
-    static const QRegularExpression commLinkEX(R"(\[\[[^\[\]]*\|([^\[\]\|]*)\]\])");
-    answer.replace(commLinkEX, "\\1"); // collapse commented links
-    answer.replace("[['", "[["); // Fixes '74 (e.g. 1974) causing errors!
-    answer.remove("[[").remove("]]"); // remove wiki link "tags"
-    answer = strip(answer, "{| class=&quot;wikitable&quot;", "|}");
+	static const QRegularExpression commLinkEX(R"(\[\[[^\[\]]*\|([^\[\]\|]*)\]\])");
+	answer.replace(commLinkEX, "\\1");// collapse commented links
+	answer.replace("[['", "[[");      // Fixes '74 (e.g. 1974) causing errors!
+	answer.remove("[[").remove("]]"); // remove wiki link "tags"
+	answer = strip(answer, "{| class=&quot;wikitable&quot;", "|}");
 
-    answer = answer.trimmed();
+	answer = answer.trimmed();
 
-//     answer.replace(QRegExp("\\n\\{\\|[^\\n]*wikitable[^\\n]*\\n!"), "\n<table><th>");
+	//     answer.replace(QRegExp("\\n\\{\\|[^\\n]*wikitable[^\\n]*\\n!"), "\n<table><th>");
 
-    answer.replace("\n\n", "<br>");
-    answer.replace("(  ; ", "(");
-//     answer.replace("\n\n", "</p><p align=\"justify\">");
-    static const QRegularExpression ansOneE(R"(\n'''([^\n]*)'''\n)");
-    answer.replace(ansOneE, "<hr><b>\\1</b>\n");
-    static const QRegularExpression ansTwoE(R"(\n\{\|[^\n]*\n)");
-    answer.replace(ansTwoE, "\n");
-    static const QRegularExpression ansThreeE(R"(\n\|[^\n]*\n)");
-    answer.replace(ansThreeE, "\n");
-    answer.replace("\n*", "<br>");
-    answer.replace("\n", "");
-    answer.replace("'''s ", "'s");
-    static const QRegularExpression boldIE("¬([^¬]*)¬");
-    answer.replace("'''", "¬").replace(boldIE, "<b>\\1</b>");
-    answer.replace("''", "¬").replace(boldIE, "<i>\\1</i>");
-    if (!introOnly) {
-        answer.replace("===", "¬").replace(boldIE, "<h3>\\1</h3>");
-        answer.replace("==", "¬").replace(boldIE, "<h2>\\1</h2>");
-    }
-    answer.replace("&amp;nbsp;", " ");
-    answer.replace("&ndash;", "-");
-    answer.replace("&amp;mdash;", "—");
-    answer.replace("<br><h", "<h");
-    if (introOnly) {
-        end=answer.indexOf("==", 3);
-        if (-1==end) {
-            return QString();
-        } else {
-            answer=answer.left(end).trimmed();
-            if (!answer.endsWith("<br>")) {
-                answer+="<br>";
-            }
-            answer+=QString("<br><a href=\"%1\">%2</a>").arg(u).arg(WikipediaEngine::constReadMorePlaceholder);
-        }
-    } else {
-        answer.replace("</h2><br>", "</h2>");
-        answer.replace("</h3><br>", "</h3>");
-        answer.replace("<h3>=", "<h4>");
-        answer.replace("</h3>=", "</h4>");
-        answer.replace("br>;", "br>");
-        answer.replace("h2>;", "h2>");
-        answer.replace("h3>;", "h3>");
-        answer.replace("<br><br><br><br><br>", "<br><br>");
-        answer.replace("<br><br><br><br>", "<br><br>");
-        answer.replace("<br><br><br>", "<br><br>");
+	answer.replace("\n\n", "<br>");
+	answer.replace("(  ; ", "(");
+	//     answer.replace("\n\n", "</p><p align=\"justify\">");
+	static const QRegularExpression ansOneE(R"(\n'''([^\n]*)'''\n)");
+	answer.replace(ansOneE, "<hr><b>\\1</b>\n");
+	static const QRegularExpression ansTwoE(R"(\n\{\|[^\n]*\n)");
+	answer.replace(ansTwoE, "\n");
+	static const QRegularExpression ansThreeE(R"(\n\|[^\n]*\n)");
+	answer.replace(ansThreeE, "\n");
+	answer.replace("\n*", "<br>");
+	answer.replace("\n", "");
+	answer.replace("'''s ", "'s");
+	static const QRegularExpression boldIE("¬([^¬]*)¬");
+	answer.replace("'''", "¬").replace(boldIE, "<b>\\1</b>");
+	answer.replace("''", "¬").replace(boldIE, "<i>\\1</i>");
+	if (!introOnly) {
+		answer.replace("===", "¬").replace(boldIE, "<h3>\\1</h3>");
+		answer.replace("==", "¬").replace(boldIE, "<h2>\\1</h2>");
+	}
+	answer.replace("&amp;nbsp;", " ");
+	answer.replace("&ndash;", "-");
+	answer.replace("&amp;mdash;", "—");
+	answer.replace("<br><h", "<h");
+	if (introOnly) {
+		end = answer.indexOf("==", 3);
+		if (-1 == end) {
+			return QString();
+		}
+		else {
+			answer = answer.left(end).trimmed();
+			if (!answer.endsWith("<br>")) {
+				answer += "<br>";
+			}
+			answer += QString("<br><a href=\"%1\">%2</a>").arg(u).arg(WikipediaEngine::constReadMorePlaceholder);
+		}
+	}
+	else {
+		answer.replace("</h2><br>", "</h2>");
+		answer.replace("</h3><br>", "</h3>");
+		answer.replace("<h3>=", "<h4>");
+		answer.replace("</h3>=", "</h4>");
+		answer.replace("br>;", "br>");
+		answer.replace("h2>;", "h2>");
+		answer.replace("h3>;", "h3>");
+		answer.replace("<br><br><br><br><br>", "<br><br>");
+		answer.replace("<br><br><br><br>", "<br><br>");
+		answer.replace("<br><br><br>", "<br><br>");
 
-        // Remove track listings - we take these from MPD...
-        QString listingText="<h2>"+QObject::tr("Track listing")+"</h2>";
-        start=answer.indexOf(listingText, 0, Qt::CaseInsensitive);
-        if (-1!=start) {
-            int end=answer.indexOf("<h2>", start+listingText.length(), Qt::CaseInsensitive);
-            if (start!=end) {
-                answer=answer.left(start)+answer.mid(end);
-            }
-        }
+		// Remove track listings - we take these from MPD...
+		QString listingText = "<h2>" + QObject::tr("Track listing") + "</h2>";
+		start = answer.indexOf(listingText, 0, Qt::CaseInsensitive);
+		if (-1 != start) {
+			int end = answer.indexOf("<h2>", start + listingText.length(), Qt::CaseInsensitive);
+			if (start != end) {
+				answer = answer.left(start) + answer.mid(end);
+			}
+		}
 
-        // Try to remove empty sections (that will have been reated because we removed tables!)
-        answer=stripEmptySections(answer);
-        answer=stripLastEmptySection(answer);
-    }
+		// Try to remove empty sections (that will have been reated because we removed tables!)
+		answer = stripEmptySections(answer);
+		answer = stripLastEmptySection(answer);
+	}
 
-    if (!introOnly) {
-        if (!answer.endsWith("<br>")) {
-            answer+="<br>";
-        }
-        answer+=QString("<br><a href='%1'>%2</a>").arg(u).arg(WikipediaEngine::constOpenInBrowserPlaceholder);
-    }
+	if (!introOnly) {
+		if (!answer.endsWith("<br>")) {
+			answer += "<br>";
+		}
+		answer += QString("<br><a href='%1'>%2</a>").arg(u).arg(WikipediaEngine::constOpenInBrowserPlaceholder);
+	}
 
-    return answer;
+	return answer;
 }
 
-static inline QString getLang(const QUrl &url)
+static inline QString getLang(const QUrl& url)
 {
-    return url.host().remove(QLatin1String(".wikipedia.org"));
+	return url.host().remove(QLatin1String(".wikipedia.org"));
 }
 
 QStringList WikipediaEngine::preferredLangs;
-bool WikipediaEngine::introOnly=true;
+bool WikipediaEngine::introOnly = true;
 const QLatin1String WikipediaEngine::constReadMorePlaceholder("XXX_CONTEXT_READ_MORE_ON_WIKIPEDIA_XXX");
 const QLatin1String WikipediaEngine::constOpenInBrowserPlaceholder("XXX_CONTEXT_OPEN_IN_BROWSER_WIKIPEDIA_XXX");
 
-WikipediaEngine::WikipediaEngine(QObject *p)
-    : ContextEngine(p)
+WikipediaEngine::WikipediaEngine(QObject* p)
+	: ContextEngine(p)
 {
-    if (preferredLangs.isEmpty()) {
-        setPreferedLangs(Settings::self()->wikipediaLangs());
-        introOnly=Settings::self()->wikipediaIntroOnly();
-    }
+	if (preferredLangs.isEmpty()) {
+		setPreferedLangs(Settings::self()->wikipediaLangs());
+		introOnly = Settings::self()->wikipediaIntroOnly();
+	}
 }
 
-void WikipediaEngine::setPreferedLangs(const QStringList &l)
+void WikipediaEngine::setPreferedLangs(const QStringList& l)
 {
-    preferredLangs=l;
-    if (preferredLangs.isEmpty()) {
-        preferredLangs.append("en");
-    }
+	preferredLangs = l;
+	if (preferredLangs.isEmpty()) {
+		preferredLangs.append("en");
+	}
 }
 
 QString WikipediaEngine::translateLinks(QString text) const
 {
-    text=text.replace(constReadMorePlaceholder, QObject::tr("Read more on wikipedia"));
-    text=text.replace(constOpenInBrowserPlaceholder, QObject::tr("Open in browser"));
-    return text;
+	text = text.replace(constReadMorePlaceholder, QObject::tr("Read more on wikipedia"));
+	text = text.replace(constOpenInBrowserPlaceholder, QObject::tr("Open in browser"));
+	return text;
 }
 
-void WikipediaEngine::search(const QStringList &query, Mode mode)
+void WikipediaEngine::search(const QStringList& query, Mode mode)
 {
-    titles.clear();
-//    if (Track==mode) {
-//        emit searchResult(QString(), QString());
-//        return;
-//    }
-    requestTitles(fixQuery(query), mode, getPrefix(preferredLangs.first()));
+	titles.clear();
+	//    if (Track==mode) {
+	//        emit searchResult(QString(), QString());
+	//        return;
+	//    }
+	requestTitles(fixQuery(query), mode, getPrefix(preferredLangs.first()));
 }
 
-void WikipediaEngine::requestTitles(const QStringList &query, Mode mode, const QString &lang)
+void WikipediaEngine::requestTitles(const QStringList& query, Mode mode, const QString& lang)
 {
-    cancel();
-    QUrl url("https://"+lang+".wikipedia.org/w/api.php");
-    QUrlQuery q;
+	cancel();
+	QUrl url("https://" + lang + ".wikipedia.org/w/api.php");
+	QUrlQuery q;
 
-    q.addQueryItem(QLatin1String("action"), QLatin1String("query"));
-    q.addQueryItem(QLatin1String("list"), QLatin1String("search"));
-    q.addQueryItem(QLatin1String("srsearch"), query.join(" "));
-    q.addQueryItem(QLatin1String("srprop"), QLatin1String("size"));
-    q.addQueryItem(QLatin1String("srredirects"), QString::number(1));
-    q.addQueryItem(QLatin1String("srlimit"), QString::number(20));
-    q.addQueryItem(QLatin1String("format"), QLatin1String("xml"));
-    url.setQuery(q);
+	q.addQueryItem(QLatin1String("action"), QLatin1String("query"));
+	q.addQueryItem(QLatin1String("list"), QLatin1String("search"));
+	q.addQueryItem(QLatin1String("srsearch"), query.join(" "));
+	q.addQueryItem(QLatin1String("srprop"), QLatin1String("size"));
+	q.addQueryItem(QLatin1String("srredirects"), QString::number(1));
+	q.addQueryItem(QLatin1String("srlimit"), QString::number(20));
+	q.addQueryItem(QLatin1String("format"), QLatin1String("xml"));
+	url.setQuery(q);
 
-    job=NetworkAccessManager::self()->get(url);
-    job->setProperty(constModeProperty, (int)mode);
-    job->setProperty(constQueryProperty, query);
-    DBUG <<  url.toString();
-    connect(job, SIGNAL(finished()), this, SLOT(parseTitles()));
+	job = NetworkAccessManager::self()->get(url);
+	job->setProperty(constModeProperty, (int)mode);
+	job->setProperty(constQueryProperty, query);
+	DBUG << url.toString();
+	connect(job, SIGNAL(finished()), this, SLOT(parseTitles()));
 }
 
 void WikipediaEngine::parseTitles()
 {
-    DBUG << __FUNCTION__;
-    NetworkJob *reply = getReply(sender());
-    if (!reply) {
-        return;
-    }
+	DBUG << __FUNCTION__;
+	NetworkJob* reply = getReply(sender());
+	if (!reply) {
+		return;
+	}
 
-    QUrl url=reply->url();
-    QString hostLang=getLang(url);
-    QByteArray data=reply->readAll();
-    if (!reply->ok() || data.isEmpty()) {
-        DBUG <<  reply->errorString();
-        emit searchResult(QString(), QString());
-        return;
-    }
+	QUrl url = reply->url();
+	QString hostLang = getLang(url);
+	QByteArray data = reply->readAll();
+	if (!reply->ok() || data.isEmpty()) {
+		DBUG << reply->errorString();
+		emit searchResult(QString(), QString());
+		return;
+	}
 
-    QStringList query = reply->property(constQueryProperty).toStringList();
-    Mode mode=(Mode)reply->property(constModeProperty).toInt();
-    QXmlStreamReader xml(data);
+	QStringList query = reply->property(constQueryProperty).toStringList();
+	Mode mode = (Mode)reply->property(constModeProperty).toInt();
+	QXmlStreamReader xml(data);
 
-    while (!xml.atEnd() && !xml.hasError()) {
-        xml.readNext();
-        if (xml.isStartElement() && QLatin1String("search")==xml.name()) {
-            while (xml.readNextStartElement()) {
-                if (QLatin1String("p")==xml.name()) {
-                    if (xml.attributes().hasAttribute(QLatin1String("title"))) {
-                        titles << xml.attributes().value(QLatin1String("title")).toString();
-                    }
-                    xml.skipCurrentElement();
-                } else {
-                    xml.skipCurrentElement();
-                }
-            }
-        }
-    }
+	while (!xml.atEnd() && !xml.hasError()) {
+		xml.readNext();
+		if (xml.isStartElement() && QLatin1String("search") == xml.name()) {
+			while (xml.readNextStartElement()) {
+				if (QLatin1String("p") == xml.name()) {
+					if (xml.attributes().hasAttribute(QLatin1String("title"))) {
+						titles << xml.attributes().value(QLatin1String("title")).toString();
+					}
+					xml.skipCurrentElement();
+				}
+				else {
+					xml.skipCurrentElement();
+				}
+			}
+		}
+	}
 
-    if (titles.isEmpty()) {
-        DBUG <<  "No titles";
-        QRegularExpression regex(QLatin1Char('^') + hostLang + QLatin1String(".*$"));
-        int index = preferredLangs.indexOf(regex);
-        if (-1!=index && index < preferredLangs.count()-1) {
-            // use next preferred language as base for fetching langlinks since
-            // the current one did not get any results we want.
-            requestTitles(query, mode, getPrefix(preferredLangs.value(index+1)));
-        } else {
-            DBUG <<  "No more langs";
-            emit searchResult(QString(), QString());
-        }
-        return;
-    }
+	if (titles.isEmpty()) {
+		DBUG << "No titles";
+		QRegularExpression regex(QLatin1Char('^') + hostLang + QLatin1String(".*$"));
+		int index = preferredLangs.indexOf(regex);
+		if (-1 != index && index < preferredLangs.count() - 1) {
+			// use next preferred language as base for fetching langlinks since
+			// the current one did not get any results we want.
+			requestTitles(query, mode, getPrefix(preferredLangs.value(index + 1)));
+		}
+		else {
+			DBUG << "No more langs";
+			emit searchResult(QString(), QString());
+		}
+		return;
+	}
 
-    DBUG << titles;
-    getPage(query, mode, hostLang);
+	DBUG << titles;
+	getPage(query, mode, hostLang);
 }
 
-static int indexOf(const QStringList &l, const QString &s)
+static int indexOf(const QStringList& l, const QString& s)
 {
-    QString search=s.simplified();
-    for (int i=0; i<l.length(); ++i){
-        if (0==l.at(i).compare(search, Qt::CaseInsensitive)) {
-            return i;
-        }
-    }
-    return -1;
+	QString search = s.simplified();
+	for (int i = 0; i < l.length(); ++i) {
+		if (0 == l.at(i).compare(search, Qt::CaseInsensitive)) {
+			return i;
+		}
+	}
+	return -1;
 }
 
-void WikipediaEngine::getPage(const QStringList &query, Mode mode, const QString &lang)
+void WikipediaEngine::getPage(const QStringList& query, Mode mode, const QString& lang)
 {
-    DBUG << __FUNCTION__;
-    QStringList queryCopy(query);
-    QStringList queries;
-    QStringList simplifiedTitles;
-    for (QString t: titles) {
-        simplifiedTitles.append(t.simplified());
-    }
+	DBUG << __FUNCTION__;
+	QStringList queryCopy(query);
+	QStringList queries;
+	QStringList simplifiedTitles;
+	for (QString t : titles) {
+		simplifiedTitles.append(t.simplified());
+	}
 
-    QMap<QString, QString> replacements;
-    replacements.insert(QLatin1String("."), QString()); // A.S.A.P. -> ASAP
-    replacements.insert(QLatin1String("-"), QLatin1String("/")); // AC-DC -> AC/DC
-    QMap<QString, QString>::ConstIterator repEnd=replacements.constEnd();
+	QMap<QString, QString> replacements;
+	replacements.insert(QLatin1String("."), QString());         // A.S.A.P. -> ASAP
+	replacements.insert(QLatin1String("-"), QLatin1String("/"));// AC-DC -> AC/DC
+	QMap<QString, QString>::ConstIterator repEnd = replacements.constEnd();
 
-    while (!queryCopy.isEmpty()) {
-        QString q=queryCopy.join(" ");
-        queries.append(q);
+	while (!queryCopy.isEmpty()) {
+		QString q = queryCopy.join(" ");
+		queries.append(q);
 
-        for (QMap<QString, QString>::ConstIterator rep=replacements.constBegin(); rep!=repEnd; ++rep) {
-            QString q2=q;
-            q2.replace(rep.key(), rep.value());
-            if (q2!=q) {
-                queries.append(q2);
-            }
-        }
+		for (QMap<QString, QString>::ConstIterator rep = replacements.constBegin(); rep != repEnd; ++rep) {
+			QString q2 = q;
+			q2.replace(rep.key(), rep.value());
+			if (q2 != q) {
+				queries.append(q2);
+			}
+		}
 
-        queryCopy.takeFirst();
-    }
+		queryCopy.takeFirst();
+	}
 
-    QStringList patterns;
-    QStringList englishPatterns;
-    
-    switch (mode) {
-    default:
-    case Artist:
-        patterns=tr("artist|band|singer|vocalist|musician", "Search pattern for an artist or band, separated by |").split("|", CANTATA_SKIP_EMPTY);
-        englishPatterns=QString(QLatin1String("artist|band|singer|vocalist|musician")).split("|");
-        break;
-    case Album:
-        patterns=tr("album|score|soundtrack", "Search pattern for an album, separated by |").split("|", CANTATA_SKIP_EMPTY);
-        englishPatterns=QString(QLatin1String("album|score|soundtrack")).split("|");
-        break;
-    case Track:
-//        patterns=trc("Search pattern for a song, separated by |", "song|track").split("|", CANTATA_SKIP_EMPTY);
-//        englishPatterns=QString(QLatin1String("song|track")).split("|");
-        break;
-    }
+	QStringList patterns;
+	QStringList englishPatterns;
 
-    for (const QString &eng: englishPatterns) {
-        if (!patterns.contains(eng)) {
-            patterns.append(eng);
-        }
-    }
+	switch (mode) {
+	default:
+	case Artist:
+		patterns = tr("artist|band|singer|vocalist|musician", "Search pattern for an artist or band, separated by |").split("|", CANTATA_SKIP_EMPTY);
+		englishPatterns = QString(QLatin1String("artist|band|singer|vocalist|musician")).split("|");
+		break;
+	case Album:
+		patterns = tr("album|score|soundtrack", "Search pattern for an album, separated by |").split("|", CANTATA_SKIP_EMPTY);
+		englishPatterns = QString(QLatin1String("album|score|soundtrack")).split("|");
+		break;
+	case Track:
+		//        patterns=trc("Search pattern for a song, separated by |", "song|track").split("|", CANTATA_SKIP_EMPTY);
+		//        englishPatterns=QString(QLatin1String("song|track")).split("|");
+		break;
+	}
 
-    DBUG <<  "Titles" << titles;
+	for (const QString& eng : englishPatterns) {
+		if (!patterns.contains(eng)) {
+			patterns.append(eng);
+		}
+	}
 
-    int index=-1;
-    if ((mode==Album || mode==Track) && 2==query.count()) {
-        DBUG <<  "Check track/album";
-        for (const QString &pattern: patterns) {
-            QString q=query.at(1)+" ("+query.at(0)+" "+pattern+")";
-            DBUG <<  "Try" << q;
-            index=indexOf(simplifiedTitles, q);
-            if (-1!=index) {
-                DBUG <<  "Matched with '$album/$track ($artist pattern)" << index << q;
-                break;
-            }
-        }
-    }
+	DBUG << "Titles" << titles;
 
-    if (-1==index) {
-        for (const QString &q: queries) {
-            DBUG <<  "Query" << q;
-            // First check original query with one of the patterns...
-            for (const QString &pattern: patterns) {
-                index=indexOf(simplifiedTitles, q+" ("+pattern+")");
-                if (-1!=index) {
-                    DBUG <<  "Matched with pattern" << index << QString(q+" ("+pattern+")");
-                    break;
-                }
-            }
+	int index = -1;
+	if ((mode == Album || mode == Track) && 2 == query.count()) {
+		DBUG << "Check track/album";
+		for (const QString& pattern : patterns) {
+			QString q = query.at(1) + " (" + query.at(0) + " " + pattern + ")";
+			DBUG << "Try" << q;
+			index = indexOf(simplifiedTitles, q);
+			if (-1 != index) {
+				DBUG << "Matched with '$album/$track ($artist pattern)" << index << q;
+				break;
+			}
+		}
+	}
 
-            if (-1==index) {
-                // Try without any pattern...
-                index=indexOf(simplifiedTitles, q);
-                if (-1!=index) {
-                    DBUG <<  "Matched without pattern" << index << q;
-                }
-            }
+	if (-1 == index) {
+		for (const QString& q : queries) {
+			DBUG << "Query" << q;
+			// First check original query with one of the patterns...
+			for (const QString& pattern : patterns) {
+				index = indexOf(simplifiedTitles, q + " (" + pattern + ")");
+				if (-1 != index) {
+					DBUG << "Matched with pattern" << index << QString(q + " (" + pattern + ")");
+					break;
+				}
+			}
 
-            if (-1!=index) {
-                break;
-            }
-        }
-    }
+			if (-1 == index) {
+				// Try without any pattern...
+				index = indexOf(simplifiedTitles, q);
+				if (-1 != index) {
+					DBUG << "Matched without pattern" << index << q;
+				}
+			}
 
-    // TODO: If we fail to find a match, prompt user???
-    if (-1==index) {
-        DBUG <<  "Failed to find match";
-        emit searchResult(QString(), QString());
-        return;
-    }
-    const QString title=titles.takeAt(index);
+			if (-1 != index) {
+				break;
+			}
+		}
+	}
 
-    if (QLatin1String("List of CJK Unified Ideographs")==title) {
-        DBUG <<  "Unicode list?";
-        emit searchResult(QString(), QString());
-        return;
-    }
+	// TODO: If we fail to find a match, prompt user???
+	if (-1 == index) {
+		DBUG << "Failed to find match";
+		emit searchResult(QString(), QString());
+		return;
+	}
+	const QString title = titles.takeAt(index);
 
-    QUrl url;
-    url.setScheme(QLatin1String("https"));
-    url.setHost(lang+".wikipedia.org");
-    url.setPath("/wiki"+wikipediaSpecialExport(lang)+title);
-    job=NetworkAccessManager::self()->get(url);
-    job->setProperty(constModeProperty, (int)mode);
-    job->setProperty(constQueryProperty, query);
-    DBUG <<  url.toString();
-    connect(job, SIGNAL(finished()), this, SLOT(parsePage()));
+	if (QLatin1String("List of CJK Unified Ideographs") == title) {
+		DBUG << "Unicode list?";
+		emit searchResult(QString(), QString());
+		return;
+	}
+
+	QUrl url;
+	url.setScheme(QLatin1String("https"));
+	url.setHost(lang + ".wikipedia.org");
+	url.setPath("/wiki" + wikipediaSpecialExport(lang) + title);
+	job = NetworkAccessManager::self()->get(url);
+	job->setProperty(constModeProperty, (int)mode);
+	job->setProperty(constQueryProperty, query);
+	DBUG << url.toString();
+	connect(job, SIGNAL(finished()), this, SLOT(parsePage()));
 }
 
 void WikipediaEngine::parsePage()
 {
-    DBUG << __FUNCTION__;
-    NetworkJob *reply = getReply(sender());
-    if (!reply) {
-        return;
-    }
+	DBUG << __FUNCTION__;
+	NetworkJob* reply = getReply(sender());
+	if (!reply) {
+		return;
+	}
 
-    QByteArray data=reply->readAll();
-    if (!reply->ok() || data.isEmpty()) {
-        DBUG <<  "Empty/error";
-        emit searchResult(QString(), QString());
-        return;
-    }
+	QByteArray data = reply->readAll();
+	if (!reply->ok() || data.isEmpty()) {
+		DBUG << "Empty/error";
+		emit searchResult(QString(), QString());
+		return;
+	}
 
-    QString answer(QString::fromUtf8(data));
-    //DBUG <<  "Anser" << answer;
-    QUrl url=reply->url();
-    QString hostLang=getLang(url);
+	QString answer(QString::fromUtf8(data));
+	//DBUG <<  "Anser" << answer;
+	QUrl url = reply->url();
+	QString hostLang = getLang(url);
 
-    QStringList query=reply->property(constQueryProperty).toStringList();
-    Mode mode=(Mode)reply->property(constModeProperty).toInt();
-    if (answer.contains(QLatin1String("{{disambiguation}}")) || answer.contains(QLatin1String("{{disambig}}"))) { // tr???
-        getPage(query, mode, hostLang);
-        return;
-    }
+	QStringList query = reply->property(constQueryProperty).toStringList();
+	Mode mode = (Mode)reply->property(constModeProperty).toInt();
+	if (answer.contains(QLatin1String("{{disambiguation}}")) || answer.contains(QLatin1String("{{disambig}}"))) {// tr???
+		getPage(query, mode, hostLang);
+		return;
+	}
 
-    if (answer.isEmpty()) {
-        emit searchResult(QString(), QString());
-        return;
-    }
-    QString resp=wikiToHtml(answer, introOnly, reply->url());
-    if (introOnly && resp.isEmpty()) {
-        resp=wikiToHtml(answer, false, reply->url());
-    }
+	if (answer.isEmpty()) {
+		emit searchResult(QString(), QString());
+		return;
+	}
+	QString resp = wikiToHtml(answer, introOnly, reply->url());
+	if (introOnly && resp.isEmpty()) {
+		resp = wikiToHtml(answer, false, reply->url());
+	}
 
-    // For track results, ensure response contains artist name!
-    if (Track==mode && !resp.contains(query.at(0), Qt::CaseInsensitive) && !resp.contains(Covers::fixArtist(query.at(0)), Qt::CaseInsensitive)) {
-        getPage(query, mode, hostLang);
-    } else {
-        emit searchResult(resp, hostLang);
-    }
+	// For track results, ensure response contains artist name!
+	if (Track == mode && !resp.contains(query.at(0), Qt::CaseInsensitive) && !resp.contains(Covers::fixArtist(query.at(0)), Qt::CaseInsensitive)) {
+		getPage(query, mode, hostLang);
+	}
+	else {
+		emit searchResult(resp, hostLang);
+	}
 }
 
 #include "moc_wikipediaengine.cpp"

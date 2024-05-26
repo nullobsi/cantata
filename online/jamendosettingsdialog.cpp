@@ -25,26 +25,26 @@
 #include "support/buddylabel.h"
 #include <QFormLayout>
 
-JamendoSettingsDialog::JamendoSettingsDialog(QWidget *parent)
-    : Dialog(parent)
+JamendoSettingsDialog::JamendoSettingsDialog(QWidget* parent)
+	: Dialog(parent)
 {
-    setButtons(Ok|Cancel);
-    setCaption(tr("Jamendo Settings"));
-    QWidget *mw=new QWidget(this);
-    QFormLayout *layout=new QFormLayout(mw);
-    fmt=new QComboBox(mw);
-    fmt->insertItem(0, tr("MP3"));
-    fmt->insertItem(1, tr("Ogg"));
-    layout->setWidget(0, QFormLayout::LabelRole, new BuddyLabel(tr("Streaming format:"), mw, fmt));
-    layout->setWidget(0, QFormLayout::FieldRole, fmt);
-    layout->setContentsMargins(0, 0, 0, 0);
-    setMainWidget(mw);
+	setButtons(Ok | Cancel);
+	setCaption(tr("Jamendo Settings"));
+	QWidget* mw = new QWidget(this);
+	QFormLayout* layout = new QFormLayout(mw);
+	fmt = new QComboBox(mw);
+	fmt->insertItem(0, tr("MP3"));
+	fmt->insertItem(1, tr("Ogg"));
+	layout->setWidget(0, QFormLayout::LabelRole, new BuddyLabel(tr("Streaming format:"), mw, fmt));
+	layout->setWidget(0, QFormLayout::FieldRole, fmt);
+	layout->setContentsMargins(0, 0, 0, 0);
+	setMainWidget(mw);
 }
 
 bool JamendoSettingsDialog::run(bool mp3)
 {
-    fmt->setCurrentIndex(mp3 ? 0 : 1);
-    return QDialog::Accepted==Dialog::exec();
+	fmt->setCurrentIndex(mp3 ? 0 : 1);
+	return QDialog::Accepted == Dialog::exec();
 }
 
 #include "moc_jamendosettingsdialog.cpp"

@@ -223,7 +223,7 @@ protected:
       * Reimplemented from QAbstractItemView.
       */
 	virtual void setSelection(const QRect& rect,
-							  QItemSelectionModel::SelectionFlags flags) Q_DECL_OVERRIDE;
+	                          QItemSelectionModel::SelectionFlags flags) Q_DECL_OVERRIDE;
 
 	/**
       * Reimplemented from QWidget.
@@ -274,14 +274,14 @@ protected:
       * Reimplemented from QAbstractItemView.
       */
 	virtual QModelIndex moveCursor(CursorAction cursorAction,
-								   Qt::KeyboardModifiers modifiers) Q_DECL_OVERRIDE;
+	                               Qt::KeyboardModifiers modifiers) Q_DECL_OVERRIDE;
 
 	/**
       * Reimplemented from QAbstractItemView.
       */
 	virtual void rowsAboutToBeRemoved(const QModelIndex& parent,
-									  int start,
-									  int end) Q_DECL_OVERRIDE;
+	                                  int start,
+	                                  int end) Q_DECL_OVERRIDE;
 
 	/**
       * Reimplemented from QAbstractItemView.
@@ -292,21 +292,21 @@ protected:
       * Reimplemented from QAbstractItemView.
       */
 	virtual void currentChanged(const QModelIndex& current,
-								const QModelIndex& previous) Q_DECL_OVERRIDE;
+	                            const QModelIndex& previous) Q_DECL_OVERRIDE;
 
 	/**
       * Reimplemented from QAbstractItemView.
       */
 	virtual void dataChanged(const QModelIndex& topLeft,
-							 const QModelIndex& bottomRight,
-							 const QVector<int>& roles = QVector<int>()) Q_DECL_OVERRIDE;
+	                         const QModelIndex& bottomRight,
+	                         const QVector<int>& roles = QVector<int>()) Q_DECL_OVERRIDE;
 
 	/**
       * Reimplemented from QAbstractItemView.
       */
 	virtual void rowsInserted(const QModelIndex& parent,
-							  int start,
-							  int end) Q_DECL_OVERRIDE;
+	                          int start,
+	                          int end) Q_DECL_OVERRIDE;
 
 protected Q_SLOTS:
 	/**

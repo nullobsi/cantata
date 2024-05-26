@@ -29,53 +29,50 @@
 #include "windows.h"
 #endif
 
-FreeSpaceInfo::FreeSpaceInfo(const QString &path)
-    : location(path)
-    , isDirty(true)
-    , totalSize(0)
-    , usedSpace(0)
+FreeSpaceInfo::FreeSpaceInfo(const QString& path)
+	: location(path), isDirty(true), totalSize(0), usedSpace(0)
 {
 }
 
-void FreeSpaceInfo::setPath(const QString &path)
+void FreeSpaceInfo::setPath(const QString& path)
 {
-    if (location!=path) {
-        location=Utils::fixPath(path);
-        isDirty=true;
-    }
+	if (location != path) {
+		location = Utils::fixPath(path);
+		isDirty = true;
+	}
 }
 
 qulonglong FreeSpaceInfo::size()
 {
-    if (isDirty) {
-        update();
-    }
-    return totalSize;
+	if (isDirty) {
+		update();
+	}
+	return totalSize;
 }
 
 qulonglong FreeSpaceInfo::used()
 {
-    if (isDirty) {
-        update();
-    }
-    return usedSpace;
+	if (isDirty) {
+		update();
+	}
+	return usedSpace;
 }
 
 void FreeSpaceInfo::update()
 {
-    #if defined(Q_OS_UNIX)
-    struct statvfs fs_info;
-    if (0==statvfs(location.toLocal8Bit().constData(), &fs_info)) {
-        totalSize=quint64(fs_info.f_blocks) * quint64(fs_info.f_bsize);
-        usedSpace=totalSize-(quint64(fs_info.f_bavail) * quint64(fs_info.f_bsize));
-    }
-    #elif defined(Q_OS_WIN)
-    _ULARGE_INTEGER totalRet;
-    _ULARGE_INTEGER freeRet;
-    if (0!=GetDiskFreeSpaceEx(QDir::toNativeSeparators(location).toLocal8Bit().constData(), &freeRet, &totalRet, NULL)) {
-        totalSize=totalRet.QuadPart;
-        usedSpace=totalRet.QuadPart-freeRet.QuadPart;
-    }
-    #endif
-    isDirty=false;
+#if defined(Q_OS_UNIX)
+	struct statvfs fs_info;
+	if (0 == statvfs(location.toLocal8Bit().constData(), &fs_info)) {
+		totalSize = quint64(fs_info.f_blocks) * quint64(fs_info.f_bsize);
+		usedSpace = totalSize - (quint64(fs_info.f_bavail) * quint64(fs_info.f_bsize));
+	}
+#elif defined(Q_OS_WIN)
+	_ULARGE_INTEGER totalRet;
+	_ULARGE_INTEGER freeRet;
+	if (0 != GetDiskFreeSpaceEx(QDir::toNativeSeparators(location).toLocal8Bit().constData(), &freeRet, &totalRet, NULL)) {
+		totalSize = totalRet.QuadPart;
+		usedSpace = totalRet.QuadPart - freeRet.QuadPart;
+	}
+#endif
+	isDirty = false;
 }

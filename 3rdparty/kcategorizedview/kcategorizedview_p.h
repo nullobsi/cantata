@@ -124,14 +124,14 @@ public:
       * Updates the visual rect for item when flow is LeftToRight.
       */
 	void leftToRightVisualRect(const QModelIndex& index, Item& item,
-							   const Block& block, const QPoint& blockPos) const;
+	                           const Block& block, const QPoint& blockPos) const;
 
 	/**
       * Updates the visual rect for item when flow is TopToBottom.
       * @note we only support viewMode == ListMode in this case.
       */
 	void topToBottomVisualRect(const QModelIndex& index, Item& item,
-							   const Block& block, const QPoint& blockPos) const;
+	                           const Block& block, const QPoint& blockPos) const;
 
 	/**
       * Called when expand or collapse has been clicked on the category drawer.

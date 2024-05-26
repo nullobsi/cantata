@@ -22,138 +22,134 @@
 
 #include "transcodingjob.h"
 #include "device.h"
-#include <QStringList>
 #include <QRegularExpression>
+#include <QStringList>
 
-TranscodingJob::TranscodingJob(const Encoders::Encoder &enc, int val, const QString &src, const QString &dest, const DeviceOptions &d, int co, const Song &s)
-    : CopyJob(src, dest, d, co, s)
-    , encoder(enc)
-    , value(val)
-    , process(nullptr)
-    , duration(-1)
+TranscodingJob::TranscodingJob(const Encoders::Encoder& enc, int val, const QString& src, const QString& dest, const DeviceOptions& d, int co, const Song& s)
+	: CopyJob(src, dest, d, co, s), encoder(enc), value(val), process(nullptr), duration(-1)
 {
 }
 
 TranscodingJob::~TranscodingJob()
 {
-    delete process;
+	delete process;
 }
 
 void TranscodingJob::run()
 {
-    QString src(updateTagsLocal());
-    if (src.isEmpty()) {
-        return;
-    }
+	QString src(updateTagsLocal());
+	if (src.isEmpty()) {
+		return;
+	}
 
-    if (stopRequested) {
-        emit result(Device::Cancelled);
-    } else {
-        QStringList parameters=encoder.params(value, src, destFile);
-        process = new QProcess;
-        process->setProcessChannelMode(QProcess::MergedChannels);
-        process->setReadChannel(QProcess::StandardOutput);
-        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(processOutput()));
-        connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finished(int, QProcess::ExitStatus)));
-        QString cmd=parameters.takeFirst();
-        process->start(cmd, parameters);
-    }
+	if (stopRequested) {
+		emit result(Device::Cancelled);
+	}
+	else {
+		QStringList parameters = encoder.params(value, src, destFile);
+		process = new QProcess;
+		process->setProcessChannelMode(QProcess::MergedChannels);
+		process->setReadChannel(QProcess::StandardOutput);
+		connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(processOutput()));
+		connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finished(int, QProcess::ExitStatus)));
+		QString cmd = parameters.takeFirst();
+		process->start(cmd, parameters);
+	}
 }
 
 void TranscodingJob::stop()
 {
-    if (process) {
-        process->close();
-        process->deleteLater();
-        process=nullptr;
-        emit result(Device::Cancelled);
-    }
+	if (process) {
+		process->close();
+		process->deleteLater();
+		process = nullptr;
+		emit result(Device::Cancelled);
+	}
 }
 
 void TranscodingJob::finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    Q_UNUSED(exitStatus)
-    if (!process) {
-        return;
-    }
-    if (stopRequested) {
-        emit result(Device::Cancelled);
-        return;
-    }
-    if (0==exitCode) {
-        updateTagsDest();
-        copyCover(srcFile);
-    }
-    emit result(0==exitCode ? Device::Ok : Device::TranscodeFailed);
+	Q_UNUSED(exitStatus)
+	if (!process) {
+		return;
+	}
+	if (stopRequested) {
+		emit result(Device::Cancelled);
+		return;
+	}
+	if (0 == exitCode) {
+		updateTagsDest();
+		copyCover(srcFile);
+	}
+	emit result(0 == exitCode ? Device::Ok : Device::TranscodeFailed);
 }
 
 void TranscodingJob::processOutput()
 {
-    if (stopRequested) {
-        emit result(Device::Cancelled);
-        return;
-    }
-    QString output = process->readAllStandardOutput().data();
-    if(output.simplified().isEmpty()) {
-        return;
-    }
+	if (stopRequested) {
+		emit result(Device::Cancelled);
+		return;
+	}
+	QString output = process->readAllStandardOutput().data();
+	if (output.simplified().isEmpty()) {
+		return;
+	}
 
-    if (!data.isEmpty()) {
-        output=data+output;
-    }
-    if (-1==duration) {
-        duration = computeDuration(output);
-    }
+	if (!data.isEmpty()) {
+		output = data + output;
+	}
+	if (-1 == duration) {
+		duration = computeDuration(output);
+	}
 
-    if (duration>0) {
-        qint64 prog = computeProgress(output);
-        if (prog>-1) {
-            setPercent((prog*100)/duration);
-        }
-    }
+	if (duration > 0) {
+		qint64 prog = computeProgress(output);
+		if (prog > -1) {
+			setPercent((prog * 100) / duration);
+		}
+	}
 
-    if (!output.endsWith('\n') && !output.endsWith('\r')) {
-        int last=output.lastIndexOf('\n');
-        if (-1==last) {
-            last=output.lastIndexOf('\r');
-        }
-        if (last>-1) {
-            data=output.mid(last+1);
-        } else {
-            data=output;
-        }
-    }
+	if (!output.endsWith('\n') && !output.endsWith('\r')) {
+		int last = output.lastIndexOf('\n');
+		if (-1 == last) {
+			last = output.lastIndexOf('\r');
+		}
+		if (last > -1) {
+			data = output.mid(last + 1);
+		}
+		else {
+			data = output;
+		}
+	}
 }
 
-inline qint64 TranscodingJob::computeDuration(const QString &output)
+inline qint64 TranscodingJob::computeDuration(const QString& output)
 {
-    //We match something like "Duration: 00:04:33.60"
-    static const QRegularExpression durationRegexp("Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})");
-    QRegularExpressionMatch match;
-    if(output.contains(durationRegexp, &match)) {
-        //duration is in csec
-        return match.captured(1).toLong() * 60 * 60 * 100 +
-               match.captured(2).toInt()  * 60 * 100 +
-               match.captured(3).toInt()  * 100 +
-               match.captured(4).toInt();
-    } else {
-        return -1;
-    }
+	//We match something like "Duration: 00:04:33.60"
+	static const QRegularExpression durationRegexp("Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})");
+	QRegularExpressionMatch match;
+	if (output.contains(durationRegexp, &match)) {
+		//duration is in csec
+		return match.captured(1).toLong() * 60 * 60 * 100 + match.captured(2).toInt() * 60 * 100 + match.captured(3).toInt() * 100 + match.captured(4).toInt();
+	}
+	else {
+		return -1;
+	}
 }
 
-inline qint64 TranscodingJob::computeProgress(const QString &output)
+inline qint64 TranscodingJob::computeProgress(const QString& output)
 {
-    //Output is like size=     323kB time=18.10 bitrate= 146.0kbits/s
-    //We're going to use the "time" column, which counts the elapsed time in seconds.
-    static const QRegularExpression timeRegexp("time=(\\d+)\\.(\\d{2})");
-    QRegularExpressionMatch match;
+	//Output is like size=     323kB time=18.10 bitrate= 146.0kbits/s
+	//We're going to use the "time" column, which counts the elapsed time in seconds.
+	static const QRegularExpression timeRegexp("time=(\\d+)\\.(\\d{2})");
+	QRegularExpressionMatch match;
 
-    if(output.contains(timeRegexp, &match)) {
-        return match.captured(1).toLong() * 100 +
-               match.captured(2).toInt();
-    } else {
-        return -1;
-    }
+	if (output.contains(timeRegexp, &match)) {
+		return match.captured(1).toLong() * 100 + match.captured(2).toInt();
+	}
+	else {
+		return -1;
+	}
 }
 
 #include "moc_transcodingjob.cpp"

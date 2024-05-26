@@ -22,23 +22,23 @@
  */
 
 #include "application_mac.h"
-#include "support/utils.h"
 #include "config.h"
-#include <stdlib.h>
+#include "support/utils.h"
 #include <QDir>
+#include <stdlib.h>
 
-Application::Application(int &argc, char **argv)
-    : SingleApplication(argc, argv)
+Application::Application(int& argc, char** argv)
+	: SingleApplication(argc, argv)
 {
-    setAttribute(Qt::AA_DontShowIconsInMenus, true);
+	setAttribute(Qt::AA_DontShowIconsInMenus, true);
 
-    // Set DYLD_LIBRARY_PATH so that Qt finds our openSSL libs
-    QDir dir(argv[0]);
-    dir.cdUp();
+	// Set DYLD_LIBRARY_PATH so that Qt finds our openSSL libs
+	QDir dir(argv[0]);
+	dir.cdUp();
 
-    QByteArray ldPath = qgetenv("DYLD_LIBRARY_PATH");
-    if (!ldPath.isEmpty()) {
-        ldPath=':'+ldPath;
-    }
-    ldPath = dir.absolutePath().toLocal8Bit()+ldPath;
+	QByteArray ldPath = qgetenv("DYLD_LIBRARY_PATH");
+	if (!ldPath.isEmpty()) {
+		ldPath = ':' + ldPath;
+	}
+	ldPath = dir.absolutePath().toLocal8Bit() + ldPath;
 }

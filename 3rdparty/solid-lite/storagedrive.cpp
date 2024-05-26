@@ -21,73 +21,71 @@
 #include "storagedrive.h"
 #include "storagedrive_p.h"
 
-#include "soliddefs_p.h"
-#include <solid-lite/ifaces/storagedrive.h>
-#include "predicate.h"
-#include "storageaccess.h"
 #include "device.h"
 #include "device_p.h"
+#include "predicate.h"
+#include "soliddefs_p.h"
+#include "storageaccess.h"
+#include <solid-lite/ifaces/storagedrive.h>
 
-Solid::StorageDrive::StorageDrive(QObject *backendObject)
-    : DeviceInterface(*new StorageDrivePrivate(), backendObject)
+Solid::StorageDrive::StorageDrive(QObject* backendObject)
+	: DeviceInterface(*new StorageDrivePrivate(), backendObject)
 {
 }
 
-Solid::StorageDrive::StorageDrive(StorageDrivePrivate &dd, QObject *backendObject)
-    : DeviceInterface(dd, backendObject)
+Solid::StorageDrive::StorageDrive(StorageDrivePrivate& dd, QObject* backendObject)
+	: DeviceInterface(dd, backendObject)
 {
-
 }
 
 Solid::StorageDrive::~StorageDrive()
 {
-
 }
 
 Solid::StorageDrive::Bus Solid::StorageDrive::bus() const
 {
-    Q_D(const StorageDrive);
-    return_SOLID_CALL(Ifaces::StorageDrive *, d->backendObject(), Platform, bus());
+	Q_D(const StorageDrive);
+	return_SOLID_CALL(Ifaces::StorageDrive*, d->backendObject(), Platform, bus());
 }
 
 Solid::StorageDrive::DriveType Solid::StorageDrive::driveType() const
 {
-    Q_D(const StorageDrive);
-    return_SOLID_CALL(Ifaces::StorageDrive *, d->backendObject(), HardDisk, driveType());
+	Q_D(const StorageDrive);
+	return_SOLID_CALL(Ifaces::StorageDrive*, d->backendObject(), HardDisk, driveType());
 }
 
 bool Solid::StorageDrive::isRemovable() const
 {
-    Q_D(const StorageDrive);
-    return_SOLID_CALL(Ifaces::StorageDrive *, d->backendObject(), false, isRemovable());
+	Q_D(const StorageDrive);
+	return_SOLID_CALL(Ifaces::StorageDrive*, d->backendObject(), false, isRemovable());
 }
 
 bool Solid::StorageDrive::isHotpluggable() const
 {
-    Q_D(const StorageDrive);
-    return_SOLID_CALL(Ifaces::StorageDrive *, d->backendObject(), false, isHotpluggable());
+	Q_D(const StorageDrive);
+	return_SOLID_CALL(Ifaces::StorageDrive*, d->backendObject(), false, isHotpluggable());
 }
 
 qulonglong Solid::StorageDrive::size() const
 {
-    Q_D(const StorageDrive);
-    return_SOLID_CALL(Ifaces::StorageDrive *, d->backendObject(), false, size());
+	Q_D(const StorageDrive);
+	return_SOLID_CALL(Ifaces::StorageDrive*, d->backendObject(), false, size());
 }
 
 bool Solid::StorageDrive::isInUse() const
 {
-    Q_D(const StorageDrive);
-    Predicate p(DeviceInterface::StorageAccess);
-    QList<Device> devices = Device::listFromQuery(p, d->devicePrivate()->udi());
+	Q_D(const StorageDrive);
+	Predicate p(DeviceInterface::StorageAccess);
+	QList<Device> devices = Device::listFromQuery(p, d->devicePrivate()->udi());
 
-    bool inUse = false;
-    for (const Device &dev: devices)	{
-        if (dev.is<Solid::StorageAccess>()) {
-            const Solid::StorageAccess* access = dev.as<Solid::StorageAccess>();
-            inUse |= (access->isAccessible());
-        }
-    }
-    return inUse;
+	bool inUse = false;
+	for (const Device& dev : devices) {
+		if (dev.is<Solid::StorageAccess>()) {
+			const Solid::StorageAccess* access = dev.as<Solid::StorageAccess>();
+			inUse |= (access->isAccessible());
+		}
+	}
+	return inUse;
 }
 
 #include "moc_storagedrive.cpp"

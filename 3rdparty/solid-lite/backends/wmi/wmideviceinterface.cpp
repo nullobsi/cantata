@@ -22,8 +22,8 @@
 
 using namespace Solid::Backends::Wmi;
 
-DeviceInterface::DeviceInterface(WmiDevice *device)
-    : QObject(device), m_device(device)
+DeviceInterface::DeviceInterface(WmiDevice* device)
+	: QObject(device), m_device(device)
 {
 }
 

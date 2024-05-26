@@ -34,11 +34,11 @@ public:
 	static bool isInFstab(const QString& device);
 	static QStringList possibleMountPoints(const QString& device);
 	static QProcess* callSystemCommand(const QString& commandName,
-									   const QStringList& args,
-									   QObject* obj, const char* slot);
+	                                   const QStringList& args,
+	                                   QObject* obj, const char* slot);
 	static QProcess* callSystemCommand(const QString& commandName,
-									   const QString& device,
-									   QObject* obj, const char* slot);
+	                                   const QString& device,
+	                                   QObject* obj, const char* slot);
 };
 }// namespace Hal
 }// namespace Backends

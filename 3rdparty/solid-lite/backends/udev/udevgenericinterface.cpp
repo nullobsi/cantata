@@ -24,8 +24,8 @@
 
 using namespace Solid::Backends::UDev;
 
-GenericInterface::GenericInterface(UDevDevice *device)
-    : DeviceInterface(device)
+GenericInterface::GenericInterface(UDevDevice* device)
+	: DeviceInterface(device)
 {
 #if 0
     connect(device, SIGNAL(propertyChanged(QMap<QString,int>)),
@@ -37,22 +37,21 @@ GenericInterface::GenericInterface(UDevDevice *device)
 
 GenericInterface::~GenericInterface()
 {
-
 }
 
-QVariant GenericInterface::property(const QString &key) const
+QVariant GenericInterface::property(const QString& key) const
 {
-    return m_device->property(key);
+	return m_device->property(key);
 }
 
 QMap<QString, QVariant> GenericInterface::allProperties() const
 {
-    return m_device->allProperties();
+	return m_device->allProperties();
 }
 
-bool GenericInterface::propertyExists(const QString &key) const
+bool GenericInterface::propertyExists(const QString& key) const
 {
-    return m_device->propertyExists(key);
+	return m_device->propertyExists(key);
 }
 
 #include "backends/udev/moc_udevgenericinterface.cpp"

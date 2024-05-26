@@ -27,59 +27,61 @@
 #include "playlistsproxymodel.h"
 #include "playlistsmodel.h"
 
-PlaylistsProxyModel::PlaylistsProxyModel(QObject *parent)
-    : ProxyModel(parent)
+PlaylistsProxyModel::PlaylistsProxyModel(QObject* parent)
+	: ProxyModel(parent)
 {
-    setDynamicSortFilter(true);
-    setFilterCaseSensitivity(Qt::CaseInsensitive);
-    setSortCaseSensitivity(Qt::CaseInsensitive);
-    setSortLocaleAware(true);
+	setDynamicSortFilter(true);
+	setFilterCaseSensitivity(Qt::CaseInsensitive);
+	setSortCaseSensitivity(Qt::CaseInsensitive);
+	setSortLocaleAware(true);
 }
 
-bool PlaylistsProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+bool PlaylistsProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
-    if (!filterEnabled) {
-        return true;
-    }
-    if (!isChildOfRoot(sourceParent)) {
-        return true;
-    }
+	if (!filterEnabled) {
+		return true;
+	}
+	if (!isChildOfRoot(sourceParent)) {
+		return true;
+	}
 
-    const QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
-    PlaylistsModel::Item *item = static_cast<PlaylistsModel::Item *>(index.internalPointer());
+	const QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
+	PlaylistsModel::Item* item = static_cast<PlaylistsModel::Item*>(index.internalPointer());
 
-    if (item->isPlaylist()) {
-        PlaylistsModel::PlaylistItem *pl = static_cast<PlaylistsModel::PlaylistItem *>(item);
+	if (item->isPlaylist()) {
+		PlaylistsModel::PlaylistItem* pl = static_cast<PlaylistsModel::PlaylistItem*>(item);
 
-        if (matchesFilter(QStringList() << pl->name)) {
-            return true;
-        }
+		if (matchesFilter(QStringList() << pl->name)) {
+			return true;
+		}
 
-        for (PlaylistsModel::SongItem *s: pl->songs) {
-            if (matchesFilter(*s)) {
-                return true;
-            }
-        }
-    } else {
-        PlaylistsModel::SongItem *s = static_cast<PlaylistsModel::SongItem *>(item);
-        return matchesFilter(*s);
-    }
+		for (PlaylistsModel::SongItem* s : pl->songs) {
+			if (matchesFilter(*s)) {
+				return true;
+			}
+		}
+	}
+	else {
+		PlaylistsModel::SongItem* s = static_cast<PlaylistsModel::SongItem*>(item);
+		return matchesFilter(*s);
+	}
 
-    return false;
+	return false;
 }
 
-bool PlaylistsProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+bool PlaylistsProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
 {
-    PlaylistsModel::Item *l=static_cast<PlaylistsModel::Item *>(left.internalPointer());
-    PlaylistsModel::Item *r=static_cast<PlaylistsModel::Item *>(right.internalPointer());
+	PlaylistsModel::Item* l = static_cast<PlaylistsModel::Item*>(left.internalPointer());
+	PlaylistsModel::Item* r = static_cast<PlaylistsModel::Item*>(right.internalPointer());
 
-    if (l->isPlaylist() && r->isPlaylist()) {
-        return compareNames(static_cast<PlaylistsModel::PlaylistItem *>(l)->name, static_cast<PlaylistsModel::PlaylistItem *>(r)->name);
-    } else if(!l->isPlaylist() && !r->isPlaylist()) {
-        return left.row()<right.row();
-    }
+	if (l->isPlaylist() && r->isPlaylist()) {
+		return compareNames(static_cast<PlaylistsModel::PlaylistItem*>(l)->name, static_cast<PlaylistsModel::PlaylistItem*>(r)->name);
+	}
+	else if (!l->isPlaylist() && !r->isPlaylist()) {
+		return left.row() < right.row();
+	}
 
-    return false;
+	return false;
 }
 
 #include "moc_playlistsproxymodel.cpp"

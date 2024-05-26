@@ -65,7 +65,7 @@ public:
          * @see Solid::Predicate
          */
 	static QList<Device> listFromType(const DeviceInterface::Type& type,
-									  const QString& parentUdi = QString());
+	                                  const QString& parentUdi = QString());
 
 	/**
          * Retrieves a list of devices of the system given matching the given
@@ -78,7 +78,7 @@ public:
          * @see Solid::Predicate
          */
 	static QList<Device> listFromQuery(const Predicate& predicate,
-									   const QString& parentUdi = QString());
+	                                   const QString& parentUdi = QString());
 
 	/**
          * Convenience function see above.
@@ -88,7 +88,7 @@ public:
          * @return the list of devices
          */
 	static QList<Device> listFromQuery(const QString& predicate,
-									   const QString& parentUdi = QString());
+	                                   const QString& parentUdi = QString());
 
 	/**
          * Constructs a device for a given Universal Device Identifier (UDI).

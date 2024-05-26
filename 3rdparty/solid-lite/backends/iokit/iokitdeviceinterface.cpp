@@ -22,8 +22,8 @@
 
 using namespace Solid::Backends::IOKit;
 
-DeviceInterface::DeviceInterface(IOKitDevice *device)
-    : QObject(device), m_device(device)
+DeviceInterface::DeviceInterface(IOKitDevice* device)
+	: QObject(device), m_device(device)
 {
 }
 

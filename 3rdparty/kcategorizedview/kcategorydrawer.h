@@ -67,9 +67,9 @@ public:
       *       first element in that category
       */
 	virtual void drawCategory(const QModelIndex& index,
-							  int sortRole,
-							  const QStyleOption& option,
-							  QPainter* painter) const;
+	                          int sortRole,
+	                          const QStyleOption& option,
+	                          QPainter* painter) const;
 
 	/**
       * @return The category height for the category representated by index @p index with

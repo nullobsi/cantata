@@ -23,62 +23,61 @@
 
 #include "contextengine.h"
 #include "metaengine.h"
-#include "wikipediaengine.h"
 #include "network/networkaccessmanager.h"
+#include "wikipediaengine.h"
 
-ContextEngine * ContextEngine::create(QObject *parent)
+ContextEngine* ContextEngine::create(QObject* parent)
 {
-    return new MetaEngine(parent);
+	return new MetaEngine(parent);
 }
 
-ContextEngine::ContextEngine(QObject *p)
-    : QObject(p)
-    , job(nullptr)
+ContextEngine::ContextEngine(QObject* p)
+	: QObject(p), job(nullptr)
 {
 }
 
 ContextEngine::~ContextEngine()
 {
-    cancel();
+	cancel();
 }
 
-QStringList ContextEngine::fixQuery(const QStringList &query) const
+QStringList ContextEngine::fixQuery(const QStringList& query) const
 {
-    QStringList fixedQuery;
-    for (QString q: query) {
-        if (q.contains(QLatin1String("PREVIEW: buy it at www.magnatune.com"))) {
-            q = q.remove(QLatin1String(" (PREVIEW: buy it at www.magnatune.com)"));
-            int index = q.indexOf(QLatin1Char('-'));
-            if (-1!=index) {
-                q = q.left(index - 1);
-            }
-        }
-        fixedQuery.append(q);
-    }
-    return fixedQuery;
+	QStringList fixedQuery;
+	for (QString q : query) {
+		if (q.contains(QLatin1String("PREVIEW: buy it at www.magnatune.com"))) {
+			q = q.remove(QLatin1String(" (PREVIEW: buy it at www.magnatune.com)"));
+			int index = q.indexOf(QLatin1Char('-'));
+			if (-1 != index) {
+				q = q.left(index - 1);
+			}
+		}
+		fixedQuery.append(q);
+	}
+	return fixedQuery;
 }
 
 void ContextEngine::cancel()
 {
-    if (job) {
-        job->cancelAndDelete();
-        job=nullptr;
-    }
+	if (job) {
+		job->cancelAndDelete();
+		job = nullptr;
+	}
 }
 
-NetworkJob * ContextEngine::getReply(QObject *obj)
+NetworkJob* ContextEngine::getReply(QObject* obj)
 {
-    NetworkJob *reply = qobject_cast<NetworkJob*>(obj);
-    if (!reply) {
-        return nullptr;
-    }
+	NetworkJob* reply = qobject_cast<NetworkJob*>(obj);
+	if (!reply) {
+		return nullptr;
+	}
 
-    reply->deleteLater();
-    if (reply!=job) {
-        return nullptr;
-    }
-    job=nullptr;
-    return reply;
+	reply->deleteLater();
+	if (reply != job) {
+		return nullptr;
+	}
+	job = nullptr;
+	return reply;
 }
 
 #include "moc_contextengine.cpp"

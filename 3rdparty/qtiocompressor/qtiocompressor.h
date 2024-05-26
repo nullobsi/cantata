@@ -70,8 +70,8 @@ class QT_QTIOCOMPRESSOR_EXPORT QtIOCompressor : public QIODevice {
 	Q_OBJECT
 public:
 	enum StreamFormat { ZlibFormat,
-						GzipFormat,
-						RawZipFormat };
+		                GzipFormat,
+		                RawZipFormat };
 	QtIOCompressor(QIODevice* device, int compressionLevel = 6, int bufferSize = 65500);
 	~QtIOCompressor() override;
 	void setStreamFormat(StreamFormat format);

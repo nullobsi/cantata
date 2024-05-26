@@ -58,11 +58,11 @@ public:
          * - Unused : An unused or free volume
          */
 	enum UsageType { Other = 0,
-					 Unused = 1,
-					 FileSystem = 2,
-					 PartitionTable = 3,
-					 Raid = 4,
-					 Encrypted = 5 };
+		             Unused = 1,
+		             FileSystem = 2,
+		             PartitionTable = 3,
+		             Raid = 4,
+		             Encrypted = 5 };
 
 private:
 	/**

@@ -21,137 +21,148 @@
 
 #include <QTimer>
 
-#include "shortcutssettingswidget.h"
 #include "action.h"
 #include "actioncollection.h"
 #include "shortcutsmodel.h"
+#include "shortcutssettingswidget.h"
 
-ShortcutsFilter::ShortcutsFilter(QObject *parent) : QSortFilterProxyModel(parent) {
-  setDynamicSortFilter(true);
+ShortcutsFilter::ShortcutsFilter(QObject* parent) : QSortFilterProxyModel(parent)
+{
+	setDynamicSortFilter(true);
 }
 
-void ShortcutsFilter::setFilterString(const QString &filterString) {
-  _filterString = filterString;
-  invalidateFilter();
+void ShortcutsFilter::setFilterString(const QString& filterString)
+{
+	_filterString = filterString;
+	invalidateFilter();
 }
 
-bool ShortcutsFilter::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const {
-  if(!source_parent.isValid())
-    return true;
+bool ShortcutsFilter::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
+{
+	if (!source_parent.isValid())
+		return true;
 
-  QModelIndex index = source_parent.model()->index(source_row, 0, source_parent);
-  Q_ASSERT(index.isValid());
-  if(!qobject_cast<Action *>(index.data(ShortcutsModel::ActionRole).value<QObject *>())->isShortcutConfigurable())
-    return false;
+	QModelIndex index = source_parent.model()->index(source_row, 0, source_parent);
+	Q_ASSERT(index.isValid());
+	if (!qobject_cast<Action*>(index.data(ShortcutsModel::ActionRole).value<QObject*>())->isShortcutConfigurable())
+		return false;
 
-  for(int col = 0; col < source_parent.model()->columnCount(source_parent); col++) {
-    if(source_parent.model()->index(source_row, col, source_parent).data().toString().contains(_filterString, Qt::CaseInsensitive))
-      return true;
-  }
-  return false;
+	for (int col = 0; col < source_parent.model()->columnCount(source_parent); col++) {
+		if (source_parent.model()->index(source_row, col, source_parent).data().toString().contains(_filterString, Qt::CaseInsensitive))
+			return true;
+	}
+	return false;
 }
 
 /****************************************************************************/
 
-ShortcutsSettingsWidget::ShortcutsSettingsWidget(const QHash<QString, ActionCollection *> &actionCollections, QWidget *parent)
-  : QWidget(parent),
-  _shortcutsModel(new ShortcutsModel(actionCollections, this)),
-  _shortcutsFilter(new ShortcutsFilter(this))
+ShortcutsSettingsWidget::ShortcutsSettingsWidget(const QHash<QString, ActionCollection*>& actionCollections, QWidget* parent)
+	: QWidget(parent),
+	  _shortcutsModel(new ShortcutsModel(actionCollections, this)),
+	  _shortcutsFilter(new ShortcutsFilter(this))
 {
-  setupUi(this);
+	setupUi(this);
 
-  _shortcutsFilter->setSourceModel(_shortcutsModel);
-  shortcutsView->setModel(_shortcutsFilter);
-  shortcutsView->expandAll();
-  shortcutsView->resizeColumnToContents(0);
-  shortcutsView->sortByColumn(0, Qt::AscendingOrder);
-  shortcutsView->setUniformRowHeights(true);
-  if (1==_shortcutsModel->rowCount()) {
-      shortcutsView->setIndentation(0);
-      shortcutsView->setRootIndex(_shortcutsFilter->index(0, 0));
-  }
+	_shortcutsFilter->setSourceModel(_shortcutsModel);
+	shortcutsView->setModel(_shortcutsFilter);
+	shortcutsView->expandAll();
+	shortcutsView->resizeColumnToContents(0);
+	shortcutsView->sortByColumn(0, Qt::AscendingOrder);
+	shortcutsView->setUniformRowHeights(true);
+	if (1 == _shortcutsModel->rowCount()) {
+		shortcutsView->setIndentation(0);
+		shortcutsView->setRootIndex(_shortcutsFilter->index(0, 0));
+	}
 
-  keySequenceWidget->setModel(_shortcutsModel);
-  connect(keySequenceWidget, SIGNAL(keySequenceChanged(QKeySequence,QModelIndex)), SLOT(keySequenceChanged(QKeySequence,QModelIndex)));
+	keySequenceWidget->setModel(_shortcutsModel);
+	connect(keySequenceWidget, SIGNAL(keySequenceChanged(QKeySequence, QModelIndex)), SLOT(keySequenceChanged(QKeySequence, QModelIndex)));
 
-  connect(shortcutsView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), SLOT(setWidgetStates()));
+	connect(shortcutsView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), SLOT(setWidgetStates()));
 
-  setWidgetStates();
+	setWidgetStates();
 
-  connect(useDefault, SIGNAL(clicked(bool)), SLOT(toggledCustomOrDefault()));
-  connect(useCustom, SIGNAL(clicked(bool)), SLOT(toggledCustomOrDefault()));
+	connect(useDefault, SIGNAL(clicked(bool)), SLOT(toggledCustomOrDefault()));
+	connect(useCustom, SIGNAL(clicked(bool)), SLOT(toggledCustomOrDefault()));
 
-//   connect(_shortcutsModel, SIGNAL(hasChanged(bool)), SLOT(setChangedState(bool)));
+	//   connect(_shortcutsModel, SIGNAL(hasChanged(bool)), SLOT(setChangedState(bool)));
 
-  // fugly, but directly setting it from the ctor doesn't seem to work
-  QTimer::singleShot(0, searchEdit, SLOT(setFocus()));
+	// fugly, but directly setting it from the ctor doesn't seem to work
+	QTimer::singleShot(0, searchEdit, SLOT(setFocus()));
 }
 
-QTreeView * ShortcutsSettingsWidget::view()
+QTreeView* ShortcutsSettingsWidget::view()
 {
-    return shortcutsView;
+	return shortcutsView;
 }
 
-void ShortcutsSettingsWidget::setWidgetStates() {
-  if(shortcutsView->currentIndex().isValid() && shortcutsView->currentIndex().parent().isValid()) {
-    QKeySequence active = shortcutsView->currentIndex().data(ShortcutsModel::ActiveShortcutRole).value<QKeySequence>();
-    QKeySequence def = shortcutsView->currentIndex().data(ShortcutsModel::DefaultShortcutRole).value<QKeySequence>();
-    defaultShortcut->setText(def.isEmpty()? tr("None") : def.toString(QKeySequence::NativeText));
-    actionBox->setEnabled(true);
-    if(active == def) {
-      useDefault->setChecked(true);
-      keySequenceWidget->setKeySequence(QKeySequence());
-    } else {
-      useCustom->setChecked(true);
-      keySequenceWidget->setKeySequence(active);
-    }
-  } else {
-    defaultShortcut->setText(tr("None"));
-    actionBox->setEnabled(false);
-    useDefault->setChecked(true);
-    keySequenceWidget->setKeySequence(QKeySequence());
-  }
+void ShortcutsSettingsWidget::setWidgetStates()
+{
+	if (shortcutsView->currentIndex().isValid() && shortcutsView->currentIndex().parent().isValid()) {
+		QKeySequence active = shortcutsView->currentIndex().data(ShortcutsModel::ActiveShortcutRole).value<QKeySequence>();
+		QKeySequence def = shortcutsView->currentIndex().data(ShortcutsModel::DefaultShortcutRole).value<QKeySequence>();
+		defaultShortcut->setText(def.isEmpty() ? tr("None") : def.toString(QKeySequence::NativeText));
+		actionBox->setEnabled(true);
+		if (active == def) {
+			useDefault->setChecked(true);
+			keySequenceWidget->setKeySequence(QKeySequence());
+		}
+		else {
+			useCustom->setChecked(true);
+			keySequenceWidget->setKeySequence(active);
+		}
+	}
+	else {
+		defaultShortcut->setText(tr("None"));
+		actionBox->setEnabled(false);
+		useDefault->setChecked(true);
+		keySequenceWidget->setKeySequence(QKeySequence());
+	}
 }
 
-void ShortcutsSettingsWidget::on_searchEdit_textChanged(const QString &text) {
-  _shortcutsFilter->setFilterString(text);
+void ShortcutsSettingsWidget::on_searchEdit_textChanged(const QString& text)
+{
+	_shortcutsFilter->setFilterString(text);
 }
 
-void ShortcutsSettingsWidget::keySequenceChanged(const QKeySequence &seq, const QModelIndex &conflicting) {
-  if(conflicting.isValid())
-    _shortcutsModel->setData(conflicting, QKeySequence(), ShortcutsModel::ActiveShortcutRole);
+void ShortcutsSettingsWidget::keySequenceChanged(const QKeySequence& seq, const QModelIndex& conflicting)
+{
+	if (conflicting.isValid())
+		_shortcutsModel->setData(conflicting, QKeySequence(), ShortcutsModel::ActiveShortcutRole);
 
-  QModelIndex rowIdx = _shortcutsFilter->mapToSource(shortcutsView->currentIndex());
-  Q_ASSERT(rowIdx.isValid());
-  _shortcutsModel->setData(rowIdx, seq, ShortcutsModel::ActiveShortcutRole);
-  setWidgetStates();
+	QModelIndex rowIdx = _shortcutsFilter->mapToSource(shortcutsView->currentIndex());
+	Q_ASSERT(rowIdx.isValid());
+	_shortcutsModel->setData(rowIdx, seq, ShortcutsModel::ActiveShortcutRole);
+	setWidgetStates();
 }
 
-void ShortcutsSettingsWidget::toggledCustomOrDefault() {
-  if(!shortcutsView->currentIndex().isValid())
-    return;
+void ShortcutsSettingsWidget::toggledCustomOrDefault()
+{
+	if (!shortcutsView->currentIndex().isValid())
+		return;
 
-  QModelIndex index = _shortcutsFilter->mapToSource(shortcutsView->currentIndex());
-  Q_ASSERT(index.isValid());
+	QModelIndex index = _shortcutsFilter->mapToSource(shortcutsView->currentIndex());
+	Q_ASSERT(index.isValid());
 
-  if(useDefault->isChecked()) {
-    _shortcutsModel->setData(index, index.data(ShortcutsModel::DefaultShortcutRole));
-  } else {
-    _shortcutsModel->setData(index, QKeySequence());
-  }
-  setWidgetStates();
+	if (useDefault->isChecked()) {
+		_shortcutsModel->setData(index, index.data(ShortcutsModel::DefaultShortcutRole));
+	}
+	else {
+		_shortcutsModel->setData(index, QKeySequence());
+	}
+	setWidgetStates();
 
-  // If custom is selected, and the action has no short-cut, setWidgetStates() re-checks
-  // the default radio. This is a bit counter-intuitive, so ensure whichever radio caused
-  // the toggle, that it is checked.
-  QRadioButton *btn=qobject_cast<QRadioButton *>(sender());
-  if (btn) {
-      btn->setChecked(true);
-  }
+	// If custom is selected, and the action has no short-cut, setWidgetStates() re-checks
+	// the default radio. This is a bit counter-intuitive, so ensure whichever radio caused
+	// the toggle, that it is checked.
+	QRadioButton* btn = qobject_cast<QRadioButton*>(sender());
+	if (btn) {
+		btn->setChecked(true);
+	}
 }
 
-void ShortcutsSettingsWidget::save() {
-  _shortcutsModel->commit();
+void ShortcutsSettingsWidget::save()
+{
+	_shortcutsModel->commit();
 }
 
 #include "moc_shortcutssettingswidget.cpp"

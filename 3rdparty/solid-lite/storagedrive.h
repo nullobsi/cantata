@@ -59,11 +59,11 @@ public:
          * - Platform : A legacy bus that is part of the underlying platform
          */
 	enum Bus { Ide,
-			   Usb,
-			   Ieee1394,
-			   Scsi,
-			   Sata,
-			   Platform };
+		       Usb,
+		       Ieee1394,
+		       Scsi,
+		       Sata,
+		       Platform };
 
 	/**
          * This enum type defines the type of drive a storage device can be.
@@ -79,14 +79,14 @@ public:
          * - Xd : A xD card reader
          */
 	enum DriveType { HardDisk,
-					 CdromDrive,
-					 Floppy,
-					 Tape,
-					 CompactFlash,
-					 MemoryStick,
-					 SmartMedia,
-					 SdMmc,
-					 Xd };
+		             CdromDrive,
+		             Floppy,
+		             Tape,
+		             CompactFlash,
+		             MemoryStick,
+		             SmartMedia,
+		             SdMmc,
+		             Xd };
 
 private:
 	/**

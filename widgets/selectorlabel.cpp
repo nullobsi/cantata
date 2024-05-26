@@ -30,135 +30,132 @@
 #include <QEvent>
 #include <QMouseEvent>
 
-SelectorLabel::SelectorLabel(QWidget *p)
-    : QLabel(p)
-    , current(0)
-    , useArrow(false)
-    , bold(true)
-    , menu(nullptr)
+SelectorLabel::SelectorLabel(QWidget* p)
+	: QLabel(p), current(0), useArrow(false), bold(true), menu(nullptr)
 {
-    textColor=palette().text().color();
-    setAttribute(Qt::WA_Hover, true);
-    menu=new QMenu(this);
-    #ifdef Q_OS_MAC
-    // Mac text seems to be 2px too high. margin-top fixes this
-    setStyleSheet(QLatin1String("QLabel { margin-top: 2px} "));
-    #endif
+	textColor = palette().text().color();
+	setAttribute(Qt::WA_Hover, true);
+	menu = new QMenu(this);
+#ifdef Q_OS_MAC
+	// Mac text seems to be 2px too high. margin-top fixes this
+	setStyleSheet(QLatin1String("QLabel { margin-top: 2px} "));
+#endif
 }
 
-static QString addMarkup(const QString &s, bool arrow, bool bold)
+static QString addMarkup(const QString& s, bool arrow, bool bold)
 {
-    return QLatin1String(bold ? "<b>" : "<p>")+s+(arrow ? QLatin1String("&nbsp;")+QChar(0x25BE) : QString())+QLatin1String(bold ? "</b>" : "</p>");
+	return QLatin1String(bold ? "<b>" : "<p>") + s + (arrow ? QLatin1String("&nbsp;") + QChar(0x25BE) : QString()) + QLatin1String(bold ? "</b>" : "</p>");
 }
 
-void SelectorLabel::addItem(const QString &text, const QString &data, const QString &tt)
+void SelectorLabel::addItem(const QString& text, const QString& data, const QString& tt)
 {
-    QAction *act=menu->addAction(text, this, SLOT(itemSelected()));
-    act->setData(data);
-    if (!tt.isEmpty()) {
-        act->setToolTip(tt);
-    }
-    setText(addMarkup(text, useArrow, bold));
-    current=menu->actions().count();
+	QAction* act = menu->addAction(text, this, SLOT(itemSelected()));
+	act->setData(data);
+	if (!tt.isEmpty()) {
+		act->setToolTip(tt);
+	}
+	setText(addMarkup(text, useArrow, bold));
+	current = menu->actions().count();
 }
 
 void SelectorLabel::itemSelected()
 {
-    QAction *act=qobject_cast<QAction *>(sender());
-    if (act) {
-        setCurrentIndex(menu->actions().indexOf(act));
-    }
+	QAction* act = qobject_cast<QAction*>(sender());
+	if (act) {
+		setCurrentIndex(menu->actions().indexOf(act));
+	}
 }
 
-bool SelectorLabel::event(QEvent *e)
+bool SelectorLabel::event(QEvent* e)
 {
-    switch (e->type()) {
-    case QEvent::MouseButtonPress:
-        if (menu && Qt::NoModifier==static_cast<QMouseEvent *>(e)->modifiers() && Qt::LeftButton==static_cast<QMouseEvent *>(e)->button()) {
-            menu->exec(mapToGlobal(QPoint(0, 0)));
-            update();
-            if (this != QApplication::widgetAt(QCursor::pos())) {
-                setStyleSheet(QString("QLabel{color:%1;}").arg(textColor.name()));
-            }
-        }
-        break;
-    case QEvent::Wheel:
-        if (menu) {
-            QList<QAction *> actions=menu->actions();
-            int numDegrees = static_cast<QWheelEvent *>(e)->angleDelta().y() / 8;
-            int numSteps = numDegrees / 15;
-            int newIndex = current;
-            if (numSteps > 0) {
-                for (int i = 0; i < numSteps; ++i) {
-                    newIndex++;
-                    if (newIndex>=actions.count()) {
-                        newIndex=0;
-                    }
-                }
-            } else {
-                for (int i = 0; i > numSteps; --i) {
-                    newIndex--;
-                    if (newIndex<0) {
-                        newIndex=actions.count()-1;
-                    }
-                }
-            }
-            setCurrentIndex(newIndex);
-        }
-        break;
-    case QEvent::HoverEnter:
-        if (isEnabled()) {
-            #ifdef Q_OS_MAC
-            setStyleSheet(QString("QLabel{color:%1;}").arg(OSXStyle::self()->viewPalette().highlight().color().name()));
-            #else
-            setStyleSheet(QLatin1String("QLabel{color:palette(highlight);}"));
-            #endif
-        }
-        break;
-    case QEvent::HoverLeave:
-        if (isEnabled()) {
-            setStyleSheet(QString("QLabel{color:%1;}").arg(textColor.name()));
-        }
-    default:
-        break;
-    }
-    return QLabel::event(e);
+	switch (e->type()) {
+	case QEvent::MouseButtonPress:
+		if (menu && Qt::NoModifier == static_cast<QMouseEvent*>(e)->modifiers() && Qt::LeftButton == static_cast<QMouseEvent*>(e)->button()) {
+			menu->exec(mapToGlobal(QPoint(0, 0)));
+			update();
+			if (this != QApplication::widgetAt(QCursor::pos())) {
+				setStyleSheet(QString("QLabel{color:%1;}").arg(textColor.name()));
+			}
+		}
+		break;
+	case QEvent::Wheel:
+		if (menu) {
+			QList<QAction*> actions = menu->actions();
+			int numDegrees = static_cast<QWheelEvent*>(e)->angleDelta().y() / 8;
+			int numSteps = numDegrees / 15;
+			int newIndex = current;
+			if (numSteps > 0) {
+				for (int i = 0; i < numSteps; ++i) {
+					newIndex++;
+					if (newIndex >= actions.count()) {
+						newIndex = 0;
+					}
+				}
+			}
+			else {
+				for (int i = 0; i > numSteps; --i) {
+					newIndex--;
+					if (newIndex < 0) {
+						newIndex = actions.count() - 1;
+					}
+				}
+			}
+			setCurrentIndex(newIndex);
+		}
+		break;
+	case QEvent::HoverEnter:
+		if (isEnabled()) {
+#ifdef Q_OS_MAC
+			setStyleSheet(QString("QLabel{color:%1;}").arg(OSXStyle::self()->viewPalette().highlight().color().name()));
+#else
+			setStyleSheet(QLatin1String("QLabel{color:palette(highlight);}"));
+#endif
+		}
+		break;
+	case QEvent::HoverLeave:
+		if (isEnabled()) {
+			setStyleSheet(QString("QLabel{color:%1;}").arg(textColor.name()));
+		}
+	default:
+		break;
+	}
+	return QLabel::event(e);
 }
 
 void SelectorLabel::setCurrentIndex(int v)
 {
-    if (!menu || v<0 || v==current) {
-        return;
-    }
+	if (!menu || v < 0 || v == current) {
+		return;
+	}
 
-    QList<QAction *> actions=menu->actions();
+	QList<QAction*> actions = menu->actions();
 
-    if (v>=actions.count()) {
-        return;
-    }
-    current=v;
-    setText(addMarkup(Utils::strippedText(actions.at(current)->text()), useArrow, bold));
-    emit activated(current);
+	if (v >= actions.count()) {
+		return;
+	}
+	current = v;
+	setText(addMarkup(Utils::strippedText(actions.at(current)->text()), useArrow, bold));
+	emit activated(current);
 }
 
 QString SelectorLabel::itemData(int index) const
 {
-    QAction *act=action(index);
-    return act ? act->data().toString() : QString();
+	QAction* act = action(index);
+	return act ? act->data().toString() : QString();
 }
 
-QAction * SelectorLabel::action(int index) const
+QAction* SelectorLabel::action(int index) const
 {
-    if (!menu) {
-        return nullptr;
-    }
+	if (!menu) {
+		return nullptr;
+	}
 
-    QList<QAction *> actions=menu->actions();
+	QList<QAction*> actions = menu->actions();
 
-    if (index>=actions.count()) {
-        return nullptr;
-    }
-    return actions.at(index);
+	if (index >= actions.count()) {
+		return nullptr;
+	}
+	return actions.at(index);
 }
 
 #include "moc_selectorlabel.cpp"

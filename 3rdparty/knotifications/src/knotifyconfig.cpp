@@ -10,7 +10,7 @@
 #include <QCache>
 #include <QStandardPaths>
 
-#include<QMap>
+#include <QMap>
 #include <QPair>
 
 // I don't want to use KConfig so this is our "global" config.
@@ -20,19 +20,19 @@ Q_GLOBAL_STATIC(PropMap, globalProps);
 typedef QMap<QPair<QString, QString>, QString> DoublePropMap;
 Q_GLOBAL_STATIC(DoublePropMap, localProps);
 
-void KNotifyConfig::setGlobalEntry(const QString &key, const QString &val) {
+void KNotifyConfig::setGlobalEntry(const QString& key, const QString& val)
+{
 	globalProps->insert(key, val);
 }
 
-KNotifyConfig::KNotifyConfig(const QString& id):
-	m_eventId(id) {}
+KNotifyConfig::KNotifyConfig(const QString& id) : m_eventId(id) {}
 
 QString KNotifyConfig::eventId() const
 {
-    return m_eventId;
+	return m_eventId;
 }
 
-QString KNotifyConfig::readGlobalEntry(const QString &key) const
+QString KNotifyConfig::readGlobalEntry(const QString& key) const
 {
 	if (globalProps->contains(key)) {
 		return globalProps->value(key);
@@ -40,7 +40,7 @@ QString KNotifyConfig::readGlobalEntry(const QString &key) const
 	return QString();
 }
 
-QString KNotifyConfig::readEntry(const QString &key) const
+QString KNotifyConfig::readEntry(const QString& key) const
 {
 	auto pair = qMakePair(m_eventId, key);
 	if (localProps->contains(qMakePair(m_eventId, key))) {
@@ -49,7 +49,8 @@ QString KNotifyConfig::readEntry(const QString &key) const
 	return QString();
 }
 
-void KNotifyConfig::setEntry(const QString &key, const QString &val) {
+void KNotifyConfig::setEntry(const QString& key, const QString& val)
+{
 	auto pair = qMakePair(m_eventId, key);
 	localProps->insert(pair, val);
 }

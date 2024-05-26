@@ -25,99 +25,99 @@
 #include "lineedit.h"
 #include "utils.h"
 #include <QAbstractItemView>
-#include <QScreen>
 #include <QApplication>
+#include <QScreen>
 #include <QStyleOptionComboBox>
 
 // Max number of items before we try to force a scrollbar in popup menu...
-Q_DECL_UNUSED static int maxPopupItemCount=-1;
+Q_DECL_UNUSED static int maxPopupItemCount = -1;
 
-
-ComboBox::ComboBox(QWidget *p)
-    : QComboBox(p)
-    , toggleState(false)
+ComboBox::ComboBox(QWidget* p)
+	: QComboBox(p), toggleState(false)
 {
-    #if !defined Q_OS_WIN && !defined Q_OS_MAC
-    if (-1==maxPopupItemCount) {
-        if (QApplication::primaryScreen()) {
-            maxPopupItemCount=((QApplication::primaryScreen()->availableGeometry().height()/(QFontMetricsF(QApplication::font()).height()*1.5))*0.75)+0.5;
-        } else {
-            maxPopupItemCount=32;
-        }
-    }
-    #endif
-    connect(this, SIGNAL(editTextChanged(QString)), this, SIGNAL(textChanged(QString)));
+#if !defined Q_OS_WIN && !defined Q_OS_MAC
+	if (-1 == maxPopupItemCount) {
+		if (QApplication::primaryScreen()) {
+			maxPopupItemCount = ((QApplication::primaryScreen()->availableGeometry().height() / (QFontMetricsF(QApplication::font()).height() * 1.5)) * 0.75) + 0.5;
+		}
+		else {
+			maxPopupItemCount = 32;
+		}
+	}
+#endif
+	connect(this, SIGNAL(editTextChanged(QString)), this, SIGNAL(textChanged(QString)));
 }
 
 void ComboBox::setEditable(bool editable)
 {
-    QComboBox::setEditable(editable);
-    if (editable) {
-        LineEdit *edit = new LineEdit(this);
-        setLineEdit(edit);
-    }
+	QComboBox::setEditable(editable);
+	if (editable) {
+		LineEdit* edit = new LineEdit(this);
+		setLineEdit(edit);
+	}
 }
 
 #if !defined Q_OS_WIN && !defined Q_OS_MAC
 void ComboBox::showPopup()
 {
-    QStyleOptionComboBox opt;
-    initStyleOption(&opt);
-    toggleState=false;
-    bool hack=0!=style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, this, nullptr);
-    if (hack && count()>(maxPopupItemCount-2)) {
-        toggleState=!isEditable();
+	QStyleOptionComboBox opt;
+	initStyleOption(&opt);
+	toggleState = false;
+	bool hack = 0 != style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, this, nullptr);
+	if (hack && count() > (maxPopupItemCount - 2)) {
+		toggleState = !isEditable();
 
-        // Hacky, but if we set the combobox as editable - the style gives the
-        // popup a scrollbar. This is more convenient if we have lots of items!
-        if (toggleState) {
-            setMaxVisibleItems(maxPopupItemCount);
-            QComboBox::setEditable(true);
-            lineEdit()->setReadOnly(true);
-        }
-    }
-    QComboBox::showPopup();
+		// Hacky, but if we set the combobox as editable - the style gives the
+		// popup a scrollbar. This is more convenient if we have lots of items!
+		if (toggleState) {
+			setMaxVisibleItems(maxPopupItemCount);
+			QComboBox::setEditable(true);
+			lineEdit()->setReadOnly(true);
+		}
+	}
+	QComboBox::showPopup();
 
-    if (hack && view()->parentWidget() && count()>maxPopupItemCount) {
-        // Also, if the size of the popup is more than required for 32 items, then
-        // restrict its height...
-        int maxHeight=maxPopupItemCount*view()->sizeHintForRow(0);
-        QRect geo(view()->parentWidget()->geometry());
-        QRect r(view()->parentWidget()->rect());
-        if (geo.height()>maxHeight) {
-            geo=QRect(geo.x(), geo.y()+(geo.height()-maxHeight), geo.width(), maxHeight);
-            r=QRect(r.x(), r.y()+(r.height()-maxHeight), r.width(), maxHeight);
-        }
-        QPoint popupBot=view()->parentWidget()->mapToGlobal(r.bottomLeft());
-        QPoint bot=mapToGlobal(rect().bottomLeft());
+	if (hack && view()->parentWidget() && count() > maxPopupItemCount) {
+		// Also, if the size of the popup is more than required for 32 items, then
+		// restrict its height...
+		int maxHeight = maxPopupItemCount * view()->sizeHintForRow(0);
+		QRect geo(view()->parentWidget()->geometry());
+		QRect r(view()->parentWidget()->rect());
+		if (geo.height() > maxHeight) {
+			geo = QRect(geo.x(), geo.y() + (geo.height() - maxHeight), geo.width(), maxHeight);
+			r = QRect(r.x(), r.y() + (r.height() - maxHeight), r.width(), maxHeight);
+		}
+		QPoint popupBot = view()->parentWidget()->mapToGlobal(r.bottomLeft());
+		QPoint bot = mapToGlobal(rect().bottomLeft());
 
-        if (popupBot.y()<bot.y()) {
-            geo=QRect(geo.x(), geo.y()+(bot.y()-popupBot.y()), geo.width(), geo.height());
-        } else {
-            QPoint popupTop=view()->parentWidget()->mapToGlobal(r.topLeft());
-            QPoint top=mapToGlobal(rect().topLeft());
-            if (popupTop.y()>top.y()) {
-                geo=QRect(geo.x(), geo.y()-(popupTop.y()-top.y()), geo.width(), geo.height());
-            }
-        }
-        view()->parentWidget()->setGeometry(geo);
+		if (popupBot.y() < bot.y()) {
+			geo = QRect(geo.x(), geo.y() + (bot.y() - popupBot.y()), geo.width(), geo.height());
+		}
+		else {
+			QPoint popupTop = view()->parentWidget()->mapToGlobal(r.topLeft());
+			QPoint top = mapToGlobal(rect().topLeft());
+			if (popupTop.y() > top.y()) {
+				geo = QRect(geo.x(), geo.y() - (popupTop.y() - top.y()), geo.width(), geo.height());
+			}
+		}
+		view()->parentWidget()->setGeometry(geo);
 
-        // Hide scrollers - these look ugly...
-        for (QObject *c: view()->parentWidget()->children()) {
-            if (0==qstrcmp("QComboBoxPrivateScroller", c->metaObject()->className())) {
-                static_cast<QWidget *>(c)->setMaximumHeight(0);
-            }
-        }
-    }
+		// Hide scrollers - these look ugly...
+		for (QObject* c : view()->parentWidget()->children()) {
+			if (0 == qstrcmp("QComboBoxPrivateScroller", c->metaObject()->className())) {
+				static_cast<QWidget*>(c)->setMaximumHeight(0);
+			}
+		}
+	}
 }
 
 void ComboBox::hidePopup()
 {
-    if (toggleState) {
-        QComboBox::setEditable(false);
-        toggleState=false;
-    }
-    QComboBox::hidePopup();
+	if (toggleState) {
+		QComboBox::setEditable(false);
+		toggleState = false;
+	}
+	QComboBox::hidePopup();
 }
 #endif
 

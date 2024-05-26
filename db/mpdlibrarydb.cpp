@@ -22,140 +22,140 @@
  */
 
 #include "mpdlibrarydb.h"
+#include "gui/settings.h"
+#include "mpd-interface/mpdconnection.h"
 #include "support/globalstatic.h"
 #include "support/utils.h"
-#include "mpd-interface/mpdconnection.h"
-#include "gui/settings.h"
 #include <QCoreApplication>
+#include <QDebug>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <QDebug>
 
-#define DBUG if (LibraryDb::debugEnabled()) qWarning() << metaObject()->className() << __FUNCTION__
+#define DBUG \
+	if (LibraryDb::debugEnabled()) qWarning() << metaObject()->className() << __FUNCTION__
 
 static const QLatin1String constDirName("library");
-static QString databaseName(const MPDConnectionDetails &details)
+static QString databaseName(const MPDConnectionDetails& details)
 {
-    QString fileName=(!details.isLocal() ? details.hostname+'_'+QString::number(details.port) : details.hostname)+LibraryDb::constFileExt;
-    fileName.replace('/', '_');
-    fileName.replace('~', '_');
-    return Utils::dataDir(constDirName, true)+fileName;
+	QString fileName = (!details.isLocal() ? details.hostname + '_' + QString::number(details.port) : details.hostname) + LibraryDb::constFileExt;
+	fileName.replace('/', '_');
+	fileName.replace('~', '_');
+	return Utils::dataDir(constDirName, true) + fileName;
 }
 
 void MpdLibraryDb::removeUnusedDbs()
 {
-    QSet<QString> existing;
-    QList<MPDConnectionDetails> connections=Settings::self()->allConnections();
-    QString dirPath=Utils::dataDir(constDirName, false);
-    if (dirPath.isEmpty()) {
-        return;
-    }
+	QSet<QString> existing;
+	QList<MPDConnectionDetails> connections = Settings::self()->allConnections();
+	QString dirPath = Utils::dataDir(constDirName, false);
+	if (dirPath.isEmpty()) {
+		return;
+	}
 
-    for (const MPDConnectionDetails &conn: connections) {
-        existing.insert(databaseName(conn).mid(dirPath.length()));
-    }
+	for (const MPDConnectionDetails& conn : connections) {
+		existing.insert(databaseName(conn).mid(dirPath.length()));
+	}
 
-    QFileInfoList files=QDir(dirPath).entryInfoList(QStringList() << "*"+LibraryDb::constFileExt, QDir::Files);
-    for (const QFileInfo &file: files) {
-        if (!existing.contains(file.fileName())) {
-            QFile::remove(file.absoluteFilePath());
-        }
-    }
+	QFileInfoList files = QDir(dirPath).entryInfoList(QStringList() << "*" + LibraryDb::constFileExt, QDir::Files);
+	for (const QFileInfo& file : files) {
+		if (!existing.contains(file.fileName())) {
+			QFile::remove(file.absoluteFilePath());
+		}
+	}
 }
 
-MpdLibraryDb::MpdLibraryDb(QObject *p)
-    : LibraryDb(p, "MPD")
-    , loading(false)
-    , coverQuery(nullptr)
-    , albumIdOnlyCoverQuery(nullptr)
-    , artistImageQuery(nullptr)
+MpdLibraryDb::MpdLibraryDb(QObject* p)
+	: LibraryDb(p, "MPD"), loading(false), coverQuery(nullptr), albumIdOnlyCoverQuery(nullptr), artistImageQuery(nullptr)
 {
-    connect(MPDConnection::self(), SIGNAL(updatingLibrary(time_t)), this, SLOT(updateStarted(time_t)));
-    connect(MPDConnection::self(), SIGNAL(librarySongs(QList<Song>*)), this, SLOT(insertSongs(QList<Song>*)));
-    connect(MPDConnection::self(), SIGNAL(updatedLibrary()), this, SLOT(updateFinished()));
-    connect(MPDConnection::self(), SIGNAL(statsUpdated(MPDStatsValues)), this, SLOT(statsUpdated(MPDStatsValues)));
-    connect(this, SIGNAL(loadLibrary()), MPDConnection::self(), SLOT(loadLibrary()));
-    connect(MPDConnection::self(), SIGNAL(connectionChanged(MPDConnectionDetails)), this, SLOT(connectionChanged(MPDConnectionDetails)));
-    DBUG;
+	connect(MPDConnection::self(), SIGNAL(updatingLibrary(time_t)), this, SLOT(updateStarted(time_t)));
+	connect(MPDConnection::self(), SIGNAL(librarySongs(QList<Song>*)), this, SLOT(insertSongs(QList<Song>*)));
+	connect(MPDConnection::self(), SIGNAL(updatedLibrary()), this, SLOT(updateFinished()));
+	connect(MPDConnection::self(), SIGNAL(statsUpdated(MPDStatsValues)), this, SLOT(statsUpdated(MPDStatsValues)));
+	connect(this, SIGNAL(loadLibrary()), MPDConnection::self(), SLOT(loadLibrary()));
+	connect(MPDConnection::self(), SIGNAL(connectionChanged(MPDConnectionDetails)), this, SLOT(connectionChanged(MPDConnectionDetails)));
+	DBUG;
 }
 
 MpdLibraryDb::~MpdLibraryDb()
 {
 }
 
-Song MpdLibraryDb::getCoverSong(const QString &artistId, const QString &albumId)
+Song MpdLibraryDb::getCoverSong(const QString& artistId, const QString& albumId)
 {
-    DBUG << artistId << albumId;
-    if (0!=currentVersion && db) {
-        QSqlQuery *query=nullptr;
-        if (albumId.isEmpty()) {
-            if (!artistImageQuery) {
-                artistImageQuery=new QSqlQuery(*db);
-                artistImageQuery->prepare("select * from songs where artistId=:artistId limit 1;");
-            }
-            query=artistImageQuery;
-            query->bindValue(":artistId", artistId);
-        } else if (artistId.isEmpty()) {
-            if (!albumIdOnlyCoverQuery) {
-                albumIdOnlyCoverQuery=new QSqlQuery(*db);
-                albumIdOnlyCoverQuery->prepare("select * from songs where albumId=:albumId limit 1;");
-            }
-            query=albumIdOnlyCoverQuery;
-            query->bindValue(":albumId", albumId);
-        } else {
-            if (!coverQuery) {
-                coverQuery=new QSqlQuery(*db);
-                coverQuery->prepare("select * from songs where artistId=:artistId and albumId=:albumId limit 1;");
-            }
-            query=coverQuery;
-            query->bindValue(":albumId", albumId);
-            query->bindValue(":artistId", artistId);
-        }
-        query->exec();
-        DBUG << "coverquery" << query->executedQuery() << query->size();
-        while (query->next()) {
-            return getSong(*query);
-        }
-    }
-    return Song();
+	DBUG << artistId << albumId;
+	if (0 != currentVersion && db) {
+		QSqlQuery* query = nullptr;
+		if (albumId.isEmpty()) {
+			if (!artistImageQuery) {
+				artistImageQuery = new QSqlQuery(*db);
+				artistImageQuery->prepare("select * from songs where artistId=:artistId limit 1;");
+			}
+			query = artistImageQuery;
+			query->bindValue(":artistId", artistId);
+		}
+		else if (artistId.isEmpty()) {
+			if (!albumIdOnlyCoverQuery) {
+				albumIdOnlyCoverQuery = new QSqlQuery(*db);
+				albumIdOnlyCoverQuery->prepare("select * from songs where albumId=:albumId limit 1;");
+			}
+			query = albumIdOnlyCoverQuery;
+			query->bindValue(":albumId", albumId);
+		}
+		else {
+			if (!coverQuery) {
+				coverQuery = new QSqlQuery(*db);
+				coverQuery->prepare("select * from songs where artistId=:artistId and albumId=:albumId limit 1;");
+			}
+			query = coverQuery;
+			query->bindValue(":albumId", albumId);
+			query->bindValue(":artistId", artistId);
+		}
+		query->exec();
+		DBUG << "coverquery" << query->executedQuery() << query->size();
+		while (query->next()) {
+			return getSong(*query);
+		}
+	}
+	return Song();
 }
 
-void MpdLibraryDb::connectionChanged(const MPDConnectionDetails &details)
+void MpdLibraryDb::connectionChanged(const MPDConnectionDetails& details)
 {
-    QString dbFile=databaseName(details);
-    DBUG << dbFileName << dbFile;
-    if (dbFile!=dbFileName) {
-        init(dbFile);
-    } else {
-        emit libraryUpdated();
-    }
+	QString dbFile = databaseName(details);
+	DBUG << dbFileName << dbFile;
+	if (dbFile != dbFileName) {
+		init(dbFile);
+	}
+	else {
+		emit libraryUpdated();
+	}
 }
 
 void MpdLibraryDb::reset()
 {
-    delete coverQuery;
-    delete artistImageQuery;
-    delete albumIdOnlyCoverQuery;
-    coverQuery=nullptr;
-    artistImageQuery=nullptr;
-    albumIdOnlyCoverQuery=nullptr;
-    LibraryDb::reset();
+	delete coverQuery;
+	delete artistImageQuery;
+	delete albumIdOnlyCoverQuery;
+	coverQuery = nullptr;
+	artistImageQuery = nullptr;
+	albumIdOnlyCoverQuery = nullptr;
+	LibraryDb::reset();
 }
 
 void MpdLibraryDb::updateFinished()
 {
-    loading=false;
-    LibraryDb::updateFinished();
+	loading = false;
+	LibraryDb::updateFinished();
 }
 
-void MpdLibraryDb::statsUpdated(const MPDStatsValues &stats)
+void MpdLibraryDb::statsUpdated(const MPDStatsValues& stats)
 {
-    if (!loading && stats.dbUpdate>currentVersion) {
-        DBUG << stats.dbUpdate << currentVersion;
-        loading=true;
-        emit loadLibrary();
-    }
+	if (!loading && stats.dbUpdate > currentVersion) {
+		DBUG << stats.dbUpdate << currentVersion;
+		loading = true;
+		emit loadLibrary();
+	}
 }
 
 #include "moc_mpdlibrarydb.cpp"

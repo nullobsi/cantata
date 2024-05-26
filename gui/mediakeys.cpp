@@ -32,108 +32,109 @@
 #include "stdactions.h"
 #include "support/globalstatic.h"
 #include <QDebug>
-static bool debugIsEnabled=false;
-#define DBUG if (debugIsEnabled) qWarning() << "MediaKeys" << __FUNCTION__
+static bool debugIsEnabled = false;
+#define DBUG \
+	if (debugIsEnabled) qWarning() << "MediaKeys" << __FUNCTION__
 void MediaKeys::enableDebug()
 {
-    debugIsEnabled=true;
+	debugIsEnabled = true;
 }
 
 GLOBAL_STATIC(MediaKeys, instance)
 
 MediaKeys::MediaKeys()
 {
-    #ifdef QT_QTDBUS_FOUND
-    gnome=nullptr;
-    #endif
+#ifdef QT_QTDBUS_FOUND
+	gnome = nullptr;
+#endif
 
-    #ifdef CANTATA_USE_QXT_MEDIAKEYS
-    qxt=0;
-    #endif
+#ifdef CANTATA_USE_QXT_MEDIAKEYS
+	qxt = 0;
+#endif
 }
 
 MediaKeys::~MediaKeys()
 {
-    #ifdef CANTATA_USE_QXT_MEDIAKEYS
-    if (qxt) {
-        delete qxt;
-    }
-    #endif
-    #ifdef QT_QTDBUS_FOUND
-    if (gnome) {
-        delete gnome;
-    }
-    #endif
+#ifdef CANTATA_USE_QXT_MEDIAKEYS
+	if (qxt) {
+		delete qxt;
+	}
+#endif
+#ifdef QT_QTDBUS_FOUND
+	if (gnome) {
+		delete gnome;
+	}
+#endif
 }
 
 void MediaKeys::start()
 {
-    #ifdef QT_QTDBUS_FOUND
-    gnome=new GnomeMediaKeys(nullptr);
-    if (activate(gnome)) {
-        DBUG << "Using Gnome";
-        return;
-    }
-    DBUG << "Gnome failed";
-    gnome->deleteLater();
-    gnome=nullptr;
-    #endif
+#ifdef QT_QTDBUS_FOUND
+	gnome = new GnomeMediaKeys(nullptr);
+	if (activate(gnome)) {
+		DBUG << "Using Gnome";
+		return;
+	}
+	DBUG << "Gnome failed";
+	gnome->deleteLater();
+	gnome = nullptr;
+#endif
 
-    #ifdef CANTATA_USE_QXT_MEDIAKEYS
-    qxt=new QxtMediaKeys(0);
-    if (activate(qxt)) {
-        DBUG << "Using Qxt";
-        return;
-    }
-    DBUG << "Qxt failed";
-    qxt->deleteLater();
-    qxt=0;
-    #endif
-    DBUG << "None";
+#ifdef CANTATA_USE_QXT_MEDIAKEYS
+	qxt = new QxtMediaKeys(0);
+	if (activate(qxt)) {
+		DBUG << "Using Qxt";
+		return;
+	}
+	DBUG << "Qxt failed";
+	qxt->deleteLater();
+	qxt = 0;
+#endif
+	DBUG << "None";
 }
 
 void MediaKeys::stop()
 {
-    #ifdef QT_QTDBUS_FOUND
-    if (gnome) {
-        deactivate(gnome);
-        gnome->deleteLater();
-        gnome=nullptr;
-    }
-    #endif
+#ifdef QT_QTDBUS_FOUND
+	if (gnome) {
+		deactivate(gnome);
+		gnome->deleteLater();
+		gnome = nullptr;
+	}
+#endif
 
-    #ifdef CANTATA_USE_QXT_MEDIAKEYS
-    if (qxt) {
-        deactivate(qxt);
-        qxt->deleteLater();
-        qxt=0;
-    }
-    #endif
+#ifdef CANTATA_USE_QXT_MEDIAKEYS
+	if (qxt) {
+		deactivate(qxt);
+		qxt->deleteLater();
+		qxt = 0;
+	}
+#endif
 }
 
-bool MediaKeys::activate(MultiMediaKeysInterface *iface)
+bool MediaKeys::activate(MultiMediaKeysInterface* iface)
 {
-    if (!iface) {
-        return false;
-    }
-    if (iface->activate()) {
-        QObject::connect(iface, SIGNAL(playPause()), StdActions::self()->playPauseTrackAction, SIGNAL(triggered()));
-        QObject::connect(iface, SIGNAL(stop()), StdActions::self()->stopPlaybackAction, SIGNAL(triggered()));
-        QObject::connect(iface, SIGNAL(next()), StdActions::self()->nextTrackAction, SIGNAL(triggered()));
-        QObject::connect(iface, SIGNAL(previous()), StdActions::self()->prevTrackAction, SIGNAL(triggered()));
-        return true;
-    }
-    return false;
+	if (!iface) {
+		return false;
+	}
+	if (iface->activate()) {
+		QObject::connect(iface, SIGNAL(playPause()), StdActions::self()->playPauseTrackAction, SIGNAL(triggered()));
+		QObject::connect(iface, SIGNAL(stop()), StdActions::self()->stopPlaybackAction, SIGNAL(triggered()));
+		QObject::connect(iface, SIGNAL(next()), StdActions::self()->nextTrackAction, SIGNAL(triggered()));
+		QObject::connect(iface, SIGNAL(previous()), StdActions::self()->prevTrackAction, SIGNAL(triggered()));
+		return true;
+	}
+	return false;
 }
 
-void MediaKeys::deactivate(MultiMediaKeysInterface *iface)
+void MediaKeys::deactivate(MultiMediaKeysInterface* iface)
 {
-    if (!iface) {
-        return;
-    }
-    QObject::disconnect(iface, SIGNAL(playPause()), StdActions::self()->playPauseTrackAction, SIGNAL(triggered()));
-    QObject::disconnect(iface, SIGNAL(stop()), StdActions::self()->stopPlaybackAction, SIGNAL(triggered()));
-    QObject::disconnect(iface, SIGNAL(next()), StdActions::self()->nextTrackAction, SIGNAL(triggered()));
-    QObject::disconnect(iface, SIGNAL(previous()), StdActions::self()->prevTrackAction, SIGNAL(triggered()));
-    iface->deactivate();
+	if (!iface) {
+		return;
+	}
+	QObject::disconnect(iface, SIGNAL(playPause()), StdActions::self()->playPauseTrackAction, SIGNAL(triggered()));
+	QObject::disconnect(iface, SIGNAL(stop()), StdActions::self()->stopPlaybackAction, SIGNAL(triggered()));
+	QObject::disconnect(iface, SIGNAL(next()), StdActions::self()->nextTrackAction, SIGNAL(triggered()));
+	QObject::disconnect(iface, SIGNAL(previous()), StdActions::self()->prevTrackAction, SIGNAL(triggered()));
+	iface->deactivate();
 }

@@ -81,7 +81,7 @@ public:
          * @returns the UDIs of all the devices having the given parent and device interface
          */
 	virtual QStringList devicesFromQuery(const QString& parentUdi,
-										 Solid::DeviceInterface::Type type = Solid::DeviceInterface::Unknown) = 0;
+	                                     Solid::DeviceInterface::Type type = Solid::DeviceInterface::Unknown) = 0;
 
 	/**
          * Instantiates a new Device object from this backend given its UDI.

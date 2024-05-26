@@ -23,30 +23,31 @@
 
 #include "squeezedtextlabel.h"
 
-SqueezedTextLabel::SqueezedTextLabel(QWidget *p)
-    : QLabel(p)
+SqueezedTextLabel::SqueezedTextLabel(QWidget* p)
+	: QLabel(p)
 {
-    setTextElideMode(isRightToLeft() ? Qt::ElideLeft : Qt::ElideRight);
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	setTextElideMode(isRightToLeft() ? Qt::ElideLeft : Qt::ElideRight);
+	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 }
 
 void SqueezedTextLabel::setTextElideMode(Qt::TextElideMode mode)
 {
-    elideMode=mode;
-    setAlignment((Qt::ElideLeft==elideMode ? Qt::AlignRight : Qt::AlignLeft) | Qt::AlignVCenter);
+	elideMode = mode;
+	setAlignment((Qt::ElideLeft == elideMode ? Qt::AlignRight : Qt::AlignLeft) | Qt::AlignVCenter);
 }
 
 void SqueezedTextLabel::elideText()
 {
-    QFontMetrics fm(fontMetrics());
-    int labelWidth = size().width();
-    int lineWidth = fm.horizontalAdvance(originalText);
+	QFontMetrics fm(fontMetrics());
+	int labelWidth = size().width();
+	int lineWidth = fm.horizontalAdvance(originalText);
 
-    if (lineWidth > labelWidth) {
-        QLabel::setText(fm.elidedText(originalText, elideMode, labelWidth));
-        setToolTip(originalText);
-    } else {
-        QLabel::setText(originalText);
-        setToolTip(QString());
-    }
+	if (lineWidth > labelWidth) {
+		QLabel::setText(fm.elidedText(originalText, elideMode, labelWidth));
+		setToolTip(originalText);
+	}
+	else {
+		QLabel::setText(originalText);
+		setToolTip(QString());
+	}
 }

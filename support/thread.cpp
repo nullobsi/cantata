@@ -24,105 +24,107 @@
 #include "thread.h"
 #include "globalstatic.h"
 #include <QCoreApplication>
-#include <QtGlobal>
-#include <QTimer>
 #include <QDebug>
+#include <QTimer>
+#include <QtGlobal>
 #include <signal.h>
-#ifndef _MSC_VER 
+#ifndef _MSC_VER
 #include <unistd.h>
 #endif
 
-static bool debugEnabled=false;
-#define DBUG if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
+static bool debugEnabled = false;
+#define DBUG \
+	if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
 void ThreadCleaner::enableDebug()
 {
-    debugEnabled=true;
+	debugEnabled = true;
 }
 
 static void segvHandler(int i)
 {
-    if (debugEnabled) qWarning() << "SEGV handler called";
-    _exit(i);
+	if (debugEnabled) qWarning() << "SEGV handler called";
+	_exit(i);
 }
 
 GLOBAL_STATIC(ThreadCleaner, instance)
 
 void ThreadCleaner::stopAll()
 {
-    DBUG << "Remaining threads:" << threads.count();
-    for (Thread *thread: threads) {
-        DBUG << "Cleanup" << thread->objectName();
-        disconnect(thread, SIGNAL(finished()), this, SLOT(threadFinished()));
-    }
+	DBUG << "Remaining threads:" << threads.count();
+	for (Thread* thread : threads) {
+		DBUG << "Cleanup" << thread->objectName();
+		disconnect(thread, SIGNAL(finished()), this, SLOT(threadFinished()));
+	}
 
-    for (Thread *thread: threads) {
-        thread->stop();
-    }
+	for (Thread* thread : threads) {
+		thread->stop();
+	}
 
-    QList<Thread *> stillRunning;
-    for (Thread *thread: threads) {
-        if (thread->wait(250)) {
-            delete thread;
-        } else {
-            stillRunning.append(thread);
-            DBUG << "Failed to close" << thread->objectName();
-        }
-    }
+	QList<Thread*> stillRunning;
+	for (Thread* thread : threads) {
+		if (thread->wait(250)) {
+			delete thread;
+		}
+		else {
+			stillRunning.append(thread);
+			DBUG << "Failed to close" << thread->objectName();
+		}
+	}
 
-    // Terminate any still running threads...
-    signal(SIGSEGV, segvHandler); // Ignore SEGV in case a thread throws an error...
-    for (Thread *thread: stillRunning) {
-        thread->terminate();
-    }
+	// Terminate any still running threads...
+	signal(SIGSEGV, segvHandler);// Ignore SEGV in case a thread throws an error...
+	for (Thread* thread : stillRunning) {
+		thread->terminate();
+	}
 }
 
 void ThreadCleaner::threadFinished()
 {
-    Thread *thread=qobject_cast<Thread *>(sender());
-    if (thread) {
-        thread->deleteLater();
-        threads.removeAll(thread);
-        DBUG << "Thread finished" << thread->objectName() << "Total threads:" << threads.count();
-    }
+	Thread* thread = qobject_cast<Thread*>(sender());
+	if (thread) {
+		thread->deleteLater();
+		threads.removeAll(thread);
+		DBUG << "Thread finished" << thread->objectName() << "Total threads:" << threads.count();
+	}
 }
 
-void ThreadCleaner::add(Thread *thread)
+void ThreadCleaner::add(Thread* thread)
 {
-    threads.append(thread);
-    connect(thread, SIGNAL(finished()), this, SLOT(threadFinished()));
-    DBUG << "Thread created" << thread->objectName() << "Total threads:" << threads.count();
+	threads.append(thread);
+	connect(thread, SIGNAL(finished()), this, SLOT(threadFinished()));
+	DBUG << "Thread created" << thread->objectName() << "Total threads:" << threads.count();
 }
 
-Thread::Thread(const QString &name, QObject *p)
-    : QThread(p)
+Thread::Thread(const QString& name, QObject* p)
+	: QThread(p)
 {
-    setObjectName(name);
-    ThreadCleaner::self()->add(this);
+	setObjectName(name);
+	ThreadCleaner::self()->add(this);
 }
 
 Thread::~Thread()
 {
-    DBUG << objectName() << "destroyed";
+	DBUG << objectName() << "destroyed";
 }
 
 void Thread::run()
 {
-    QThread::run();
+	QThread::run();
 }
 
-QTimer * Thread::createTimer(QObject *parent)
+QTimer* Thread::createTimer(QObject* parent)
 {
-    QTimer *timer=new QTimer(parent ? parent : this);
-    connect(this, SIGNAL(finished()), timer, SLOT(stop()));
-    return timer;
+	QTimer* timer = new QTimer(parent ? parent : this);
+	connect(this, SIGNAL(finished()), timer, SLOT(stop()));
+	return timer;
 }
 
-void Thread::deleteTimer(QTimer *timer)
+void Thread::deleteTimer(QTimer* timer)
 {
-    if (timer) {
-        disconnect(this, SIGNAL(finished()), timer, SLOT(stop()));
-        timer->deleteLater();
-    }
+	if (timer) {
+		disconnect(this, SIGNAL(finished()), timer, SLOT(stop()));
+		timer->deleteLater();
+	}
 }
 
 #include "moc_thread.cpp"

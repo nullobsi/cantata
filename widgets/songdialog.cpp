@@ -26,44 +26,46 @@
 #include <QFile>
 
 #include <QDebug>
-static bool debugEnabled=false;
-#define DBUG if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
+static bool debugEnabled = false;
+#define DBUG \
+	if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
 void SongDialog::enableDebug()
 {
-    debugEnabled=true;
+	debugEnabled = true;
 }
 
-static const int constNumToCheck=10;
+static const int constNumToCheck = 10;
 
-bool SongDialog::songsOk(const QList<Song> &songs, const QString &base, bool isMpd)
+bool SongDialog::songsOk(const QList<Song>& songs, const QString& base, bool isMpd)
 {
-    QWidget *wid=isVisible() ? this : parentWidget();
-    int checked=0;
-    for (const Song &s: songs) {
-        if (!s.isLocalFile()) {
-            const QString sfile=s.filePath();
-            const QString file=s.filePath(base);
-            DBUG << "Checking dir:" << base << " song:" << sfile << " file:" << file;
-            if (!QFile::exists(file)) {
-                DBUG << QString(file) << "does not exist";
-                if (isMpd) {
-                    MessageBox::error(wid, tr("Cannot access song files!\n\n"
-                                              "Please check Cantata's \"Music folder\" setting, and MPD's \"music_directory\" setting."));
-                } else {
-                    MessageBox::error(wid, tr("Cannot access song files!\n\n"
-                                              "Please check that the device is still attached."));
-                }
-                deleteLater();
-                return false;
-            }
-        }
-        if (++checked>constNumToCheck) {
-            break;
-        }
-    }
-    DBUG << "Checked" << checked << "files";
+	QWidget* wid = isVisible() ? this : parentWidget();
+	int checked = 0;
+	for (const Song& s : songs) {
+		if (!s.isLocalFile()) {
+			const QString sfile = s.filePath();
+			const QString file = s.filePath(base);
+			DBUG << "Checking dir:" << base << " song:" << sfile << " file:" << file;
+			if (!QFile::exists(file)) {
+				DBUG << QString(file) << "does not exist";
+				if (isMpd) {
+					MessageBox::error(wid, tr("Cannot access song files!\n\n"
+					                          "Please check Cantata's \"Music folder\" setting, and MPD's \"music_directory\" setting."));
+				}
+				else {
+					MessageBox::error(wid, tr("Cannot access song files!\n\n"
+					                          "Please check that the device is still attached."));
+				}
+				deleteLater();
+				return false;
+			}
+		}
+		if (++checked > constNumToCheck) {
+			break;
+		}
+	}
+	DBUG << "Checked" << checked << "files";
 
-    return true;
+	return true;
 }
 
 #include "moc_songdialog.cpp"

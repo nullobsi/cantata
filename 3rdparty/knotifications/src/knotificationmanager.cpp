@@ -44,280 +44,285 @@
 typedef QHash<QString, QString> Dict;
 
 struct Q_DECL_HIDDEN KNotificationManager::Private {
-    QHash<int, KNotification *> notifications;
-    QHash<QString, KNotificationPlugin *> notifyPlugins;
+	QHash<int, KNotification*> notifications;
+	QHash<QString, KNotificationPlugin*> notifyPlugins;
 
-    QStringList dirtyConfigCache;
-    bool portalDBusServiceExists = false;
+	QStringList dirtyConfigCache;
+	bool portalDBusServiceExists = false;
 };
 
-class KNotificationManagerSingleton
-{
+class KNotificationManagerSingleton {
 public:
-    KNotificationManager instance;
+	KNotificationManager instance;
 };
 
 Q_GLOBAL_STATIC(KNotificationManagerSingleton, s_self)
 
-KNotificationManager *KNotificationManager::self()
+KNotificationManager* KNotificationManager::self()
 {
-    return &s_self()->instance;
+	return &s_self()->instance;
 }
 
 KNotificationManager::KNotificationManager()
-    : d(new Private)
+	: d(new Private)
 {
-    qDeleteAll(d->notifyPlugins);
-    d->notifyPlugins.clear();
+	qDeleteAll(d->notifyPlugins);
+	d->notifyPlugins.clear();
 
 #ifdef QT_DBUS_LIB
-    if (isInsideSandbox()) {
-        QDBusConnectionInterface *interface = QDBusConnection::sessionBus().interface();
-        d->portalDBusServiceExists = interface->isServiceRegistered(QStringLiteral("org.freedesktop.portal.Desktop"));
-    }
+	if (isInsideSandbox()) {
+		QDBusConnectionInterface* interface = QDBusConnection::sessionBus().interface();
+		d->portalDBusServiceExists = interface->isServiceRegistered(QStringLiteral("org.freedesktop.portal.Desktop"));
+	}
 
-    QDBusConnection::sessionBus().connect(QString(),
-                                          QStringLiteral("/Config"),
-                                          QStringLiteral("org.kde.knotification"),
-                                          QStringLiteral("reparseConfiguration"),
-                                          this,
-                                          SLOT(reparseConfiguration(QString)));
+	QDBusConnection::sessionBus().connect(QString(),
+	                                      QStringLiteral("/Config"),
+	                                      QStringLiteral("org.kde.knotification"),
+	                                      QStringLiteral("reparseConfiguration"),
+	                                      this,
+	                                      SLOT(reparseConfiguration(QString)));
 #endif
 }
 
 KNotificationManager::~KNotificationManager() = default;
 
-KNotificationPlugin *KNotificationManager::pluginForAction(const QString &action)
+KNotificationPlugin* KNotificationManager::pluginForAction(const QString& action)
 {
-    KNotificationPlugin *plugin = d->notifyPlugins.value(action);
+	KNotificationPlugin* plugin = d->notifyPlugins.value(action);
 
-    // We already loaded a plugin for this action.
-    if (plugin) {
-        return plugin;
-    }
+	// We already loaded a plugin for this action.
+	if (plugin) {
+		return plugin;
+	}
 
-    auto addPlugin = [this](KNotificationPlugin *plugin) {
-        d->notifyPlugins[plugin->optionName()] = plugin;
-        connect(plugin, &KNotificationPlugin::finished, this, &KNotificationManager::notifyPluginFinished);
-        connect(plugin, &KNotificationPlugin::xdgActivationTokenReceived, this, &KNotificationManager::xdgActivationTokenReceived);
-        connect(plugin, &KNotificationPlugin::actionInvoked, this, &KNotificationManager::notificationActivated);
-        connect(plugin, &KNotificationPlugin::replied, this, &KNotificationManager::notificationReplied);
-    };
+	auto addPlugin = [this](KNotificationPlugin* plugin) {
+		d->notifyPlugins[plugin->optionName()] = plugin;
+		connect(plugin, &KNotificationPlugin::finished, this, &KNotificationManager::notifyPluginFinished);
+		connect(plugin, &KNotificationPlugin::xdgActivationTokenReceived, this, &KNotificationManager::xdgActivationTokenReceived);
+		connect(plugin, &KNotificationPlugin::actionInvoked, this, &KNotificationManager::notificationActivated);
+		connect(plugin, &KNotificationPlugin::replied, this, &KNotificationManager::notificationReplied);
+	};
 
-    // Load plugin.
-    // We have a series of built-ins up first, and fall back to trying
-    // to instantiate an externally supplied plugin.
-    if (action == QLatin1String("Popup")) {
+	// Load plugin.
+	// We have a series of built-ins up first, and fall back to trying
+	// to instantiate an externally supplied plugin.
+	if (action == QLatin1String("Popup")) {
 #if defined(Q_OS_ANDROID)
-        plugin = new NotifyByAndroid(this);
+		plugin = new NotifyByAndroid(this);
 #elif defined(WITH_SNORETOAST)
-        plugin = new NotifyBySnore(this);
+		plugin = new NotifyBySnore(this);
 #elif defined(Q_OS_MACOS)
-        plugin = new NotifyByMacOSNotificationCenter(this);
+		plugin = new NotifyByMacOSNotificationCenter(this);
 #else
-        if (d->portalDBusServiceExists) {
-            plugin = new NotifyByPortal(this);
-        } else {
-            plugin = new NotifyByPopup(this);
-        }
+		if (d->portalDBusServiceExists) {
+			plugin = new NotifyByPortal(this);
+		}
+		else {
+			plugin = new NotifyByPopup(this);
+		}
 #endif
-        addPlugin(plugin);
-    } else if (action == QLatin1String("Sound")) {
+		addPlugin(plugin);
+	}
+	else if (action == QLatin1String("Sound")) {
 #if defined(HAVE_CANBERRA)
-        plugin = new NotifyByAudio(this);
-        addPlugin(plugin);
+		plugin = new NotifyByAudio(this);
+		addPlugin(plugin);
 #endif
-    }
+	}
 
-    return plugin;
+	return plugin;
 }
 
-void KNotificationManager::notifyPluginFinished(KNotification *notification)
+void KNotificationManager::notifyPluginFinished(KNotification* notification)
 {
-    if (!notification || !d->notifications.contains(notification->id())) {
-        return;
-    }
+	if (!notification || !d->notifications.contains(notification->id())) {
+		return;
+	}
 
-    notification->deref();
+	notification->deref();
 }
 
-void KNotificationManager::notificationActivated(int id, const QString &actionId)
+void KNotificationManager::notificationActivated(int id, const QString& actionId)
 {
-    if (d->notifications.contains(id)) {
-        //qCDebug(LOG_KNOTIFICATIONS) << id << " " << actionId;
-        KNotification *n = d->notifications[id];
-        n->activate(actionId);
+	if (d->notifications.contains(id)) {
+		//qCDebug(LOG_KNOTIFICATIONS) << id << " " << actionId;
+		KNotification* n = d->notifications[id];
+		n->activate(actionId);
 
-        // Resident actions delegate control over notification lifetime to the client
-        if (!n->hints().value(QStringLiteral("resident")).toBool()) {
-            close(id);
-        }
-    }
+		// Resident actions delegate control over notification lifetime to the client
+		if (!n->hints().value(QStringLiteral("resident")).toBool()) {
+			close(id);
+		}
+	}
 }
 
-void KNotificationManager::xdgActivationTokenReceived(int id, const QString &token)
+void KNotificationManager::xdgActivationTokenReceived(int id, const QString& token)
 {
-    KNotification *n = d->notifications.value(id);
-    if (n) {
-        //qCDebug(LOG_KNOTIFICATIONS) << "Token received for" << id << token;
-        n->d->xdgActivationToken = token;
-        Q_EMIT n->xdgActivationTokenChanged();
-    }
+	KNotification* n = d->notifications.value(id);
+	if (n) {
+		//qCDebug(LOG_KNOTIFICATIONS) << "Token received for" << id << token;
+		n->d->xdgActivationToken = token;
+		Q_EMIT n->xdgActivationTokenChanged();
+	}
 }
 
-void KNotificationManager::notificationReplied(int id, const QString &text)
+void KNotificationManager::notificationReplied(int id, const QString& text)
 {
-    if (KNotification *n = d->notifications.value(id)) {
-        if (auto *replyAction = n->replyAction()) {
-            // cannot really send out a "activate inline-reply" signal from plugin to manager
-            // so we instead assume empty reply is not supported and means normal invocation
-            if (text.isEmpty() && replyAction->fallbackBehavior() == KNotificationReplyAction::FallbackBehavior::UseRegularAction) {
-                Q_EMIT replyAction->activated();
-            } else {
-                Q_EMIT replyAction->replied(text);
-            }
-            close(id);
-        }
-    }
+	if (KNotification* n = d->notifications.value(id)) {
+		if (auto* replyAction = n->replyAction()) {
+			// cannot really send out a "activate inline-reply" signal from plugin to manager
+			// so we instead assume empty reply is not supported and means normal invocation
+			if (text.isEmpty() && replyAction->fallbackBehavior() == KNotificationReplyAction::FallbackBehavior::UseRegularAction) {
+				Q_EMIT replyAction->activated();
+			}
+			else {
+				Q_EMIT replyAction->replied(text);
+			}
+			close(id);
+		}
+	}
 }
 
 void KNotificationManager::notificationClosed()
 {
-    KNotification *notification = qobject_cast<KNotification *>(sender());
-    if (!notification) {
-        return;
-    }
-    // We cannot do d->notifications.find(notification->id()); here because the
-    // notification->id() is -1 or -2 at this point, so we need to look for value
-    for (auto iter = d->notifications.begin(); iter != d->notifications.end(); ++iter) {
-        if (iter.value() == notification) {
-            d->notifications.erase(iter);
-            break;
-        }
-    }
+	KNotification* notification = qobject_cast<KNotification*>(sender());
+	if (!notification) {
+		return;
+	}
+	// We cannot do d->notifications.find(notification->id()); here because the
+	// notification->id() is -1 or -2 at this point, so we need to look for value
+	for (auto iter = d->notifications.begin(); iter != d->notifications.end(); ++iter) {
+		if (iter.value() == notification) {
+			d->notifications.erase(iter);
+			break;
+		}
+	}
 }
 
 void KNotificationManager::close(int id)
 {
-    if (d->notifications.contains(id)) {
-        KNotification *n = d->notifications.value(id);
-        //qCDebug(LOG_KNOTIFICATIONS) << "Closing notification" << id;
+	if (d->notifications.contains(id)) {
+		KNotification* n = d->notifications.value(id);
+		//qCDebug(LOG_KNOTIFICATIONS) << "Closing notification" << id;
 
-        // Find plugins that are actually acting on this notification
-        // call close() only on those, otherwise each KNotificationPlugin::close()
-        // will call finish() which may close-and-delete the KNotification object
-        // before it finishes calling close on all the other plugins.
-        // For example: Action=Popup is a single actions but there is 5 loaded
-        // plugins, calling close() on the second would already close-and-delete
-        // the notification
-        KNotifyConfig notifyConfig(n->eventId());
+		// Find plugins that are actually acting on this notification
+		// call close() only on those, otherwise each KNotificationPlugin::close()
+		// will call finish() which may close-and-delete the KNotification object
+		// before it finishes calling close on all the other plugins.
+		// For example: Action=Popup is a single actions but there is 5 loaded
+		// plugins, calling close() on the second would already close-and-delete
+		// the notification
+		KNotifyConfig notifyConfig(n->eventId());
 		// HACK: autocode popup
-        QString notifyActions = "Popup"; // notifyConfig.readEntry(QStringLiteral("Action"));
+		QString notifyActions = "Popup";// notifyConfig.readEntry(QStringLiteral("Action"));
 
-        const auto listActions = notifyActions.split(QLatin1Char('|'));
-        for (const QString &action : listActions) {
-            if (!d->notifyPlugins.contains(action)) {
-                //qCDebug(LOG_KNOTIFICATIONS) << "No plugin for action" << action;
-                continue;
-            }
+		const auto listActions = notifyActions.split(QLatin1Char('|'));
+		for (const QString& action : listActions) {
+			if (!d->notifyPlugins.contains(action)) {
+				//qCDebug(LOG_KNOTIFICATIONS) << "No plugin for action" << action;
+				continue;
+			}
 
-            d->notifyPlugins[action]->close(n);
-        }
-    }
+			d->notifyPlugins[action]->close(n);
+		}
+	}
 }
 
-void KNotificationManager::notify(KNotification *n)
+void KNotificationManager::notify(KNotification* n)
 {
-    KNotifyConfig notifyConfig(n->eventId());
+	KNotifyConfig notifyConfig(n->eventId());
 
-    if (d->dirtyConfigCache.contains(n->appName())) {
-        d->dirtyConfigCache.removeOne(n->appName());
-    }
+	if (d->dirtyConfigCache.contains(n->appName())) {
+		d->dirtyConfigCache.removeOne(n->appName());
+	}
 
 	// HACK: hardcode Popup
-    const QString notifyActions = "Popup";
+	const QString notifyActions = "Popup";
 
-    if (notifyActions.isEmpty() || notifyActions == QLatin1String("None")) {
-        // this will cause KNotification closing itself fast
-        n->ref();
-        n->deref();
-        return;
-    }
+	if (notifyActions.isEmpty() || notifyActions == QLatin1String("None")) {
+		// this will cause KNotification closing itself fast
+		n->ref();
+		n->deref();
+		return;
+	}
 
-    d->notifications.insert(n->id(), n);
+	d->notifications.insert(n->id(), n);
 
-    // TODO KF6 d-pointer KNotifyConfig and add this there
-    if (n->urgency() == KNotification::DefaultUrgency) {
-        const QString urgency = notifyConfig.readEntry(QStringLiteral("Urgency"));
-        if (urgency == QLatin1String("Low")) {
-            n->setUrgency(KNotification::LowUrgency);
-        } else if (urgency == QLatin1String("Normal")) {
-            n->setUrgency(KNotification::NormalUrgency);
-        } else if (urgency == QLatin1String("High")) {
-            n->setUrgency(KNotification::HighUrgency);
-        } else if (urgency == QLatin1String("Critical")) {
-            n->setUrgency(KNotification::CriticalUrgency);
-        }
-    }
+	// TODO KF6 d-pointer KNotifyConfig and add this there
+	if (n->urgency() == KNotification::DefaultUrgency) {
+		const QString urgency = notifyConfig.readEntry(QStringLiteral("Urgency"));
+		if (urgency == QLatin1String("Low")) {
+			n->setUrgency(KNotification::LowUrgency);
+		}
+		else if (urgency == QLatin1String("Normal")) {
+			n->setUrgency(KNotification::NormalUrgency);
+		}
+		else if (urgency == QLatin1String("High")) {
+			n->setUrgency(KNotification::HighUrgency);
+		}
+		else if (urgency == QLatin1String("Critical")) {
+			n->setUrgency(KNotification::CriticalUrgency);
+		}
+	}
 
-    const auto actionsList = notifyActions.split(QLatin1Char('|'));
+	const auto actionsList = notifyActions.split(QLatin1Char('|'));
 
-    // Make sure all plugins can ref the notification
-    // otherwise a plugin may finish and deref before everyone got a chance to ref
-    for (const QString &action : actionsList) {
-        KNotificationPlugin *notifyPlugin = pluginForAction(action);
+	// Make sure all plugins can ref the notification
+	// otherwise a plugin may finish and deref before everyone got a chance to ref
+	for (const QString& action : actionsList) {
+		KNotificationPlugin* notifyPlugin = pluginForAction(action);
 
-        if (!notifyPlugin) {
-            //qCDebug(LOG_KNOTIFICATIONS) << "No plugin for action" << action;
-            continue;
-        }
+		if (!notifyPlugin) {
+			//qCDebug(LOG_KNOTIFICATIONS) << "No plugin for action" << action;
+			continue;
+		}
 
-        n->ref();
-    }
+		n->ref();
+	}
 
-    for (const QString &action : actionsList) {
-        KNotificationPlugin *notifyPlugin = pluginForAction(action);
+	for (const QString& action : actionsList) {
+		KNotificationPlugin* notifyPlugin = pluginForAction(action);
 
-        if (!notifyPlugin) {
-            //qCDebug(LOG_KNOTIFICATIONS) << "No plugin for action" << action;
-            continue;
-        }
+		if (!notifyPlugin) {
+			//qCDebug(LOG_KNOTIFICATIONS) << "No plugin for action" << action;
+			continue;
+		}
 
-        //qCDebug(LOG_KNOTIFICATIONS) << "Calling notify on" << notifyPlugin->optionName();
-        notifyPlugin->notify(n, notifyConfig);
-    }
+		//qCDebug(LOG_KNOTIFICATIONS) << "Calling notify on" << notifyPlugin->optionName();
+		notifyPlugin->notify(n, notifyConfig);
+	}
 
-    connect(n, &KNotification::closed, this, &KNotificationManager::notificationClosed);
+	connect(n, &KNotification::closed, this, &KNotificationManager::notificationClosed);
 }
 
-void KNotificationManager::update(KNotification *n)
+void KNotificationManager::update(KNotification* n)
 {
-    KNotifyConfig notifyConfig(n->eventId());
+	KNotifyConfig notifyConfig(n->eventId());
 
-    for (KNotificationPlugin *p : std::as_const(d->notifyPlugins)) {
-        p->update(n, notifyConfig);
-    }
+	for (KNotificationPlugin* p : std::as_const(d->notifyPlugins)) {
+		p->update(n, notifyConfig);
+	}
 }
 
-void KNotificationManager::reemit(KNotification *n)
+void KNotificationManager::reemit(KNotification* n)
 {
-    notify(n);
+	notify(n);
 }
 
-void KNotificationManager::reparseConfiguration(const QString &app)
+void KNotificationManager::reparseConfiguration(const QString& app)
 {
-    if (!d->dirtyConfigCache.contains(app)) {
-        d->dirtyConfigCache << app;
-    }
+	if (!d->dirtyConfigCache.contains(app)) {
+		d->dirtyConfigCache << app;
+	}
 }
 
 bool KNotificationManager::isInsideSandbox()
 {
-    // logic is taken from KSandbox::isInside()
-    static const bool isFlatpak = QFileInfo::exists(QStringLiteral("/.flatpak-info"));
-    static const bool isSnap = qEnvironmentVariableIsSet("SNAP");
+	// logic is taken from KSandbox::isInside()
+	static const bool isFlatpak = QFileInfo::exists(QStringLiteral("/.flatpak-info"));
+	static const bool isSnap = qEnvironmentVariableIsSet("SNAP");
 
-    return isFlatpak || isSnap;
+	return isFlatpak || isSnap;
 }
 
 #include "moc_knotificationmanager_p.cpp"

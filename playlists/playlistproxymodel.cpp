@@ -23,41 +23,41 @@
 #include "playlistproxymodel.h"
 #include "dynamicplaylists.h"
 
-PlaylistProxyModel::PlaylistProxyModel(QObject *parent)
-    : ProxyModel(parent)
+PlaylistProxyModel::PlaylistProxyModel(QObject* parent)
+	: ProxyModel(parent)
 {
-    setDynamicSortFilter(true);
-    setFilterCaseSensitivity(Qt::CaseInsensitive);
-    setSortCaseSensitivity(Qt::CaseInsensitive);
-    setSortLocaleAware(true);
-    sort(0);
+	setDynamicSortFilter(true);
+	setFilterCaseSensitivity(Qt::CaseInsensitive);
+	setSortCaseSensitivity(Qt::CaseInsensitive);
+	setSortLocaleAware(true);
+	sort(0);
 }
 
-bool PlaylistProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+bool PlaylistProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
-    if (!filterEnabled) {
-        return true;
-    }
-    if (!isChildOfRoot(sourceParent)) {
-        return true;
-    }
-    if (matchesFilter(QStringList() << sourceModel()->data(sourceModel()->index(sourceRow, 0, sourceParent), Qt::DisplayRole).toString())) {
-        return true;
-    }
+	if (!filterEnabled) {
+		return true;
+	}
+	if (!isChildOfRoot(sourceParent)) {
+		return true;
+	}
+	if (matchesFilter(QStringList() << sourceModel()->data(sourceModel()->index(sourceRow, 0, sourceParent), Qt::DisplayRole).toString())) {
+		return true;
+	}
 
-    RulesPlaylists *rules = qobject_cast<RulesPlaylists *>(sourceModel());
+	RulesPlaylists* rules = qobject_cast<RulesPlaylists*>(sourceModel());
 
-    if (rules) {
-        RulesPlaylists::Entry item = rules->entry(sourceRow);
-        for (const RulesPlaylists::Rule &r: item.rules) {
-            RulesPlaylists::Rule::ConstIterator it=r.constBegin();
-            RulesPlaylists::Rule::ConstIterator end=r.constEnd();
-            for (; it!=end; ++it) {
-                if (matchesFilter(QStringList() << it.value())) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
+	if (rules) {
+		RulesPlaylists::Entry item = rules->entry(sourceRow);
+		for (const RulesPlaylists::Rule& r : item.rules) {
+			RulesPlaylists::Rule::ConstIterator it = r.constBegin();
+			RulesPlaylists::Rule::ConstIterator end = r.constEnd();
+			for (; it != end; ++it) {
+				if (matchesFilter(QStringList() << it.value())) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }

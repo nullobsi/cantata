@@ -31,8 +31,8 @@ namespace Meta {
 namespace Tag {
 class FileTypeResolver : public TagLib::FileRef::FileTypeResolver {
 	TagLib::File* createFile(TagLib::FileName fileName,
-							 bool readAudioProperties,
-							 TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const override;
+	                         bool readAudioProperties,
+	                         TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const override;
 
 public:
 	virtual ~FileTypeResolver() {}

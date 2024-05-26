@@ -50,7 +50,7 @@ public:
          * - Mask, the property and the value will match if the bitmasking is not null
          */
 	enum ComparisonOperator { Equals,
-							  Mask };
+		                      Mask };
 
 	/**
          * The predicate type which controls how the predicate is handled
@@ -61,9 +61,9 @@ public:
          * - InterfaceCheck, the device type is compared
          */
 	enum Type { PropertyCheck,
-				Conjunction,
-				Disjunction,
-				InterfaceCheck };
+		        Conjunction,
+		        Disjunction,
+		        InterfaceCheck };
 
 	/**
          * Constructs an invalid predicate.
@@ -87,8 +87,8 @@ public:
          * @param compOperator the operator to apply between the property and the value when matching
          */
 	Predicate(const DeviceInterface::Type& ifaceType,
-			  const QString& property, const QVariant& value,
-			  ComparisonOperator compOperator = Equals);
+	          const QString& property, const QVariant& value,
+	          ComparisonOperator compOperator = Equals);
 
 	/**
          * Constructs a predicate matching the value of a property in
@@ -100,8 +100,8 @@ public:
          * @param compOperator the operator to apply between the property and the value when matching
          */
 	Predicate(const QString& ifaceName,
-			  const QString& property, const QVariant& value,
-			  ComparisonOperator compOperator = Equals);
+	          const QString& property, const QVariant& value,
+	          ComparisonOperator compOperator = Equals);
 
 	/**
          * Constructs a predicate matching devices being of a particular device interface

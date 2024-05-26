@@ -95,23 +95,23 @@ public:
          * - HdDvdRewritable : A High Density Digital Versatile Disc ReWritable (HD DVD-RW)
          */
 	enum DiscType { UnknownDiscType = -1,
-					CdRom,
-					CdRecordable,
-					CdRewritable,
-					DvdRom,
-					DvdRam,
-					DvdRecordable,
-					DvdRewritable,
-					DvdPlusRecordable,
-					DvdPlusRewritable,
-					DvdPlusRecordableDuallayer,
-					DvdPlusRewritableDuallayer,
-					BluRayRom,
-					BluRayRecordable,
-					BluRayRewritable,
-					HdDvdRom,
-					HdDvdRecordable,
-					HdDvdRewritable };
+		            CdRom,
+		            CdRecordable,
+		            CdRewritable,
+		            DvdRom,
+		            DvdRam,
+		            DvdRecordable,
+		            DvdRewritable,
+		            DvdPlusRecordable,
+		            DvdPlusRewritable,
+		            DvdPlusRecordableDuallayer,
+		            DvdPlusRewritableDuallayer,
+		            BluRayRom,
+		            BluRayRecordable,
+		            BluRayRewritable,
+		            HdDvdRom,
+		            HdDvdRecordable,
+		            HdDvdRewritable };
 
 private:
 	/**

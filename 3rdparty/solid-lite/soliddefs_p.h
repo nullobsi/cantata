@@ -86,12 +86,12 @@ public:
 			if (!_solid_static_##NAME.loadRelaxed()) {                                          \
 				if (isDestroyed()) {                                                            \
 					qFatal("Fatal Error: Accessed global static '%s *%s()' after destruction. " \
-						   "Defined at %s:%d",                                                  \
-						   #TYPE, #NAME, __FILE__, __LINE__);                                   \
+					       "Defined at %s:%d",                                                  \
+					       #TYPE, #NAME, __FILE__, __LINE__);                                   \
 				}                                                                               \
 				TYPE* x = new TYPE ARGS;                                                        \
 				if (!_solid_static_##NAME.testAndSetOrdered(0, x)                               \
-					&& _solid_static_##NAME.loadRelaxed() != x) {                               \
+				    && _solid_static_##NAME.loadRelaxed() != x) {                               \
 					delete x;                                                                   \
 				}                                                                               \
 				else {                                                                          \

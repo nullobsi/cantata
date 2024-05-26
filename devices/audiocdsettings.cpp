@@ -24,64 +24,64 @@
 #include "audiocdsettings.h"
 #include "gui/settings.h"
 
-#define REMOVE(w) \
-    w->setVisible(false); \
-    w->deleteLater(); \
-    w=0;
+#define REMOVE(w)         \
+	w->setVisible(false); \
+	w->deleteLater();     \
+	w = 0;
 
-AudioCdSettings::AudioCdSettings(QWidget *p)
-    : QWidget(p)
+AudioCdSettings::AudioCdSettings(QWidget* p)
+	: QWidget(p)
 {
-    setupUi(this);
-    #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
-    cdLookup->addItem(tr("CDDB"), true);
-    cdLookup->addItem(tr("MusicBrainz"), false);
-    #else
-    REMOVE(cdLookup)
-    REMOVE(cdLookupLabel)
-    #endif
+	setupUi(this);
+#if defined CDDB_FOUND && defined MusicBrainz5_FOUND
+	cdLookup->addItem(tr("CDDB"), true);
+	cdLookup->addItem(tr("MusicBrainz"), false);
+#else
+	REMOVE(cdLookup)
+	REMOVE(cdLookupLabel)
+#endif
 
-    #if !defined CDDB_FOUND
-    REMOVE(cddbHost)
-    REMOVE(cddbHostLabel)
-    REMOVE(cddbPort)
-    REMOVE(cddbPortLabel)
-    #endif
+#if !defined CDDB_FOUND
+	REMOVE(cddbHost)
+	REMOVE(cddbHostLabel)
+	REMOVE(cddbPort)
+	REMOVE(cddbPortLabel)
+#endif
 }
 
 void AudioCdSettings::load()
 {
-    cdAuto->setChecked(Settings::self()->cdAuto());
-    #if defined CDDB_FOUND
-    cddbHost->setText(Settings::self()->cddbHost());
-    cddbPort->setValue(Settings::self()->cddbPort());
-    #endif
-    paranoiaFull->setChecked(Settings::self()->paranoiaFull());
-    paranoiaNeverSkip->setChecked(Settings::self()->paranoiaNeverSkip());
-    #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
-    for (int i=0; i<cdLookup->count(); ++i) {
-        if (cdLookup->itemData(i).toBool()==Settings::self()->useCddb()) {
-            cdLookup->setCurrentIndex(i);
-            break;
-        }
-    }
-    #endif
-    paranoiaOffset->setValue(Settings::self()->paranoiaOffset());
+	cdAuto->setChecked(Settings::self()->cdAuto());
+#if defined CDDB_FOUND
+	cddbHost->setText(Settings::self()->cddbHost());
+	cddbPort->setValue(Settings::self()->cddbPort());
+#endif
+	paranoiaFull->setChecked(Settings::self()->paranoiaFull());
+	paranoiaNeverSkip->setChecked(Settings::self()->paranoiaNeverSkip());
+#if defined CDDB_FOUND && defined MusicBrainz5_FOUND
+	for (int i = 0; i < cdLookup->count(); ++i) {
+		if (cdLookup->itemData(i).toBool() == Settings::self()->useCddb()) {
+			cdLookup->setCurrentIndex(i);
+			break;
+		}
+	}
+#endif
+	paranoiaOffset->setValue(Settings::self()->paranoiaOffset());
 }
 
 void AudioCdSettings::save()
 {
-    Settings::self()->saveCdAuto(cdAuto->isChecked());
-    #if defined CDDB_FOUND
-    Settings::self()->saveCddbHost(cddbHost->text().trimmed());
-    Settings::self()->saveCddbPort(cddbPort->value());
-    #endif
-    Settings::self()->saveParanoiaFull(paranoiaFull->isChecked());
-    Settings::self()->saveParanoiaNeverSkip(paranoiaNeverSkip->isChecked());
-    #if defined CDDB_FOUND && defined MusicBrainz5_FOUND
-    Settings::self()->saveUseCddb(cdLookup->itemData(cdLookup->currentIndex()).toBool());
-    #endif
-    Settings::self()->saveParanoiaOffset(paranoiaOffset->value());
+	Settings::self()->saveCdAuto(cdAuto->isChecked());
+#if defined CDDB_FOUND
+	Settings::self()->saveCddbHost(cddbHost->text().trimmed());
+	Settings::self()->saveCddbPort(cddbPort->value());
+#endif
+	Settings::self()->saveParanoiaFull(paranoiaFull->isChecked());
+	Settings::self()->saveParanoiaNeverSkip(paranoiaNeverSkip->isChecked());
+#if defined CDDB_FOUND && defined MusicBrainz5_FOUND
+	Settings::self()->saveUseCddb(cdLookup->itemData(cdLookup->currentIndex()).toBool());
+#endif
+	Settings::self()->saveParanoiaOffset(paranoiaOffset->value());
 }
 
 #include "moc_audiocdsettings.cpp"

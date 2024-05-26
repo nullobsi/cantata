@@ -23,23 +23,23 @@
 
 #include "tagreader.h"
 
-void TagReader::setDetails(const QList<Song> &s, const QString &dir)
+void TagReader::setDetails(const QList<Song>& s, const QString& dir)
 {
-    songs=s;
-    baseDir=dir;
+	songs = s;
+	baseDir = dir;
 }
 
 void TagReader::run()
 {
-    for(int i=0; i<songs.count(); ++i) {
-        if (abortRequested) {
-            setFinished(false);
-            return;
-        }
+	for (int i = 0; i < songs.count(); ++i) {
+		if (abortRequested) {
+			setFinished(false);
+			return;
+		}
 
-        emit progress(i, Tags::readReplaygain(baseDir+songs.at(i).file));
-    }
-    setFinished(true);
+		emit progress(i, Tags::readReplaygain(baseDir + songs.at(i).file));
+	}
+	setFinished(true);
 }
 
 #include "moc_tagreader.cpp"

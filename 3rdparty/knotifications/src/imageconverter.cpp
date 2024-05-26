@@ -11,68 +11,67 @@
 #include <QDBusMetaType>
 #include <QImage>
 
-namespace ImageConverter
-{
+namespace ImageConverter {
 /**
  * A structure representing an image which can be marshalled to fit the
  * notification spec.
  */
 struct SpecImage {
-    int width, height, rowStride;
-    bool hasAlpha;
-    int bitsPerSample, channels;
-    QByteArray data;
+	int width, height, rowStride;
+	bool hasAlpha;
+	int bitsPerSample, channels;
+	QByteArray data;
 };
 
-QDBusArgument &operator<<(QDBusArgument &argument, const SpecImage &image)
+QDBusArgument& operator<<(QDBusArgument& argument, const SpecImage& image)
 {
-    argument.beginStructure();
-    argument << image.width << image.height << image.rowStride << image.hasAlpha;
-    argument << image.bitsPerSample << image.channels << image.data;
-    argument.endStructure();
-    return argument;
+	argument.beginStructure();
+	argument << image.width << image.height << image.rowStride << image.hasAlpha;
+	argument << image.bitsPerSample << image.channels << image.data;
+	argument.endStructure();
+	return argument;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &argument, SpecImage &image)
+const QDBusArgument& operator>>(const QDBusArgument& argument, SpecImage& image)
 {
-    argument.beginStructure();
-    argument >> image.width >> image.height >> image.rowStride >> image.hasAlpha;
-    argument >> image.bitsPerSample >> image.channels >> image.data;
-    argument.endStructure();
-    return argument;
+	argument.beginStructure();
+	argument >> image.width >> image.height >> image.rowStride >> image.hasAlpha;
+	argument >> image.bitsPerSample >> image.channels >> image.data;
+	argument.endStructure();
+	return argument;
 }
 
-} // namespace
+}// namespace ImageConverter
 
 // This must be before the QVariant::fromValue below (#211726)
 Q_DECLARE_METATYPE(ImageConverter::SpecImage)
 
-namespace ImageConverter
+namespace ImageConverter {
+QVariant variantForImage(const QImage& _image)
 {
-QVariant variantForImage(const QImage &_image)
-{
-    qDBusRegisterMetaType<SpecImage>();
+	qDBusRegisterMetaType<SpecImage>();
 
-    const bool hasAlpha = _image.hasAlphaChannel();
-    QImage image;
-    if (hasAlpha) {
-        image = _image.convertToFormat(QImage::Format_RGBA8888);
-    } else {
-        image = _image.convertToFormat(QImage::Format_RGB888);
-    }
+	const bool hasAlpha = _image.hasAlphaChannel();
+	QImage image;
+	if (hasAlpha) {
+		image = _image.convertToFormat(QImage::Format_RGBA8888);
+	}
+	else {
+		image = _image.convertToFormat(QImage::Format_RGB888);
+	}
 
-    QByteArray data((const char *)image.constBits(), image.sizeInBytes());
+	QByteArray data((const char*)image.constBits(), image.sizeInBytes());
 
-    SpecImage specImage;
-    specImage.width = image.width();
-    specImage.height = image.height();
-    specImage.rowStride = image.bytesPerLine();
-    specImage.hasAlpha = hasAlpha;
-    specImage.bitsPerSample = 8;
-    specImage.channels = hasAlpha ? 4 : 3;
-    specImage.data = data;
+	SpecImage specImage;
+	specImage.width = image.width();
+	specImage.height = image.height();
+	specImage.rowStride = image.bytesPerLine();
+	specImage.hasAlpha = hasAlpha;
+	specImage.bitsPerSample = 8;
+	specImage.channels = hasAlpha ? 4 : 3;
+	specImage.data = data;
 
-    return QVariant::fromValue(specImage);
+	return QVariant::fromValue(specImage);
 }
 
-} // namespace
+}// namespace ImageConverter

@@ -25,29 +25,28 @@
 
 using namespace Solid::Backends::UDisks2;
 
-GenericInterface::GenericInterface(Device *device)
-    : DeviceInterface(device)
+GenericInterface::GenericInterface(Device* device)
+	: DeviceInterface(device)
 {
-    connect(device, SIGNAL(propertyChanged(QMap<QString,int>)),
-            this, SIGNAL(propertyChanged(QMap<QString,int>)));
+	connect(device, SIGNAL(propertyChanged(QMap<QString, int>)),
+	        this, SIGNAL(propertyChanged(QMap<QString, int>)));
 }
 
 GenericInterface::~GenericInterface()
 {
 }
 
-QVariant GenericInterface::property(const QString &key) const
+QVariant GenericInterface::property(const QString& key) const
 {
-    return m_device->prop(key);
+	return m_device->prop(key);
 }
 
 QVariantMap GenericInterface::allProperties() const
 {
-    return m_device->allProperties();
+	return m_device->allProperties();
 }
 
-bool GenericInterface::propertyExists(const QString &key) const
+bool GenericInterface::propertyExists(const QString& key) const
 {
-    return m_device->propertyExists(key);
+	return m_device->propertyExists(key);
 }
-

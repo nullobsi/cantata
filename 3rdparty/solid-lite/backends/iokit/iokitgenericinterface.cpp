@@ -24,29 +24,28 @@
 
 using namespace Solid::Backends::IOKit;
 
-GenericInterface::GenericInterface(IOKitDevice *device)
-    : DeviceInterface(device)
+GenericInterface::GenericInterface(IOKitDevice* device)
+	: DeviceInterface(device)
 {
 }
 
 GenericInterface::~GenericInterface()
 {
-
 }
 
-QVariant GenericInterface::property(const QString &key) const
+QVariant GenericInterface::property(const QString& key) const
 {
-    return m_device->property(key);
+	return m_device->property(key);
 }
 
 QMap<QString, QVariant> GenericInterface::allProperties() const
 {
-    return m_device->allProperties();
+	return m_device->allProperties();
 }
 
-bool GenericInterface::propertyExists(const QString &key) const
+bool GenericInterface::propertyExists(const QString& key) const
 {
-    return m_device->propertyExists(key);
+	return m_device->propertyExists(key);
 }
 
 #include "backends/iokit/moc_iokitgenericinterface.cpp"

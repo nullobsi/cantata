@@ -23,4 +23,3 @@
 Solid::Ifaces::Block::~Block()
 {
 }
-

@@ -26,34 +26,34 @@
 #include "support/configuration.h"
 #include "widgets/icons.h"
 
-FolderPage::FolderPage(QWidget *p)
-    : MultiPageWidget(p)
+FolderPage::FolderPage(QWidget* p)
+	: MultiPageWidget(p)
 {
-    mpdBrowse=new MpdBrowsePage(this);
-    addPage(mpdBrowse->name(), mpdBrowse->icon(), mpdBrowse->title(), mpdBrowse->descr(), mpdBrowse);
+	mpdBrowse = new MpdBrowsePage(this);
+	addPage(mpdBrowse->name(), mpdBrowse->icon(), mpdBrowse->title(), mpdBrowse->descr(), mpdBrowse);
 
-    homeBrowse=new LocalFolderBrowsePage(true, this);
-    addPage(homeBrowse->name(), homeBrowse->icon(), homeBrowse->title(), homeBrowse->descr(), homeBrowse);
+	homeBrowse = new LocalFolderBrowsePage(true, this);
+	addPage(homeBrowse->name(), homeBrowse->icon(), homeBrowse->title(), homeBrowse->descr(), homeBrowse);
 
-    LocalFolderBrowsePage *rootBrowse=new LocalFolderBrowsePage(false, this);
-    addPage(rootBrowse->name(), rootBrowse->icon(), rootBrowse->title(), rootBrowse->descr(), rootBrowse);
+	LocalFolderBrowsePage* rootBrowse = new LocalFolderBrowsePage(false, this);
+	addPage(rootBrowse->name(), rootBrowse->icon(), rootBrowse->title(), rootBrowse->descr(), rootBrowse);
 
-    Configuration config(metaObject()->className());
-    load(config);
+	Configuration config(metaObject()->className());
+	load(config);
 }
 
 FolderPage::~FolderPage()
 {
-    Configuration config(metaObject()->className());
-    save(config);
+	Configuration config(metaObject()->className());
+	save(config);
 }
 
 #ifdef ENABLE_DEVICES_SUPPORT
-void FolderPage::addSelectionToDevice(const QString &udi)
+void FolderPage::addSelectionToDevice(const QString& udi)
 {
-    if (mpdBrowse==currentWidget()) {
-        mpdBrowse->addSelectionToDevice(udi);
-    }
+	if (mpdBrowse == currentWidget()) {
+		mpdBrowse->addSelectionToDevice(udi);
+	}
 }
 #endif
 

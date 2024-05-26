@@ -22,5 +22,4 @@
 
 Solid::Ifaces::PortableMediaPlayer::~PortableMediaPlayer()
 {
-
 }

@@ -21,26 +21,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "replaygain.h"
 #include <QCoreApplication>
 #include <QFile>
 #include <QTimer>
 #include <stdio.h>
-#include "replaygain.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-    if (argc<2) {
-        printf("Usage: %s <file 1..N>\n", argv[0]);
-        return -1;
-    }
+	if (argc < 2) {
+		printf("Usage: %s <file 1..N>\n", argv[0]);
+		return -1;
+	}
 
-    QStringList fileNames;
-    for (int i=0; i<argc-1; ++i) {
-        fileNames.append(QString::fromUtf8(argv[i+1]));
-    }
+	QStringList fileNames;
+	for (int i = 0; i < argc - 1; ++i) {
+		fileNames.append(QString::fromUtf8(argv[i + 1]));
+	}
 
-    QCoreApplication app(argc, argv);
-    ReplayGain *rg=new ReplayGain(fileNames);
-    QTimer::singleShot(0, rg, SLOT(scan()));
-    return app.exec();
+	QCoreApplication app(argc, argv);
+	ReplayGain* rg = new ReplayGain(fileNames);
+	QTimer::singleShot(0, rg, SLOT(scan()));
+	return app.exec();
 }

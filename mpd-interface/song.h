@@ -204,7 +204,7 @@ struct Song {
 	bool hasAlbumArtistSort() const { return hasExtraField(AlbumArtistSort); }
 
 	QString artistSortString() const { return hasAlbumArtistSort() ? albumArtistSort() : hasArtistSort() ? artistSort()
-																										 : QString(); }
+		                                                                                                 : QString(); }
 
 	void clearExtra() { extra.clear(); }
 

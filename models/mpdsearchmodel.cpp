@@ -22,108 +22,107 @@
  */
 
 #include "mpdsearchmodel.h"
-#include "roles.h"
-#include "mpd-interface/mpdconnection.h"
 #include "gui/covers.h"
+#include "mpd-interface/mpdconnection.h"
+#include "roles.h"
 
-MpdSearchModel::MpdSearchModel(QObject *parent)
-    : SearchModel(parent)
-    , currentId(0)
+MpdSearchModel::MpdSearchModel(QObject* parent)
+	: SearchModel(parent), currentId(0)
 {
-    connect(this, SIGNAL(getRating(QString)), MPDConnection::self(), SLOT(getRating(QString)));
-    connect(this, SIGNAL(search(QString,QString,int)), MPDConnection::self(), SLOT(search(QString,QString,int)));
-    connect(MPDConnection::self(), SIGNAL(searchResponse(int,QList<Song>)), this, SLOT(searchFinished(int,QList<Song>)));
-    connect(MPDConnection::self(), SIGNAL(rating(QString,quint8)), SLOT(ratingResult(QString,quint8)));
-    connect(Covers::self(), SIGNAL(loaded(Song,int)), this, SLOT(coverLoaded(Song,int)));
+	connect(this, SIGNAL(getRating(QString)), MPDConnection::self(), SLOT(getRating(QString)));
+	connect(this, SIGNAL(search(QString, QString, int)), MPDConnection::self(), SLOT(search(QString, QString, int)));
+	connect(MPDConnection::self(), SIGNAL(searchResponse(int, QList<Song>)), this, SLOT(searchFinished(int, QList<Song>)));
+	connect(MPDConnection::self(), SIGNAL(rating(QString, quint8)), SLOT(ratingResult(QString, quint8)));
+	connect(Covers::self(), SIGNAL(loaded(Song, int)), this, SLOT(coverLoaded(Song, int)));
 }
 
 MpdSearchModel::~MpdSearchModel()
 {
 }
 
-QVariant MpdSearchModel::data(const QModelIndex &index, int role) const
+QVariant MpdSearchModel::data(const QModelIndex& index, int role) const
 {
-    if (!index.isValid() && Cantata::Role_RatingCol==role) {
-        return COL_RATING;
-    }
+	if (!index.isValid() && Cantata::Role_RatingCol == role) {
+		return COL_RATING;
+	}
 
-    const Song *song = toSong(index);
+	const Song* song = toSong(index);
 
-    if (!song) {
-        return QVariant();
-    }
+	if (!song) {
+		return QVariant();
+	}
 
-    switch (role) {
-    case Cantata::Role_SongWithRating: {
-        QVariant var;
-        if (Song::Standard==song->type && Song::Rating_Null==song->rating) {
-            emit getRating(song->file);
-            song->rating=Song::Rating_Requested;
-        }
-        var.setValue(*song);
-        return var;
-    }
-    default:
-        return SearchModel::data(index, role);
-    }
-    return QVariant();
+	switch (role) {
+	case Cantata::Role_SongWithRating: {
+		QVariant var;
+		if (Song::Standard == song->type && Song::Rating_Null == song->rating) {
+			emit getRating(song->file);
+			song->rating = Song::Rating_Requested;
+		}
+		var.setValue(*song);
+		return var;
+	}
+	default:
+		return SearchModel::data(index, role);
+	}
+	return QVariant();
 }
 
 void MpdSearchModel::clear()
 {
-    SearchModel::clear();
-    currentId++;
+	SearchModel::clear();
+	currentId++;
 }
 
-void MpdSearchModel::search(const QString &key, const QString &value)
+void MpdSearchModel::search(const QString& key, const QString& value)
 {
-    if (key==currentKey && value==currentValue) {
-        return;
-    }
-    emit searching();
-    clear();
-    currentKey=key;
-    currentValue=value;
-    currentId++;
-    emit search(key, value, currentId);
+	if (key == currentKey && value == currentValue) {
+		return;
+	}
+	emit searching();
+	clear();
+	currentKey = key;
+	currentValue = value;
+	currentId++;
+	emit search(key, value, currentId);
 }
 
-void MpdSearchModel::searchFinished(int id, const QList<Song> &result)
+void MpdSearchModel::searchFinished(int id, const QList<Song>& result)
 {
-    if (id!=currentId) {
-        return;
-    }
+	if (id != currentId) {
+		return;
+	}
 
-    results(result);
+	results(result);
 }
 
-void MpdSearchModel::coverLoaded(const Song &song, int s)
+void MpdSearchModel::coverLoaded(const Song& song, int s)
 {
-    Q_UNUSED(s)
-    if (!song.isArtistImageRequest() && !song.isComposerImageRequest()) {
-        int row=0;
-        for (const Song &s: songList) {
-            if (s.albumArtist()==song.albumArtist() && s.album==song.album) {
-                QModelIndex idx=index(row, 0, QModelIndex());
-                emit dataChanged(idx, idx);
-            }
-            row++;
-        }
-    }
+	Q_UNUSED(s)
+	if (!song.isArtistImageRequest() && !song.isComposerImageRequest()) {
+		int row = 0;
+		for (const Song& s : songList) {
+			if (s.albumArtist() == song.albumArtist() && s.album == song.album) {
+				QModelIndex idx = index(row, 0, QModelIndex());
+				emit dataChanged(idx, idx);
+			}
+			row++;
+		}
+	}
 }
 
-void MpdSearchModel::ratingResult(const QString &file, quint8 r)
+void MpdSearchModel::ratingResult(const QString& file, quint8 r)
 {
-    QList<Song>::iterator it=songList.begin();
-    QList<Song>::iterator end=songList.end();
-    int numCols=columnCount(QModelIndex())-1;
+	QList<Song>::iterator it = songList.begin();
+	QList<Song>::iterator end = songList.end();
+	int numCols = columnCount(QModelIndex()) - 1;
 
-    for (int row=0; it!=end; ++it, ++row) {
-        if (Song::Standard==(*it).type && r!=(*it).rating && (*it).file==file) {
-            (*it).rating=r;
-            emit dataChanged(index(row, 0), index(row, numCols));
-        }
-    }
+	for (int row = 0; it != end; ++it, ++row) {
+		if (Song::Standard == (*it).type && r != (*it).rating && (*it).file == file) {
+			(*it).rating = r;
+			emit dataChanged(index(row, 0), index(row, numCols));
+		}
+	}
 }
 
 #include "moc_mpdsearchmodel.cpp"

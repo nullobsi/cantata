@@ -22,8 +22,8 @@
 
 using namespace Solid::Backends::UDev;
 
-Block::Block(UDevDevice *device)
-    : DeviceInterface(device)
+Block::Block(UDevDevice* device)
+	: DeviceInterface(device)
 {
 }
 
@@ -33,17 +33,17 @@ Block::~Block()
 
 int Block::deviceMajor() const
 {
-    return m_device->property("MAJOR").toInt();
+	return m_device->property("MAJOR").toInt();
 }
 
 int Block::deviceMinor() const
 {
-    return m_device->property("MINOR").toInt();
+	return m_device->property("MINOR").toInt();
 }
 
 QString Block::device() const
 {
-    return m_device->property("DEVNAME").toString();
+	return m_device->property("DEVNAME").toString();
 }
 
 #include "backends/udev/moc_udevblock.cpp"

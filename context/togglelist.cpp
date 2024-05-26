@@ -23,97 +23,98 @@
 
 #include "togglelist.h"
 #include "gui/settings.h"
+#include "support/utils.h"
 #include "widgets/basicitemdelegate.h"
 #include "widgets/icons.h"
-#include "support/utils.h"
 
-ToggleList::ToggleList(QWidget *p)
-    : QWidget(p)
+ToggleList::ToggleList(QWidget* p)
+	: QWidget(p)
 {
-    setupUi(this);
-    connect(upButton, SIGNAL(clicked()), SLOT(moveUp()));
-    connect(downButton, SIGNAL(clicked()), SLOT(moveDown()));
-    connect(addButton, SIGNAL(clicked()), SLOT(add()));
-    connect(removeButton, SIGNAL(clicked()), SLOT(remove()));
-    connect(available, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), SLOT(availableChanged(QListWidgetItem*)));
-    connect(selected, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), SLOT(selectedChanged(QListWidgetItem*)));
-    upButton->setIcon(Icons::self()->upIcon);
-    downButton->setIcon(Icons::self()->downIcon);
-    bool rtl=isRightToLeft();
-    addButton->setIcon(rtl ? Icons::self()->leftIcon : Icons::self()->rightIcon);
-    removeButton->setIcon(rtl ? Icons::self()->rightIcon : Icons::self()->leftIcon);
+	setupUi(this);
+	connect(upButton, SIGNAL(clicked()), SLOT(moveUp()));
+	connect(downButton, SIGNAL(clicked()), SLOT(moveDown()));
+	connect(addButton, SIGNAL(clicked()), SLOT(add()));
+	connect(removeButton, SIGNAL(clicked()), SLOT(remove()));
+	connect(available, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(availableChanged(QListWidgetItem*)));
+	connect(selected, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(selectedChanged(QListWidgetItem*)));
+	upButton->setIcon(Icons::self()->upIcon);
+	downButton->setIcon(Icons::self()->downIcon);
+	bool rtl = isRightToLeft();
+	addButton->setIcon(rtl ? Icons::self()->leftIcon : Icons::self()->rightIcon);
+	removeButton->setIcon(rtl ? Icons::self()->rightIcon : Icons::self()->leftIcon);
 
-    upButton->setEnabled(false);
-    downButton->setEnabled(false);
-    addButton->setEnabled(false);
-    removeButton->setEnabled(false);
-    available->setAlternatingRowColors(false);
-    available->setItemDelegate(new BasicItemDelegate(available));
-    selected->setAlternatingRowColors(false);
-    selected->setItemDelegate(new BasicItemDelegate(selected));
+	upButton->setEnabled(false);
+	downButton->setEnabled(false);
+	addButton->setEnabled(false);
+	removeButton->setEnabled(false);
+	available->setAlternatingRowColors(false);
+	available->setItemDelegate(new BasicItemDelegate(available));
+	selected->setAlternatingRowColors(false);
+	selected->setItemDelegate(new BasicItemDelegate(selected));
 }
 
 void ToggleList::moveUp()
 {
-    move(-1);
+	move(-1);
 }
 
 void ToggleList::moveDown()
 {
-    move(+1);
+	move(+1);
 }
 
 void ToggleList::add()
 {
-    int index=available->currentRow();
-    if (index<0 || index>available->count()) {
-        return;
-    }
-    QListWidgetItem *item = available->takeItem(index);
-    QListWidgetItem *newItem=new QListWidgetItem(selected);
-    newItem->setText(item->text());
-    newItem->setData(Qt::UserRole, item->data(Qt::UserRole));
-    delete item;
+	int index = available->currentRow();
+	if (index < 0 || index > available->count()) {
+		return;
+	}
+	QListWidgetItem* item = available->takeItem(index);
+	QListWidgetItem* newItem = new QListWidgetItem(selected);
+	newItem->setText(item->text());
+	newItem->setData(Qt::UserRole, item->data(Qt::UserRole));
+	delete item;
 }
 
 void ToggleList::remove()
 {
-    int index=selected->currentRow();
-    if (index<0 || index>selected->count()) {
-        return;
-    }
-    QListWidgetItem *item = selected->takeItem(index);
-    QListWidgetItem *newItem=new QListWidgetItem(available);
-    newItem->setText(item->text());
-    newItem->setData(Qt::UserRole, item->data(Qt::UserRole));
-    delete item;
+	int index = selected->currentRow();
+	if (index < 0 || index > selected->count()) {
+		return;
+	}
+	QListWidgetItem* item = selected->takeItem(index);
+	QListWidgetItem* newItem = new QListWidgetItem(available);
+	newItem->setText(item->text());
+	newItem->setData(Qt::UserRole, item->data(Qt::UserRole));
+	delete item;
 }
 
 void ToggleList::move(int d)
 {
-    const int row = selected->currentRow();
-    QListWidgetItem *item = selected->takeItem(row);
-    selected->insertItem(row + d, item);
-    selected->setCurrentRow(row + d);
+	const int row = selected->currentRow();
+	QListWidgetItem* item = selected->takeItem(row);
+	selected->insertItem(row + d, item);
+	selected->setCurrentRow(row + d);
 }
 
-void ToggleList::availableChanged(QListWidgetItem *item)
+void ToggleList::availableChanged(QListWidgetItem* item)
 {
-    addButton->setEnabled(item);
+	addButton->setEnabled(item);
 }
 
-void ToggleList::selectedChanged(QListWidgetItem *item)
+void ToggleList::selectedChanged(QListWidgetItem* item)
 {
-    if (!item) {
-        upButton->setEnabled(false);
-        downButton->setEnabled(false);
-        removeButton->setEnabled(false);
-    } else {
-        const int row = available->row(item);
-        upButton->setEnabled(row != 0);
-        downButton->setEnabled(row != available->count() - 1);
-    }
-    removeButton->setEnabled(item);
+	if (!item) {
+		upButton->setEnabled(false);
+		downButton->setEnabled(false);
+		removeButton->setEnabled(false);
+	}
+	else {
+		const int row = available->row(item);
+		upButton->setEnabled(row != 0);
+		downButton->setEnabled(row != available->count() - 1);
+	}
+	removeButton->setEnabled(item);
 }
 
 #include "moc_togglelist.cpp"

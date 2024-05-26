@@ -6,35 +6,33 @@
 
 #include "knotificationplugin.h"
 
-class KNotificationPluginPrivate
-{
+class KNotificationPluginPrivate {
 };
 
-KNotificationPlugin::KNotificationPlugin(QObject *parent, const QVariantList &args)
-    : QObject(parent)
-    , d(nullptr)
+KNotificationPlugin::KNotificationPlugin(QObject* parent, const QVariantList& args)
+	: QObject(parent), d(nullptr)
 {
-    Q_UNUSED(args);
+	Q_UNUSED(args);
 }
 
 KNotificationPlugin::~KNotificationPlugin()
 {
 }
 
-void KNotificationPlugin::update(KNotification *notification, const KNotifyConfig &notifyConfig)
+void KNotificationPlugin::update(KNotification* notification, const KNotifyConfig& notifyConfig)
 {
-    Q_UNUSED(notification);
-    Q_UNUSED(notifyConfig);
+	Q_UNUSED(notification);
+	Q_UNUSED(notifyConfig);
 }
 
-void KNotificationPlugin::close(KNotification *notification)
+void KNotificationPlugin::close(KNotification* notification)
 {
-    Q_EMIT finished(notification);
+	Q_EMIT finished(notification);
 }
 
-void KNotificationPlugin::finish(KNotification *notification)
+void KNotificationPlugin::finish(KNotification* notification)
 {
-    Q_EMIT finished(notification);
+	Q_EMIT finished(notification);
 }
 
 #include "moc_knotificationplugin.cpp"

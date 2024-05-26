@@ -56,8 +56,8 @@ public:
          * - PropertyRemoved : A property has been removed from the device
          */
 	enum PropertyChange { PropertyModified,
-						  PropertyAdded,
-						  PropertyRemoved };
+		                  PropertyAdded,
+		                  PropertyRemoved };
 
 private:
 	/**

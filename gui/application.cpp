@@ -21,116 +21,118 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QListView>
 #include "application.h"
-#include "settings.h"
-#include "support/proxystyle.h"
 #include "models/mpdlibrarymodel.h"
 #include "models/playlistsmodel.h"
 #include "models/streamsmodel.h"
-#include "support/utils.h"
 #include "mpd-interface/mpdstats.h"
 #include "mpd-interface/mpdstatus.h"
+#include "settings.h"
+#include "support/proxystyle.h"
 #include "support/thread.h"
+#include "support/utils.h"
 #include "tags/taghelperiface.h"
+#include <QListView>
 #ifdef ENABLE_SCROBBLING
 #include "scrobbling/scrobbler.h"
 #endif
-#include "support/fancytabwidget.h"
-#include "support/combobox.h"
-#include "widgets/itemview.h"
-#include "widgets/groupedview.h"
-#include "widgets/actionitemdelegate.h"
-#include "widgets/toolbutton.h"
-#include "widgets/sizegrip.h"
+#include "config.h"
 #include "http/httpserver.h"
 #include "network/networkproxyfactory.h"
-#include "config.h"
+#include "support/combobox.h"
+#include "support/fancytabwidget.h"
+#include "widgets/actionitemdelegate.h"
+#include "widgets/groupedview.h"
+#include "widgets/itemview.h"
+#include "widgets/sizegrip.h"
+#include "widgets/toolbutton.h"
 
 void Application::init()
 {
-    #if defined Q_OS_WIN
-    ProxyStyle *proxy=new ProxyStyle(ProxyStyle::VF_Side);
-    #elif defined Q_OS_MAC
-    ProxyStyle *proxy=new ProxyStyle(ProxyStyle::VF_Side|ProxyStyle::VF_Top);
-    #else
-    ProxyStyle *proxy=new ProxyStyle(0);
-    #endif
-    QString theme = Settings::self()->style();
-    if (!theme.isEmpty()) {
-        QStyle *s=QApplication::setStyle(theme);
-        if (s) {
-            proxy->setBaseStyle(s);
-        }
-    }
-    qApp->setStyle(proxy);
+#if defined Q_OS_WIN
+	ProxyStyle* proxy = new ProxyStyle(ProxyStyle::VF_Side);
+#elif defined Q_OS_MAC
+	ProxyStyle* proxy = new ProxyStyle(ProxyStyle::VF_Side | ProxyStyle::VF_Top);
+#else
+	ProxyStyle* proxy = new ProxyStyle(0);
+#endif
+	QString theme = Settings::self()->style();
+	if (!theme.isEmpty()) {
+		QStyle* s = QApplication::setStyle(theme);
+		if (s) {
+			proxy->setBaseStyle(s);
+		}
+	}
+	qApp->setStyle(proxy);
 
-    #ifdef Q_OS_WIN
-    // Qt does not seem to consistently apply the application font under Windows.
-    // To work-around this, set the application font to that used for a listview.
-    // Issues #1097 and #1109
-    QListView view;
-    view.ensurePolished();
-    QApplication::setFont(view.font());
-    #endif
+#ifdef Q_OS_WIN
+	// Qt does not seem to consistently apply the application font under Windows.
+	// To work-around this, set the application font to that used for a listview.
+	// Issues #1097 and #1109
+	QListView view;
+	view.ensurePolished();
+	QApplication::setFont(view.font());
+#endif
 
-    // Ensure these objects are created in the GUI thread...
-    ThreadCleaner::self();
-    MPDStatus::self();
-    MPDStats::self();
-    #ifdef ENABLE_TAGLIB
-    TagHelperIface::self();
-    #endif
-    NetworkProxyFactory::self();
-    #ifdef ENABLE_SCROBBLING
-    Scrobbler::self();
-    #endif
-    MpdLibraryModel::self();
-    PlaylistsModel::self();
-    StreamsModel::self();
+	// Ensure these objects are created in the GUI thread...
+	ThreadCleaner::self();
+	MPDStatus::self();
+	MPDStats::self();
+#ifdef ENABLE_TAGLIB
+	TagHelperIface::self();
+#endif
+	NetworkProxyFactory::self();
+#ifdef ENABLE_SCROBBLING
+	Scrobbler::self();
+#endif
+	MpdLibraryModel::self();
+	PlaylistsModel::self();
+	StreamsModel::self();
 
-    // Ensure this is started before any MPD connection
-    HttpServer::self();
+	// Ensure this is started before any MPD connection
+	HttpServer::self();
 
-    Song::initTranslations();
+	Song::initTranslations();
 
-    // Init sizes (before any widgets constructed!)
-    ItemView::setup();
-    FancyTabWidget::setup();
-    GroupedView::setup();
-    ActionItemDelegate::setup();
+	// Init sizes (before any widgets constructed!)
+	ItemView::setup();
+	FancyTabWidget::setup();
+	GroupedView::setup();
+	ActionItemDelegate::setup();
 }
 
-void Application::fixSize(QWidget *widget)
+void Application::fixSize(QWidget* widget)
 {
-    static int fixedHeight = -1;
-    if (-1 == fixedHeight) {
-        ComboBox c(widget);
-        ToolButton b(widget);
-        SizeGrip g(widget);
-        c.ensurePolished();
-        b.ensurePolished();
-        g.ensurePolished();
-        fixedHeight=qMax(24, qMax(c.sizeHint().height(), qMax(b.sizeHint().height(), g.sizeHint().height())));
-        if (fixedHeight%2) {
-            fixedHeight--;
-        }
-    }
+	static int fixedHeight = -1;
+	if (-1 == fixedHeight) {
+		ComboBox c(widget);
+		ToolButton b(widget);
+		SizeGrip g(widget);
+		c.ensurePolished();
+		b.ensurePolished();
+		g.ensurePolished();
+		fixedHeight = qMax(24, qMax(c.sizeHint().height(), qMax(b.sizeHint().height(), g.sizeHint().height())));
+		if (fixedHeight % 2) {
+			fixedHeight--;
+		}
+	}
 
-    QToolButton *tb=qobject_cast<QToolButton *>(widget);
-    if (tb) {
-        tb->setFixedSize(fixedHeight, fixedHeight);
-    } else {
-        #ifdef Q_OS_MAC
-        // TODO: Why is this +(2*focus) required for macOS? If its not used, library page's statusbar is larger
-        // than the rest - due to genre combo?
-        widget->setFixedHeight(fixedHeight+(2*widget->style()->pixelMetric(QStyle::PM_FocusFrameHMargin)));
-        #else
-        if (0==qstrcmp("QWidget", widget->metaObject()->className())) {
-            widget->setFixedHeight(fixedHeight+Utils::scaleForDpi(4));
-        } else {
-            widget->setFixedHeight(fixedHeight);
-        }
-        #endif
-    }
+	QToolButton* tb = qobject_cast<QToolButton*>(widget);
+	if (tb) {
+		tb->setFixedSize(fixedHeight, fixedHeight);
+	}
+	else {
+#ifdef Q_OS_MAC
+		// TODO: Why is this +(2*focus) required for macOS? If its not used, library page's statusbar is larger
+		// than the rest - due to genre combo?
+		widget->setFixedHeight(fixedHeight + (2 * widget->style()->pixelMetric(QStyle::PM_FocusFrameHMargin)));
+#else
+		if (0 == qstrcmp("QWidget", widget->metaObject()->className())) {
+			widget->setFixedHeight(fixedHeight + Utils::scaleForDpi(4));
+		}
+		else {
+			widget->setFixedHeight(fixedHeight);
+		}
+#endif
+	}
 }

@@ -23,78 +23,80 @@
 
 #include "splitlabelwidget.h"
 #include "support/squeezedtextlabel.h"
-#include <QFormLayout>
 #include <QBoxLayout>
+#include <QFormLayout>
 
-#define REMOVE(w) \
-    w->setVisible(false); \
-    w->deleteLater()
+#define REMOVE(w)         \
+	w->setVisible(false); \
+	w->deleteLater()
 
-SplitLabelWidget::SplitLabelWidget(QWidget *p)
-    : QStackedWidget(p)
+SplitLabelWidget::SplitLabelWidget(QWidget* p)
+	: QStackedWidget(p)
 {
-    QWidget *singlePage=new QWidget(this);
-    QBoxLayout *singleLayout=new QBoxLayout(QBoxLayout::TopToBottom, singlePage);
-    single=new QLabel(singlePage);
-    single->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-    single->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-    singleLayout->addWidget(single);
+	QWidget* singlePage = new QWidget(this);
+	QBoxLayout* singleLayout = new QBoxLayout(QBoxLayout::TopToBottom, singlePage);
+	single = new QLabel(singlePage);
+	single->setAlignment(Qt::AlignLeading | Qt::AlignLeft | Qt::AlignVCenter);
+	single->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+	singleLayout->addWidget(single);
 
-    multiplePage=new QWidget(this);
-    QFormLayout *multipleLayout=new QFormLayout(multiplePage);
-    message=new QLabel(multiplePage);
-    multipleLayout->setSpacing(0);
-    multipleLayout->setWidget(0, QFormLayout::SpanningRole, message);
-    addWidget(singlePage);
-    addWidget(multiplePage);
-    setCurrentIndex(0);
+	multiplePage = new QWidget(this);
+	QFormLayout* multipleLayout = new QFormLayout(multiplePage);
+	message = new QLabel(multiplePage);
+	multipleLayout->setSpacing(0);
+	multipleLayout->setWidget(0, QFormLayout::SpanningRole, message);
+	addWidget(singlePage);
+	addWidget(multiplePage);
+	setCurrentIndex(0);
 }
 
-void SplitLabelWidget::setText(const QString &text)
+void SplitLabelWidget::setText(const QString& text)
 {
-    setCurrentIndex(0);
-    single->setText(text);
+	setCurrentIndex(0);
+	single->setText(text);
 }
 
-void SplitLabelWidget::setText(const QList<QPair<QString, QString> > &details, const QString &msg)
+void SplitLabelWidget::setText(const QList<QPair<QString, QString>>& details, const QString& msg)
 {
-    if (details.isEmpty()) {
-        setText(msg);
-        return;
-    }
+	if (details.isEmpty()) {
+		setText(msg);
+		return;
+	}
 
-    setCurrentIndex(1);
-    if (details.count()!=labels.count()) {
-        if (details.count()<labels.count()) {
-            int diff=labels.count()-details.count();
-            for (int i=0; i<diff; ++i) {
-                QLabel *l=labels.takeLast();
-                SqueezedTextLabel *v=values.takeLast();
-                REMOVE(l);
-                REMOVE(v);
-            }
-        } else {
-            QFormLayout *lay=static_cast<QFormLayout *>(multiplePage->layout());
-            int diff=details.count()-labels.count();
-            for (int i=0; i<diff; ++i) {
-                QLabel *l=new QLabel(multiplePage);
-                SqueezedTextLabel *v=new SqueezedTextLabel(multiplePage);
-                lay->addRow(l, v);
-                labels.append(l);
-                values.append(v);
-            }
-        }
-    }
+	setCurrentIndex(1);
+	if (details.count() != labels.count()) {
+		if (details.count() < labels.count()) {
+			int diff = labels.count() - details.count();
+			for (int i = 0; i < diff; ++i) {
+				QLabel* l = labels.takeLast();
+				SqueezedTextLabel* v = values.takeLast();
+				REMOVE(l);
+				REMOVE(v);
+			}
+		}
+		else {
+			QFormLayout* lay = static_cast<QFormLayout*>(multiplePage->layout());
+			int diff = details.count() - labels.count();
+			for (int i = 0; i < diff; ++i) {
+				QLabel* l = new QLabel(multiplePage);
+				SqueezedTextLabel* v = new SqueezedTextLabel(multiplePage);
+				lay->addRow(l, v);
+				labels.append(l);
+				values.append(v);
+			}
+		}
+	}
 
-    if (msg.isEmpty()) {
-        message->setVisible(false);
-    } else {
-        message->setVisible(true);
-        message->setText(msg);
-    }
+	if (msg.isEmpty()) {
+		message->setVisible(false);
+	}
+	else {
+		message->setVisible(true);
+		message->setText(msg);
+	}
 
-    for (int i=0; i<details.count(); ++i) {
-        labels.at(i)->setText(details.at(i).first);
-        values.at(i)->setText(QLatin1String("  ")+details.at(i).second);
-    }
+	for (int i = 0; i < details.count(); ++i) {
+		labels.at(i)->setText(details.at(i).first);
+		values.at(i)->setText(QLatin1String("  ") + details.at(i).second);
+	}
 }

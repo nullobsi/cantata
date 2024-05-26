@@ -27,26 +27,26 @@
 #include <QPainter>
 #include <QStyle>
 
-void WizardPage::setBackground(const QIcon &i)
+void WizardPage::setBackground(const QIcon& i)
 {
-    int size=fontMetrics().height()*10;
-    size=((int)(size/4))*4;
-    pix=i.pixmap(size, QIcon::Disabled);
-    if (pix.width()<size && pix.height()<size) {
-        pix=pix.scaled(QSize(size, size), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    }
+	int size = fontMetrics().height() * 10;
+	size = ((int)(size / 4)) * 4;
+	pix = i.pixmap(size, QIcon::Disabled);
+	if (pix.width() < size && pix.height() < size) {
+		pix = pix.scaled(QSize(size, size), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+	}
 }
 
-void WizardPage::paintEvent(QPaintEvent *e)
+void WizardPage::paintEvent(QPaintEvent* e)
 {
-    int spacing=Utils::layoutSpacing(this);
-    spacing*=2;
+	int spacing = Utils::layoutSpacing(this);
+	spacing *= 2;
 
-    QWizardPage::paintEvent(e);
-    QRect r(rect());
-    QPainter painter(this);
+	QWizardPage::paintEvent(e);
+	QRect r(rect());
+	QPainter painter(this);
 
-    painter.setOpacity(0.2);
-    painter.drawPixmap(isRightToLeft() ? r.left() + spacing : r.right() - (pix.width() + spacing),
-                       r.bottom() - (pix.height() + spacing), pix);
+	painter.setOpacity(0.2);
+	painter.drawPixmap(isRightToLeft() ? r.left() + spacing : r.right() - (pix.width() + spacing),
+	                   r.bottom() - (pix.height() + spacing), pix);
 }

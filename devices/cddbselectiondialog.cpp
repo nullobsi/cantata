@@ -22,70 +22,72 @@
  */
 
 #include "cddbselectiondialog.h"
-#include <QVBoxLayout>
-#include <QLabel>
 #include <QComboBox>
+#include <QLabel>
 #include <QTreeWidget>
+#include <QVBoxLayout>
 
-CddbSelectionDialog::CddbSelectionDialog(QWidget *parent)
-    : Dialog(parent, "CddbSelectionDialog")
+CddbSelectionDialog::CddbSelectionDialog(QWidget* parent)
+	: Dialog(parent, "CddbSelectionDialog")
 {
-    QWidget *wid = new QWidget(this);
-    QVBoxLayout *layout = new QVBoxLayout(wid);
+	QWidget* wid = new QWidget(this);
+	QVBoxLayout* layout = new QVBoxLayout(wid);
 
-    combo=new QComboBox(wid);
-    QLabel *label=new QLabel(tr("Multiple matches were found. "
-                                  "Please choose the relevant one from below:"), wid);
+	combo = new QComboBox(wid);
+	QLabel* label = new QLabel(tr("Multiple matches were found. "
+	                              "Please choose the relevant one from below:"),
+	                           wid);
 
-    tracks = new QTreeWidget(wid);
-    tracks->setAlternatingRowColors(true);
-    tracks->setRootIsDecorated(false);
-    tracks->setUniformRowHeights(true);
-    tracks->setItemsExpandable(false);
-    tracks->setAllColumnsShowFocus(true);
-    tracks->setHeaderLabels(QStringList() << tr("Artist") << tr("Title"));
-    tracks->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+	tracks = new QTreeWidget(wid);
+	tracks->setAlternatingRowColors(true);
+	tracks->setRootIsDecorated(false);
+	tracks->setUniformRowHeights(true);
+	tracks->setItemsExpandable(false);
+	tracks->setAllColumnsShowFocus(true);
+	tracks->setHeaderLabels(QStringList() << tr("Artist") << tr("Title"));
+	tracks->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
-    label->setWordWrap(true);
-    layout->addWidget(label);
-    layout->addWidget(combo);
-    layout->addWidget(tracks);
+	label->setWordWrap(true);
+	layout->addWidget(label);
+	layout->addWidget(combo);
+	layout->addWidget(tracks);
 
-    setCaption(tr("Disc Selection"));
-    setMainWidget(wid);
-    setButtons(Ok);
-    connect(combo, SIGNAL(currentIndexChanged(int)), SLOT(updateTracks()));
+	setCaption(tr("Disc Selection"));
+	setMainWidget(wid);
+	setButtons(Ok);
+	connect(combo, SIGNAL(currentIndexChanged(int)), SLOT(updateTracks()));
 }
 
-int CddbSelectionDialog::select(const QList<CdAlbum> &albums)
+int CddbSelectionDialog::select(const QList<CdAlbum>& albums)
 {
-    combo->clear();
-    albumDetails=albums;
-    for (const CdAlbum &a: albums) {
-        if (a.disc>0) {
-            combo->addItem(tr("%1 - %2 Disc %3 (%4)", "artist - album Disc disc (year)").arg(a.artist).arg(a.name).arg(a.disc).arg(a.year));
-        } else {
-            combo->addItem(tr("%1 - %2 (%3)", "artist - album (year)").arg(a.artist).arg(a.name).arg(a.year));
-        }
-    }
+	combo->clear();
+	albumDetails = albums;
+	for (const CdAlbum& a : albums) {
+		if (a.disc > 0) {
+			combo->addItem(tr("%1 - %2 Disc %3 (%4)", "artist - album Disc disc (year)").arg(a.artist).arg(a.name).arg(a.disc).arg(a.year));
+		}
+		else {
+			combo->addItem(tr("%1 - %2 (%3)", "artist - album (year)").arg(a.artist).arg(a.name).arg(a.year));
+		}
+	}
 
-    updateTracks();
-    exec();
-    return combo->currentIndex();
+	updateTracks();
+	exec();
+	return combo->currentIndex();
 }
 
 void CddbSelectionDialog::updateTracks()
 {
-    tracks->clear();
-    bool sameArtist=true;
-    const CdAlbum &a=albumDetails.at(combo->currentIndex());
-    for (const Song &s: a.tracks) {
-        new QTreeWidgetItem(tracks, QStringList() << s.artist << s.title);
-        if (s.artist!=a.artist) {
-            sameArtist=false;
-        }
-    }
-    tracks->setColumnHidden(0, sameArtist);
+	tracks->clear();
+	bool sameArtist = true;
+	const CdAlbum& a = albumDetails.at(combo->currentIndex());
+	for (const Song& s : a.tracks) {
+		new QTreeWidgetItem(tracks, QStringList() << s.artist << s.title);
+		if (s.artist != a.artist) {
+			sameArtist = false;
+		}
+	}
+	tracks->setColumnHidden(0, sameArtist);
 }
 
 #include "moc_cddbselectiondialog.cpp"

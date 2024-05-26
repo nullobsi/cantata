@@ -22,168 +22,171 @@
  */
 
 #include "lastfmengine.h"
-#include "network/networkaccessmanager.h"
-#include "gui/covers.h"
-#include "gui/apikeys.h"
 #include "config.h"
+#include "gui/apikeys.h"
+#include "gui/covers.h"
+#include "network/networkaccessmanager.h"
+#include <QRegularExpression>
 #include <QUrlQuery>
 #include <QXmlStreamReader>
-#include <QRegularExpression>
 
 #include <QDebug>
-static bool debugEnabled=false;
-#define DBUG if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
+static bool debugEnabled = false;
+#define DBUG \
+	if (debugEnabled) qWarning() << metaObject()->className() << __FUNCTION__
 void LastFmEngine::enableDebug()
 {
-    debugEnabled=true;
+	debugEnabled = true;
 }
 
 const QLatin1String LastFmEngine::constLang("lastfm");
 const QLatin1String LastFmEngine::constLinkPlaceholder("XXX_CONTEXT_READ_MORE_ON_LASTFM_XXX");
 
-static const char * constModeProperty="mode";
-static const char * constQuery="query";
+static const char* constModeProperty = "mode";
+static const char* constQuery = "query";
 
-LastFmEngine::LastFmEngine(QObject *p)
-    : ContextEngine(p)
+LastFmEngine::LastFmEngine(QObject* p)
+	: ContextEngine(p)
 {
 }
 
 QStringList LastFmEngine::getLangs() const
 {
-    QStringList langs;
-    langs.append(constLang);
-    return langs;
+	QStringList langs;
+	langs.append(constLang);
+	return langs;
 }
 
 QString LastFmEngine::translateLinks(QString text) const
 {
-    text=text.replace(constLinkPlaceholder, tr("Read more on last.fm"));
-    return text;
+	text = text.replace(constLinkPlaceholder, tr("Read more on last.fm"));
+	return text;
 }
 
-void LastFmEngine::search(const QStringList &query, Mode mode)
+void LastFmEngine::search(const QStringList& query, Mode mode)
 {
-    QStringList fixedQuery=fixQuery(query);
-    QUrl url("https://ws.audioscrobbler.com/2.0/");
-    QUrlQuery urlQuery;
+	QStringList fixedQuery = fixQuery(query);
+	QUrl url("https://ws.audioscrobbler.com/2.0/");
+	QUrlQuery urlQuery;
 
-    switch (mode) {
-    case Artist:
-        urlQuery.addQueryItem("method", "artist.getInfo");
-        break;
-    case Album:
-        urlQuery.addQueryItem("method", "album.getInfo");
-        urlQuery.addQueryItem("album", fixedQuery.at(1));
-        break;
-    case Track:
-        urlQuery.addQueryItem("method", "track.getInfo");
-        urlQuery.addQueryItem("track", fixedQuery.at(1));
-        break;
-    }
+	switch (mode) {
+	case Artist:
+		urlQuery.addQueryItem("method", "artist.getInfo");
+		break;
+	case Album:
+		urlQuery.addQueryItem("method", "album.getInfo");
+		urlQuery.addQueryItem("album", fixedQuery.at(1));
+		break;
+	case Track:
+		urlQuery.addQueryItem("method", "track.getInfo");
+		urlQuery.addQueryItem("track", fixedQuery.at(1));
+		break;
+	}
 
-    ApiKeys::self()->addKey(urlQuery, ApiKeys::LastFm);
-    urlQuery.addQueryItem("autocorrect", "1");
-    urlQuery.addQueryItem("artist", Covers::fixArtist(fixedQuery.at(0)));
+	ApiKeys::self()->addKey(urlQuery, ApiKeys::LastFm);
+	urlQuery.addQueryItem("autocorrect", "1");
+	urlQuery.addQueryItem("artist", Covers::fixArtist(fixedQuery.at(0)));
 
-    url.setQuery(urlQuery);
+	url.setQuery(urlQuery);
 
-    job=NetworkAccessManager::self()->get(url);
-    job->setProperty(constModeProperty, (int)mode);
-    
-    QStringList queryString;
-    for (QString q: fixedQuery) {
-        q=q.replace("/", "%2F");
-        q=q.replace(" ", "+");
-        queryString.append(q);
-    }
-    job->setProperty(constQuery, queryString.join("/"));
-    DBUG <<  url.toString();
-    connect(job, SIGNAL(finished()), this, SLOT(parseResponse()));
+	job = NetworkAccessManager::self()->get(url);
+	job->setProperty(constModeProperty, (int)mode);
+
+	QStringList queryString;
+	for (QString q : fixedQuery) {
+		q = q.replace("/", "%2F");
+		q = q.replace(" ", "+");
+		queryString.append(q);
+	}
+	job->setProperty(constQuery, queryString.join("/"));
+	DBUG << url.toString();
+	connect(job, SIGNAL(finished()), this, SLOT(parseResponse()));
 }
 
 void LastFmEngine::parseResponse()
 {
-    DBUG << __FUNCTION__;
-    NetworkJob *reply = getReply(sender());
-    if (!reply) {
-        return;
-    }
+	DBUG << __FUNCTION__;
+	NetworkJob* reply = getReply(sender());
+	if (!reply) {
+		return;
+	}
 
-    QByteArray data=reply->readAll();
-    if (!reply->ok() || data.isEmpty()) {
-        DBUG <<  "Empty/error";
-        emit searchResult(QString(), QString());
-        return;
-    }
+	QByteArray data = reply->readAll();
+	if (!reply->ok() || data.isEmpty()) {
+		DBUG << "Empty/error";
+		emit searchResult(QString(), QString());
+		return;
+	}
 
-    Mode mode=(Mode)reply->property(constModeProperty).toInt();
-    QString text;
+	Mode mode = (Mode)reply->property(constModeProperty).toInt();
+	QString text;
 
-    switch (mode) {
-    case Artist:
-        text=parseResponse(data, QLatin1String("artist"), QLatin1String("bio"));
-        break;
-    case Album:
-        text=parseResponse(data, QLatin1String("album"), QLatin1String("wiki"));
-        break;
-    case Track:
-        text=parseResponse(data, QLatin1String("track"), QLatin1String("wiki"));
-        break;
-    }
+	switch (mode) {
+	case Artist:
+		text = parseResponse(data, QLatin1String("artist"), QLatin1String("bio"));
+		break;
+	case Album:
+		text = parseResponse(data, QLatin1String("album"), QLatin1String("wiki"));
+		break;
+	case Track:
+		text = parseResponse(data, QLatin1String("track"), QLatin1String("wiki"));
+		break;
+	}
 
-    if (!text.isEmpty()) {
-        static const QRegularExpression constLicense("User-contributed text is available.*");
-        text.remove(constLicense);
-        text.replace("\n", "<br>");
-        text=text.simplified();
-        text.replace(" <br>", "<br>");
+	if (!text.isEmpty()) {
+		static const QRegularExpression constLicense("User-contributed text is available.*");
+		text.remove(constLicense);
+		text.replace("\n", "<br>");
+		text = text.simplified();
+		text.replace(" <br>", "<br>");
 
-        // Remove last.fm read more link (as we add our own!!)
-        int end=text.lastIndexOf(QLatin1String("on Last.fm</a>"));
-        if (-1!=end) {
-            int start=text.lastIndexOf(QLatin1String("<a href=\"https://www.last.fm/music/"), end);
-            if (-1==start) {
-                start=text.lastIndexOf(QLatin1String("<a href=\"http://www.last.fm/music/"), end);
-            }
-            if (-1!=start) {
-                if (text.indexOf(QLatin1String("Read more about"), start)<end) {
-                    text=text.left(start);
-                }
-            }
-        }
-        text += QLatin1String("<br><br><a href='http://www.last.fm/music/")+reply->property(constQuery).toString()+QLatin1String("/+wiki'>")+constLinkPlaceholder+QLatin1String("</a>");
-        text.replace("<br><br><br><br><br>", "<br><br>");
-        text.replace("<br><br><br><br>", "<br><br>");
-        text.replace("<br><br><br>", "<br><br>");
-    }
-    emit searchResult(text, text.isEmpty() ? QString() : constLang);
+		// Remove last.fm read more link (as we add our own!!)
+		int end = text.lastIndexOf(QLatin1String("on Last.fm</a>"));
+		if (-1 != end) {
+			int start = text.lastIndexOf(QLatin1String("<a href=\"https://www.last.fm/music/"), end);
+			if (-1 == start) {
+				start = text.lastIndexOf(QLatin1String("<a href=\"http://www.last.fm/music/"), end);
+			}
+			if (-1 != start) {
+				if (text.indexOf(QLatin1String("Read more about"), start) < end) {
+					text = text.left(start);
+				}
+			}
+		}
+		text += QLatin1String("<br><br><a href='http://www.last.fm/music/") + reply->property(constQuery).toString() + QLatin1String("/+wiki'>") + constLinkPlaceholder + QLatin1String("</a>");
+		text.replace("<br><br><br><br><br>", "<br><br>");
+		text.replace("<br><br><br><br>", "<br><br>");
+		text.replace("<br><br><br>", "<br><br>");
+	}
+	emit searchResult(text, text.isEmpty() ? QString() : constLang);
 }
 
-QString LastFmEngine::parseResponse(const QByteArray &data, const QString &firstTag, const QString &secondTag)
+QString LastFmEngine::parseResponse(const QByteArray& data, const QString& firstTag, const QString& secondTag)
 {
-    DBUG << __FUNCTION__ << data;
-    QXmlStreamReader xml(data);
-    xml.setNamespaceProcessing(false);
-    while (xml.readNextStartElement()) {
-        if (firstTag==xml.name()) {
-            while (xml.readNextStartElement()) {
-                if (secondTag==xml.name()) {
-                    while (xml.readNextStartElement()) {
-                        if (QLatin1String("content")==xml.name()) {
-                            return xml.readElementText().trimmed();
-                        } else {
-                            xml.skipCurrentElement();
-                        }
-                    }
-                } else {
-                    xml.skipCurrentElement();
-                }
-            }
-        }
-    }
+	DBUG << __FUNCTION__ << data;
+	QXmlStreamReader xml(data);
+	xml.setNamespaceProcessing(false);
+	while (xml.readNextStartElement()) {
+		if (firstTag == xml.name()) {
+			while (xml.readNextStartElement()) {
+				if (secondTag == xml.name()) {
+					while (xml.readNextStartElement()) {
+						if (QLatin1String("content") == xml.name()) {
+							return xml.readElementText().trimmed();
+						}
+						else {
+							xml.skipCurrentElement();
+						}
+					}
+				}
+				else {
+					xml.skipCurrentElement();
+				}
+			}
+		}
+	}
 
-    return QString();
+	return QString();
 }
 
 #include "moc_lastfmengine.cpp"

@@ -20,16 +20,13 @@
 
 #include "ifaces/devicemanager.h"
 
-
-Solid::Ifaces::DeviceManager::DeviceManager(QObject *parent)
-    : QObject(parent)
+Solid::Ifaces::DeviceManager::DeviceManager(QObject* parent)
+	: QObject(parent)
 {
-
 }
 
 Solid::Ifaces::DeviceManager::~DeviceManager()
 {
-
 }
 
 #include "ifaces/moc_devicemanager.cpp"

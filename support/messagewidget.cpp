@@ -23,10 +23,8 @@
 
 #include "messagewidget.h"
 
-MessageWidget::MessageWidget(QWidget *parent)
-    : KMsgWidget(parent)
-    , active(false)
-    , msgType(Positive)
+MessageWidget::MessageWidget(QWidget* parent)
+	: KMsgWidget(parent), active(false), msgType(Positive)
 {
 }
 
@@ -34,67 +32,68 @@ MessageWidget::~MessageWidget()
 {
 }
 
-void MessageWidget::setMessage(const QString &msg, MessageType type, bool showCloseButton)
+void MessageWidget::setMessage(const QString& msg, MessageType type, bool showCloseButton)
 {
-    if (isActive() && !msg.isEmpty() && type!=msgType) {
-        setVisible(false);
-    }
-    msgType=type;
-    if (msg.isEmpty() && isVisible()) {
-        setVisible(false);
-        return;
-    }
-//    QString text=msg;
-//    if (text.length()>154) {
-//        text=text.left(150)+QLatin1String("...");
-//    }
-//    if (msg.length()>500) {
-//        setToolTip(msg.left(500)+QLatin1String("..."));
-//    } else {
-//        setToolTip(msg);
-//    }
-//    setText(text);
-    setText(msg);
-    setToolTip(msg);
-    setMessageType(type);
-    setCloseButtonVisible(showCloseButton);
-    #if defined NO_ANIMATED_SHOW
-    setVisible(true);
-    #else
-    if (!parentWidget()->isVisible()) {
-        show();
-        setVisible(true);
-    } else {
-        animatedShow();
-    }
-    #endif
+	if (isActive() && !msg.isEmpty() && type != msgType) {
+		setVisible(false);
+	}
+	msgType = type;
+	if (msg.isEmpty() && isVisible()) {
+		setVisible(false);
+		return;
+	}
+	//    QString text=msg;
+	//    if (text.length()>154) {
+	//        text=text.left(150)+QLatin1String("...");
+	//    }
+	//    if (msg.length()>500) {
+	//        setToolTip(msg.left(500)+QLatin1String("..."));
+	//    } else {
+	//        setToolTip(msg);
+	//    }
+	//    setText(text);
+	setText(msg);
+	setToolTip(msg);
+	setMessageType(type);
+	setCloseButtonVisible(showCloseButton);
+#if defined NO_ANIMATED_SHOW
+	setVisible(true);
+#else
+	if (!parentWidget()->isVisible()) {
+		show();
+		setVisible(true);
+	}
+	else {
+		animatedShow();
+	}
+#endif
 }
 
 void MessageWidget::setVisible(bool v)
 {
-    active=v;
-    KMsgWidget::setVisible(v);
-    emit visible(v);
+	active = v;
+	KMsgWidget::setVisible(v);
+	emit visible(v);
 }
 
 void MessageWidget::removeAllActions()
 {
-     QList<QAction *> acts=actions();
-     for (QAction *a: acts) {
-         removeAction(a);
-     }
+	QList<QAction*> acts = actions();
+	for (QAction* a : acts) {
+		removeAction(a);
+	}
 }
 
-void MessageWidget::setActions(const QList<QAction *> acts)
+void MessageWidget::setActions(const QList<QAction*> acts)
 {
-    if (acts==actions()) {
-        return;
-    }
+	if (acts == actions()) {
+		return;
+	}
 
-    removeAllActions();
-    for (QAction *a: acts) {
-        addAction(a);
-    }
+	removeAllActions();
+	for (QAction* a : acts) {
+		addAction(a);
+	}
 }
 
 #include "moc_messagewidget.cpp"

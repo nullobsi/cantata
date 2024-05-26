@@ -22,16 +22,15 @@
 */
 
 #include "lyricsettings.h"
-#include "ultimatelyricsprovider.h"
-#include "ultimatelyrics.h"
 #include "config.h"
 #include "gui/settings.h"
+#include "ultimatelyrics.h"
+#include "ultimatelyricsprovider.h"
 
-LyricSettings::LyricSettings(QWidget *p)
-    : ToggleList(p)
-    , loadedXml(false)
+LyricSettings::LyricSettings(QWidget* p)
+	: ToggleList(p), loadedXml(false)
 {
-    label->setText(tr("Choose the websites you want to use when searching for lyrics."));
+	label->setText(tr("Choose the websites you want to use when searching for lyrics."));
 }
 
 void LyricSettings::load()
@@ -40,33 +39,33 @@ void LyricSettings::load()
 
 void LyricSettings::save()
 {
-    if (!loadedXml) {
-        return;
-    }
+	if (!loadedXml) {
+		return;
+	}
 
-    QStringList enabled;
-    for (int i=0; i<selected->count(); ++i) {
-        enabled.append(selected->item(i)->data(Qt::UserRole).toString());
-    }
+	QStringList enabled;
+	for (int i = 0; i < selected->count(); ++i) {
+		enabled.append(selected->item(i)->data(Qt::UserRole).toString());
+	}
 
-    UltimateLyrics::self()->setEnabled(enabled);
+	UltimateLyrics::self()->setEnabled(enabled);
 }
 
-void LyricSettings::showEvent(QShowEvent *e)
+void LyricSettings::showEvent(QShowEvent* e)
 {
-    if (!loadedXml) {
-        const QList<UltimateLyricsProvider *> &lprov=UltimateLyrics::self()->getProviders();
+	if (!loadedXml) {
+		const QList<UltimateLyricsProvider*>& lprov = UltimateLyrics::self()->getProviders();
 
-        available->clear();
-        selected->clear();
-        for (const UltimateLyricsProvider *provider: lprov) {
-            QListWidgetItem *item = new QListWidgetItem(provider->isEnabled() ? selected : available);
-            item->setText(provider->displayName());
-            item->setData(Qt::UserRole, provider->getName());
-        }
-        loadedXml=true;
-    }
-    QWidget::showEvent(e);
+		available->clear();
+		selected->clear();
+		for (const UltimateLyricsProvider* provider : lprov) {
+			QListWidgetItem* item = new QListWidgetItem(provider->isEnabled() ? selected : available);
+			item->setText(provider->displayName());
+			item->setData(Qt::UserRole, provider->getName());
+		}
+		loadedXml = true;
+	}
+	QWidget::showEvent(e);
 }
 
 #include "moc_lyricsettings.cpp"

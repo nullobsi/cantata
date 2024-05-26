@@ -138,8 +138,8 @@
 
 #define LIST_FOREACH(var, head, field) \
 	for ((var) = ((head)->lh_first);   \
-		 (var);                        \
-		 (var) = ((var)->field.le_next))
+	     (var);                        \
+	     (var) = ((var)->field.le_next))
 
 /*
  * List access methods.
@@ -276,16 +276,16 @@
 			while (curelm->field.stqe_next != (elm))               \
 				curelm = curelm->field.stqe_next;                  \
 			if ((curelm->field.stqe_next =                         \
-						 curelm->field.stqe_next->field.stqe_next) \
-				== NULL)                                           \
+			             curelm->field.stqe_next->field.stqe_next) \
+			    == NULL)                                           \
 				(head)->stqh_last = &(curelm)->field.stqe_next;    \
 		}                                                          \
 	} while (/*CONSTCOND*/ 0)
 
 #define STAILQ_FOREACH(var, head, field) \
 	for ((var) = ((head)->stqh_first);   \
-		 (var);                          \
-		 (var) = ((var)->field.stqe_next))
+	     (var);                          \
+	     (var) = ((var)->field.stqe_next))
 
 #define STAILQ_CONCAT(head1, head2)                    \
 	do {                                               \
@@ -366,16 +366,16 @@
 			while (curelm->field.sqe_next != (elm))              \
 				curelm = curelm->field.sqe_next;                 \
 			if ((curelm->field.sqe_next =                        \
-						 curelm->field.sqe_next->field.sqe_next) \
-				== NULL)                                         \
+			             curelm->field.sqe_next->field.sqe_next) \
+			    == NULL)                                         \
 				(head)->sqh_last = &(curelm)->field.sqe_next;    \
 		}                                                        \
 	} while (/*CONSTCOND*/ 0)
 
 #define SIMPLEQ_FOREACH(var, head, field) \
 	for ((var) = ((head)->sqh_first);     \
-		 (var);                           \
-		 (var) = ((var)->field.sqe_next))
+	     (var);                           \
+	     (var) = ((var)->field.sqe_next))
 
 /*
  * Simple queue access methods.
@@ -463,13 +463,13 @@
 
 #define TAILQ_FOREACH(var, head, field) \
 	for ((var) = ((head)->tqh_first);   \
-		 (var);                         \
-		 (var) = ((var)->field.tqe_next))
+	     (var);                         \
+	     (var) = ((var)->field.tqe_next))
 
 #define TAILQ_FOREACH_REVERSE(var, head, headname, field)               \
 	for ((var) = (*(((struct headname*)((head)->tqh_last))->tqh_last)); \
-		 (var);                                                         \
-		 (var) = (*(((struct headname*)((var)->field.tqe_prev))->tqh_last)))
+	     (var);                                                         \
+	     (var) = (*(((struct headname*)((var)->field.tqe_prev))->tqh_last)))
 
 #define TAILQ_CONCAT(head1, head2, field)                           \
 	do {                                                            \
@@ -580,13 +580,13 @@
 
 #define CIRCLEQ_FOREACH(var, head, field) \
 	for ((var) = ((head)->cqh_first);     \
-		 (var) != (const void*)(head);    \
-		 (var) = ((var)->field.cqe_next))
+	     (var) != (const void*)(head);    \
+	     (var) = ((var)->field.cqe_next))
 
 #define CIRCLEQ_FOREACH_REVERSE(var, head, field) \
 	for ((var) = ((head)->cqh_last);              \
-		 (var) != (const void*)(head);            \
-		 (var) = ((var)->field.cqe_prev))
+	     (var) != (const void*)(head);            \
+	     (var) = ((var)->field.cqe_prev))
 
 /*
  * Circular queue access methods.
@@ -599,11 +599,11 @@
 
 #define CIRCLEQ_LOOP_NEXT(head, elm, field)   \
 	(((elm)->field.cqe_next == (void*)(head)) \
-			 ? ((head)->cqh_first)            \
-			 : (elm->field.cqe_next))
+	         ? ((head)->cqh_first)            \
+	         : (elm->field.cqe_next))
 #define CIRCLEQ_LOOP_PREV(head, elm, field)   \
 	(((elm)->field.cqe_prev == (void*)(head)) \
-			 ? ((head)->cqh_last)             \
-			 : (elm->field.cqe_prev))
+	         ? ((head)->cqh_last)             \
+	         : (elm->field.cqe_prev))
 
 #endif /* sys/queue.h */

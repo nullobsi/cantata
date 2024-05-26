@@ -23,52 +23,52 @@
 
 #include "mountpoints.h"
 #include "support/globalstatic.h"
-#include <QSocketNotifier>
 #include <QFile>
+#include <QSocketNotifier>
 #include <QStringList>
 
 GLOBAL_STATIC(MountPoints, instance)
 
 MountPoints::MountPoints()
-    : token(0)
+	: token(0)
 {
-    mounts=new QFile("/proc/mounts", this);
-    if (mounts && mounts->open(QIODevice::ReadOnly)) {
-        QSocketNotifier *notifier = new QSocketNotifier(mounts->handle(), QSocketNotifier::Exception, mounts);
-        connect(notifier,  SIGNAL(activated(int)), this, SLOT(updateMountPoints()));
-        updateMountPoints();
-    } else if (mounts) {
-        mounts->deleteLater();
-        mounts=nullptr;
-    }
+	mounts = new QFile("/proc/mounts", this);
+	if (mounts && mounts->open(QIODevice::ReadOnly)) {
+		QSocketNotifier* notifier = new QSocketNotifier(mounts->handle(), QSocketNotifier::Exception, mounts);
+		connect(notifier, SIGNAL(activated(int)), this, SLOT(updateMountPoints()));
+		updateMountPoints();
+	}
+	else if (mounts) {
+		mounts->deleteLater();
+		mounts = nullptr;
+	}
 }
 
 void MountPoints::updateMountPoints()
 {
-    QSet<QString> entries;
+	QSet<QString> entries;
 
-    QFile f("/proc/mounts");
-    if (f.open(QIODevice::ReadOnly|QIODevice::Text)) {
-        QStringList lines=QString(f.readAll()).split("\n");
-        for (const QString &l: lines) {
-            QStringList parts = l.split(' ');
-            if (parts.size()>=2) {
-                entries.insert(QString(parts.at(1)).replace("\\040", " "));
-            }
-        }
-    }
+	QFile f("/proc/mounts");
+	if (f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		QStringList lines = QString(f.readAll()).split("\n");
+		for (const QString& l : lines) {
+			QStringList parts = l.split(' ');
+			if (parts.size() >= 2) {
+				entries.insert(QString(parts.at(1)).replace("\\040", " "));
+			}
+		}
+	}
 
-    if (entries!=current) {
-        token++;
-        current=entries;
-        emit updated();
-    }
+	if (entries != current) {
+		token++;
+		current = entries;
+		emit updated();
+	}
 }
 
-
-bool MountPoints::isMounted(const QString &mp) const
+bool MountPoints::isMounted(const QString& mp) const
 {
-    return current.contains(mp.endsWith('/') ? mp.left(mp.length()-1) : mp);
+	return current.contains(mp.endsWith('/') ? mp.left(mp.length() - 1) : mp);
 }
 
 #include "moc_mountpoints.cpp"

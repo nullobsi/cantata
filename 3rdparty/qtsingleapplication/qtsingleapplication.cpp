@@ -44,11 +44,9 @@
 **
 ****************************************************************************/
 
-
 #include "qtsingleapplication.h"
 #include "qtlocalpeer.h"
 #include <QWidget>
-
 
 /*!
     \class QtSingleApplication qtsingleapplication.h
@@ -138,16 +136,14 @@
     \sa QtSingleCoreApplication
 */
 
-
-void QtSingleApplication::sysInit(const QString &appId)
+void QtSingleApplication::sysInit(const QString& appId)
 {
-    actWin = 0;
-    peer = new QtLocalPeer(this, appId);
-    connect(peer, SIGNAL(messageReceived(const QString&)), SIGNAL(messageReceived(const QString&)));
-    connect(peer, SIGNAL(messageReceived(const QByteArray&)), SIGNAL(messageReceived(const QByteArray&)));
-    connect(peer, SIGNAL(messageReceived(const char*)), SIGNAL(messageReceived(const char*)));
+	actWin = 0;
+	peer = new QtLocalPeer(this, appId);
+	connect(peer, SIGNAL(messageReceived(const QString&)), SIGNAL(messageReceived(const QString&)));
+	connect(peer, SIGNAL(messageReceived(const QByteArray&)), SIGNAL(messageReceived(const QByteArray&)));
+	connect(peer, SIGNAL(messageReceived(const char*)), SIGNAL(messageReceived(const char*)));
 }
-
 
 /*!
     Creates a QtSingleApplication object. The application identifier
@@ -159,12 +155,11 @@ void QtSingleApplication::sysInit(const QString &appId)
     QtSingleCoreApplication instead.
 */
 
-QtSingleApplication::QtSingleApplication(int &argc, char **argv, bool GUIenabled)
-    : QApplication(argc, argv, GUIenabled)
+QtSingleApplication::QtSingleApplication(int& argc, char** argv, bool GUIenabled)
+	: QApplication(argc, argv, GUIenabled)
 {
-    sysInit();
+	sysInit();
 }
-
 
 /*!
     Creates a QtSingleApplication object with the application
@@ -172,10 +167,10 @@ QtSingleApplication::QtSingleApplication(int &argc, char **argv, bool GUIenabled
     QAppliation constructor.
 */
 
-QtSingleApplication::QtSingleApplication(const QString &appId, int &argc, char **argv)
-    : QApplication(argc, argv)
+QtSingleApplication::QtSingleApplication(const QString& appId, int& argc, char** argv)
+	: QApplication(argc, argv)
 {
-    sysInit(appId);
+	sysInit(appId);
 }
 
 #if QT_VERSION < 0x050000
@@ -184,14 +179,14 @@ QtSingleApplication::QtSingleApplication(const QString &appId, int &argc, char *
     will be QCoreApplication::applicationFilePath(). \a argc, \a
     argv, and \a type are passed on to the QAppliation constructor.
 */
-QtSingleApplication::QtSingleApplication(int &argc, char **argv, Type type)
-    : QApplication(argc, argv, type)
+QtSingleApplication::QtSingleApplication(int& argc, char** argv, Type type)
+	: QApplication(argc, argv, type)
 {
-    sysInit();
+	sysInit();
 }
 #endif
 
-#if defined (Q_OS_LINUX) || defined (Q_OS_SOLARIS) || defined (Q_OS_FREEBSD) || defined (Q_OS_OPENBSD) || defined (Q_OS_IRIX)
+#if defined(Q_OS_LINUX) || defined(Q_OS_SOLARIS) || defined(Q_OS_FREEBSD) || defined(Q_OS_OPENBSD) || defined(Q_OS_IRIX)
 /*!
   Special constructor for X11, ref. the documentation of
   QApplication's corresponding constructor. The application identifier
@@ -199,9 +194,9 @@ QtSingleApplication::QtSingleApplication(int &argc, char **argv, Type type)
   and \a cmap are passed on to the QApplication constructor.
 */
 QtSingleApplication::QtSingleApplication(Display* dpy, Qt::HANDLE visual, Qt::HANDLE cmap)
-    : QApplication(dpy, visual, cmap)
+	: QApplication(dpy, visual, cmap)
 {
-    sysInit();
+	sysInit();
 }
 
 /*!
@@ -211,10 +206,10 @@ QtSingleApplication::QtSingleApplication(Display* dpy, Qt::HANDLE visual, Qt::HA
   argv, \a visual, and \a cmap are passed on to the QApplication
   constructor.
 */
-QtSingleApplication::QtSingleApplication(Display *dpy, int &argc, char **argv, Qt::HANDLE visual, Qt::HANDLE cmap)
-    : QApplication(dpy, argc, argv, visual, cmap)
+QtSingleApplication::QtSingleApplication(Display* dpy, int& argc, char** argv, Qt::HANDLE visual, Qt::HANDLE cmap)
+	: QApplication(dpy, argc, argv, visual, cmap)
 {
-    sysInit();
+	sysInit();
 }
 
 /*!
@@ -224,13 +219,12 @@ QtSingleApplication::QtSingleApplication(Display *dpy, int &argc, char **argv, Q
   argv, \a visual, and \a cmap are passed on to the QApplication
   constructor.
 */
-QtSingleApplication::QtSingleApplication(Display* dpy, const QString &appId, int argc, char **argv, Qt::HANDLE visual, Qt::HANDLE cmap)
-    : QApplication(dpy, argc, argv, visual, cmap)
+QtSingleApplication::QtSingleApplication(Display* dpy, const QString& appId, int argc, char** argv, Qt::HANDLE visual, Qt::HANDLE cmap)
+	: QApplication(dpy, argc, argv, visual, cmap)
 {
-    sysInit(appId);
+	sysInit(appId);
 }
 #endif
-
 
 /*!
     Returns true if another instance of this application is running;
@@ -245,9 +239,8 @@ QtSingleApplication::QtSingleApplication(Display* dpy, const QString &appId, int
 
 bool QtSingleApplication::isRunning()
 {
-    return peer->isClient();
+	return peer->isClient();
 }
-
 
 /*!
     Tries to send the text \a message to the currently running
@@ -262,21 +255,20 @@ bool QtSingleApplication::isRunning()
 
     \sa isRunning(), messageReceived()
 */
-bool QtSingleApplication::sendMessage(const QString &message, int timeout)
+bool QtSingleApplication::sendMessage(const QString& message, int timeout)
 {
-    return peer->sendMessage(message, timeout);
+	return peer->sendMessage(message, timeout);
 }
 
-bool QtSingleApplication::sendMessage(const QByteArray &message, int timeout)
+bool QtSingleApplication::sendMessage(const QByteArray& message, int timeout)
 {
-    return peer->sendMessage(message, timeout);
+	return peer->sendMessage(message, timeout);
 }
 
 bool QtSingleApplication::sendMessage(const char* message, int timeout)
 {
-    return peer->sendMessage(message, timeout);
+	return peer->sendMessage(message, timeout);
 }
-
 
 /*!
     Returns the application identifier. Two processes with the same
@@ -284,9 +276,8 @@ bool QtSingleApplication::sendMessage(const char* message, int timeout)
 */
 QString QtSingleApplication::id() const
 {
-    return peer->applicationId();
+	return peer->applicationId();
 }
-
 
 /*!
   Sets the activation window of this application to \a aw. The
@@ -302,19 +293,18 @@ QString QtSingleApplication::id() const
 
 void QtSingleApplication::setActivationWindow(QWidget* aw, bool activateOnMessage)
 {
-    actWin = aw;
-    if (activateOnMessage) {
-        connect(peer, SIGNAL(messageReceived(const QString&)), this, SLOT(activateWindow()));
-        connect(peer, SIGNAL(messageReceived(const QByteArray&)), this, SLOT(activateWindow()));
-        connect(peer, SIGNAL(messageReceived(const char*)), this, SLOT(activateWindow()));
-    }
-    else {
-        disconnect(peer, SIGNAL(messageReceived(const QString&)), this, SLOT(activateWindow()));
-        disconnect(peer, SIGNAL(messageReceived(const QByteArray&)), this, SLOT(activateWindow()));
-        disconnect(peer, SIGNAL(messageReceived(const char*)), this, SLOT(activateWindow()));
-    }
+	actWin = aw;
+	if (activateOnMessage) {
+		connect(peer, SIGNAL(messageReceived(const QString&)), this, SLOT(activateWindow()));
+		connect(peer, SIGNAL(messageReceived(const QByteArray&)), this, SLOT(activateWindow()));
+		connect(peer, SIGNAL(messageReceived(const char*)), this, SLOT(activateWindow()));
+	}
+	else {
+		disconnect(peer, SIGNAL(messageReceived(const QString&)), this, SLOT(activateWindow()));
+		disconnect(peer, SIGNAL(messageReceived(const QByteArray&)), this, SLOT(activateWindow()));
+		disconnect(peer, SIGNAL(messageReceived(const char*)), this, SLOT(activateWindow()));
+	}
 }
-
 
 /*!
     Returns the applications activation window if one has been set by
@@ -324,9 +314,8 @@ void QtSingleApplication::setActivationWindow(QWidget* aw, bool activateOnMessag
 */
 QWidget* QtSingleApplication::activationWindow() const
 {
-    return actWin;
+	return actWin;
 }
-
 
 /*!
   De-minimizes, raises, and activates this application's activation window.
@@ -344,13 +333,12 @@ QWidget* QtSingleApplication::activationWindow() const
 */
 void QtSingleApplication::activateWindow()
 {
-    if (actWin) {
-        actWin->setWindowState(actWin->windowState() & ~Qt::WindowMinimized);
-        actWin->raise();
-        actWin->activateWindow();
-    }
+	if (actWin) {
+		actWin->setWindowState(actWin->windowState() & ~Qt::WindowMinimized);
+		actWin->raise();
+		actWin->activateWindow();
+	}
 }
-
 
 /*!
     \fn void QtSingleApplication::messageReceived(const QString& message)
@@ -360,7 +348,6 @@ void QtSingleApplication::activateWindow()
 
     \sa sendMessage(), setActivationWindow(), activateWindow()
 */
-
 
 /*!
     \fn void QtSingleApplication::initialize(bool dummy = true)

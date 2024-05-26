@@ -44,7 +44,6 @@
 ** 
 ****************************************************************************/
 
-
 #include "qtsinglecoreapplication.h"
 #include "qtlocalpeer.h"
 
@@ -76,30 +75,28 @@
     argv are passed on to the QCoreAppliation constructor.
 */
 
-QtSingleCoreApplication::QtSingleCoreApplication(int &argc, char **argv)
-    : QCoreApplication(argc, argv)
+QtSingleCoreApplication::QtSingleCoreApplication(int& argc, char** argv)
+	: QCoreApplication(argc, argv)
 {
-    peer = new QtLocalPeer(this);
-    connect(peer, SIGNAL(messageReceived(const QString&)), SIGNAL(messageReceived(const QString&)));
-    connect(peer, SIGNAL(messageReceived(const QByteArray&)), SIGNAL(messageReceived(const QByteArray&)));
-    connect(peer, SIGNAL(messageReceived(const char*)), SIGNAL(messageReceived(const char*)));
+	peer = new QtLocalPeer(this);
+	connect(peer, SIGNAL(messageReceived(const QString&)), SIGNAL(messageReceived(const QString&)));
+	connect(peer, SIGNAL(messageReceived(const QByteArray&)), SIGNAL(messageReceived(const QByteArray&)));
+	connect(peer, SIGNAL(messageReceived(const char*)), SIGNAL(messageReceived(const char*)));
 }
-
 
 /*!
     Creates a QtSingleCoreApplication object with the application
     identifier \a appId. \a argc and \a argv are passed on to the
     QCoreAppliation constructor.
 */
-QtSingleCoreApplication::QtSingleCoreApplication(const QString &appId, int &argc, char **argv)
-    : QCoreApplication(argc, argv)
+QtSingleCoreApplication::QtSingleCoreApplication(const QString& appId, int& argc, char** argv)
+	: QCoreApplication(argc, argv)
 {
-    peer = new QtLocalPeer(this, appId);
-    connect(peer, SIGNAL(messageReceived(const QString&)), SIGNAL(messageReceived(const QString&)));
-    connect(peer, SIGNAL(messageReceived(const QByteArray&)), SIGNAL(messageReceived(const QByteArray&)));
-    connect(peer, SIGNAL(messageReceived(const char*)), SIGNAL(messageReceived(const char*)));
+	peer = new QtLocalPeer(this, appId);
+	connect(peer, SIGNAL(messageReceived(const QString&)), SIGNAL(messageReceived(const QString&)));
+	connect(peer, SIGNAL(messageReceived(const QByteArray&)), SIGNAL(messageReceived(const QByteArray&)));
+	connect(peer, SIGNAL(messageReceived(const char*)), SIGNAL(messageReceived(const char*)));
 }
-
 
 /*!
     Returns true if another instance of this application is running;
@@ -114,9 +111,8 @@ QtSingleCoreApplication::QtSingleCoreApplication(const QString &appId, int &argc
 
 bool QtSingleCoreApplication::isRunning()
 {
-    return peer->isClient();
+	return peer->isClient();
 }
-
 
 /*!
     Tries to send the text \a message to the currently running
@@ -132,21 +128,20 @@ bool QtSingleCoreApplication::isRunning()
     \sa isRunning(), messageReceived()
 */
 
-bool QtSingleCoreApplication::sendMessage(const QString &message, int timeout)
+bool QtSingleCoreApplication::sendMessage(const QString& message, int timeout)
 {
-    return peer->sendMessage(message, timeout);
+	return peer->sendMessage(message, timeout);
 }
 
-bool QtSingleCoreApplication::sendMessage(const QByteArray &message, int timeout)
+bool QtSingleCoreApplication::sendMessage(const QByteArray& message, int timeout)
 {
-    return peer->sendMessage(message, timeout);
+	return peer->sendMessage(message, timeout);
 }
 
 bool QtSingleCoreApplication::sendMessage(const char* message, int timeout)
 {
-    return peer->sendMessage(message, timeout);
+	return peer->sendMessage(message, timeout);
 }
-
 
 /*!
     Returns the application identifier. Two processes with the same
@@ -155,9 +150,8 @@ bool QtSingleCoreApplication::sendMessage(const char* message, int timeout)
 
 QString QtSingleCoreApplication::id() const
 {
-    return peer->applicationId();
+	return peer->applicationId();
 }
-
 
 /*!
     \fn void QtSingleCoreApplication::messageReceived(const QString& message)

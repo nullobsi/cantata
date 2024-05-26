@@ -23,33 +23,33 @@
 
 #include "shortcutssettingspage.h"
 #include "mediakeys.h"
-#include "widgets/toolbutton.h"
-#include "support/actioncollection.h"
-#include "support/shortcutssettingswidget.h"
-#include "widgets/basicitemdelegate.h"
 #include "settings.h"
-#include "widgets/icons.h"
+#include "support/actioncollection.h"
 #include "support/buddylabel.h"
+#include "support/shortcutssettingswidget.h"
 #include "support/utils.h"
+#include "widgets/basicitemdelegate.h"
+#include "widgets/icons.h"
+#include "widgets/toolbutton.h"
 #include <QBoxLayout>
-#include <QComboBox>
-#include <QGroupBox>
-#include <QFormLayout>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QProcess>
 
-ShortcutsSettingsPage::ShortcutsSettingsPage(QWidget *p)
-    : QWidget(p)
+ShortcutsSettingsPage::ShortcutsSettingsPage(QWidget* p)
+	: QWidget(p)
 {
-    QBoxLayout *lay=new QBoxLayout(QBoxLayout::TopToBottom, this);
-    lay->setContentsMargins(0, 0, 0, 0);
+	QBoxLayout* lay = new QBoxLayout(QBoxLayout::TopToBottom, this);
+	lay->setContentsMargins(0, 0, 0, 0);
 
-    QHash<QString, ActionCollection *> map;
-    map.insert("Cantata", ActionCollection::get());
-    shortcuts = new ShortcutsSettingsWidget(map, this);
-    shortcuts->view()->setAlternatingRowColors(false);
-    shortcuts->view()->setItemDelegate(new BasicItemDelegate(shortcuts->view()));
-    lay->addWidget(shortcuts);
+	QHash<QString, ActionCollection*> map;
+	map.insert("Cantata", ActionCollection::get());
+	shortcuts = new ShortcutsSettingsWidget(map, this);
+	shortcuts->view()->setAlternatingRowColors(false);
+	shortcuts->view()->setItemDelegate(new BasicItemDelegate(shortcuts->view()));
+	lay->addWidget(shortcuts);
 }
 
 void ShortcutsSettingsPage::load()
@@ -58,5 +58,5 @@ void ShortcutsSettingsPage::load()
 
 void ShortcutsSettingsPage::save()
 {
-    shortcuts->save();
+	shortcuts->save();
 }

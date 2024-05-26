@@ -25,69 +25,66 @@
 
 #include <QMetaEnum>
 
-
-Solid::DeviceInterface::DeviceInterface(DeviceInterfacePrivate &dd, QObject *backendObject)
-    : d_ptr(&dd)
+Solid::DeviceInterface::DeviceInterface(DeviceInterfacePrivate& dd, QObject* backendObject)
+	: d_ptr(&dd)
 {
-    Q_D(DeviceInterface);
+	Q_D(DeviceInterface);
 
-    d->setBackendObject(backendObject);
+	d->setBackendObject(backendObject);
 }
-
 
 Solid::DeviceInterface::~DeviceInterface()
 {
-    delete d_ptr;
-    d_ptr = nullptr;
+	delete d_ptr;
+	d_ptr = nullptr;
 }
 
 bool Solid::DeviceInterface::isValid() const
 {
-    Q_D(const DeviceInterface);
-    return d->backendObject()!=nullptr;
+	Q_D(const DeviceInterface);
+	return d->backendObject() != nullptr;
 }
 
 QString Solid::DeviceInterface::typeToString(Type type)
 {
-    int index = staticMetaObject.indexOfEnumerator("Type");
-    QMetaEnum metaEnum = staticMetaObject.enumerator(index);
-    return QString(metaEnum.valueToKey((int)type));
+	int index = staticMetaObject.indexOfEnumerator("Type");
+	QMetaEnum metaEnum = staticMetaObject.enumerator(index);
+	return QString(metaEnum.valueToKey((int)type));
 }
 
-Solid::DeviceInterface::Type Solid::DeviceInterface::stringToType(const QString &type)
+Solid::DeviceInterface::Type Solid::DeviceInterface::stringToType(const QString& type)
 {
-    int index = staticMetaObject.indexOfEnumerator("Type");
-    QMetaEnum metaEnum = staticMetaObject.enumerator(index);
-    return (Type)metaEnum.keyToValue(type.toUtf8());
+	int index = staticMetaObject.indexOfEnumerator("Type");
+	QMetaEnum metaEnum = staticMetaObject.enumerator(index);
+	return (Type)metaEnum.keyToValue(type.toUtf8());
 }
 
 QString Solid::DeviceInterface::typeDescription(Type type)
 {
-    switch (type)
-    {
-    case Unknown:
-        return QObject::tr("Unknown", "Unknown device type");
-    case GenericInterface:
-        return QObject::tr("Generic Interface", "Generic Interface device type");
-    //case Processor:
-    //    return QObject::tr("Processor", "Processor device type");
-    case Block:
-        return QObject::tr("Block", "Block device type");
-    case StorageAccess:
-        return QObject::tr("Storage Access", "Storage Access device type");
-    case StorageDrive:
-        return QObject::tr("Storage Drive", "Storage Drive device type");
-    case OpticalDrive:
-        return QObject::tr("Optical Drive", "Optical Drive device type");
-    case StorageVolume:
-        return QObject::tr("Storage Volume", "Storage Volume device type");
-    case OpticalDisc:
-        return QObject::tr("Optical Disc", "Optical Disc device type");
-    //case Camera:
-    //    return QObject::tr("Camera", "Camera device type");
-    case PortableMediaPlayer:
-        return QObject::tr("Portable Media Player", "Portable Media Player device type");
-    /*case NetworkInterface:
+	switch (type) {
+	case Unknown:
+		return QObject::tr("Unknown", "Unknown device type");
+	case GenericInterface:
+		return QObject::tr("Generic Interface", "Generic Interface device type");
+	//case Processor:
+	//    return QObject::tr("Processor", "Processor device type");
+	case Block:
+		return QObject::tr("Block", "Block device type");
+	case StorageAccess:
+		return QObject::tr("Storage Access", "Storage Access device type");
+	case StorageDrive:
+		return QObject::tr("Storage Drive", "Storage Drive device type");
+	case OpticalDrive:
+		return QObject::tr("Optical Drive", "Optical Drive device type");
+	case StorageVolume:
+		return QObject::tr("Storage Volume", "Storage Volume device type");
+	case OpticalDisc:
+		return QObject::tr("Optical Disc", "Optical Disc device type");
+	//case Camera:
+	//    return QObject::tr("Camera", "Camera device type");
+	case PortableMediaPlayer:
+		return QObject::tr("Portable Media Player", "Portable Media Player device type");
+	/*case NetworkInterface:
         return QObject::tr("Network Interface", "Network Interface device type");
     case AcAdapter:
         return QObject::tr("Ac Adapter", "Ac Adapter device type");
@@ -110,41 +107,39 @@ QString Solid::DeviceInterface::typeDescription(Type type)
     case NetworkShare:
         return QObject::tr("Network Share", "Network Share device type");
     */
-    case Last:
-        return QString();
-    }
-    return QString();
+	case Last:
+		return QString();
+	}
+	return QString();
 }
 
 Solid::DeviceInterfacePrivate::DeviceInterfacePrivate()
-    : m_devicePrivate(nullptr)
+	: m_devicePrivate(nullptr)
 {
-
 }
 
 Solid::DeviceInterfacePrivate::~DeviceInterfacePrivate()
 {
-
 }
 
-QObject *Solid::DeviceInterfacePrivate::backendObject() const
+QObject* Solid::DeviceInterfacePrivate::backendObject() const
 {
-    return m_backendObject.data();
+	return m_backendObject.data();
 }
 
-void Solid::DeviceInterfacePrivate::setBackendObject(QObject *object)
+void Solid::DeviceInterfacePrivate::setBackendObject(QObject* object)
 {
-    m_backendObject = object;
+	m_backendObject = object;
 }
 
 Solid::DevicePrivate* Solid::DeviceInterfacePrivate::devicePrivate() const
 {
-    return m_devicePrivate;
+	return m_devicePrivate;
 }
 
-void Solid::DeviceInterfacePrivate::setDevicePrivate(DevicePrivate *devicePrivate)
+void Solid::DeviceInterfacePrivate::setDevicePrivate(DevicePrivate* devicePrivate)
 {
-    m_devicePrivate = devicePrivate;
+	m_devicePrivate = devicePrivate;
 }
 
 #include "moc_deviceinterface.cpp"

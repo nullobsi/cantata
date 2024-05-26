@@ -25,18 +25,18 @@
 #include "config.h"
 #include <stdlib.h>
 
-Application::Application(int &argc, char **argv)
-    : SingleApplication(argc, argv)
+Application::Application(int& argc, char** argv)
+	: SingleApplication(argc, argv)
 {
 }
 
-bool Application::start(const QStringList &files)
+bool Application::start(const QStringList& files)
 {
-    Q_UNUSED(files)
-    return true;
+	Q_UNUSED(files)
+	return true;
 }
 
-void Application::loadFiles(const QStringList &files)
+void Application::loadFiles(const QStringList& files)
 {
-    Q_UNUSED(files)
+	Q_UNUSED(files)
 }

@@ -27,122 +27,132 @@
 #include <QApplication>
 #include <QKeySequence>
 
-Action::Action(QObject *parent)
-    : QAction(parent)
+Action::Action(QObject* parent)
+	: QAction(parent)
 {
-  init();
+	init();
 }
 
-Action::Action(const QString &text, QObject *parent, const QObject *receiver, const char *slot, const QKeySequence &shortcut)
-    : QAction(parent)
+Action::Action(const QString& text, QObject* parent, const QObject* receiver, const char* slot, const QKeySequence& shortcut)
+	: QAction(parent)
 {
-  init();
-  setText(text);
-  setShortcut(shortcut);
-  if(receiver && slot)
-    connect(this, SIGNAL(triggered()), receiver, slot);
+	init();
+	setText(text);
+	setShortcut(shortcut);
+	if (receiver && slot)
+		connect(this, SIGNAL(triggered()), receiver, slot);
 }
 
-Action::Action(const QIcon &icon, const QString &text, QObject *parent, const QObject *receiver, const char *slot, const QKeySequence &shortcut)
-    : QAction(parent)
+Action::Action(const QIcon& icon, const QString& text, QObject* parent, const QObject* receiver, const char* slot, const QKeySequence& shortcut)
+	: QAction(parent)
 {
-  init();
-  setIcon(icon);
-  setText(text);
-  setShortcut(shortcut);
-  if(receiver && slot)
-    connect(this, SIGNAL(triggered()), receiver, slot);
+	init();
+	setIcon(icon);
+	setText(text);
+	setShortcut(shortcut);
+	if (receiver && slot)
+		connect(this, SIGNAL(triggered()), receiver, slot);
 }
 
-void Action::initIcon(QAction *act)
+void Action::initIcon(QAction* act)
 {
-    if (GtkStyle::isActive() && act) {
-        act->setIconVisibleInMenu(false);
-    }
+	if (GtkStyle::isActive() && act) {
+		act->setIconVisibleInMenu(false);
+	}
 }
 
-static const char *constPlainToolTipProperty="plain-tt";
+static const char* constPlainToolTipProperty = "plain-tt";
 
-void Action::updateToolTip(QAction *act)
+void Action::updateToolTip(QAction* act)
 {
-    if (!act) {
-        return;
-    }
-    QKeySequence sc=act->shortcut();
-    if (sc.isEmpty()) {
-        QString tt=act->property(constPlainToolTipProperty).toString();
-        if (!tt.isEmpty()) {
-            act->setToolTip(tt);
-            act->setProperty(constPlainToolTipProperty, QString());
-        }
-    } else {
-        QString tt=act->property(constPlainToolTipProperty).toString();
-        if (tt.isEmpty()) {
-            tt=act->toolTip();
-            act->setProperty(constPlainToolTipProperty, tt);
-        }
-        act->setToolTip(QString::fromLatin1("%1 <span style=\"color: gray; font-size: small\">%2</span>")
-                        .arg(tt)
-                        .arg(sc.toString(QKeySequence::NativeText)));
-    }
+	if (!act) {
+		return;
+	}
+	QKeySequence sc = act->shortcut();
+	if (sc.isEmpty()) {
+		QString tt = act->property(constPlainToolTipProperty).toString();
+		if (!tt.isEmpty()) {
+			act->setToolTip(tt);
+			act->setProperty(constPlainToolTipProperty, QString());
+		}
+	}
+	else {
+		QString tt = act->property(constPlainToolTipProperty).toString();
+		if (tt.isEmpty()) {
+			tt = act->toolTip();
+			act->setProperty(constPlainToolTipProperty, tt);
+		}
+		act->setToolTip(QString::fromLatin1("%1 <span style=\"color: gray; font-size: small\">%2</span>")
+		                        .arg(tt)
+		                        .arg(sc.toString(QKeySequence::NativeText)));
+	}
 }
 
-static const char * constSettingsText="tt-for-settings";
+static const char* constSettingsText = "tt-for-settings";
 
-QString Action::settingsText(QAction *act)
+QString Action::settingsText(QAction* act)
 {
-    return act->property(constSettingsText).isValid()
-            ? act->property(constSettingsText).toString()
-            : Utils::stripAcceleratorMarkers(act->text());
+	return act->property(constSettingsText).isValid()
+			? act->property(constSettingsText).toString()
+			: Utils::stripAcceleratorMarkers(act->text());
 }
 
-void Action::init() {
-  connect(this, SIGNAL(triggered(bool)), this, SLOT(slotTriggered()));
+void Action::init()
+{
+	connect(this, SIGNAL(triggered(bool)), this, SLOT(slotTriggered()));
 
-  setProperty("isShortcutConfigurable", true);
+	setProperty("isShortcutConfigurable", true);
 }
 
-void Action::slotTriggered() {
-  emit triggered(QApplication::mouseButtons(), QApplication::keyboardModifiers());
+void Action::slotTriggered()
+{
+	emit triggered(QApplication::mouseButtons(), QApplication::keyboardModifiers());
 }
 
-bool Action::isShortcutConfigurable() const {
-  return property("isShortcutConfigurable").toBool();
+bool Action::isShortcutConfigurable() const
+{
+	return property("isShortcutConfigurable").toBool();
 }
 
-void Action::setShortcutConfigurable(bool b) {
-  setProperty("isShortcutConfigurable", b);
+void Action::setShortcutConfigurable(bool b)
+{
+	setProperty("isShortcutConfigurable", b);
 }
 
-void Action::setSettingsText(const QString &text) {
-    setProperty(constSettingsText, text);
+void Action::setSettingsText(const QString& text)
+{
+	setProperty(constSettingsText, text);
 }
 
-void Action::setSettingsText(Action *parent) {
-    setSettingsText(Utils::strippedText(parent->text())+QLatin1String(" / ")+Utils::strippedText(text()));
+void Action::setSettingsText(Action* parent)
+{
+	setSettingsText(Utils::strippedText(parent->text()) + QLatin1String(" / ") + Utils::strippedText(text()));
 }
 
-QKeySequence Action::shortcut(ShortcutTypes type) const {
-  Q_ASSERT(type);
-  if(type == DefaultShortcut)
-    return property("defaultShortcut").value<QKeySequence>();
+QKeySequence Action::shortcut(ShortcutTypes type) const
+{
+	Q_ASSERT(type);
+	if (type == DefaultShortcut)
+		return property("defaultShortcut").value<QKeySequence>();
 
-  if(shortcuts().count()) return shortcuts().value(0);
-  return QKeySequence();
+	if (shortcuts().count()) return shortcuts().value(0);
+	return QKeySequence();
 }
 
-void Action::setShortcut(const QShortcut &shortcut, ShortcutTypes type) {
-  setShortcut(shortcut.key(), type);
+void Action::setShortcut(const QShortcut& shortcut, ShortcutTypes type)
+{
+	setShortcut(shortcut.key(), type);
 }
 
-void Action::setShortcut(const QKeySequence &key, ShortcutTypes type) {
-  Q_ASSERT(type);
+void Action::setShortcut(const QKeySequence& key, ShortcutTypes type)
+{
+	Q_ASSERT(type);
 
-  if(type & DefaultShortcut)
-    setProperty("defaultShortcut", key);
+	if (type & DefaultShortcut)
+		setProperty("defaultShortcut", key);
 
-  if(type & ActiveShortcut)
-    QAction::setShortcut(key);
+	if (type & ActiveShortcut)
+		QAction::setShortcut(key);
 }
 
 #include "moc_action.cpp"

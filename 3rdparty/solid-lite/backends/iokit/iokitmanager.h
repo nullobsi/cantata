@@ -44,7 +44,7 @@ public:
 
 	virtual QStringList allDevices();
 	virtual QStringList devicesFromQuery(const QString& parentUdi,
-										 Solid::DeviceInterface::Type type);
+	                                     Solid::DeviceInterface::Type type);
 	virtual QObject* createDevice(const QString& udi);
 
 private:

@@ -41,7 +41,7 @@ public:
 	QStringList allDevices() override;
 
 	QStringList devicesFromQuery(const QString& parentUdi,
-								 Solid::DeviceInterface::Type type) override;
+	                             Solid::DeviceInterface::Type type) override;
 
 	QObject* createDevice(const QString& udi) override;
 

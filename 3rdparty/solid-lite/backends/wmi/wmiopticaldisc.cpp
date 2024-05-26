@@ -21,93 +21,87 @@
 
 #include "wmiopticaldisc.h"
 
-
 #include <QDir>
 
 using namespace Solid::Backends::Wmi;
 
-OpticalDisc::OpticalDisc(WmiDevice *device)
-    : Volume(device)
+OpticalDisc::OpticalDisc(WmiDevice* device)
+	: Volume(device)
 {
-    m_logicalDisk = WmiDevice::win32LogicalDiskByDriveLetter(m_device->property("Drive").toString());
+	m_logicalDisk = WmiDevice::win32LogicalDiskByDriveLetter(m_device->property("Drive").toString());
 }
 
 OpticalDisc::~OpticalDisc()
 {
-
 }
-
 
 Solid::OpticalDisc::ContentTypes OpticalDisc::availableContent() const
 {
-    Solid::OpticalDisc::ContentTypes content;
+	Solid::OpticalDisc::ContentTypes content;
 
-    QDir dir(m_device->property("Drive").toString());
-    QStringList files = dir.entryList();
-    if(files.length()>0)
-        if(files[0].endsWith(".cda"))
-            content |= Solid::OpticalDisc::Audio;
+	QDir dir(m_device->property("Drive").toString());
+	QStringList files = dir.entryList();
+	if (files.length() > 0)
+		if (files[0].endsWith(".cda"))
+			content |= Solid::OpticalDisc::Audio;
 
-    return content;
+	return content;
 }
 
 Solid::OpticalDisc::DiscType OpticalDisc::discType() const
 {
-    QString type = m_logicalDisk.getProperty("FileSystem").toString();
+	QString type = m_logicalDisk.getProperty("FileSystem").toString();
 
-    if (type == "CDFS")
-    {
-        return Solid::OpticalDisc::CdRom;
-    }
-//    else if (type == "CdRomWrite")
-//    {
-//        return Solid::OpticalDisc::CdRecordable;
-//    }
-    else if (type == "UDF")
-    {
-        return Solid::OpticalDisc::DvdRom;
-    }
-//    else if (type == "DVDRomWrite")
-//    {
-//        return Solid::OpticalDisc::DvdRecordable;
-//    }
-    else
-    {
-        qDebug()<<"Solid::OpticalDisc::DiscType OpticalDisc::discType(): Unknown Type"<<type;
-        return Solid::OpticalDisc::UnknownDiscType;
-    }
+	if (type == "CDFS") {
+		return Solid::OpticalDisc::CdRom;
+	}
+	//    else if (type == "CdRomWrite")
+	//    {
+	//        return Solid::OpticalDisc::CdRecordable;
+	//    }
+	else if (type == "UDF") {
+		return Solid::OpticalDisc::DvdRom;
+	}
+	//    else if (type == "DVDRomWrite")
+	//    {
+	//        return Solid::OpticalDisc::DvdRecordable;
+	//    }
+	else {
+		qDebug() << "Solid::OpticalDisc::DiscType OpticalDisc::discType(): Unknown Type" << type;
+		return Solid::OpticalDisc::UnknownDiscType;
+	}
 }
 
 bool OpticalDisc::isAppendable() const
 {
-    return false;
+	return false;
 }
 
 bool OpticalDisc::isBlank() const
 {
-    ushort val = m_device->property("FileSystemFlagsEx").toUInt();
-    if(val == 0)
-        return true;
-    return false;
+	ushort val = m_device->property("FileSystemFlagsEx").toUInt();
+	if (val == 0)
+		return true;
+	return false;
 }
 
 bool OpticalDisc::isRewritable() const
 {
-    //TODO:
-    return capacity()>0 && isWriteable();
+	//TODO:
+	return capacity() > 0 && isWriteable();
 }
 
 qulonglong OpticalDisc::capacity() const
 {
-    return m_device->property("Size").toULongLong();
+	return m_device->property("Size").toULongLong();
 }
 
 bool OpticalDisc::isWriteable() const
 {
-    ushort val = m_device->property("FileSystemFlagsEx").toUInt();
-    if(val == 0)
-        return true;
-    return !val & 0x80001;//read only
+	ushort val = m_device->property("FileSystemFlagsEx").toUInt();
+	if (val == 0)
+		return true;
+	return !val & 0x80001;//read only
 }
 
 #include "backends/wmi/moc_wmiopticaldisc.cpp"

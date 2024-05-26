@@ -23,96 +23,98 @@
 
 #include "albumscanner.h"
 #include "config.h"
-#include <QProcess>
 #include <QApplication>
+#include <QProcess>
 
-AlbumScanner::AlbumScanner(const QMap<int, QString> &files)
-    : proc(0)
+AlbumScanner::AlbumScanner(const QMap<int, QString>& files)
+	: proc(0)
 {
-    QMap<int, QString>::ConstIterator it=files.constBegin();
-    QMap<int, QString>::ConstIterator end=files.constEnd();
+	QMap<int, QString>::ConstIterator it = files.constBegin();
+	QMap<int, QString>::ConstIterator end = files.constEnd();
 
-    for (int i=0; it!=end; ++it, ++i) {
-        fileNames.append(it.value());
-        trackIndexMap[i]=it.key();
-    }
+	for (int i = 0; it != end; ++it, ++i) {
+		fileNames.append(it.value());
+		trackIndexMap[i] = it.key();
+	}
 }
 
 AlbumScanner::~AlbumScanner()
 {
-    stop();
+	stop();
 }
 
 void AlbumScanner::start()
 {
-    if (!proc) {
-        proc=new QProcess(this);
-        proc->setProcessChannelMode(QProcess::MergedChannels);
-        proc->setReadChannel(QProcess::StandardOutput);
-        connect(proc, SIGNAL(finished(int)), this, SLOT(procFinished()));
-        connect(proc, SIGNAL(readyReadStandardOutput()), this, SLOT(read()));
-        proc->start(Utils::helper(QLatin1String("cantata-replaygain")), fileNames, QProcess::ReadOnly);
-    }
+	if (!proc) {
+		proc = new QProcess(this);
+		proc->setProcessChannelMode(QProcess::MergedChannels);
+		proc->setReadChannel(QProcess::StandardOutput);
+		connect(proc, SIGNAL(finished(int)), this, SLOT(procFinished()));
+		connect(proc, SIGNAL(readyReadStandardOutput()), this, SLOT(read()));
+		proc->start(Utils::helper(QLatin1String("cantata-replaygain")), fileNames, QProcess::ReadOnly);
+	}
 }
 
 void AlbumScanner::stop()
 {
-    if (proc) {
-        disconnect(proc, SIGNAL(finished(int)), this, SLOT(procFinished()));
-        disconnect(proc, SIGNAL(readyReadStandardOutput()), this, SLOT(read()));
-        proc->terminate();
-        proc->deleteLater();
-        proc=0;
-    }
+	if (proc) {
+		disconnect(proc, SIGNAL(finished(int)), this, SLOT(procFinished()));
+		disconnect(proc, SIGNAL(readyReadStandardOutput()), this, SLOT(read()));
+		proc->terminate();
+		proc->deleteLater();
+		proc = 0;
+	}
 }
 
-static const QString constProgLine=QLatin1String("PROGRESS: ");
-static const QString constTrackLine=QLatin1String("TRACK: ");
-static const QString constAlbumLine=QLatin1String("ALBUM: ");
+static const QString constProgLine = QLatin1String("PROGRESS: ");
+static const QString constTrackLine = QLatin1String("TRACK: ");
+static const QString constAlbumLine = QLatin1String("ALBUM: ");
 
 void AlbumScanner::read()
 {
-    if (!proc) {
-        return;
-    }
+	if (!proc) {
+		return;
+	}
 
-    QString output = proc->readAllStandardOutput().data();
-    if (output.isEmpty()) {
-        return;
-    }
+	QString output = proc->readAllStandardOutput().data();
+	if (output.isEmpty()) {
+		return;
+	}
 
-    QStringList lines=output.split("\n", CANTATA_SKIP_EMPTY);
+	QStringList lines = output.split("\n", CANTATA_SKIP_EMPTY);
 
-    for (const QString &line: lines) {
-        if (line.startsWith(constProgLine)) {
-            emit progress(line.mid(constProgLine.length()).toUInt());
-        } else if (line.startsWith(constTrackLine)) {
-            QStringList parts=line.mid(constTrackLine.length()).split(" ", CANTATA_SKIP_EMPTY);
-            if (!parts.isEmpty()) {
-                int num=parts[0].toUInt();
-                Values vals;
-                if (parts.length()>=3) {
-                    vals.gain=parts[1].toDouble();
-                    vals.peak=parts[2].toDouble();
-                    vals.ok=true;
-                }
-                tracks[trackIndexMap[num]]=vals;
-            }
-        } else if (line.startsWith(constAlbumLine)) {
-            QStringList parts=line.mid(constAlbumLine.length()).split(" ", CANTATA_SKIP_EMPTY);
-            if (parts.length()>=2) {
-                album.gain=parts[0].toDouble();
-                album.peak=parts[1].toDouble();
-                album.ok=true;
-            }
-        }
-    }
+	for (const QString& line : lines) {
+		if (line.startsWith(constProgLine)) {
+			emit progress(line.mid(constProgLine.length()).toUInt());
+		}
+		else if (line.startsWith(constTrackLine)) {
+			QStringList parts = line.mid(constTrackLine.length()).split(" ", CANTATA_SKIP_EMPTY);
+			if (!parts.isEmpty()) {
+				int num = parts[0].toUInt();
+				Values vals;
+				if (parts.length() >= 3) {
+					vals.gain = parts[1].toDouble();
+					vals.peak = parts[2].toDouble();
+					vals.ok = true;
+				}
+				tracks[trackIndexMap[num]] = vals;
+			}
+		}
+		else if (line.startsWith(constAlbumLine)) {
+			QStringList parts = line.mid(constAlbumLine.length()).split(" ", CANTATA_SKIP_EMPTY);
+			if (parts.length() >= 2) {
+				album.gain = parts[0].toDouble();
+				album.peak = parts[1].toDouble();
+				album.ok = true;
+			}
+		}
+	}
 }
 
 void AlbumScanner::procFinished()
 {
-    setFinished(true);
-    emit done();
+	setFinished(true);
+	emit done();
 }
 
 #include "moc_albumscanner.cpp"

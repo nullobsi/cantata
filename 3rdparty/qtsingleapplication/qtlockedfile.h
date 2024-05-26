@@ -71,8 +71,8 @@
 class QT_QTLOCKEDFILE_EXPORT QtLockedFile : public QFile {
 public:
 	enum LockMode { NoLock = 0,
-					ReadLock,
-					WriteLock };
+		            ReadLock,
+		            WriteLock };
 
 	QtLockedFile();
 	QtLockedFile(const QString& name);

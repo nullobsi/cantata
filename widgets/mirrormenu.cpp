@@ -24,84 +24,84 @@
 #include "mirrormenu.h"
 #include <QAction>
 
-MirrorMenu::MirrorMenu(QWidget *p)
-    : QMenu(p)
+MirrorMenu::MirrorMenu(QWidget* p)
+	: QMenu(p)
 {
 }
 
-void MirrorMenu::addAction(QAction *act)
+void MirrorMenu::addAction(QAction* act)
 {
-    QMenu::addAction(act);
-    updateMenus();
+	QMenu::addAction(act);
+	updateMenus();
 }
 
-QAction * MirrorMenu::addAction(const QString &text)
+QAction* MirrorMenu::addAction(const QString& text)
 {
-    QAction *act=QMenu::addAction(text);
-    updateMenus();
-    return act;
+	QAction* act = QMenu::addAction(text);
+	updateMenus();
+	return act;
 }
 
-QAction * MirrorMenu::addAction(const QIcon &icon, const QString &text)
+QAction* MirrorMenu::addAction(const QIcon& icon, const QString& text)
 {
-    QAction *act=QMenu::addAction(icon, text);
-    updateMenus();
-    return act;
+	QAction* act = QMenu::addAction(icon, text);
+	updateMenus();
+	return act;
 }
 
-QAction * MirrorMenu::addAction(const QString &text, const QObject *receiver, const char *member, const QKeySequence &shortcut)
+QAction* MirrorMenu::addAction(const QString& text, const QObject* receiver, const char* member, const QKeySequence& shortcut)
 {
-    QAction *act=QMenu::addAction(text, shortcut, receiver, member);
-    updateMenus();
-    return act;
+	QAction* act = QMenu::addAction(text, shortcut, receiver, member);
+	updateMenus();
+	return act;
 }
 
-QAction * MirrorMenu::addAction(const QIcon &icon, const QString &text, const QObject *receiver, const char *member, const QKeySequence &shortcut)
+QAction* MirrorMenu::addAction(const QIcon& icon, const QString& text, const QObject* receiver, const char* member, const QKeySequence& shortcut)
 {
-    QAction *act=QMenu::addAction(icon, text, shortcut, receiver, member);
-    updateMenus();
-    return act;
+	QAction* act = QMenu::addAction(icon, text, shortcut, receiver, member);
+	updateMenus();
+	return act;
 }
 
-void MirrorMenu::removeAction(QAction *act)
+void MirrorMenu::removeAction(QAction* act)
 {
-    QMenu::removeAction(act);
-    updateMenus();
+	QMenu::removeAction(act);
+	updateMenus();
 }
 
 void MirrorMenu::clear()
 {
-    QMenu::clear();
-    updateMenus();
+	QMenu::clear();
+	updateMenus();
 }
 
-QMenu * MirrorMenu::duplicate(QWidget *p)
+QMenu* MirrorMenu::duplicate(QWidget* p)
 {
-    QMenu *menu=new QMenu(p);
-    menus.append(menu);
-    updateMenu(menu);
-    connect(menu, SIGNAL(destroyed(QObject*)), this, SLOT(menuDestroyed(QObject*)));
-    return menu;
+	QMenu* menu = new QMenu(p);
+	menus.append(menu);
+	updateMenu(menu);
+	connect(menu, SIGNAL(destroyed(QObject*)), this, SLOT(menuDestroyed(QObject*)));
+	return menu;
 }
 
 void MirrorMenu::updateMenus()
 {
-    for (QMenu *m: menus) {
-        updateMenu(m);
-    }
+	for (QMenu* m : menus) {
+		updateMenu(m);
+	}
 }
 
-void MirrorMenu::updateMenu(QMenu *menu)
+void MirrorMenu::updateMenu(QMenu* menu)
 {
-    menu->clear();
-    menu->addActions(actions());
+	menu->clear();
+	menu->addActions(actions());
 }
 
-void MirrorMenu::menuDestroyed(QObject *obj)
+void MirrorMenu::menuDestroyed(QObject* obj)
 {
-    if (qobject_cast<QMenu *>(obj)) {
-        menus.removeAll(static_cast<QMenu *>(obj));
-    }
+	if (qobject_cast<QMenu*>(obj)) {
+		menus.removeAll(static_cast<QMenu*>(obj));
+	}
 }
 
 #include "moc_mirrormenu.cpp"
