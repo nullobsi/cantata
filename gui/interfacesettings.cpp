@@ -125,18 +125,9 @@ InterfaceSettings::InterfaceSettings(QWidget *p)
 {
     bool mprisSettings=false;
     bool enableTrayItem=Utils::useSystemTray();
-    #ifdef Q_OS_MAC
-    // OSX always displays an entry in the taskbar - and the tray seems to confuse things.
-    bool enableNotifications=QOperatingSystemVersion::current() >= QOperatingSystemVersion(QOperatingSystemVersion::MacOS, 10, 8);
-    #else
     #ifdef QT_QTDBUS_FOUND
-    // We have dbus, check that org.freedesktop.Notifications exists
-    bool enableNotifications=QDBusConnection::sessionBus().interface()->isServiceRegistered("org.freedesktop.Notifications");
     mprisSettings=true;
-    #else // QT_QTDBUS_FOUND
-    bool enableNotifications=true;
     #endif // QT_QTDBUS_FOUND
-    #endif // Q_MAC_OS
 
     setupUi(this);
     addCueSupportTypes(cueSupport);
@@ -182,9 +173,6 @@ InterfaceSettings::InterfaceSettings(QWidget *p)
     connect(playQueueBackground_cover, SIGNAL(toggled(bool)), SLOT(enablePlayQueueBackgroundOptions()));
     connect(playQueueBackground_custom, SIGNAL(toggled(bool)), SLOT(enablePlayQueueBackgroundOptions()));
     connect(storeCoversInMpdDir, SIGNAL(toggled(bool)), this, SLOT(storeCoversInMpdDirToggled()));
-    if (!enableNotifications) {
-        REMOVE(systemTrayPopup)
-    }
     if (enableTrayItem) {
         connect(systemTrayCheckBox, SIGNAL(toggled(bool)), minimiseOnClose, SLOT(setEnabled(bool)));
         connect(systemTrayCheckBox, SIGNAL(toggled(bool)), SLOT(enableStartupState()));
@@ -195,9 +183,7 @@ InterfaceSettings::InterfaceSettings(QWidget *p)
         REMOVE(startupState)
     }
 
-    if (!enableNotifications && !enableTrayItem && !mprisSettings) {
-        tabWidget->removeTab(3);
-    } else if (!enableTrayItem && enableNotifications && !mprisSettings) {
+    if (!enableTrayItem && !mprisSettings) {
         tabWidget->setTabText(3, tr("Notifications"));
     }
     if (!mprisSettings) {

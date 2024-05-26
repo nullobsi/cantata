@@ -346,7 +346,7 @@ endif()
 find_package(ZLIB REQUIRED)
 
 if(APPLE)
-    target_sources(cantata PRIVATE mac/dockmenu.cpp mac/macnotify.mm)
+    target_sources(cantata PRIVATE mac/dockmenu.cpp)
     find_package(IOKit)
     if(IOKIT_FOUND)
         target_link_libraries(cantata PRIVATE ${IOKIT_LIBRARY})
@@ -581,7 +581,6 @@ if("DBus" IN_LIST QT_COMPONENTS)
             dbus/gnomemediakeys.cpp
             dbus/mpris.cpp
             dbus/powermanagement.cpp
-            dbus/notify.cpp
     )
     set_source_files_properties(
         dbus/org.gnome.SettingsDaemon.xml
@@ -598,7 +597,6 @@ if("DBus" IN_LIST QT_COMPONENTS)
     qt_add_dbus_adaptor(DBUS_GENERATED_SRCS dbus/org.mpris.MediaPlayer2.root.xml dbus/mpris.h Mpris)
     qt_add_dbus_adaptor(DBUS_GENERATED_SRCS ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.xml gui/mainwindow.h MainWindow)
     qt_add_dbus_interfaces(DBUS_GENERATED_SRCS 
-    		dbus/org.freedesktop.Notifications.xml
         	dbus/org.freedesktop.UPower.xml
         	dbus/org.freedesktop.login1.xml
         	dbus/org.gnome.SettingsDaemon.xml
@@ -818,10 +816,12 @@ endif(WIN32)
 add_subdirectory(translations)
 add_subdirectory(support)
 add_subdirectory(3rdparty/qtiocompressor)
+add_subdirectory(3rdparty/knotifications)
 add_subdirectory(streams/icons)
 add_subdirectory(online/icons)
 
-target_link_libraries(cantata PRIVATE support-core qtiocompressor)
+target_link_libraries(cantata PRIVATE support-core qtiocompressor
+ KF6Notifications)
 
 # enable warnings
 add_definitions(-DQT_NO_DEBUG_OUTPUT)

@@ -26,6 +26,7 @@
 
 #include "mainwindow.h"
 #include "application.h"
+#include "knotification.h"
 #include "support/thread.h"
 #include "trayitem.h"
 #include "support/messagebox.h"
@@ -1494,23 +1495,26 @@ void MainWindow::outputsUpdated(const QList<Output> &outputs)
         QSet<QString> switchedOn=enabledMpd-lastEnabledMpd;
         QSet<QString> switchedOff=lastEnabledMpd-enabledMpd;
 
+		KNotification *notif = new KNotification("changeOutput");
+		notif->setTitle(tr("Outputs"));
+
         if (!switchedOn.isEmpty() && switchedOff.isEmpty()) {
             QStringList names=switchedOn.values();
             std::sort(names.begin(), names.end());
-            trayItem->showMessage(tr("Outputs"), tr("Enabled: %1").arg(names.join(QLatin1String(", "))));
+			notif->setText(tr("Enabled: %1").arg(names.join(QLatin1String(", "))));
         } else if (!switchedOff.isEmpty() && switchedOn.isEmpty()) {
             QStringList names=switchedOff.values();
             std::sort(names.begin(), names.end());
-            trayItem->showMessage(tr("Outputs"), tr("Disabled: %1").arg(names.join(QLatin1String(", "))));
+            notif->setText(tr("Disabled: %1").arg(names.join(QLatin1String(", "))));
         } else if (!switchedOn.isEmpty() && !switchedOff.isEmpty()) {
             QStringList on=switchedOn.values();
             std::sort(on.begin(), on.end());
             QStringList off=switchedOff.values();
             std::sort(off.begin(), off.end());
-            trayItem->showMessage(tr("Outputs"),
-                                  tr("Enabled: %1").arg(on.join(QLatin1String(", ")))+QLatin1Char('\n')+
+            notif->setText(tr("Enabled: %1").arg(on.join(QLatin1String(", ")))+QLatin1Char('\n')+
                                   tr("Disabled: %1").arg(off.join(QLatin1String(", "))));
         }
+		notif->sendEvent();
     }
     setProperty(constMpdEnabledOuptuts, QStringList() << enabledMpd.values());
     outputsAction->setVisible(outputs.count()>(MPDConnection::self()->canUsePartitions() ? 0 : 1));

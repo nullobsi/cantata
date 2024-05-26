@@ -23,9 +23,6 @@
 
 #include "trayitem.h"
 #include "config.h"
-#ifdef QT_QTDBUS_FOUND
-#include "dbus/notify.h"
-#endif
 #include "mainwindow.h"
 #include "settings.h"
 #include "support/action.h"
@@ -36,6 +33,7 @@
 #include "currentcover.h"
 #include <QWheelEvent>
 #include <QMenu>
+#include <knotification.h>
 #ifdef Q_OS_MAC
 #include "mac/macnotify.h"
 #endif
@@ -74,31 +72,12 @@ TrayItem::TrayItem(MainWindow *p)
     , mw(p)
     , trayItem(nullptr)
     , trayItemMenu(nullptr)
-    #ifdef QT_QTDBUS_FOUND
-    , notification(nullptr)
-    #endif
     , connectionsAction(nullptr)
     , partitionsAction(nullptr)
     , outputsAction(nullptr)
     #endif
+	, songNotif(nullptr)
 {
-}
-
-void TrayItem::showMessage(const QString &title, const QString &text, const QImage &img)
-{
-    #ifdef Q_OS_MAC
-    MacNotify::showMessage(title, text, img);
-    #elif defined QT_QTDBUS_FOUND
-    if (!notification) {
-        notification=new Notify(this);
-    }
-    notification->show(title, text, img);
-    #else
-    Q_UNUSED(img)
-    if (trayItem) {
-        trayItem->showMessage(title, text, QSystemTrayIcon::Information, 5000);
-    }
-    #endif
 }
 
 Q_DECL_UNUSED static Action * copyAction(Action *orig)
@@ -214,44 +193,22 @@ void TrayItem::trayItemClicked(QSystemTrayIcon::ActivationReason reason)
 
 void TrayItem::songChanged(const Song &song, bool isPlaying)
 {
-    Q_UNUSED(isPlaying)
-    #ifdef Q_OS_MAC
-    if (Settings::self()->showPopups()) {
-        bool useable=song.isStandardStream()
-                        ? !song.title.isEmpty() && !song.name().isEmpty()
-                        : !song.title.isEmpty() && !song.artist.isEmpty() && !song.album.isEmpty();
-        if (useable) {
-            MacNotify::showMessage(song.mainText(), song.subText(), CurrentCover::self()->image());
-        }
-    }
-    #else
     if (Settings::self()->showPopups() || trayItem) {
         bool useable=song.isStandardStream()
                         ? !song.title.isEmpty() && !song.name().isEmpty()
                         : !song.title.isEmpty() && !song.artist.isEmpty() && !song.album.isEmpty();
-        if (useable) {
-            if (trayItem) {
-                trayItem->setToolTip(QLatin1String("Cantata\n\n")+song.mainText()+"\n"+song.subText());
-                #if defined Q_OS_WIN || defined Q_OS_MAC || !defined QT_QTDBUS_FOUND
-                // The pure Qt implementation needs both the tray icon and the setting checked.
-                if (Settings::self()->showPopups() && isPlaying) {
-                    trayItem->showMessage(song.mainText(), song.subText(), QSystemTrayIcon::Information, 5000);
-                }
-                #endif
-            }
-            #ifdef QT_QTDBUS_FOUND
-            if (Settings::self()->showPopups() && isPlaying) {
-                if (!notification) {
-                    notification=new Notify(this);
-                }
-                notification->show(song.mainText(), song.subText(), CurrentCover::self()->image(), Notify::LowUrgency);
-            }
-            #endif
-        } else if (trayItem) {
-            trayItem->setToolTip(QLatin1String("Cantata"));
+        if (useable && isPlaying) {
+			if (songNotif == nullptr) {
+				songNotif = new KNotification("newSong");
+				songNotif->setFlags(KNotification::Persistent);
+			}
+			songNotif->setTitle(song.mainText());
+			songNotif->setText(song.subText());
+			songNotif->setPixmap(QPixmap::fromImage(CurrentCover::self()->image()));
+			songNotif->setUrgency(KNotification::LowUrgency);
+			songNotif->sendEvent();
         }
     }
-    #endif
 }
 
 #ifndef Q_OS_MAC

@@ -26,13 +26,11 @@
 
 #include <QObject>
 #include <QSystemTrayIcon>
+#include "knotification.h"
 #include "support/icon.h"
 class QMenu;
 #include "config.h"
 
-#ifdef QT_QTDBUS_FOUND
-class Notify;
-#endif
 class MainWindow;
 class QImage;
 struct Song;
@@ -45,7 +43,6 @@ public:
     TrayItem(MainWindow *p);
     ~TrayItem() override { }
 
-    void showMessage(const QString &title, const QString &text, const QImage &img=QImage());
     void setup();
     #ifdef Q_OS_MAC
     bool isActive() const { return false; }
@@ -80,14 +77,12 @@ private:
     MainWindow *mw;
     QSystemTrayIcon *trayItem;
     QMenu *trayItemMenu;
-    #ifdef QT_QTDBUS_FOUND
-    Notify *notification;
-    #endif
     Action *connectionsAction;
     Action *partitionsAction;
     Action *outputsAction;
 
     #endif
+	KNotification *songNotif = nullptr;
 };
 
 #endif
