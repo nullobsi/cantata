@@ -143,9 +143,9 @@ void TrayItem::setup()
 	trayItem->setContextMenu(trayItemMenu);
 #if defined Q_OS_MAC || defined Q_OS_WIN
 	QIcon icon;
-	icon.addFile(CANTATA_SYS_ICONS_DIR + "cantata.png");
+	icon.addFile(CANTATA_SYS_ICONS_DIR + PROJECT_REV_ID ".png");
 #else
-	QIcon icon = QIcon::fromTheme(Utils::Gnome == Utils::currentDe() ? "cantata-symbolic" : "cantata");
+	QIcon icon = QIcon::fromTheme(Utils::Gnome == Utils::currentDe() ? PROJECT_REV_ID "-symbolic" : PROJECT_REV_ID);
 	// Bug: 660 If installed to non-standard folder, QIcon::fromTheme does not seem to find icon. Therefore
 	// add icon files here...
 	if (icon.isNull()) {
@@ -156,10 +156,10 @@ void TrayItem::setup()
 										  << "48"
 										  << "64";
 		for (const QString& s : sizes) {
-			icon.addFile(QLatin1String(ICON_INSTALL_PREFIX "/") + s + QLatin1Char('x') + s + QLatin1String("/apps/cantata.png"));
+			icon.addFile(QLatin1String(ICON_INSTALL_PREFIX "/") + s + QLatin1Char('x') + s + QLatin1String("/apps/" PROJECT_REV_ID ".png"));
 		}
 
-		icon.addFile(QLatin1String(ICON_INSTALL_PREFIX "/scalable/apps/cantata.svg"));
+		icon.addFile(QLatin1String(ICON_INSTALL_PREFIX "/scalable/apps/" PROJECT_REV_ID ".svg"));
 	}
 #endif
 	trayItem->setIcon(icon);
@@ -194,7 +194,7 @@ void TrayItem::trayItemClicked(QSystemTrayIcon::ActivationReason reason)
 
 void TrayItem::songChanged(const Song& song, bool isPlaying)
 {
-	if (Settings::self()->showPopups() || trayItem) {
+	if (Settings::self()->showPopups()) {
 		bool useable = song.isStandardStream()
 				? !song.title.isEmpty() && !song.name().isEmpty()
 				: !song.title.isEmpty() && !song.artist.isEmpty() && !song.album.isEmpty();
