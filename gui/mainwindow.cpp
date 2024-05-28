@@ -134,15 +134,15 @@
 
 static Qt::Key nextKey(Qt::Key& key)
 {
-	int k = key;
-	Qt::Key nextkey = static_cast<Qt::Key>(k + 1);
+	auto k = static_cast<Qt::Key>(key);
+	key = static_cast<Qt::Key>(k + 1);
 	if (Qt::Key_0 == key) {
 		key = Qt::Key_A;
 	}
-	else if (Qt::Key_Colon == nextkey) {
+	else if (Qt::Key_Colon == key) {
 		key = Qt::Key_0;
 	}
-	return static_cast<Qt::Key>(k);
+	return k;
 }
 
 static const char* constRatingKey = "rating";
