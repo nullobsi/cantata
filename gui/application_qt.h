@@ -26,6 +26,7 @@
 
 #include <QApplication>
 class Application : public QApplication {
+	Q_OBJECT
 public:
 	static void init();
 	static void fixSize(QWidget* widget);

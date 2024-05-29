@@ -27,6 +27,7 @@
 #include "singleapplication.h"
 
 class Application : public SingleApplication {
+	Q_OBJECT
 public:
 	static void init();
 	static void fixSize(QWidget* widget);

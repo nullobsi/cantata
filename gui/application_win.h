@@ -28,6 +28,7 @@
 #include <QAbstractNativeEventFilter>
 
 class Application : public SingleApplication, public QAbstractNativeEventFilter {
+	Q_OBJECT
 public:
 	static void init();
 	static void fixSize(QWidget* widget);
