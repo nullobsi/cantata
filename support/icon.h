@@ -24,6 +24,7 @@
 #ifndef ICON_H
 #define ICON_H
 
+#include "QtAwesome.h"
 #include <QIcon>
 
 class QToolButton;
@@ -33,6 +34,10 @@ extern int stdSize(int s);
 extern int dlgIconSize();
 extern void init(QToolButton* btn, bool setFlat = true);
 inline QIcon get(const QString& name) { return name.startsWith(":") || name.startsWith("/") ? QIcon(name) : QIcon::fromTheme(name); }
+extern fa::QtAwesome *fa();
+extern QIcon fa(int s, int c, const QVariantMap& m = QVariantMap());
+extern QIcon fa(const QString& name, const QVariantMap& m = QVariantMap());
+extern QColor constRed;
 
 enum Std {
 	Close,

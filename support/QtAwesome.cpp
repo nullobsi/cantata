@@ -233,6 +233,7 @@ QtAwesome::QtAwesome(QObject* parent)
     , _namedCodepointsByStyle()
     , _namedCodepointsList()
 {
+	hasInit = false;
 
     resetDefaultOptions();
 
@@ -283,6 +284,7 @@ QtAwesome::~QtAwesome()
 /// To initialize QtAwesome with font-awesome you need to call this method
 bool QtAwesome::initFontAwesome()
 {
+	if (hasInit) return true;
     bool success = true;
     // The macro below internally calls "qInitResources_QtAwesome()". this initializes
     // the resource system. For a .pri project this isn't required, but when building and using a
@@ -326,6 +328,7 @@ bool QtAwesome::initFontAwesome()
     //initialize others code icons maps
     addToNamedCodePoints(fa::fa_regular, faRegularFreeIconArray, sizeof(faRegularFreeIconArray)/sizeof(QtAwesomeNamedIcon));
 
+	hasInit = success;
     return success;
 }
 

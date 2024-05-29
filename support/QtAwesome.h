@@ -121,6 +121,8 @@ private:
     QHash<QString, QtAwesomeIconPainter*> _painterMap;     ///< A map of custom painters
     QVariantMap _defaultOptions;                           ///< The default icon options
     QtAwesomeIconPainter* _fontIconPainter;                ///< A special painter fo painting codepoints
+
+	bool hasInit;
 };
 
 //---------------------------------------------------------------------------------------

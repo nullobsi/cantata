@@ -26,6 +26,10 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QToolButton>
+#include <QtAwesome.h>
+#include <qapplicationstatic.h>
+
+Q_APPLICATION_STATIC(fa::QtAwesome, awesome, qApp);
 
 int Icon::stdSize(int v)
 {
@@ -107,3 +111,19 @@ QPixmap Icon::getScaledPixmap(const QIcon& icon, int w, int h, int base)
 
 	return icon.pixmap(base, base).scaled(w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 }
+
+fa::QtAwesome *Icon::fa() {
+	awesome->initFontAwesome();
+	return awesome;
+}
+
+QIcon Icon::fa(int s, int c, const QVariantMap& m) {
+	awesome->initFontAwesome();
+	return awesome->icon(s, c, m);
+}
+QIcon Icon::fa(const QString& name, const QVariantMap& m) {
+	awesome->initFontAwesome();
+	return awesome->icon(name, m);
+}
+
+QColor Icon::constRed(196, 32, 32);
