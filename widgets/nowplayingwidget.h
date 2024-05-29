@@ -27,6 +27,7 @@
 #include "support/squeezedtextlabel.h"
 #include <QElapsedTimer>
 #include <QSlider>
+#include <QApplication>
 #include <QWidget>
 
 class QTimer;
@@ -67,7 +68,7 @@ public:
 	void setEnabled(bool e) { slider->setEnabled(e); }
 	bool isEnabled() const { return slider->isEnabled(); }
 	void initColors();
-	QColor textColor() const { return track->palette().windowText().color(); }
+	QColor textColor() const { return QApplication::palette().color(QPalette::Normal, QPalette::Text); }
 	void resizeEvent(QResizeEvent* ev) override;
 
 Q_SIGNALS:

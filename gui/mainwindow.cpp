@@ -250,7 +250,7 @@ MainWindow::MainWindow(QWidget* parent)
 	nowPlaying->initColors();
 	nowPlaying->adjustSize();
 	nowPlaying->setFixedHeight(nowPlaying->height());
-	volumeSlider->setColor(nowPlaying->textColor());
+	volumeSlider->setColor(QApplication::palette().color(QPalette::Normal, QPalette::Text));
 	Icons::self()->initIcons();
 
 	setWindowIcon(Icons::self()->appIcon);
@@ -1616,13 +1616,10 @@ void MainWindow::toggleMenubar()
 
 void MainWindow::paletteChanged()
 {
-	QColor before = nowPlaying->textColor();
-	nowPlaying->initColors();
-	if (before == nowPlaying->textColor()) {
-		return;
-	}
+	QColor textColor = QApplication::palette().color(QPalette::Normal, QPalette::Text);
 
-	volumeSlider->setColor(nowPlaying->textColor());
+	nowPlaying->initColors();
+	volumeSlider->setColor(textColor);
 
 	Icons::self()->initIcons();
 

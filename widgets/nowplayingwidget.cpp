@@ -138,7 +138,7 @@ public:
 			break;
 		case QEvent::HoverLeave:
 			if (isEnabled()) {
-				setStyleSheet(QString("QLabel{color:%1;}").arg(((NowPlayingWidget*)parentWidget())->textColor().name()));
+				setStyleSheet(QString(""));
 			}
 		default:
 			break;
@@ -495,26 +495,9 @@ void NowPlayingWidget::copyInfo()
 
 void NowPlayingWidget::initColors()
 {
-	ensurePolished();
-	QToolButton btn(this);
-	btn.ensurePolished();
-	auto pal = btn.palette();
-	auto col = Utils::clampColor(pal.windowText().color());
-	if (col == textColor()) {
-		return;// No change
-	}
+	auto col = Utils::clampColor(QApplication::palette().color(QPalette::Active, QPalette::WindowText));
 
-	for (auto group : {QPalette::Inactive, QPalette::Active}) {
-		for (auto role : {QPalette::WindowText, QPalette::ButtonText, QPalette::Text}) {
-			pal.setColor(group, role, col);
-		}
-	}
-	track->setPalette(pal);
-	artist->setPalette(pal);
-	time->setPalette(pal);
 	slider->updateStyleSheet(col);
-	ratingWidget->setColor(col);
-	infoLabel->setPalette(pal);
 }
 
 void NowPlayingWidget::resizeEvent(QResizeEvent* ev)
