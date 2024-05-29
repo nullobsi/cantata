@@ -43,9 +43,10 @@
 
 class SelectorButton : public ToolButton {
 public:
-	SelectorButton(const QString& t, const QString& s, const QIcon& icn, QWidget* p)
+	SelectorButton(const QString& t, const QString& s, const QIcon& icnIn, QWidget* p)
 		: ToolButton(p)
 	{
+		icn = icnIn;
 		QGridLayout* layout = new QGridLayout(this);
 		icon = new QLabel(this);
 		mainText = new SqueezedTextLabel(this);
@@ -88,6 +89,8 @@ public:
 		setMinimumHeight(qMax(textSize, size) + (layout->contentsMargins().top() * 2));
 		updateToolTip();
 		setFocusPolicy(Qt::TabFocus);
+
+		connect(Icon::fa(), &fa::QtAwesome::defaultOptionsReset, this, &SelectorButton::iconsUpdated);
 	}
 
 	void changeEvent(QEvent *e) override {
@@ -128,11 +131,19 @@ public:
 		opt.state |= QStyle::State_AutoRaise;
 		p.drawComplexControl(QStyle::CC_ToolButton, opt);
 	}
+private Q_SLOTS:
+	void iconsUpdated() {
+		double dpr = DEVICE_PIXEL_RATIO();
+		QPixmap pix = Icon::getScaledPixmap(icn, icon->width() * dpr, icon->height() * dpr, 96 * dpr);
+		pix.setDevicePixelRatio(dpr);
+		icon->setPixmap(pix);
+	}
 
 private:
 	SqueezedTextLabel* mainText;
 	SqueezedTextLabel* subText;
 	QLabel* icon;
+	QIcon icn;
 };
 
 MultiPageWidget::MultiPageWidget(QWidget* p)
