@@ -90,6 +90,14 @@ public:
 		setFocusPolicy(Qt::TabFocus);
 	}
 
+	void changeEvent(QEvent *e) override {
+		if (e->type() == QEvent::PaletteChange) {
+			QColor col(qApp->palette().windowText().color());
+			subText->setStyleSheet(QString("QLabel{color:rgba(%1, %2, %3, 0.5)}").arg(col.red()).arg(col.green()).arg(col.blue()));
+		}
+		ToolButton::changeEvent(e);
+	}
+
 	void setSubText(const QString& str)
 	{
 		subText->setText(str);
