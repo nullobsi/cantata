@@ -27,7 +27,6 @@
 #include "network/networkaccessmanager.h"
 #include "playqueuemodel.h"
 #include "roles.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "widgets/icons.h"
 #include <QLocale>
@@ -42,10 +41,10 @@ StreamSearchModel::StreamSearchModel(QObject* parent)
 	: ActionModel(parent), root(new StreamsModel::CategoryItem(QString(), "root"))
 {
 	// ORDER *MUST* MATCH Category ENUM!!!!!
-	root->children.append(new StreamsModel::CategoryItem("http://opml.radiotime.com/Search.ashx", tr("TuneIn"), root, MonoIcon::icon(":tunein.svg", Utils::monoIconColor())));
-	root->children.append(new StreamsModel::CategoryItem(QLatin1String("http://") + StreamsModel::constShoutCastHost + QLatin1String("/legacy/genrelist"), tr("ShoutCast"), root, MonoIcon::icon(":shoutcast.svg", Utils::monoIconColor())));
-	root->children.append(new StreamsModel::CategoryItem(QLatin1String("http://") + StreamsModel::constCommunityHost + QLatin1String("/json/stations/byname/"), tr("Community Radio Browser"), root, MonoIcon::icon(":station.svg", Utils::monoIconColor())));
-	icon = MonoIcon::icon(FontAwesome::search, Utils::monoIconColor());
+	root->children.append(new StreamsModel::CategoryItem("http://opml.radiotime.com/Search.ashx", tr("TuneIn"), root, Icon::fa(":tunein.svg")));
+	root->children.append(new StreamsModel::CategoryItem(QLatin1String("http://") + StreamsModel::constShoutCastHost + QLatin1String("/legacy/genrelist"), tr("ShoutCast"), root, Icon::fa(":shoutcast.svg")));
+	root->children.append(new StreamsModel::CategoryItem(QLatin1String("http://") + StreamsModel::constCommunityHost + QLatin1String("/json/stations/byname/"), tr("Community Radio Browser"), root, Icon::fa(":station.svg")));
+	icon = Icon::fa(fa::fa_solid, fa::fa_search);
 }
 
 StreamSearchModel::~StreamSearchModel()

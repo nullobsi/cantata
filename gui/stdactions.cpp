@@ -25,7 +25,6 @@
 #include "models/playlistsmodel.h"
 #include "support/action.h"
 #include "support/actioncollection.h"
-#include "support/monoicon.h"
 #include "widgets/icons.h"
 #ifdef ENABLE_DEVICES_SUPPORT
 #include "models/devicesmodel.h"
@@ -111,16 +110,16 @@ StdActions::StdActions()
 
 	addToStoredPlaylistAction = ActionCollection::get()->createAction("addtoplaylist", QObject::tr("Add To Playlist"), Icons::self()->playlistListIcon);
 #ifdef TagLib_FOUND
-	organiseFilesAction = ActionCollection::get()->createAction("orgfiles", QObject::tr("Organize Files"), MonoIcon::icon(FontAwesome::folderopeno, col));
+	organiseFilesAction = ActionCollection::get()->createAction("orgfiles", QObject::tr("Organize Files"), Icon::fa(fa::fa_regular, fa::fa_folder_open));
 	editTagsAction = ActionCollection::get()->createAction("edittags", QObject::tr("Edit Track Information"));
 #endif
 #ifdef ENABLE_REPLAYGAIN_SUPPORT
-	replaygainAction = ActionCollection::get()->createAction("replaygain", QObject::tr("ReplayGain"), MonoIcon::icon(FontAwesome::barchart, col));
+	replaygainAction = ActionCollection::get()->createAction("replaygain", QObject::tr("ReplayGain"), Icon::fa(fa::fa_solid, fa::fa_chart_column));
 #endif
 #ifdef ENABLE_DEVICES_SUPPORT
-	copyToDeviceAction = ActionCollection::get()->createAction("copytodevice", QObject::tr("Copy Songs To Device"), MonoIcon::icon(FontAwesome::mobile, col));
+	copyToDeviceAction = ActionCollection::get()->createAction("copytodevice", QObject::tr("Copy Songs To Device"), Icon::fa(fa::fa_solid, fa::fa_mobile_screen));
 	copyToDeviceAction->setMenu(DevicesModel::self()->menu());
-	deleteSongsAction = ActionCollection::get()->createAction("deletesongs", QObject::tr("Delete Songs"), MonoIcon::icon(FontAwesome::trash, MonoIcon::constRed));
+	deleteSongsAction = ActionCollection::get()->createAction("deletesongs", QObject::tr("Delete Songs"), Icons::self()->trashIcon);
 #endif
 	setCoverAction = ActionCollection::get()->createAction("setimage", QObject::tr("Set Image"));
 	removeAction = ActionCollection::get()->createAction("remove", QObject::tr("Remove"), Icons::self()->removeIcon);

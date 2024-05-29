@@ -28,6 +28,7 @@
 #include "solid-lite/storagedrive.h"
 #include "support/monoicon.h"
 #include "support/utils.h"
+#include "widgets/icons.h"
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -56,7 +57,7 @@ UmsDevice::UmsDevice(MusicLibraryModel* m, Solid::Device& dev)
 	defaultName = data() + details;
 	setData(defaultName);
 	setup();
-	icn = MonoIcon::icon(FontAwesome::usb, Utils::monoIconColor());
+	icn = Icons::fa()->(fa::fa_solid, fa::fa_usb);
 }
 
 UmsDevice::~UmsDevice()

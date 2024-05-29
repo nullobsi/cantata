@@ -24,7 +24,7 @@
 #include "proxystyle.h"
 #include "acceleratormanager.h"
 #include "gtkstyle.h"
-#include "monoicon.h"
+#include "icon.h"
 #include "utils.h"
 #include <QApplication>
 #include <QMenu>
@@ -39,23 +39,28 @@ const char* ProxyStyle::constModifyFrameProp = "mod-frame";
 ProxyStyle::ProxyStyle(int modView)
 	: modViewFrame(modView)
 {
-	icons.insert(SP_LineEditClearButton, MonoIcon::icon(FontAwesome::timescircle, QColor(128, 128, 128), QColor(128, 128, 128)));
-	icons.insert(SP_MessageBoxCritical, MonoIcon::icon(FontAwesome::timescircleo, MonoIcon::constRed, MonoIcon::constRed));
-	icons.insert(SP_MessageBoxWarning, MonoIcon::icon(FontAwesome::exclamationtriangle, QColor(0xff, 0x99, 0x00), QColor(0xff, 0x99, 0x00)));
-	icons.insert(SP_MessageBoxQuestion, MonoIcon::icon(FontAwesome::questioncircle, QColor(0x1a, 0x8c, 0xff), QColor(0x1a, 0x8c, 0xff)));
-	icons.insert(SP_MessageBoxInformation, MonoIcon::icon(FontAwesome::infocircle, QColor(0x1a, 0x8c, 0xff), QColor(0x1a, 0x8c, 0xff)));
+	QVariantMap opt;
+	opt.insert("color", QColor(128, 128, 128));
+	icons.insert(SP_LineEditClearButton, Icon::fa(fa::fa_solid, fa::fa_circle_xmark, opt));
+	opt.insert("color", QColor(0xff, 0x99, 0x00));
+	icons.insert(SP_MessageBoxWarning, Icon::fa(fa::fa_solid, fa::fa_triangle_exclamation, opt));
+	opt.insert("color", QColor(0x1a, 0x8c, 0xff));
+	icons.insert(SP_MessageBoxQuestion, Icon::fa(fa::fa_solid, fa::fa_circle_question, opt));
+	icons.insert(SP_MessageBoxInformation, Icon::fa(fa::fa_solid, fa::fa_circle_info, opt));
 
-	QColor monoCol = Utils::monoIconColor();
-	icons.insert(SP_DialogCancelButton, MonoIcon::icon(FontAwesome::ban, monoCol, monoCol));
-	icons.insert(SP_DialogHelpButton, MonoIcon::icon(FontAwesome::lifering, monoCol, monoCol));
-	icons.insert(SP_DialogOpenButton, MonoIcon::icon(FontAwesome::foldero, monoCol, monoCol));
-	icons.insert(SP_DialogSaveButton, MonoIcon::icon(FontAwesome::save, monoCol, monoCol));
-	icons.insert(SP_DialogCloseButton, MonoIcon::icon(FontAwesome::close, MonoIcon::constRed, MonoIcon::constRed));
-	icons.insert(SP_DialogApplyButton, MonoIcon::icon(FontAwesome::check, monoCol, monoCol));
-	icons.insert(SP_DialogResetButton, MonoIcon::icon(FontAwesome::undo, monoCol, monoCol));
-	icons.insert(SP_DialogDiscardButton, MonoIcon::icon(FontAwesome::trash, MonoIcon::constRed, MonoIcon::constRed));
-	icons.insert(SP_DialogYesButton, MonoIcon::icon(FontAwesome::check, monoCol, monoCol));
-	icons.insert(SP_DialogNoButton, MonoIcon::icon(FontAwesome::times, MonoIcon::constRed, MonoIcon::constRed));
+	icons.insert(SP_DialogCancelButton, Icon::fa(fa::fa_solid, fa::fa_ban));
+	icons.insert(SP_DialogHelpButton, Icon::fa(fa::fa_solid, fa::fa_life_ring));
+	icons.insert(SP_DialogOpenButton, Icon::fa(fa::fa_regular, fa::fa_folder));
+	icons.insert(SP_DialogSaveButton, Icon::fa(fa::fa_solid, fa::fa_save));
+	icons.insert(SP_DialogApplyButton, Icon::fa(fa::fa_solid, fa::fa_check));
+	icons.insert(SP_DialogResetButton, Icon::fa(fa::fa_solid, fa::fa_undo));
+	icons.insert(SP_DialogYesButton, Icon::fa(fa::fa_solid, fa::fa_check));
+
+	opt.insert("color", Icon::constRed);
+	icons.insert(SP_MessageBoxCritical, Icon::fa(fa::fa_regular, fa::fa_circle_xmark, opt));
+	icons.insert(SP_DialogNoButton, Icon::fa(fa::fa_solid, fa::fa_xmark, opt));
+	icons.insert(SP_DialogDiscardButton, Icon::fa(fa::fa_solid, fa::fa_trash, opt));
+	icons.insert(SP_DialogCloseButton, Icon::fa(fa::fa_solid, fa::fa_close, opt));
 }
 
 void ProxyStyle::polish(QWidget* widget)

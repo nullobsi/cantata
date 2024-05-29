@@ -77,7 +77,6 @@
 #include "models/streamsmodel.h"
 #include "playlists/playlistspage.h"
 #include "support/fancytabwidget.h"
-#include "support/monoicon.h"
 #ifdef QT_QTDBUS_FOUND
 #include "cantataadaptor.h"
 #include "dbus/mpris.h"
@@ -252,16 +251,14 @@ MainWindow::MainWindow(QWidget* parent)
 	nowPlaying->adjustSize();
 	nowPlaying->setFixedHeight(nowPlaying->height());
 	volumeSlider->setColor(nowPlaying->textColor());
-	Icons::self()->initToolbarIcons(nowPlaying->textColor());
-	Icons::self()->initSidebarIcons();
-	QColor iconCol = Utils::monoIconColor();
+	Icons::self()->initIcons();
 
 	setWindowIcon(Icons::self()->appIcon);
 
 	prefAction = ActionCollection::get()->createAction("configure", Utils::KDE == Utils::currentDe() ? tr("Configure Cantata...") : tr("Preferences..."),
 	                                                   Icons::self()->configureIcon);
 	connect(prefAction, SIGNAL(triggered()), this, SLOT(showPreferencesDialog()));
-	quitAction = ActionCollection::get()->createAction("quit", tr("Quit"), MonoIcon::icon(FontAwesome::poweroff, MonoIcon::constRed, MonoIcon::constRed));
+	quitAction = ActionCollection::get()->createAction("quit", tr("Quit"),  Icons::self()->quitIcon);
 	connect(quitAction, SIGNAL(triggered()), this, SLOT(quit()));
 	quitAction->setShortcut(QKeySequence::Quit);
 	Action* aboutAction = ActionCollection::get()->createAction("about", tr("About Cantata..."), Icons::self()->appIcon);
@@ -274,16 +271,16 @@ MainWindow::MainWindow(QWidget* parent)
 	restoreAction = new Action(tr("Show Window"), this);
 	connect(restoreAction, SIGNAL(triggered()), this, SLOT(restoreWindow()));
 
-	serverInfoAction = ActionCollection::get()->createAction("mpdinfo", tr("Server information..."), MonoIcon::icon(FontAwesome::server, iconCol));
+	serverInfoAction = ActionCollection::get()->createAction("mpdinfo", tr("Server information..."), Icon::fa()->icon(fa::fa_solid, fa::fa_server));
 	connect(serverInfoAction, SIGNAL(triggered()), this, SLOT(showServerInfo()));
 	serverInfoAction->setEnabled(Settings::self()->firstRun());
 	refreshDbAction = ActionCollection::get()->createAction("refresh", tr("Refresh Database"), Icons::self()->refreshIcon);
 	doDbRefreshAction = new Action(refreshDbAction->icon(), tr("Refresh"), this);
 	refreshDbAction->setEnabled(false);
 	connectAction = new Action(Icons::self()->connectIcon, tr("Connect"), this);
-	connectionsAction = new Action(MonoIcon::icon(FontAwesome::server, iconCol), tr("Collection"), this);
-	partitionsAction = new Action(MonoIcon::icon(FontAwesome::columns, iconCol), tr("Partitions"), this);
-	outputsAction = new Action(MonoIcon::icon(FontAwesome::volumeup, iconCol), tr("Outputs"), this);
+	connectionsAction = new Action(Icon::fa(fa::fa_solid, fa::fa_server), tr("Collection"), this);
+	partitionsAction = new Action(Icon::fa(fa::fa_solid, fa::fa_table_columns), tr("Partitions"), this);
+	outputsAction = new Action(Icon::fa(fa::fa_solid, fa::fa_volume_high), tr("Outputs"), this);
 	stopAfterTrackAction = ActionCollection::get()->createAction("stopaftertrack", tr("Stop After Track"), Icons::self()->toolbarStopIcon);
 
 	QList<int> seeks = QList<int>() << 5 << 30 << 60;
@@ -312,16 +309,15 @@ MainWindow::MainWindow(QWidget* parent)
 	cropPlayQueueAction = ActionCollection::get()->createAction("cropplaylist", tr("Crop Others"));
 	addStreamToPlayQueueAction = ActionCollection::get()->createAction("addstreamtoplayqueue", tr("Add Stream URL"));
 	addLocalFilesToPlayQueueAction = ActionCollection::get()->createAction("addlocalfiles", tr("Add Local Files"));
-	QIcon clearIcon = MonoIcon::icon(FontAwesome::times, MonoIcon::constRed, MonoIcon::constRed);
-	clearPlayQueueAction = ActionCollection::get()->createAction("clearplaylist", tr("Clear"), clearIcon);
+	clearPlayQueueAction = ActionCollection::get()->createAction("clearplaylist", tr("Clear"), Icons::self()->clearIcon);
 	clearPlayQueueAction->setShortcut(QKeyCombination(Qt::ControlModifier, Qt::Key_K));
 	centerPlayQueueAction = ActionCollection::get()->createAction("centerplaylist", tr("Center On Current Track"), Icons::self()->centrePlayQueueOnTrackIcon);
-	expandInterfaceAction = ActionCollection::get()->createAction("expandinterface", tr("Expanded Interface"), MonoIcon::icon(FontAwesome::expand, iconCol));
+	expandInterfaceAction = ActionCollection::get()->createAction("expandinterface", tr("Expanded Interface"), Icon::fa(fa::fa_solid, fa::fa_expand));
 	expandInterfaceAction->setCheckable(true);
 	songInfoAction = ActionCollection::get()->createAction("showsonginfo", tr("Show Current Song Information"), Icons::self()->infoIcon);
 	songInfoAction->setShortcut(Qt::Key_F12);
 	songInfoAction->setCheckable(true);
-	fullScreenAction = ActionCollection::get()->createAction("fullScreen", tr("Full Screen"), MonoIcon::icon(FontAwesome::arrowsalt, iconCol));
+	fullScreenAction = ActionCollection::get()->createAction("fullScreen", tr("Full Screen"), Icon::fa(fa::fa_solid, fa::fa_maximize));
 #ifndef Q_OS_MAC
 	fullScreenAction->setShortcut(Qt::Key_F11);
 #endif
@@ -1628,7 +1624,8 @@ void MainWindow::paletteChanged()
 
 	volumeSlider->setColor(nowPlaying->textColor());
 
-	Icons::self()->initToolbarIcons(nowPlaying->textColor());
+	Icons::self()->initIcons();
+
 	StdActions::self()->prevTrackAction->setIcon(Icons::self()->toolbarPrevIcon);
 	StdActions::self()->nextTrackAction->setIcon(Icons::self()->toolbarNextIcon);
 	StdActions::self()->playPauseTrackAction->setIcon(MPDState_Playing == MPDStatus::self()->state() ? Icons::self()->toolbarPauseIcon : Icons::self()->toolbarPlayIcon);

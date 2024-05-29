@@ -36,16 +36,17 @@
 
 struct GuiItem {
 	GuiItem(const QString& t = QString(), const QString& i = QString())
-		: text(t), icon(i), monoIcon(0), red(false)
+		: text(t), icon(i), faIcon(0), faStyle(0), red(false)
 	{
 	}
-	GuiItem(const QString& t, int i, bool r = false)
-		: text(t), monoIcon(i), red(r)
+	GuiItem(const QString& t, int s, int i, bool r = false)
+		: text(t), faIcon(i), faStyle(s), red(r)
 	{
 	}
 	QString text;
 	QString icon;
-	int monoIcon;
+	int faIcon;
+	int faStyle;
 	bool red;
 };
 

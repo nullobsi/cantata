@@ -62,7 +62,7 @@ DevicesPage::DevicesPage(QWidget* p)
 	copyAction = new Action(Icons::self()->downloadIcon, tr("Copy To Library"), this);
 	ToolButton* copyToLibraryButton = new ToolButton(this);
 	copyToLibraryButton->setDefaultAction(copyAction);
-	syncAction = new Action(MonoIcon::icon(FontAwesome::exchange, Utils::monoIconColor()), tr("Synchronise"), this);
+	syncAction = new Action(Icons::fa()->icon(fa::fa_solid, fa::fa_right_left), tr("Synchronise"), this);
 	syncAction->setEnabled(false);
 	connect(syncAction, SIGNAL(triggered()), this, SLOT(sync()));
 #ifdef ENABLE_REMOTE_DEVICES

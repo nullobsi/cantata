@@ -34,7 +34,6 @@
 #include "support/action.h"
 #include "support/actioncollection.h"
 #include "support/globalstatic.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "widgets/icons.h"
 #include <QDir>
@@ -223,7 +222,7 @@ StreamsModel::CategoryItem* StreamsModel::CategoryItem::getBookmarksCategory()
 
 StreamsModel::CategoryItem* StreamsModel::CategoryItem::createBookmarksCategory()
 {
-	CategoryItem* bookmarkCat = new CategoryItem(QString(), tr("Bookmarks"), this, MonoIcon::icon(FontAwesome::bookmark, Utils::monoIconColor()));
+	CategoryItem* bookmarkCat = new CategoryItem(QString(), tr("Bookmarks"), this, Icon::fa(fa::fa_solid, fa::fa_bookmark));
 	bookmarkCat->state = CategoryItem::Fetched;
 	bookmarkCat->isBookmarks = true;
 	return bookmarkCat;
@@ -488,16 +487,17 @@ NetworkJob* StreamsModel::ShoutCastCategoryItem::fetchSecondardyUrl()
 StreamsModel::StreamsModel(QObject* parent)
 	: ActionModel(parent), root(new CategoryItem(QString(), "root"))
 {
-	QColor col = Utils::monoIconColor();
-	icn = MonoIcon::icon(":radio.svg", col);
-	tuneIn = new CategoryItem(constRadioTimeUrl + QLatin1String("?locale=") + QLocale::system().name(), tr("TuneIn"), root, MonoIcon::icon(":tunein.svg", col), QString(), "tunein");
+	icn = Icon::fa(":radio.svg");
+	tuneIn = new CategoryItem(constRadioTimeUrl + QLatin1String("?locale=") + QLocale::system().name(), tr("TuneIn"), root, Icon::fa(":tunein.svg"), QString(), "tunein");
 	tuneIn->supportsBookmarks = true;
 	root->children.append(tuneIn);
-	root->children.append(new IceCastCategoryItem(constIceCastUrl, tr("IceCast"), root, MonoIcon::icon(FontAwesome::cube, col), "icecast"));
-	shoutCast = new ShoutCastCategoryItem(constShoutCastUrl, tr("ShoutCast"), root, MonoIcon::icon(":shoutcast.svg", col));
+	root->children.append(new IceCastCategoryItem(constIceCastUrl, tr("IceCast"), root, Icon::fa(fa::fa_solid, fa::fa_cube), "icecast"));
+	shoutCast = new ShoutCastCategoryItem(constShoutCastUrl, tr("ShoutCast"), root, Icon::fa(":shoutcast.svg"));
 	shoutCast->configName = "shoutcast";
 	root->children.append(shoutCast);
-	favourites = new FavouritesCategoryItem(constFavouritesUrl, tr("Favorites"), root, MonoIcon::icon(FontAwesome::heart, MonoIcon::constRed));
+	QVariantMap redOpt;
+	redOpt.insert("color", Icon::constRed);
+	favourites = new FavouritesCategoryItem(constFavouritesUrl, tr("Favorites"), root, Icon::fa(fa::fa_solid, fa::fa_heart, redOpt));
 	root->children.append(favourites);
 	addBookmarkAction = new Action(Icons::self()->addBookmarkIcon, tr("Bookmark Category"), this);
 	addToFavouritesAction = new Action(favouritesIcon(), tr("Add Stream To Favorites"), this);

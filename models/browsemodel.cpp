@@ -27,7 +27,6 @@
 #include "mpd-interface/mpdstats.h"
 #include "playqueuemodel.h"
 #include "roles.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "widgets/icons.h"
 #include <QMimeData>
@@ -60,7 +59,7 @@ QStringList BrowseModel::FolderItem::allEntries(bool allowPlaylists) const
 BrowseModel::BrowseModel(QObject* p)
 	: ActionModel(p), root(new FolderItem("/", nullptr)), enabled(false), dbVersion(0)
 {
-	icn = MonoIcon::icon(FontAwesome::server, Utils::monoIconColor());
+	icn = Icon::fa(fa::fa_solid, fa::fa_server);
 	connect(this, SIGNAL(listFolder(QString)), MPDConnection::self(), SLOT(listFolder(QString)));
 	folderIndex.insert(root->getPath(), root);
 }

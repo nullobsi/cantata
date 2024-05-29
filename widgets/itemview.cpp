@@ -42,7 +42,6 @@
 #include "support/flattoolbutton.h"
 #include "support/gtkstyle.h"
 #include "support/icon.h"
-#include "support/monoicon.h"
 #include "support/proxystyle.h"
 #include "support/spinner.h"
 #include <QAction>

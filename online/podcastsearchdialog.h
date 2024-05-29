@@ -96,7 +96,7 @@ protected:
 class PodcastSearchPage : public PodcastPage {
 	Q_OBJECT
 public:
-	PodcastSearchPage(QWidget* p, const QString& n, int i, const QUrl& qu, const QString& qk, const QStringList& other = QStringList());
+	PodcastSearchPage(QWidget* p, const QString& n, int s, int i, const QUrl& qu, const QString& qk, const QStringList& other = QStringList());
 	~PodcastSearchPage() override {}
 
 	void showEvent(QShowEvent* e) override;

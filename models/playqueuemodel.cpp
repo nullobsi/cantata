@@ -39,7 +39,6 @@
 #include "support/actioncollection.h"
 #include "support/globalstatic.h"
 #include "support/icon.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "widgets/groupedview.h"
 #include "widgets/icons.h"
@@ -443,10 +442,9 @@ PlayQueueModel::PlayQueueModel(QObject* parent)
 
 	removeDuplicatesAction = new Action(tr("Remove Duplicates"), this);
 	removeDuplicatesAction->setEnabled(false);
-	QColor col = Utils::monoIconColor();
-	undoAction = ActionCollection::get()->createAction("playqueue-undo", tr("Undo"), MonoIcon::icon(FontAwesome::undo, col));
+	undoAction = ActionCollection::get()->createAction("playqueue-undo", tr("Undo"), Icon::fa(fa::fa_solid, fa::fa_undo));
 	undoAction->setShortcut(QKeyCombination(Qt::ControlModifier, Qt::Key_Z));
-	redoAction = ActionCollection::get()->createAction("playqueue-redo", tr("Redo"), MonoIcon::icon(FontAwesome::repeat, col));
+	redoAction = ActionCollection::get()->createAction("playqueue-redo", tr("Redo"), Icon::fa(fa::fa_solid, fa::fa_redo));
 	redoAction->setShortcut(QKeyCombination(Qt::ShiftModifier | Qt::ControlModifier, Qt::Key_Z));
 	connect(undoAction, SIGNAL(triggered()), this, SLOT(undo()));
 	connect(redoAction, SIGNAL(triggered()), this, SLOT(redo()));
@@ -806,13 +804,13 @@ QVariant PlayQueueModel::data(const QModelIndex& index, int role) const
 		if (id == currentSongId) {
 			switch (mpdState) {
 			case MPDState_Inactive:
-			case MPDState_Stopped: return MonoIcon::icon(FontAwesome::stop, Utils::monoIconColor());
-			case MPDState_Playing: return MonoIcon::icon(stopAfterCurrent ? FontAwesome::playcircle : FontAwesome::play, Utils::monoIconColor());
-			case MPDState_Paused: return MonoIcon::icon(FontAwesome::pause, Utils::monoIconColor());
+			case MPDState_Stopped: return Icon::fa(fa::fa_solid, fa::fa_stop);
+			case MPDState_Playing: return Icon::fa(fa::fa_solid, stopAfterCurrent ? fa::fa_circle_play : fa::fa_play);
+			case MPDState_Paused: return Icon::fa(fa::fa_solid, fa::fa_pause);
 			}
 		}
 		else if (-1 != id && id == stopAfterTrackId) {
-			return MonoIcon::icon(FontAwesome::stop, Utils::monoIconColor());
+			return Icon::fa(fa::fa_solid, fa::fa_stop);
 		}
 		break;
 	}

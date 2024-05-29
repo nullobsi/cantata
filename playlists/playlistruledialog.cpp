@@ -23,7 +23,6 @@
 
 #include "playlistruledialog.h"
 #include "models/mpdlibrarymodel.h"
-#include "support/monoicon.h"
 
 static const int constMinDate = 1800;
 static const int constMaxDate = 2100;
@@ -164,7 +163,7 @@ bool PlaylistRuleDialog::edit(const RulesPlaylists::Rule& rule, bool isAdd)
 
 	setButtons(isAdd ? User1 | Ok | Close : Ok | Cancel);
 	setButtonText(User1, tr("Add"));
-	setButtonGuiItem(User1, GuiItem(tr("Add"), FontAwesome::plus));
+	setButtonGuiItem(User1, GuiItem(tr("Add"), fa::fa_solid, fa::fa_plus));
 	enableOkButton();
 	return QDialog::Accepted == exec();
 }

@@ -27,7 +27,6 @@
 #include "gui/settings.h"
 #include "lyricsdialog.h"
 #include "support/messagebox.h"
-#include "support/monoicon.h"
 #include "support/squeezedtextlabel.h"
 #include "support/utils.h"
 #include "ultimatelyrics.h"
@@ -98,8 +97,7 @@ static inline QString fixNewLines(const QString& o)
 SongView::SongView(QWidget* p)
 	: View(p, QStringList() << tr("Lyrics") << tr("Information") << tr("Metadata")), scrollTimer(nullptr), songPos(0), currentProvider(-1), currentRequest(0), mode(Mode_Display), job(nullptr), currentProv(nullptr), lyricsNeedsUpdating(true), infoNeedsUpdating(true), metadataNeedsUpdating(true)
 {
-	QColor iconCol = Utils::monoIconColor();
-	scrollAction = ActionCollection::get()->createAction("scrolllyrics", tr("Scroll Lyrics"), MonoIcon::icon(FontAwesome::chevrondown, iconCol));
+	scrollAction = ActionCollection::get()->createAction("scrolllyrics", tr("Scroll Lyrics"), Icons::self()->downIcon);
 	refreshAction = ActionCollection::get()->createAction("refreshlyrics", tr("Refresh Lyrics"), Icons::self()->refreshIcon);
 	editAction = ActionCollection::get()->createAction("editlyrics", tr("Edit Lyrics"), Icons::self()->editIcon);
 	delAction = ActionCollection::get()->createAction("dellyrics", tr("Delete Lyrics File"), Icons::self()->removeIcon);

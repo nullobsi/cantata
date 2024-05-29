@@ -27,7 +27,6 @@
 #include "support/action.h"
 #include "support/configuration.h"
 #include "support/messagebox.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "widgets/icons.h"
 #include "widgets/itemview.h"
@@ -39,11 +38,13 @@
 PodcastWidget::PodcastWidget(PodcastService* s, QWidget* p)
 	: SinglePageWidget(p), srv(s), proxy(this)
 {
-	QIcon newIcon = MonoIcon::icon(FontAwesome::asterisk, Utils::monoIconColor());
+	QIcon newIcon = Icon::fa(fa::fa_solid, fa::fa_asterisk);
 	subscribeAction = new Action(Icons::self()->addNewItemIcon, tr("Add Subscription"), this);
 	unSubscribeAction = new Action(Icons::self()->removeIcon, tr("Remove Subscription"), this);
 	downloadAction = new Action(Icons::self()->downloadIcon, tr("Download Episodes"), this);
-	deleteAction = new Action(MonoIcon::icon(FontAwesome::trash, MonoIcon::constRed, MonoIcon::constRed), tr("Delete Downloaded Episodes"), this);
+	QVariantMap redOpt;
+	redOpt.insert("color", Icon::constRed);
+	deleteAction = new Action(Icon::fa(fa::fa_solid, fa::fa_trash, redOpt), tr("Delete Downloaded Episodes"), this);
 	cancelDownloadAction = new Action(Icons::self()->cancelIcon, tr("Cancel Download"), this);
 	markAsNewAction = new Action(newIcon, tr("Mark Episodes As New"), this);
 	markAsListenedAction = new Action(tr("Mark Episodes As Listened"), this);

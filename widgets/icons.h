@@ -26,14 +26,15 @@
 
 #include "config.h"
 #include "support/icon.h"
+#include "support/QtAwesome.h"
 
 class Icons {
 public:
 	static Icons* self();
 
 	Icons();
-	void initSidebarIcons();
-	void initToolbarIcons(const QColor& toolbarText);
+	void initIcons();
+
 	QIcon appIcon;
 	QIcon genreIcon;
 	QIcon artistIcon;
@@ -106,6 +107,10 @@ public:
 	QIcon downIcon;
 	QIcon cancelIcon;
 	QIcon refreshIcon;
+
+	QIcon quitIcon;
+	QIcon clearIcon;
+	QIcon trashIcon;
 };
 
 #endif

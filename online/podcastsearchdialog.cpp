@@ -32,7 +32,6 @@
 #include "support/flattoolbutton.h"
 #include "support/lineedit.h"
 #include "support/messagewidget.h"
-#include "support/monoicon.h"
 #include "support/pagewidget.h"
 #include "support/spinner.h"
 #include "support/utils.h"
@@ -88,7 +87,8 @@ public:
 	ITunesSearchPage(QWidget* p)
 		: PodcastSearchPage(p,
 	                        QLatin1String("iTunes"),
-	                        FontAwesome::apple,
+	                        fa::fa_brands,
+	                        fa::fa_apple,
 	                        QUrl(QLatin1String("http://ax.phobos.apple.com.edgesuite.net/WebObjects/MZStoreServices.woa/wa/wsSearch")),
 	                        QLatin1String("term"),
 	                        QStringList() << QLatin1String("country") << QLatin1String("US") << QLatin1String("media") << QLatin1String("podcast"))
@@ -118,7 +118,8 @@ public:
 	GPodderSearchPage(QWidget* p)
 		: PodcastSearchPage(p,
 	                        QLatin1String("GPodder"),
-	                        FontAwesome::podcast,
+	                        fa::fa_solid,
+	                        fa::fa_podcast,
 	                        QUrl(QLatin1String("http://gpodder.net/search.json")),
 	                        QLatin1String("q"))
 	{
@@ -339,7 +340,7 @@ void PodcastPage::openLink(const QUrl& url)
 	QDesktopServices::openUrl(url);
 }
 
-PodcastSearchPage::PodcastSearchPage(QWidget* p, const QString& n, int i, const QUrl& qu, const QString& qk, const QStringList& other)
+PodcastSearchPage::PodcastSearchPage(QWidget* p, const QString& n, int s, int i, const QUrl& qu, const QString& qk, const QStringList& other)
 	: PodcastPage(p, n), queryUrl(qu), queryKey(qk), otherArgs(other)
 {
 	QBoxLayout* searchLayout = new QBoxLayout(QBoxLayout::LeftToRight);
@@ -361,7 +362,7 @@ PodcastSearchPage::PodcastSearchPage(QWidget* p, const QString& n, int i, const 
 	mainLayout->addLayout(viewLayout);
 	connect(search, SIGNAL(returnPressed()), SLOT(doSearch()));
 	connect(searchButton, SIGNAL(clicked()), SLOT(doSearch()));
-	icn = MonoIcon::icon((FontAwesome::icon)i, Utils::monoIconColor());
+	icn = Icon::fa(s, i);
 }
 
 void PodcastSearchPage::showEvent(QShowEvent* e)
@@ -500,7 +501,7 @@ PodcastUrlPage::PodcastUrlPage(QWidget* p)
 	urlEntry->setPlaceholderText(tr("Enter podcast URL..."));
 	QPushButton* loadButton = new QPushButton(tr("Load"), p);
 	FlatToolButton* pathReq = new FlatToolButton(p);
-	pathReq->setIcon(MonoIcon::icon(FontAwesome::foldero, Utils::monoIconColor()));
+	pathReq->setIcon(Icon::fa(fa::fa_regular, fa::fa_folder));
 	pathReq->setToolTip(tr("Load local podcast file"));
 	QWidget::setTabOrder(urlEntry, loadButton);
 	QWidget::setTabOrder(loadButton, tree);
@@ -721,17 +722,17 @@ QList<PodcastPage*> PodcastSearchDialog::loadDirectories(const QString& dir, boo
 					QIcon icon;
 
 					if (iconName.isEmpty()) {
-						icon = MonoIcon::icon(FontAwesome::rsssquare, Utils::monoIconColor());
+						icon = Icon::fa(fa::fa_solid, fa::fa_rss_square);
 					}
 					else if (iconName.startsWith(":")) {
-						icon = MonoIcon::icon(iconName, Utils::monoIconColor());
+						icon = Icon::fa(iconName);
 					}
 					else {
 						icon.addFile(iconName);
 					}
 
 					if (icon.isNull()) {
-						icon = MonoIcon::icon(FontAwesome::rsssquare, Utils::monoIconColor());
+						icon = Icon::fa(fa::fa_solid, fa::fa_rss_square);
 					}
 
 					OpmlBrowsePage* page = new OpmlBrowsePage(pageWidget,

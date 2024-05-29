@@ -29,7 +29,6 @@
 #include "network/networkaccessmanager.h"
 #include "support/actioncollection.h"
 #include "support/globalstatic.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "widgets/icons.h"
 #include <QDir>
@@ -127,7 +126,7 @@ const QString constOk = QLatin1String("0");
 const QString constFilename = QLatin1String("FILENAME:");
 
 DynamicPlaylists::DynamicPlaylists()
-	: RulesPlaylists(FontAwesome::random, "dynamic"), localTimer(nullptr), usingRemote(false), remoteTimer(nullptr), remotePollingEnabled(false), statusTime(0), currentCommand(Unknown)
+	: RulesPlaylists(fa::fa_solid, fa::fa_random, "dynamic"), localTimer(nullptr), usingRemote(false), remoteTimer(nullptr), remotePollingEnabled(false), statusTime(0), currentCommand(Unknown)
 {
 	connect(this, SIGNAL(clear()), MPDConnection::self(), SLOT(clear()));
 	connect(MPDConnection::self(), SIGNAL(dynamicSupport(bool)), this, SLOT(remoteDynamicSupported(bool)));

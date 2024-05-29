@@ -29,6 +29,7 @@
 #include "mountpoints.h"
 #include "remotedevicepropertiesdialog.h"
 #include "support/configuration.h"
+#include "widgets/icons.h"
 #include "support/inputdialog.h"
 #include "support/monoicon.h"
 #include "support/utils.h"
@@ -186,12 +187,9 @@ RemoteFsDevice::RemoteFsDevice(MusicLibraryModel* m, const DeviceOptions& option
 	//    details.path=Utils::fixPath(details.path);
 	load();
 	mount();
-	icn = MonoIcon::icon(details.isLocalFile()
-	                             ? FontAwesome::foldero
-	                             : constSshfsProtocol == details.url.scheme()
-	                             ? FontAwesome::linux_os
-	                             : FontAwesome::windows,
-	                     Utils::monoIconColor());
+	icn = details.isLocalFile()
+			? Icons::fa()->icon(fa::fa_regular, fa::fa_folder)
+			: (Icons::fa()->icon(fa::fa_brands, constSshfsProtocol == details.url.scheme() ? fa::fa_linux : fa::fa_windows));
 }
 
 RemoteFsDevice::RemoteFsDevice(MusicLibraryModel* m, const Details& d)
@@ -199,12 +197,9 @@ RemoteFsDevice::RemoteFsDevice(MusicLibraryModel* m, const Details& d)
 {
 	//    details.path=Utils::fixPath(details.path);
 	setup();
-	icn = MonoIcon::icon(details.isLocalFile()
-	                             ? FontAwesome::foldero
-	                             : constSshfsProtocol == details.url.scheme()
-	                             ? FontAwesome::linux_os
-	                             : FontAwesome::windows,
-	                     Utils::monoIconColor());
+	icn = details.isLocalFile()
+		  ? Icons::fa()->icon(fa::fa_regular, fa::fa_folder)
+		  : (Icons::fa()->icon(fa::fa_brands, constSshfsProtocol == details.url.scheme() ? fa::fa_linux : fa::fa_windows));
 }
 
 RemoteFsDevice::~RemoteFsDevice()

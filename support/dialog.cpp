@@ -23,7 +23,6 @@
 
 #include "dialog.h"
 #include "configuration.h"
-#include "monoicon.h"
 #include "utils.h"
 #ifdef Q_OS_MAC
 #include "osxstyle.h"
@@ -103,33 +102,33 @@ Dialog::ButtonProxyStyle* Dialog::buttonProxyStyle()
 
 static QIcon monoIcon(const GuiItem& i)
 {
-	static QColor col(QColor::Invalid);
-
-	if (!i.red && !col.isValid()) {
-		col = Utils::monoIconColor();
+	if (i.red) {
+		QVariantMap redOpt;
+		redOpt.insert("color", Icon::constRed);
+		return Icon::fa(i.faStyle, i.faIcon, redOpt);
 	}
-	return MonoIcon::icon((FontAwesome::icon)i.monoIcon, i.red ? MonoIcon::constRed : col,
-	                      i.red ? MonoIcon::constRed : QColor(QColor::Invalid));
+	return Icon::fa(i.faStyle, i.faIcon);
 }
 
 namespace StdGuiItem {
-GuiItem ok() { return GuiItem(QObject::tr("&OK"), FontAwesome::check); }
-GuiItem cancel() { return GuiItem(QObject::tr("&Cancel"), FontAwesome::ban); }
-GuiItem yes() { return GuiItem(QObject::tr("&Yes"), FontAwesome::check); }
-GuiItem no() { return GuiItem(QObject::tr("&No"), FontAwesome::times, true); }
-GuiItem discard() { return GuiItem(QObject::tr("&Discard"), FontAwesome::trash, true); }
-GuiItem save() { return GuiItem(QObject::tr("&Save"), FontAwesome::save); }
-GuiItem apply() { return GuiItem(QObject::tr("&Apply"), FontAwesome::check); }
-GuiItem close() { return GuiItem(QObject::tr("&Close"), FontAwesome::close, true); }
-GuiItem help() { return GuiItem(QObject::tr("&Help"), FontAwesome::lifering); }
+using namespace fa;
+GuiItem ok() { return GuiItem(QObject::tr("&OK"), fa_solid, fa_check); }
+GuiItem cancel() { return GuiItem(QObject::tr("&Cancel"), fa_solid, fa_ban); }
+GuiItem yes() { return GuiItem(QObject::tr("&Yes"), fa_solid, fa_check); }
+GuiItem no() { return GuiItem(QObject::tr("&No"), fa_solid, fa_xmark, true); }
+GuiItem discard() { return GuiItem(QObject::tr("&Discard"), fa_solid, fa_trash, true); }
+GuiItem save() { return GuiItem(QObject::tr("&Save"), fa_solid, fa_save); }
+GuiItem apply() { return GuiItem(QObject::tr("&Apply"), fa_solid, fa_check); }
+GuiItem close() { return GuiItem(QObject::tr("&Close"), fa_solid, fa_close, true); }
+GuiItem help() { return GuiItem(QObject::tr("&Help"), fa_solid, fa_life_ring); }
 GuiItem overwrite() { return GuiItem(QObject::tr("&Overwrite")); }
-GuiItem reset() { return GuiItem(QObject::tr("&Reset"), FontAwesome::undo); }
-GuiItem cont() { return GuiItem(QObject::tr("&Continue"), FontAwesome::arrowright); }
-GuiItem del() { return GuiItem(QObject::tr("&Delete"), FontAwesome::trash, true); }
-GuiItem stop() { return GuiItem(QObject::tr("&Stop"), FontAwesome::times); }
-GuiItem remove() { return GuiItem(QObject::tr("&Remove"), FontAwesome::remove); }
-GuiItem back(bool useRtl) { return GuiItem(QObject::tr("&Previous"), useRtl && QApplication::isRightToLeft() ? FontAwesome::chevronright : FontAwesome::chevronleft); }
-GuiItem forward(bool useRtl) { return GuiItem(QObject::tr("&Next"), useRtl && QApplication::isRightToLeft() ? FontAwesome::chevronleft : FontAwesome::chevronright); }
+GuiItem reset() { return GuiItem(QObject::tr("&Reset"), fa_solid, fa_undo); }
+GuiItem cont() { return GuiItem(QObject::tr("&Continue"), fa_solid, fa_arrow_right); }
+GuiItem del() { return GuiItem(QObject::tr("&Delete"), fa_solid, fa_trash, true); }
+GuiItem stop() { return GuiItem(QObject::tr("&Stop"), fa_solid, fa_xmark); }
+GuiItem remove() { return GuiItem(QObject::tr("&Remove"), fa_solid, fa_remove); }
+GuiItem back(bool useRtl) { return GuiItem(QObject::tr("&Previous"), fa_solid, useRtl && QApplication::isRightToLeft() ? fa_chevron_right : fa_chevron_left); }
+GuiItem forward(bool useRtl) { return GuiItem(QObject::tr("&Next"), fa_solid, useRtl && QApplication::isRightToLeft() ? fa_chevron_left : fa_chevron_right); }
 
 QSet<QString> standardNames()
 {
@@ -282,7 +281,7 @@ void Dialog::setButtonGuiItem(ButtonCode button, const GuiItem& item)
 			if (!item.icon.isEmpty()) {
 				b->setIcon(Icon::get(item.icon));
 			}
-			else if (item.monoIcon > 0) {
+			else if (item.faIcon > 0) {
 				b->setIcon(monoIcon(item));
 			}
 			else {
@@ -301,7 +300,7 @@ void Dialog::setButtonGuiItem(QDialogButtonBox::StandardButton button, const Gui
 			if (!item.icon.isEmpty()) {
 				b->setIcon(Icon::get(item.icon));
 			}
-			else if (item.monoIcon > 0) {
+			else if (item.faIcon > 0) {
 				b->setIcon(monoIcon(item));
 			}
 			else {

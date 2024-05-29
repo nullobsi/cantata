@@ -29,7 +29,6 @@
 #include "support/action.h"
 #include "support/configuration.h"
 #include "support/messagebox.h"
-#include "support/monoicon.h"
 #include "widgets/icons.h"
 
 DynamicPlaylistsPage::DynamicPlaylistsPage(QWidget* p)
@@ -129,7 +128,7 @@ void DynamicPlaylistsPage::remoteDynamicSupport(bool s)
 	enableWidgets(s);
 #endif
 	if (s && server.isNull()) {
-		server = MonoIcon::icon(FontAwesome::server, Utils::monoIconColor());
+		server = Icon::fa(fa::fa_solid, fa::fa_server);
 	}
 	view->setBackgroundImage(s ? server : QIcon());
 }

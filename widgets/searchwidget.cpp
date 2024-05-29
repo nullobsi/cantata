@@ -22,7 +22,6 @@
  */
 
 #include "searchwidget.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "toolbutton.h"
 #include <QHBoxLayout>
@@ -78,7 +77,9 @@ SearchWidget::SearchWidget(QWidget* p, int extraSpace)
 		l->addWidget(closeButton);
 	}
 
-	closeButton->setIcon(MonoIcon::icon(FontAwesome::close, MonoIcon::constRed, MonoIcon::constRed));
+	QVariantMap redOpt;
+	redOpt.insert("color", Icon::constRed);
+	closeButton->setIcon(Icon::fa(fa::fa_solid, fa::fa_close, redOpt));
 	Icon::init(closeButton);
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
 	connect(edit, SIGNAL(textChanged(QString)), SIGNAL(textChanged(QString)));

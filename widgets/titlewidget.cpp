@@ -25,7 +25,6 @@
 #include "groupedview.h"
 #include "gui/stdactions.h"
 #include "support/icon.h"
-#include "support/monoicon.h"
 #include "support/proxystyle.h"
 #include "support/squeezedtextlabel.h"
 #include "support/utils.h"
@@ -57,7 +56,7 @@ TitleWidget::TitleWidget(QWidget* p)
 	ToolButton tb(this);
 	tb.setIcon(StdActions::self()->appendToPlayQueueAction->icon());
 	tb.ensurePolished();
-	chevron->setPixmap(MonoIcon::icon(Qt::LeftToRight == layoutDirection() ? FontAwesome::chevronleft : FontAwesome::chevronright, Utils::monoIconColor()).pixmap(tb.iconSize()));
+	chevron->setPixmap(Icon::fa(fa::fa_solid, Qt::LeftToRight == layoutDirection() ? fa::fa_chevron_left : fa::fa_chevron_right).pixmap(tb.iconSize()));
 	chevron->setFixedSize(tb.iconSize());
 	QFont f = mainText->font();
 	subText->setFont(Utils::smallFont(f));

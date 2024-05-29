@@ -22,8 +22,8 @@
  */
 
 #include "pathrequester.h"
+#include "QtAwesome.h"
 #include "icon.h"
-#include "monoicon.h"
 #include "utils.h"
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -33,8 +33,9 @@ static QIcon icon;
 PathRequester::PathRequester(QWidget* parent)
 	: QWidget(parent), dirMode(true)
 {
+	fa::QtAwesome *fa = new fa::QtAwesome(this);
 	if (icon.isNull()) {
-		icon = MonoIcon::icon(FontAwesome::foldero, Utils::monoIconColor());
+		icon = fa->icon(fa::fa_regular, fa::fa_folder);
 	}
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->setContentsMargins(0, 0, 0, 0);

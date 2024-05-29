@@ -29,7 +29,6 @@
 #include "stdactions.h"
 #include "support/action.h"
 #include "support/messagebox.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "widgets/icons.h"
 #include "widgets/menubutton.h"
@@ -39,8 +38,7 @@
 MpdBrowsePage::MpdBrowsePage(QWidget* p)
 	: SinglePageWidget(p), model(this)
 {
-	QColor col = Utils::monoIconColor();
-	browseAction = new Action(MonoIcon::icon(FontAwesome::folderopen, col), tr("Open In File Manager"), this);
+	browseAction = new Action(Icon::fa(fa::fa_solid, fa::fa_folder_open), tr("Open In File Manager"), this);
 	connect(view, SIGNAL(itemsSelected(bool)), this, SLOT(controlActions()));
 	connect(view, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(itemDoubleClicked(const QModelIndex&)));
 	connect(view, SIGNAL(headerClicked(int)), SLOT(headerClicked(int)));

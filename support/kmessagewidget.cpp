@@ -20,7 +20,6 @@
 #include "kmessagewidget.h"
 #include "flattoolbutton.h"
 #include "icon.h"
-#include "monoicon.h"
 #include "squeezedtextlabel.h"
 #include "utils.h"
 #include <QAction>
@@ -55,7 +54,9 @@ void KMsgWidgetPrivate::init(KMsgWidget* q_ptr)
 	textLabel->setOpenExternalLinks(true);
 
 	QAction* closeAction = new QAction(q);
-	closeAction->setIcon(MonoIcon::icon(FontAwesome::close, MonoIcon::constRed, MonoIcon::constRed));
+	QVariantMap iconOpt;
+	iconOpt.insert("color", Icon::constRed);
+	closeAction->setIcon(Icon::fa(fa::fa_solid, fa::fa_close, iconOpt));
 	closeAction->setToolTip(QObject::tr("Close"));
 	QObject::connect(closeAction, SIGNAL(triggered()), q, SLOT(animatedHide()));
 

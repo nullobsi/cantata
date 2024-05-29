@@ -35,7 +35,6 @@
 #include "playqueuemodel.h"
 #include "roles.h"
 #include "support/globalstatic.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "widgets/groupedview.h"
 #include "widgets/icons.h"
@@ -87,7 +86,7 @@ PlaylistsModel::PlaylistsModel(QObject* parent)
 	connect(this, SIGNAL(addToPlaylist(const QString&, const QStringList, quint32, quint32)), MPDConnection::self(), SLOT(addToPlaylist(const QString&, const QStringList, quint32, quint32)));
 	connect(this, SIGNAL(moveInPlaylist(const QString&, const QList<quint32>&, quint32, quint32)), MPDConnection::self(), SLOT(moveInPlaylist(const QString&, const QList<quint32>&, quint32, quint32)));
 	connect(Covers::self(), SIGNAL(loaded(Song, int)), this, SLOT(coverLoaded(Song, int)));
-	newAction = new QAction(MonoIcon::icon(FontAwesome::asterisk, Utils::monoIconColor()), tr("New Playlist..."), this);
+	newAction = new QAction(Icon::fa(fa::fa_solid, fa::fa_asterisk), tr("New Playlist..."), this);
 	connect(newAction, SIGNAL(triggered()), this, SIGNAL(addToNew()));
 	Action::initIcon(newAction);
 	alignments[COL_TITLE] = alignments[COL_ARTIST] = alignments[COL_ALBUM] = alignments[COL_GENRE] = alignments[COL_COMPOSER] =
@@ -480,7 +479,7 @@ QVariant PlaylistsModel::data(const QModelIndex& index, int role) const
 			return (s->artist.isEmpty() ? QString() : (s->artist + Song::constSep)) + (s->displayAlbum().isEmpty() ? QString() : (s->displayAlbum() + Song::constSep)) + (s->time > 0 ? Utils::formatTime(s->time) : QString());
 		case Cantata::Role_TextColor:
 			if (s->isInvalid()) {
-				return MonoIcon::constRed;
+				return Icon::constRed;
 			}
 			break;
 		default:

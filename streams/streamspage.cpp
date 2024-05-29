@@ -31,7 +31,6 @@
 #include "support/actioncollection.h"
 #include "support/configuration.h"
 #include "support/messagebox.h"
-#include "support/monoicon.h"
 #include "widgets/icons.h"
 #include "widgets/itemview.h"
 #include "widgets/menubutton.h"
@@ -95,9 +94,8 @@ void StreamsPage::addToFavourites()
 StreamsBrowsePage::StreamsBrowsePage(QWidget* p)
 	: SinglePageWidget(p)
 {
-	QColor iconCol = Utils::monoIconColor();
-	importAction = new Action(MonoIcon::icon(FontAwesome::arrowright, iconCol), tr("Import Streams Into Favorites"), this);
-	exportAction = new Action(MonoIcon::icon(FontAwesome::arrowleft, iconCol), tr("Export Favorite Streams"), this);
+	importAction = new Action(Icon::fa(fa::fa_solid, fa::fa_arrow_right), tr("Import Streams Into Favorites"), this);
+	exportAction = new Action(Icon::fa(fa::fa_solid, fa::fa_arrow_left), tr("Export Favorite Streams"), this);
 	addAction = ActionCollection::get()->createAction("addstream", tr("Add New Stream To Favorites"));
 	editAction = new Action(Icons::self()->editIcon, tr("Edit"), this);
 	searchAction = new Action(Icons::self()->searchIcon, tr("Seatch For Streams"), this);

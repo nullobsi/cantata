@@ -34,7 +34,6 @@
 #include "qtiocompressor/qtiocompressor.h"
 #include "rssparser.h"
 #include "support/globalstatic.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "widgets/icons.h"
 #include <QCoreApplication>
@@ -419,7 +418,7 @@ PodcastService::PodcastService()
 	: ActionModel(nullptr), downloadJob(nullptr), rssUpdateTimer(nullptr)
 {
 	QMetaObject::invokeMethod(this, "loadAll", Qt::QueuedConnection);
-	icn = MonoIcon::icon(FontAwesome::rsssquare, Utils::monoIconColor());
+	icn = Icon::fa(fa::fa_solid, fa::fa_rss_square);
 	useCovers(name(), true);
 	clearPartialDownloads();
 	connect(MPDConnection::self(), SIGNAL(currentSongUpdated(const Song&)), this, SLOT(currentMpdSong(const Song&)));

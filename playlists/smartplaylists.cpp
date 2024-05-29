@@ -24,12 +24,12 @@
 #include "smartplaylists.h"
 #include "models/roles.h"
 #include "support/globalstatic.h"
-#include "support/monoicon.h"
+#include "support/icon.h"
 
 GLOBAL_STATIC(SmartPlaylists, instance)
 
 SmartPlaylists::SmartPlaylists()
-	: RulesPlaylists(FontAwesome::graduationcap, "smart")
+	: RulesPlaylists(fa::fa_solid, fa::fa_graduation_cap, "smart")
 {
 }
 
