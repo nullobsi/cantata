@@ -52,7 +52,7 @@ TitleWidget::TitleWidget(QWidget* p)
 	image = new QLabel(this);
 	mainText = new SqueezedTextLabel(this);
 	subText = new SqueezedTextLabel(this);
-	QLabel* chevron = new QLabel(this);
+	chevron = new QLabel(this);
 	ToolButton tb(this);
 	tb.setIcon(StdActions::self()->appendToPlayQueueAction->icon());
 	tb.ensurePolished();
@@ -106,10 +106,13 @@ TitleWidget::TitleWidget(QWidget* p)
 	image->setFixedSize(GroupedView::coverSize(), GroupedView::coverSize());
 	setFixedHeight(image->height() + ((frameWidth() + 2) * 2));
 	setFocusPolicy(Qt::NoFocus);
+
+	connect(Icon::fa(), &fa::QtAwesome::defaultOptionsReset, this, &TitleWidget::iconsUpdated);
 }
 
 void TitleWidget::update(const Song& sng, const QIcon& icon, const QString& text, const QString& sub, bool showControls)
 {
+	savedIcon = icon;
 	song = sng;
 	image->setVisible(true);
 	mainText->setText(text);
@@ -240,10 +243,36 @@ void TitleWidget::coverRetrieved(const Song& s, const QImage& img, const QString
 
 void TitleWidget::setImage(const QImage& img)
 {
+	savedIcon = QIcon();
 	double dpr = DEVICE_PIXEL_RATIO();
 	QPixmap pix = QPixmap::fromImage(img.scaled(image->width() * dpr, image->height() * dpr, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 	pix.setDevicePixelRatio(dpr);
 	image->setPixmap(pix);
+}
+
+void TitleWidget::iconsUpdated() {
+	if (!savedIcon.isNull()) {
+		int iconPad = Utils::scaleForDpi(8);
+		int iconSize = image->width() - iconPad;
+		if (iconSize < 44 && iconSize >= 32) {
+			iconSize = 32;
+		}
+		double dpr = DEVICE_PIXEL_RATIO();
+		QPixmap pix = Icon::getScaledPixmap(savedIcon, iconSize * dpr, iconSize * dpr, 96 * dpr);
+		pix.setDevicePixelRatio(dpr);
+		image->setPixmap(pix);
+	}
+
+	chevron->setPixmap(Icon::fa(fa::fa_solid, Qt::LeftToRight == layoutDirection() ? fa::fa_chevron_left : fa::fa_chevron_right).pixmap(chevron->size()));
+
+	setPalette(qApp->palette());
+
+	QPalette pal = mainText->palette();
+	QColor col(mainText->palette().windowText().color());
+	col.setAlphaF(0.5);
+	pal.setColor(QPalette::WindowText, col);
+	subText->setPalette(pal);
+
 }
 
 #include "moc_titlewidget.cpp"

@@ -47,6 +47,7 @@ Q_SIGNALS:
 
 private Q_SLOTS:
 	void coverRetrieved(const Song& s, const QImage& img, const QString& file);
+	void iconsUpdated();
 
 private:
 	void setImage(const QImage& img);
@@ -58,6 +59,9 @@ private:
 	QWidget* controls;
 	SqueezedTextLabel* mainText;
 	SqueezedTextLabel* subText;
+
+	QLabel* chevron;
+	QIcon savedIcon;
 };
 
 #endif
