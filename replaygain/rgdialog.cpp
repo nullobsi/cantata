@@ -29,6 +29,7 @@
 #include "jobcontroller.h"
 #include "mpd-interface/mpdconnection.h"
 #include "mpd-interface/cuefile.h"
+#include "support/icon.h"
 #include "support/action.h"
 #include "support/messagebox.h"
 #include "support/utils.h"

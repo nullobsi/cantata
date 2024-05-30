@@ -22,12 +22,12 @@
  */
 
 #include "tageditor.h"
-#include "gui/settings.h"
 #include "mpd-interface/cuefile.h"
 #include "mpd-interface/mpdconnection.h"
 #include "support/inputdialog.h"
 #include "support/messagebox.h"
 #include "support/utils.h"
+#include "support/icon.h"
 #include "tags.h"
 #include "trackorganiser.h"
 #include "widgets/tagspinbox.h"
