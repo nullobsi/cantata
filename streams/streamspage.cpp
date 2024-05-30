@@ -22,6 +22,7 @@
  */
 
 #include "streamspage.h"
+#include "gui/searchpage.h"
 #include "gui/settings.h"
 #include "gui/stdactions.h"
 #include "models/playqueuemodel.h"
@@ -62,7 +63,7 @@ StreamsPage::StreamsPage(QWidget* p)
 	disconnect(search, SIGNAL(add(const QStringList&, int, quint8, bool)), MPDConnection::self(), SLOT(add(const QStringList&, int, quint8, bool)));
 	connect(browse, SIGNAL(add(const QStringList&, int, quint8, bool)), PlayQueueModel::self(), SLOT(addItems(const QStringList&, int, quint8, bool)));
 	connect(search, SIGNAL(add(const QStringList&, int, quint8, bool)), PlayQueueModel::self(), SLOT(addItems(const QStringList&, int, quint8, bool)));
-	connect(StreamsModel::self()->addToFavouritesAct(), SIGNAL(triggered()), this, SLOT(addToFavourites()));
+	connect(StreamsModel::self()->addToFavouritesAct(), &QAction::triggered, this, &StreamsPage::addToFavourites);
 	connect(search, SIGNAL(addToFavourites(QList<StreamItem>)), browse, SLOT(addToFavourites(QList<StreamItem>)));
 }
 
@@ -252,6 +253,7 @@ void StreamsBrowsePage::addStream()
 
 void StreamsBrowsePage::addBookmark()
 {
+	// TODO: Add bookmarks from search view.
 	QModelIndexList selected = view->selectedIndexes(false);// Dont need sorted selection here...
 
 	if (1 != selected.count()) {
@@ -537,7 +539,9 @@ StreamSearchPage::StreamSearchPage(QWidget* p)
 	connect(view, SIGNAL(headerClicked(int)), SLOT(headerClicked(int)));
 	view->setMode(ItemView::Mode_DetailedTree);
 	init(ReplacePlayQueue);
-	connect(StreamsModel::self(), SIGNAL(addedToFavourites(QString)), SLOT(addedToFavourites(QString)));
+	connect(StreamsModel::self(), &StreamsModel::addedToFavourites, this, &StreamSearchPage::addedToFavourites);
+	view->addAction(StreamsModel::self()->addToFavouritesAct());
+	view->addAction(StreamsModel::self()->addBookmarkAct());
 }
 
 StreamSearchPage::~StreamSearchPage()
@@ -560,6 +564,10 @@ void StreamSearchPage::headerClicked(int level)
 void StreamSearchPage::doSearch()
 {
 	model.search(view->searchText().trimmed(), false);
+	// HACK: TODO: Issue #6: Why do I need to do this for the buttons to
+	// work initially on the search view?
+	StreamsModel::self()->addToFavouritesAct()->setEnabled(true);
+	StreamsModel::self()->addBookmarkAct()->setEnabled(true);
 }
 
 void StreamSearchPage::addSelectionToPlaylist(const QString& name, int action, quint8 priority, bool decreasePriority)
