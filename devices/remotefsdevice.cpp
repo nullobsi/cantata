@@ -28,8 +28,8 @@
 #include "mountpoints.h"
 #include "remotedevicepropertiesdialog.h"
 #include "support/configuration.h"
-#include "support/utils.h"
 #include "support/icon.h"
+#include "support/utils.h"
 #include <QDBusConnection>
 #include <QDir>
 #include <QFile>
@@ -195,8 +195,8 @@ RemoteFsDevice::RemoteFsDevice(MusicLibraryModel* m, const Details& d)
 	//    details.path=Utils::fixPath(details.path);
 	setup();
 	icn = details.isLocalFile()
-		  ? Icon::fa(fa::fa_regular, fa::fa_folder)
-		  : (Icon::fa(fa::fa_brands, constSshfsProtocol == details.url.scheme() ? fa::fa_linux : fa::fa_windows));
+			? Icon::fa(fa::fa_regular, fa::fa_folder)
+			: (Icon::fa(fa::fa_brands, constSshfsProtocol == details.url.scheme() ? fa::fa_linux : fa::fa_windows));
 }
 
 RemoteFsDevice::~RemoteFsDevice()

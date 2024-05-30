@@ -26,8 +26,8 @@
 #include "devicepropertiesdialog.h"
 #include "devicepropertieswidget.h"
 #include "solid-lite/storagedrive.h"
-#include "support/utils.h"
 #include "support/icon.h"
+#include "support/utils.h"
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>

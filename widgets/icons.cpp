@@ -31,12 +31,12 @@
 #ifdef Q_OS_MAC
 #include "support/osxstyle.h"
 #endif
+#include "gui/application.h"
+#include "support/QtAwesome.h"
 #include <QApplication>
 #include <QDir>
 #include <QFile>
 #include <QPalette>
-#include "gui/application.h"
-#include "support/QtAwesome.h"
 
 GLOBAL_STATIC(Icons, instance)
 
@@ -64,7 +64,6 @@ Icons::Icons()
 #else
 	appIcon = QIcon::fromTheme("cantata");
 #endif
-
 }
 
 const QIcon& Icons::albumIcon(int size, bool mono) const

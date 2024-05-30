@@ -25,9 +25,9 @@
 #define NOWPLAYING_WIDGET_H
 
 #include "support/squeezedtextlabel.h"
+#include <QApplication>
 #include <QElapsedTimer>
 #include <QSlider>
-#include <QApplication>
 #include <QWidget>
 
 class QTimer;

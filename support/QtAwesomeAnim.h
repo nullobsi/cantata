@@ -9,28 +9,26 @@ class QTimer;
 class QWidget;
 
 namespace fa {
-    ///
-    /// Basic Animation Support for QtAwesome (Inspired by https://github.com/spyder-ide/qtawesome)
-    ///
-    class QtAwesomeAnimation : public QObject
-    {
-    Q_OBJECT
+///
+/// Basic Animation Support for QtAwesome (Inspired by https://github.com/spyder-ide/qtawesome)
+///
+class QtAwesomeAnimation : public QObject {
+	Q_OBJECT
 
-    public:
-        QtAwesomeAnimation(QWidget* parentWidget, int interval = 10, int step = 1);
-        void setup(QPainter& painter, const QRect& rect);
+public:
+	QtAwesomeAnimation(QWidget* parentWidget, int interval = 10, int step = 1);
+	void setup(QPainter& painter, const QRect& rect);
 
-    public slots:
-        void update();
+public slots:
+	void update();
 
-    private:
-        QWidget* parentWidgetRef_;
-        QTimer* timer_;
-        int interval_;
-        int step_;
-        float angle_;
+private:
+	QWidget* parentWidgetRef_;
+	QTimer* timer_;
+	int interval_;
+	int step_;
+	float angle_;
+};
+}// namespace fa
 
-    };
-} // namespace fa
-
-#endif // QTAWESOMEANIMATION_H
+#endif// QTAWESOMEANIMATION_H

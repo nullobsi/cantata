@@ -250,7 +250,8 @@ void TitleWidget::setImage(const QImage& img)
 	image->setPixmap(pix);
 }
 
-void TitleWidget::iconsUpdated() {
+void TitleWidget::iconsUpdated()
+{
 	if (!savedIcon.isNull()) {
 		int iconPad = Utils::scaleForDpi(8);
 		int iconSize = image->width() - iconPad;
@@ -272,7 +273,6 @@ void TitleWidget::iconsUpdated() {
 	col.setAlphaF(0.5);
 	pal.setColor(QPalette::WindowText, col);
 	subText->setPalette(pal);
-
 }
 
 #include "moc_titlewidget.cpp"

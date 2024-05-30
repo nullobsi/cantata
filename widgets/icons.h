@@ -25,8 +25,8 @@
 #define ICONS_H
 
 #include "config.h"
-#include "support/icon.h"
 #include "support/QtAwesome.h"
+#include "support/icon.h"
 
 class Icons {
 public:

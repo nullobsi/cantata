@@ -258,7 +258,7 @@ MainWindow::MainWindow(QWidget* parent)
 	prefAction = ActionCollection::get()->createAction("configure", Utils::KDE == Utils::currentDe() ? tr("Configure Cantata...") : tr("Preferences..."),
 	                                                   Icons::self()->configureIcon);
 	connect(prefAction, SIGNAL(triggered()), this, SLOT(showPreferencesDialog()));
-	quitAction = ActionCollection::get()->createAction("quit", tr("Quit"),  Icons::self()->quitIcon);
+	quitAction = ActionCollection::get()->createAction("quit", tr("Quit"), Icons::self()->quitIcon);
 	connect(quitAction, SIGNAL(triggered()), this, SLOT(quit()));
 	quitAction->setShortcut(QKeySequence::Quit);
 	Action* aboutAction = ActionCollection::get()->createAction("about", tr("About Cantata..."), Icons::self()->appIcon);

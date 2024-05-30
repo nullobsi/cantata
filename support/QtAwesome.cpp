@@ -11,13 +11,12 @@
 #include "QtAwesomeAnim.h"
 
 #include <QApplication>
-#include <QPalette>
 #include <QDebug>
 #include <QFile>
 #include <QFontDatabase>
 #include <QFontMetrics>
+#include <QPalette>
 #include <QString>
-
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 0))
 #define USE_COLOR_SCHEME
@@ -31,9 +30,8 @@
 // Initializing namespaces need to happen outside a namespace
 static void qtawesome_init_resources()
 {
-    Q_INIT_RESOURCE(QtAwesomeFree);
+	Q_INIT_RESOURCE(QtAwesomeFree);
 }
-
 
 namespace fa {
 
@@ -44,58 +42,56 @@ QtAwesomeIconPainter::~QtAwesomeIconPainter()
 }
 
 /// The font-awesome icon painter
-class QtAwesomeCharIconPainter: public QtAwesomeIconPainter
-{
+class QtAwesomeCharIconPainter : public QtAwesomeIconPainter {
 protected:
+	virtual ~QtAwesomeCharIconPainter()
+	{
+	}
 
-    virtual ~QtAwesomeCharIconPainter()
-    {
-    }
+	QStringList optionKeysForModeAndState(const QString& key, QIcon::Mode mode, QIcon::State state)
+	{
+		QString modePostfix;
+		switch (mode) {
+		case QIcon::Disabled:
+			modePostfix = "-disabled";
+			break;
+		case QIcon::Active:
+			modePostfix = "-active";
+			break;
+		case QIcon::Selected:
+			modePostfix = "-selected";
+			break;
+		default:
+			break;
+		}
 
-    QStringList optionKeysForModeAndState(const QString& key, QIcon::Mode mode, QIcon::State state)
-    {
-        QString modePostfix;
-        switch (mode) {
-            case QIcon::Disabled:
-                modePostfix = "-disabled";
-                break;
-            case QIcon::Active:
-                modePostfix = "-active";
-                break;
-            case QIcon::Selected:
-                modePostfix = "-selected";
-                break;
-            default:
-                break;
-        }
+		QString statePostfix;
+		if (state == QIcon::Off) {
+			statePostfix = "-off";
+		}
 
-        QString statePostfix;
-        if(state == QIcon::Off) {
-            statePostfix = "-off";
-        }
+		// the keys that need to bet tested:   key-mode-state | key-mode | key-state | key
+		QStringList result;
+		if (!modePostfix.isEmpty()) {
+			if (!statePostfix.isEmpty()) {
+				result.push_back(key + modePostfix + statePostfix);
+			}
+			result.push_back(key + modePostfix);
+		}
+		if (!statePostfix.isEmpty()) {
+			result.push_back(key + statePostfix);
+		}
+		return result;
+	}
 
-        // the keys that need to bet tested:   key-mode-state | key-mode | key-state | key
-        QStringList result;
-        if (!modePostfix.isEmpty()) {
-            if (!statePostfix.isEmpty()) {
-                result.push_back(key + modePostfix + statePostfix);
-            }
-            result.push_back(key + modePostfix);
-        }
-        if (!statePostfix.isEmpty()) {
-            result.push_back(key + statePostfix);
-        }
-        return result;
-    }
-
-    QVariant optionValueForModeAndState(const QString& baseKey, QIcon::Mode mode, QIcon::State state,
-                                        const QVariantMap& options, const QtAwesome *awesome )
-    {
-        for (const QString& key : optionKeysForModeAndState(baseKey, mode, state)) {
-            if (options.contains(key) && !(options.value(key).toString().isEmpty())) {
-                return options.value(key);
-            }
-        }
+	QVariant optionValueForModeAndState(const QString& baseKey, QIcon::Mode mode, QIcon::State state,
+	                                    const QVariantMap& options, const QtAwesome* awesome)
+	{
+		for (const QString& key : optionKeysForModeAndState(baseKey, mode, state)) {
+			if (options.contains(key) && !(options.value(key).toString().isEmpty())) {
+				return options.value(key);
+			}
+		}
 
 		if (options.contains(baseKey) && !(options.value(baseKey).toString().isEmpty())) {
 			return options.value(baseKey);
@@ -108,37 +104,36 @@ protected:
 		}
 
 		return awesome->defaultOption(baseKey);
-    }
+	}
 
 public:
+	void paint(QtAwesome* awesome, QPainter* painter, const QRect& rect, QIcon::Mode mode, QIcon::State state,
+	           const QVariantMap& options) override
+	{
+		painter->save();
 
-    void paint(QtAwesome* awesome, QPainter* painter, const QRect& rect, QIcon::Mode mode, QIcon::State state,
-                        const QVariantMap& options) override
-    {
-        painter->save();
-
-        painter->setRenderHint(QPainter::Antialiasing);
+		painter->setRenderHint(QPainter::Antialiasing);
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-        painter->setRenderHint(QPainter::HighQualityAntialiasing);
+		painter->setRenderHint(QPainter::HighQualityAntialiasing);
 #endif
 
-        QVariant var =options.value("anim");
-        QtAwesomeAnimation* anim = var.value<QtAwesomeAnimation*>();
-        if (anim) {
-            anim->setup(*painter, rect);
-        }
+		QVariant var = options.value("anim");
+		QtAwesomeAnimation* anim = var.value<QtAwesomeAnimation*>();
+		if (anim) {
+			anim->setup(*painter, rect);
+		}
 
-        // set the default options
-        QColor color = optionValueForModeAndState("color", mode, state, options, awesome).value<QColor>();
-        QString text = optionValueForModeAndState("text", mode, state, options, awesome).toString();
+		// set the default options
+		QColor color = optionValueForModeAndState("color", mode, state, options, awesome).value<QColor>();
+		QString text = optionValueForModeAndState("text", mode, state, options, awesome).toString();
 		QString filename = optionValueForModeAndState("filename", mode, state, options, awesome).toString();
-        int st = optionValueForModeAndState("style", mode, state, options, awesome).toInt();
+		int st = optionValueForModeAndState("style", mode, state, options, awesome).toInt();
 		double scaleFactor = optionValueForModeAndState("scale-factor", mode, state, options, awesome).toDouble();
 
 		bool rtl = optionValueForModeAndState("rtl", mode, state, options, awesome).toBool();
 
-        Q_ASSERT(color.isValid());
-        Q_ASSERT(!text.isEmpty() || !filename.isEmpty());
+		Q_ASSERT(color.isValid());
+		Q_ASSERT(!text.isEmpty() || !filename.isEmpty());
 
 		// Setting RTL makes the icon RTL-aware and will flip it if
 		// needed.
@@ -156,16 +151,16 @@ public:
 			int drawSize = qRound(textRect.height() * scaleFactor);
 			QFont ft = awesome->font(st, drawSize);
 			QFontMetricsF fm(ft);
-			QRectF tbr = fm.boundingRect(textRect,flags,text);
+			QRectF tbr = fm.boundingRect(textRect, flags, text);
 			if (tbr.width() > textRect.width()) {
-				drawSize = static_cast<int>(ft.pixelSize() * qMin(textRect.width() *
-				                                                          0.95/tbr.width(),textRect.height() * 0.95/tbr.height()));
+				drawSize = static_cast<int>(ft.pixelSize() * qMin(textRect.width() * 0.95 / tbr.width(), textRect.height() * 0.95 / tbr.height()));
 				ft.setPixelSize(drawSize);
 			}
 
 			painter->setFont(ft);
 			painter->drawText(textRect, flags, text);
-		} else {
+		}
+		else {
 			QSvgRenderer renderer;
 			QFile f(filename);
 			QByteArray bytes;
@@ -179,55 +174,50 @@ public:
 			renderer.render(painter, QRect(0, 0, rect.width(), rect.height()));
 		}
 
-        painter->restore();
-    }
+		painter->restore();
+	}
 };
 
 //---------------------------------------------------------------------------------------
 
 /// The painter icon engine.
-class QtAwesomeIconPainterIconEngine : public QIconEngine
-{
+class QtAwesomeIconPainterIconEngine : public QIconEngine {
 
 public:
+	QtAwesomeIconPainterIconEngine(QtAwesome* awesome, QtAwesomeIconPainter* painter, const QVariantMap& options)
+		: awesomeRef_(awesome), iconPainterRef_(painter), options_(options)
+	{
+	}
 
-    QtAwesomeIconPainterIconEngine(QtAwesome* awesome, QtAwesomeIconPainter* painter, const QVariantMap& options)
-        : awesomeRef_(awesome)
-        , iconPainterRef_(painter)
-        , options_(options)
-    {
-    }
+	virtual ~QtAwesomeIconPainterIconEngine() {}
 
-    virtual ~QtAwesomeIconPainterIconEngine(){}
+	QtAwesomeIconPainterIconEngine* clone() const
+	{
+		return new QtAwesomeIconPainterIconEngine(awesomeRef_, iconPainterRef_, options_);
+	}
 
-    QtAwesomeIconPainterIconEngine* clone() const
-    {
-        return new QtAwesomeIconPainterIconEngine(awesomeRef_, iconPainterRef_, options_);
-    }
+	virtual void paint(QPainter* painter, const QRect& rect, QIcon::Mode mode, QIcon::State state)
+	{
+		Q_UNUSED(mode);
+		Q_UNUSED(state);
+		iconPainterRef_->paint(awesomeRef_, painter, rect, mode, state, options_);
+	}
 
-    virtual void paint(QPainter* painter, const QRect& rect, QIcon::Mode mode, QIcon::State state)
-    {
-        Q_UNUSED(mode );
-        Q_UNUSED(state );
-        iconPainterRef_->paint(awesomeRef_, painter, rect, mode, state, options_);
-    }
-
-    virtual QPixmap pixmap(const QSize& size, QIcon::Mode mode, QIcon::State state)
-    {
-        QPixmap pm(size);
-        pm.fill(Qt::transparent); // we need transparency
-        {
-            QPainter p(&pm);
-            paint(&p, QRect(QPoint(0,0),size), mode, state);
-        }
-        return pm;
-    }
+	virtual QPixmap pixmap(const QSize& size, QIcon::Mode mode, QIcon::State state)
+	{
+		QPixmap pm(size);
+		pm.fill(Qt::transparent);// we need transparency
+		{
+			QPainter p(&pm);
+			paint(&p, QRect(QPoint(0, 0), size), mode, state);
+		}
+		return pm;
+	}
 
 private:
-
-    QtAwesome* awesomeRef_;                  ///< a reference to the QtAwesome instance
-    QtAwesomeIconPainter* iconPainterRef_;   ///< a reference to the icon painter
-    QVariantMap options_;                    ///< the options for this icon painter
+	QtAwesome* awesomeRef_;               ///< a reference to the QtAwesome instance
+	QtAwesomeIconPainter* iconPainterRef_;///< a reference to the icon painter
+	QVariantMap options_;                 ///< the options for this icon painter
 };
 
 //---------------------------------------------------------------------------------------
@@ -238,54 +228,53 @@ const QString QtAwesome::FA_SOLID_FONT_FILENAME = "Font Awesome 6 Free-Solid-900
 
 /// The default icon colors
 QtAwesome::QtAwesome(QObject* parent)
-    : QObject(parent)
-    , _namedCodepointsByStyle()
-    , _namedCodepointsList()
+	: QObject(parent), _namedCodepointsByStyle(), _namedCodepointsList()
 {
 	hasInit = false;
 
-    resetDefaultOptions();
+	resetDefaultOptions();
 
-    _fontIconPainter = new QtAwesomeCharIconPainter();
+	_fontIconPainter = new QtAwesomeCharIconPainter();
 
-    _fontDetails.insert(fa::fa_solid, QtAwesomeFontData(FA_SOLID_FONT_FILENAME, FA_SOLID_FONT_WEIGHT));
-    _fontDetails.insert(fa::fa_regular, QtAwesomeFontData(FA_REGULAR_FONT_FILENAME, FA_REGULAR_FONT_WEIGHT));
-    _fontDetails.insert(fa::fa_brands, QtAwesomeFontData(FA_BRANDS_FONT_FILENAME, FA_BRANDS_FONT_WEIGHT));
+	_fontDetails.insert(fa::fa_solid, QtAwesomeFontData(FA_SOLID_FONT_FILENAME, FA_SOLID_FONT_WEIGHT));
+	_fontDetails.insert(fa::fa_regular, QtAwesomeFontData(FA_REGULAR_FONT_FILENAME, FA_REGULAR_FONT_WEIGHT));
+	_fontDetails.insert(fa::fa_brands, QtAwesomeFontData(FA_BRANDS_FONT_FILENAME, FA_BRANDS_FONT_WEIGHT));
 
 #ifdef USE_COLOR_SCHEME
-   // support dark/light mode
-    QObject::connect(QApplication::styleHints(), &QStyleHints::colorSchemeChanged, this, [this](Qt::ColorScheme _){
-        resetDefaultOptions();
-    });
+	// support dark/light mode
+	QObject::connect(QApplication::styleHints(), &QStyleHints::colorSchemeChanged, this, [this](Qt::ColorScheme _) {
+		resetDefaultOptions();
+	});
 #endif
 }
 
-void QtAwesome::resetDefaultOptions(){
-    _defaultOptions.clear();
+void QtAwesome::resetDefaultOptions()
+{
+	_defaultOptions.clear();
 
-    setDefaultOption("color", QApplication::palette().color(QPalette::Normal, QPalette::Text));
-    setDefaultOption("color-disabled", QApplication::palette().color(QPalette::Disabled, QPalette::Text));
-    setDefaultOption("color-active", QApplication::palette().color(QPalette::Active, QPalette::Text));
+	setDefaultOption("color", QApplication::palette().color(QPalette::Normal, QPalette::Text));
+	setDefaultOption("color-disabled", QApplication::palette().color(QPalette::Disabled, QPalette::Text));
+	setDefaultOption("color-active", QApplication::palette().color(QPalette::Active, QPalette::Text));
 #ifdef Q_OS_MAC
 	setDefaultOption("color-selected", OSXStyle::self()->viewPalette().highlightedText().color());
 #else
-    setDefaultOption("color-selected", QApplication::palette().color(QPalette::Active, QPalette::HighlightedText));  // TODO: check how to get the correct highlighted color
+	setDefaultOption("color-selected", QApplication::palette().color(QPalette::Active, QPalette::HighlightedText));// TODO: check how to get the correct highlighted color
 #endif
-    setDefaultOption("scale-factor", 1.0 );
+	setDefaultOption("scale-factor", 1.0);
 
-    setDefaultOption("text", QVariant());
-    setDefaultOption("text-disabled", QVariant());
-    setDefaultOption("text-active", QVariant());
-    setDefaultOption("text-selected", QVariant());
+	setDefaultOption("text", QVariant());
+	setDefaultOption("text-disabled", QVariant());
+	setDefaultOption("text-active", QVariant());
+	setDefaultOption("text-selected", QVariant());
 
-    Q_EMIT defaultOptionsReset();
+	Q_EMIT defaultOptionsReset();
 }
 
 QtAwesome::~QtAwesome()
 {
-    delete _fontIconPainter;
-    qDeleteAll(_painterMap);
-    qDeleteAll(_namedCodepointsList);
+	delete _fontIconPainter;
+	qDeleteAll(_painterMap);
+	qDeleteAll(_namedCodepointsList);
 }
 
 /// a specialized init function so font-awesome is loaded and initialized
@@ -294,88 +283,89 @@ QtAwesome::~QtAwesome()
 bool QtAwesome::initFontAwesome()
 {
 	if (hasInit) return true;
-    bool success = true;
-    // The macro below internally calls "qInitResources_QtAwesome()". this initializes
-    // the resource system. For a .pri project this isn't required, but when building and using a
-    // static library the resource need to initialized first.
-    ///
-    // I've checked th qInitResource_* code and calling this method mutliple times shouldn't be any problem
-    // (More info about this subject:  http://qt-project.org/wiki/QtResources)
-    qtawesome_init_resources();
+	bool success = true;
+	// The macro below internally calls "qInitResources_QtAwesome()". this initializes
+	// the resource system. For a .pri project this isn't required, but when building and using a
+	// static library the resource need to initialized first.
+	///
+	// I've checked th qInitResource_* code and calling this method mutliple times shouldn't be any problem
+	// (More info about this subject:  http://qt-project.org/wiki/QtResources)
+	qtawesome_init_resources();
 
-    for (QtAwesomeFontData &fd : _fontDetails) {
-        // only load font-awesome once
-        if (fd.fontId() < 0) {
-            // load the font file
-            QFile res(":/fonts/" + fd.fontFilename());
-            if (!res.open(QIODevice::ReadOnly)) {
-                qDebug() << "Font awesome font" << fd.fontFilename() << "could not be loaded!";
-                success = false;
-                continue;
-            }
-            QByteArray fontData(res.readAll());
-            res.close();
+	for (QtAwesomeFontData& fd : _fontDetails) {
+		// only load font-awesome once
+		if (fd.fontId() < 0) {
+			// load the font file
+			QFile res(":/fonts/" + fd.fontFilename());
+			if (!res.open(QIODevice::ReadOnly)) {
+				qDebug() << "Font awesome font" << fd.fontFilename() << "could not be loaded!";
+				success = false;
+				continue;
+			}
+			QByteArray fontData(res.readAll());
+			res.close();
 
-            // fetch the given font
-            fd.setFontId(QFontDatabase::addApplicationFontFromData(fontData));
-        }
+			// fetch the given font
+			fd.setFontId(QFontDatabase::addApplicationFontFromData(fontData));
+		}
 
-        QStringList loadedFontFamilies = QFontDatabase::applicationFontFamilies(fd.fontId());
-        if (loadedFontFamilies.empty()) {
-            qDebug() << "Font awesome" << fd.fontFilename() << " font is empty?!";
-            fd.setFontId(-1); // restore the font-awesome id
-            return false;
-        } else {
-            fd.setFontFamily(loadedFontFamilies.at(0));
-        }
-    }
+		QStringList loadedFontFamilies = QFontDatabase::applicationFontFamilies(fd.fontId());
+		if (loadedFontFamilies.empty()) {
+			qDebug() << "Font awesome" << fd.fontFilename() << " font is empty?!";
+			fd.setFontId(-1);// restore the font-awesome id
+			return false;
+		}
+		else {
+			fd.setFontFamily(loadedFontFamilies.at(0));
+		}
+	}
 
-    // intialize the brands icon map
-    addToNamedCodePoints(fa::fa_brands, faBrandsIconArray, sizeof(faBrandsIconArray)/sizeof(QtAwesomeNamedIcon));
-    addToNamedCodePoints(fa::fa_solid, faCommonIconArray, sizeof(faCommonIconArray)/sizeof(QtAwesomeNamedIcon));
+	// intialize the brands icon map
+	addToNamedCodePoints(fa::fa_brands, faBrandsIconArray, sizeof(faBrandsIconArray) / sizeof(QtAwesomeNamedIcon));
+	addToNamedCodePoints(fa::fa_solid, faCommonIconArray, sizeof(faCommonIconArray) / sizeof(QtAwesomeNamedIcon));
 
-    //initialize others code icons maps
-    addToNamedCodePoints(fa::fa_regular, faRegularFreeIconArray, sizeof(faRegularFreeIconArray)/sizeof(QtAwesomeNamedIcon));
+	//initialize others code icons maps
+	addToNamedCodePoints(fa::fa_regular, faRegularFreeIconArray, sizeof(faRegularFreeIconArray) / sizeof(QtAwesomeNamedIcon));
 
 	hasInit = success;
-    return success;
+	return success;
 }
 
 /// Add the given array as named codepoints
-void QtAwesome::addToNamedCodePoints(int style, const QtAwesomeNamedIcon *QtAwesomeNamedIcons, int size)
+void QtAwesome::addToNamedCodePoints(int style, const QtAwesomeNamedIcon* QtAwesomeNamedIcons, int size)
 {
-    QHash<QString, int> *namedCodepoints = _namedCodepointsByStyle.value(style, nullptr);
-    if (namedCodepoints == nullptr) {
-        namedCodepoints = new QHash<QString, int>();
-        _namedCodepointsList.append(namedCodepoints);
-        _namedCodepointsByStyle.insert(style, namedCodepoints);
-    }
+	QHash<QString, int>* namedCodepoints = _namedCodepointsByStyle.value(style, nullptr);
+	if (namedCodepoints == nullptr) {
+		namedCodepoints = new QHash<QString, int>();
+		_namedCodepointsList.append(namedCodepoints);
+		_namedCodepointsByStyle.insert(style, namedCodepoints);
+	}
 
-    for (int i = 0; i < size; ++i) {
-        namedCodepoints->insert(QtAwesomeNamedIcons[i].name, QtAwesomeNamedIcons[i].icon);
-    }
+	for (int i = 0; i < size; ++i) {
+		namedCodepoints->insert(QtAwesomeNamedIcons[i].name, QtAwesomeNamedIcons[i].icon);
+	}
 }
 
 const QHash<QString, int> QtAwesome::namedCodePoints(int style) const
 {
-    if (!_namedCodepointsByStyle.contains(style)) return QHash<QString, int>();
-    return *_namedCodepointsByStyle[style];
+	if (!_namedCodepointsByStyle.contains(style)) return QHash<QString, int>();
+	return *_namedCodepointsByStyle[style];
 }
 
 /// Sets a default option. These options are passed on to the icon painters
 void QtAwesome::setDefaultOption(const QString& name, const QVariant& value)
 {
-    _defaultOptions.insert( name, value );
+	_defaultOptions.insert(name, value);
 }
-
 
 /// Returns the default option for the given name
 QVariant QtAwesome::defaultOption(const QString& name) const
 {
-    return _defaultOptions.value( name );
+	return _defaultOptions.value(name);
 }
 
-bool QtAwesome::hasDefaultOption(const QString& name) const {
+bool QtAwesome::hasDefaultOption(const QString& name) const
+{
 	return _defaultOptions.contains(name);
 }
 
@@ -383,13 +373,13 @@ bool QtAwesome::hasDefaultOption(const QString& name) const {
 /// <code>
 ///     awesome->icon( icon_group )
 /// </code>
-QIcon QtAwesome::icon(int style, int character, const QVariantMap &options)
+QIcon QtAwesome::icon(int style, int character, const QVariantMap& options)
 {
 	auto optionMap = options;
-    optionMap.insert("text", QString( QChar(character)) );
-    optionMap.insert("style", style);
+	optionMap.insert("text", QString(QChar(character)));
+	optionMap.insert("style", style);
 
-    return icon( _fontIconPainter, optionMap );
+	return icon(_fontIconPainter, optionMap);
 }
 
 /// Creates an icon with the given name
@@ -409,36 +399,37 @@ QIcon QtAwesome::icon(const QString& name, const QVariantMap& options)
 
 		return icon(_fontIconPainter, optionMap);
 	}
-    // split the string in a style and icon name (and skip the fa- prefix if given)
-    int spaceIndex = name.indexOf(' ');
-    int style = fa::fa_solid;
-    QString iconName;
+	// split the string in a style and icon name (and skip the fa- prefix if given)
+	int spaceIndex = name.indexOf(' ');
+	int style = fa::fa_solid;
+	QString iconName;
 
-    if( spaceIndex > 0) {
-        QString styleName = name.left(spaceIndex);
-        style = stringToStyleEnum(styleName.startsWith("fa-") ? styleName.mid(3) : name);
-        iconName = name.mid(spaceIndex + 1);
-    } else {
-        iconName = name;
-    }
+	if (spaceIndex > 0) {
+		QString styleName = name.left(spaceIndex);
+		style = stringToStyleEnum(styleName.startsWith("fa-") ? styleName.mid(3) : name);
+		iconName = name.mid(spaceIndex + 1);
+	}
+	else {
+		iconName = name;
+	}
 
-    if( iconName.startsWith("fa-")) {
-        iconName = iconName.mid(3);
-    }
+	if (iconName.startsWith("fa-")) {
+		iconName = iconName.mid(3);
+	}
 
-    // when it's a named codepoint
-    if (_namedCodepointsByStyle.contains(style) && _namedCodepointsByStyle[style]->contains(iconName)) {
-        return icon(style, _namedCodepointsByStyle[style]->value(iconName), options);
-    }
+	// when it's a named codepoint
+	if (_namedCodepointsByStyle.contains(style) && _namedCodepointsByStyle[style]->contains(iconName)) {
+		return icon(style, _namedCodepointsByStyle[style]->value(iconName), options);
+	}
 
 	auto optionMap = options;
-    optionMap.insert("style", style);
+	optionMap.insert("style", style);
 
-    // this method first tries to retrieve the icon via the painter map
-    QtAwesomeIconPainter* painter = _painterMap.value(name);
-    if (!painter) return QIcon();
+	// this method first tries to retrieve the icon via the painter map
+	QtAwesomeIconPainter* painter = _painterMap.value(name);
+	if (!painter) return QIcon();
 
-    return icon(painter, optionMap);
+	return icon(painter, optionMap);
 }
 
 /// Create a dynamic icon by simlpy supplying a painter object
@@ -447,11 +438,11 @@ QIcon QtAwesome::icon(const QString& name, const QVariantMap& options)
 /// @param optionmap the options to pass to the painter
 QIcon QtAwesome::icon(QtAwesomeIconPainter* painter, const QVariantMap& optionMap)
 {
-    // Warning, when you use memoryleak detection. You should turn it off for the next call
-    // QIcon's placed in gui items are often cached and not deleted when my memory-leak detection checks for leaks.
-    // I'm not sure if it's a Qt bug or something I do wrong
-    QtAwesomeIconPainterIconEngine* engine = new QtAwesomeIconPainterIconEngine(this, painter, optionMap);
-    return QIcon(engine);
+	// Warning, when you use memoryleak detection. You should turn it off for the next call
+	// QIcon's placed in gui items are often cached and not deleted when my memory-leak detection checks for leaks.
+	// I'm not sure if it's a Qt bug or something I do wrong
+	QtAwesomeIconPainterIconEngine* engine = new QtAwesomeIconPainterIconEngine(this, painter, optionMap);
+	return QIcon(engine);
 }
 
 /// Adds a named icon-painter to the QtAwesome icon map
@@ -461,8 +452,8 @@ QIcon QtAwesome::icon(QtAwesomeIconPainter* painter, const QVariantMap& optionMa
 /// @param painter the icon painter to add for this name
 void QtAwesome::give(const QString& name, QtAwesomeIconPainter* painter)
 {
-    delete _painterMap.value(name);   // delete the old one
-    _painterMap.insert(name, painter);
+	delete _painterMap.value(name);// delete the old one
+	_painterMap.insert(name, painter);
 }
 
 /// \brief QtAwesome::font Creates/Gets the icon font with a given size in pixels. This can be usefull to use a label for displaying icons
@@ -476,79 +467,80 @@ void QtAwesome::give(const QString& name, QtAwesomeIconPainter* painter)
 ///    label->setFont(awesome->font(style::fas, 16))
 QFont QtAwesome::font(int style, int size) const
 {
-    if (!_fontDetails.contains(style)) return QFont();
+	if (!_fontDetails.contains(style)) return QFont();
 
-    QFont font(_fontDetails[style].fontFamily());
-    font.setPixelSize(size);
-    font.setWeight(_fontDetails[style].fontWeight());
+	QFont font(_fontDetails[style].fontFamily());
+	font.setPixelSize(size);
+	font.setWeight(_fontDetails[style].fontWeight());
 
-    return font;
+	return font;
 }
 
 QString QtAwesome::fontName(int style) const
 {
-    if (!_fontDetails.contains(style)) return "";
+	if (!_fontDetails.contains(style)) return "";
 
-    return _fontDetails[style].fontFamily();
+	return _fontDetails[style].fontFamily();
 }
 
 int QtAwesome::stringToStyleEnum(const QString style) const
 {
-    if (style == "fa-solid") return fa::fa_solid;
-    else if (style == "fa-regular") return fa::fa_regular;
-    else if (style == "fa-brands") return fa::fa_brands;
-    return fa::fa_solid;
+	if (style == "fa-solid") return fa::fa_solid;
+	else if (style == "fa-regular")
+		return fa::fa_regular;
+	else if (style == "fa-brands")
+		return fa::fa_brands;
+	return fa::fa_solid;
 }
 
 const QString QtAwesome::styleEnumToString(int style) const
 {
-    switch (style) {
-        case fa::fa_regular: return "fa-regular";
-        case fa::fa_solid: return "fa-solid";
-        case fa::fa_brands: return "fa-brands";
-    }
-    return "fa_solid";
+	switch (style) {
+	case fa::fa_regular: return "fa-regular";
+	case fa::fa_solid: return "fa-solid";
+	case fa::fa_brands: return "fa-brands";
+	}
+	return "fa_solid";
 }
 
 //---------------------------------------------------------------------------------------
 
 QtAwesomeFontData::QtAwesomeFontData(const QString& fontFileName, QFont::Weight fontWeight)
-    : _fontFamily(QString()),
-    _fontFilename(fontFileName),
-    _fontId(-1),
-    _fontWeight(fontWeight)
+	: _fontFamily(QString()),
+	  _fontFilename(fontFileName),
+	  _fontId(-1),
+	  _fontWeight(fontWeight)
 {
 }
-
 
 const QString& QtAwesomeFontData::fontFamily() const
 {
-    return _fontFamily;
+	return _fontFamily;
 }
 
-void QtAwesomeFontData::setFontFamily(const QString &family)
+void QtAwesomeFontData::setFontFamily(const QString& family)
 {
-    _fontFamily = family;
+	_fontFamily = family;
 }
 
 const QString& QtAwesomeFontData::fontFilename() const
 {
-    return _fontFilename;
+	return _fontFilename;
 }
 
 int QtAwesomeFontData::fontId() const
 {
-    return _fontId;
+	return _fontId;
 }
 
 void QtAwesomeFontData::setFontId(int id)
 {
-     _fontId = id;
+	_fontId = id;
 }
 
 QFont::Weight QtAwesomeFontData::fontWeight() const
 {
-    return _fontWeight;
+	return _fontWeight;
 }
 
 ///
@@ -566,7 +558,7 @@ QFont::Weight QtAwesomeFontData::fontWeight() const
 /// \value Black      87        #same as weight 900
 void QtAwesomeFontData::setFontWeight(QFont::Weight weight)
 {
-    _fontWeight = weight;
+	_fontWeight = weight;
 }
 
-} // namespace fa
+}// namespace fa

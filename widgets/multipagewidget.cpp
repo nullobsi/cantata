@@ -93,7 +93,8 @@ public:
 		connect(Icon::fa(), &fa::QtAwesome::defaultOptionsReset, this, &SelectorButton::iconsUpdated);
 	}
 
-	void changeEvent(QEvent *e) override {
+	void changeEvent(QEvent* e) override
+	{
 		if (e->type() == QEvent::PaletteChange) {
 			QColor col(qApp->palette().windowText().color());
 			subText->setStyleSheet(QString("QLabel{color:rgba(%1, %2, %3, 0.5)}").arg(col.red()).arg(col.green()).arg(col.blue()));
@@ -132,7 +133,8 @@ public:
 		p.drawComplexControl(QStyle::CC_ToolButton, opt);
 	}
 private Q_SLOTS:
-	void iconsUpdated() {
+	void iconsUpdated()
+	{
 		double dpr = DEVICE_PIXEL_RATIO();
 		QPixmap pix = Icon::getScaledPixmap(icn, icon->width() * dpr, icon->height() * dpr, 96 * dpr);
 		pix.setDevicePixelRatio(dpr);
