@@ -27,7 +27,6 @@
 #include "mpd-interface/mpdconnection.h"
 #include "support/inputdialog.h"
 #include "support/messagebox.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "tags.h"
 #include "trackorganiser.h"
@@ -200,7 +199,7 @@ TagEditor::TagEditor(QWidget* parent, const QList<Song>& songs,
 		enableButton(User2, false);
 	}
 	setButtonGuiItem(Ok, StdGuiItem::save());
-	setButtonGuiItem(User3, GuiItem(tr("Tools"), FontAwesome::magic));
+	setButtonGuiItem(User3, GuiItem(tr("Tools"), fa::fa_solid, fa::fa_magic));
 	QMenu* toolsMenu = new QMenu(this);
 	toolsMenu->addAction(tr("Apply \"Various Artists\" Workaround"), this, SLOT(applyVa()));
 	toolsMenu->addAction(tr("Revert \"Various Artists\" Workaround"), this, SLOT(revertVa()));

@@ -26,9 +26,8 @@
 #include "devicepropertiesdialog.h"
 #include "devicepropertieswidget.h"
 #include "solid-lite/storagedrive.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
-#include "widgets/icons.h"
+#include "support/icon.h"
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -57,7 +56,7 @@ UmsDevice::UmsDevice(MusicLibraryModel* m, Solid::Device& dev)
 	defaultName = data() + details;
 	setData(defaultName);
 	setup();
-	icn = Icons::fa()->(fa::fa_solid, fa::fa_usb);
+	icn = Icon::fa(fa::fa_solid, fa::fa_usb);
 }
 
 UmsDevice::~UmsDevice()

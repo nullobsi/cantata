@@ -22,17 +22,16 @@
  */
 
 #include "devicespage.h"
-#include "gui/settings.h"
 #include "gui/stdactions.h"
 #include "models/devicesmodel.h"
 #include "models/musiclibraryitemalbum.h"
 #include "models/musiclibraryitemartist.h"
 #include "models/musiclibraryitemroot.h"
 #include "models/musiclibraryitemsong.h"
+#include "support/icon.h"
 #include "support/action.h"
 #include "support/configuration.h"
 #include "support/messagebox.h"
-#include "support/monoicon.h"
 #include "syncdialog.h"
 #include "widgets/icons.h"
 #include "widgets/menubutton.h"
@@ -62,7 +61,7 @@ DevicesPage::DevicesPage(QWidget* p)
 	copyAction = new Action(Icons::self()->downloadIcon, tr("Copy To Library"), this);
 	ToolButton* copyToLibraryButton = new ToolButton(this);
 	copyToLibraryButton->setDefaultAction(copyAction);
-	syncAction = new Action(Icons::fa()->icon(fa::fa_solid, fa::fa_right_left), tr("Synchronise"), this);
+	syncAction = new Action(Icon::fa(fa::fa_solid, fa::fa_right_left), tr("Synchronise"), this);
 	syncAction->setEnabled(false);
 	connect(syncAction, SIGNAL(triggered()), this, SLOT(sync()));
 #ifdef ENABLE_REMOTE_DEVICES

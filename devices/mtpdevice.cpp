@@ -27,7 +27,6 @@
 #include "encoders.h"
 #include "filejob.h"
 #include "gui/covers.h"
-#include "widgets/icons.h"
 #include "models/devicesmodel.h"
 #include "models/mpdlibrarymodel.h"
 #include "models/musiclibraryitemalbum.h"
@@ -35,8 +34,9 @@
 #include "models/musiclibraryitemroot.h"
 #include "models/musiclibraryitemsong.h"
 #include "mpd-interface/mpdconnection.h"
-#include "mpd-interface/mpdparseutils.h"
 #include "mpd-interface/song.h"
+#include "support/QtAwesome.h"
+#include "support/icon.h"
 #include "support/configuration.h"
 #include "support/thread.h"
 #include "support/utils.h"
@@ -1237,7 +1237,7 @@ MtpDevice::MtpDevice(MusicLibraryModel* m, Solid::Device& dev, unsigned int busN
 		DBUG << "setName" << opts.name;
 		setData(opts.name);
 	}
-	icn = Icons::fa()->icon(fa::fa_solid, fa::fa_mobile_screen);
+	icn = Icon::fa(fa::fa_solid, fa::fa_mobile_screen);
 }
 
 MtpDevice::~MtpDevice()

@@ -26,12 +26,11 @@
 #include "devices/device.h"
 #include "models/devicesmodel.h"
 #endif
-#include "gui/settings.h"
 #include "jobcontroller.h"
+#include "mpd-interface/mpdconnection.h"
 #include "mpd-interface/cuefile.h"
 #include "support/action.h"
 #include "support/messagebox.h"
-#include "support/monoicon.h"
 #include "support/utils.h"
 #include "tagreader.h"
 #include "tags/tags.h"
@@ -122,7 +121,7 @@ RgDialog::RgDialog(QWidget* parent)
 	setMainWidget(mainWidget);
 	setButtonGuiItem(Ok, StdGuiItem::save());
 	setButtonGuiItem(Cancel, StdGuiItem::close());
-	setButtonGuiItem(User1, GuiItem(tr("Scan"), FontAwesome::search));
+	setButtonGuiItem(User1, GuiItem(tr("Scan"), fa::fa_solid, fa::fa_search));
 	enableButton(Ok, false);
 	enableButton(User1, false);
 	qRegisterMetaType<Tags::ReplayGain>("Tags::ReplayGain");
