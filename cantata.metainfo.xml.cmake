@@ -52,6 +52,16 @@
   </screenshots>
 
   <releases>
+    <release version="3.2.0" date="2024-05-30">
+		<p>Minor release.</p>
+		<ul>
+			<li>Fix menu options having incorrect keybindings.</li>
+			<li>Fix radio stream favorites button not working on search.</li>
+			<li>Enable menu icons on macOS.</li>
+			<li>Update icons to FontAwesome 6.</li>
+			<li>Improve palette change handling.</li>
+		</ul>
+	</release>
   	<release version="3.1.0" date="2024-05-25">
 	  <description>
 	    <p>Bugfix release.</p>
