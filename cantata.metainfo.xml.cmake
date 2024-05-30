@@ -52,6 +52,7 @@
 
   <releases>
     <release version="3.2.0" date="2024-05-30">
+	  <description>
 		<p>Minor release.</p>
 		<ul>
 			<li>Fix menu options having incorrect keybindings.</li>
@@ -60,6 +61,7 @@
 			<li>Update icons to FontAwesome 6.</li>
 			<li>Improve palette change handling.</li>
 		</ul>
+	  </description>
 	</release>
   	<release version="3.1.0" date="2024-05-25">
 	  <description>
