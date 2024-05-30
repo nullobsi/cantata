@@ -33,9 +33,8 @@ static QIcon icon;
 PathRequester::PathRequester(QWidget* parent)
 	: QWidget(parent), dirMode(true)
 {
-	fa::QtAwesome* fa = new fa::QtAwesome(this);
 	if (icon.isNull()) {
-		icon = fa->icon(fa::fa_regular, fa::fa_folder);
+		icon = Icon::fa(fa::fa_regular, fa::fa_folder);
 	}
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->setContentsMargins(0, 0, 0, 0);
