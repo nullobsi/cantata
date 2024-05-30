@@ -2,7 +2,16 @@ name: macOS Build
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+    types: 
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - main
+
   workflow_dispatch:
 
 
