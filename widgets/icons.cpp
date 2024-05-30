@@ -62,7 +62,7 @@ Icons::Icons()
 	appIcon.addFile(":cantata64.png");
 	appIcon.addFile(":cantata128.png");
 #else
-	appIcon = QIcon::fromTheme("cantata");
+	appIcon = QIcon::fromTheme(PROJECT_REV_ID);
 #endif
 }
 
