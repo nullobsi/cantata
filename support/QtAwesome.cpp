@@ -135,8 +135,17 @@ public:
         int st = optionValueForModeAndState("style", mode, state, options, awesome).toInt();
 		double scaleFactor = optionValueForModeAndState("scale-factor", mode, state, options, awesome).toDouble();
 
+		bool rtl = optionValueForModeAndState("rtl", mode, state, options, awesome).toBool();
+
         Q_ASSERT(color.isValid());
         Q_ASSERT(!text.isEmpty() || !filename.isEmpty());
+
+		// Setting RTL makes the icon RTL-aware and will flip it if
+		// needed.
+		if (rtl && QApplication::isRightToLeft()) {
+			painter->translate(rect.width(), 0);
+			painter->scale(-1, 1);
+		}
 
 		if (filename.isEmpty()) {
 			painter->setPen(color);

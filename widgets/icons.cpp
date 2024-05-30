@@ -96,7 +96,7 @@ void Icons::initIcons()
 	clearIcon = Icon::fa(fa_solid, fa_times);
 	trashIcon = Icon::fa(fa_solid, fa_trash);
 
-	albumMonoIcon = Icon::fa(fa_regular, fa_record_vinyl);
+	albumMonoIcon = Icon::fa(fa_solid, fa_compact_disc);
 	artistIcon = Icon::fa(fa_solid, fa_user);
 	genreIcon = Icon::fa(fa_solid, fa_guitar);
 	podcastIcon = Icon::fa(fa_solid, fa_podcast);
@@ -155,11 +155,12 @@ void Icons::initIcons()
 #endif
 	searchTabIcon = Icon::fa(fa_solid, fa_search);
 
-	// TODO: RTL
-	toolbarPrevIcon = Icon::fa(fa_solid, fa_backward_fast);
-	toolbarPlayIcon = Icon::fa(fa_solid, fa_play);
-	toolbarNextIcon = Icon::fa(fa_solid, fa_forward_fast);
-	centrePlayQueueOnTrackIcon = Icon::fa(fa_solid, fa_chevron_right);
+	QVariantMap rtlMap;
+	rtlMap.insert("rtl", true);
+	toolbarPrevIcon = Icon::fa(fa_solid, fa_backward_fast, rtlMap);
+	toolbarPlayIcon = Icon::fa(fa_solid, fa_play, rtlMap);
+	toolbarNextIcon = Icon::fa(fa_solid, fa_forward_fast, rtlMap);
+	centrePlayQueueOnTrackIcon = Icon::fa(fa_solid, fa_chevron_right, rtlMap);
 
 	streamListIcon = audioListIcon;
 	streamCategoryIcon = folderListIcon;
