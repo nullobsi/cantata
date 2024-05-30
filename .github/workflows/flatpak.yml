@@ -1,0 +1,37 @@
+name: Flatpak Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: 
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - main
+
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    name: 🚧 Flatpak
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:kde-6.7
+      options: --privileged
+    steps:
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: '🚧 Build Cantata'
+      uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+      with:
+        bundle: cantata.flatpak
+        manifest-path: dog.unix.cantata.Cantata.yml
+        cache-key: flatpak-builder-${{ github.sha }}
