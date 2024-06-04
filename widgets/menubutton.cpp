@@ -32,8 +32,8 @@
 #include <QScreen>
 
 #ifdef Q_OS_WIN
-#include <windows.h>
 #include <VersionHelpers.h>
+#include <windows.h>
 #ifndef _WIN32_WINNT_WIN10
 #define _WIN32_WINNT_WIN10 0x0A00
 #endif
