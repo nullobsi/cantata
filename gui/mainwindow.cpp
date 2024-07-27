@@ -199,7 +199,6 @@ MainWindow::MainWindow(QWidget* parent)
 	setWindowTitle("Cantata");
 	QWidget* tb = toolbar;
 #ifdef Q_OS_MAC
-	qApp->setAttribute(Qt::AA_DontShowIconsInMenus, false);
 	setUnifiedTitleAndToolBarOnMac(true);
 	QToolBar* topToolBar = addToolBar("ToolBar");
 	WindowManager* wm = new WindowManager(topToolBar);

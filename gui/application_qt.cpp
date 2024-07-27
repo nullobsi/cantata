@@ -40,9 +40,6 @@ bool Application::start(const QStringList& files)
 {
 	// TODO: Add an option to try to run anyway when DBUS binding fails.
 	if (QDBusConnection::sessionBus().registerService(PROJECT_REV_ID)) {
-		if (Utils::KDE != Utils::currentDe()) {
-			setAttribute(Qt::AA_DontShowIconsInMenus, true);
-		}
 		return true;
 	}
 	loadFiles(files);

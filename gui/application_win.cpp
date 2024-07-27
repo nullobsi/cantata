@@ -29,7 +29,7 @@ Application::Application(int& argc, char** argv)
 	: SingleApplication(argc, argv)
 {
 	installNativeEventFilter(this);
-	setAttribute(Qt::AA_DontShowIconsInMenus, true);
+	setAttribute(Qt::AA_DontShowIconsInMenus, false);
 }
 
 bool Application::nativeEventFilter(const QByteArray&, void* message, qintptr* result)

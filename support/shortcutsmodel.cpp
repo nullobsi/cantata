@@ -28,7 +28,6 @@ ShortcutsModel::ShortcutsModel(const QHash<QString, ActionCollection*>& actionCo
 	: QAbstractItemModel(parent),
 	  _changedCount(0)
 {
-	_showIcons = !QCoreApplication::testAttribute(Qt::AA_DontShowIconsInMenus);
 	for (int r = 0; r < actionCollections.values().count(); r++) {
 		ActionCollection* coll = actionCollections.values().at(r);
 		Item* item = new Item();
@@ -158,7 +157,7 @@ QVariant ShortcutsModel::data(const QModelIndex& index, int role) const
 		}
 
 	case Qt::DecorationRole:
-		if (index.column() == 0 && _showIcons)
+		if (index.column() == 0 && !QCoreApplication::testAttribute(Qt::AA_DontShowIconsInMenus))
 			return action->icon();
 		return QVariant();
 

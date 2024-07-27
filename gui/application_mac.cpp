@@ -30,7 +30,7 @@
 Application::Application(int& argc, char** argv)
 	: SingleApplication(argc, argv)
 {
-	setAttribute(Qt::AA_DontShowIconsInMenus, true);
+	setAttribute(Qt::AA_DontShowIconsInMenus, false);
 
 	// Set DYLD_LIBRARY_PATH so that Qt finds our openSSL libs
 	QDir dir(argv[0]);
