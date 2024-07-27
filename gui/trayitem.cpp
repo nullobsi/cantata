@@ -201,7 +201,6 @@ void TrayItem::songChanged(const Song& song, bool isPlaying)
 		if (useable && isPlaying) {
 			if (songNotif == nullptr) {
 				songNotif = new KNotification("newSong");
-				songNotif->setFlags(KNotification::Persistent);
 			}
 			songNotif->setTitle(song.mainText());
 			songNotif->setText(song.subText());
