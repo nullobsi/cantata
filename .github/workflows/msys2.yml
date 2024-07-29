@@ -18,7 +18,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { icon: '🟨', sys: ucrt64  }
           - { icon: '🟧', sys: clang64 }
     name: 🚧${{ matrix.icon }} ${{ matrix.sys }}
     defaults:
