@@ -75,12 +75,6 @@ public:
      */
 	QHash<uint, QPointer<KNotification>> portalNotifications;
 
-	/*
-     * Holds the id that will be assigned to the next notification source
-     * that will be created
-     */
-	uint nextId;
-
 	NotifyByPortal* const q;
 };
 
@@ -127,12 +121,6 @@ NotifyByPortal::~NotifyByPortal() = default;
 
 void NotifyByPortal::notify(KNotification* notification, const KNotifyConfig& notifyConfig)
 {
-	if (d->portalNotifications.contains(notification->id())) {
-		// notification is already on the screen, do nothing
-		finish(notification);
-		return;
-	}
-
 	// check if Notifications DBus service exists on bus, use it if it does
 	if (d->dbusServiceExists) {
 		if (!d->sendNotificationToPortal(notification, notifyConfig)) {
@@ -150,9 +138,7 @@ void NotifyByPortal::close(KNotification* notification)
 
 void NotifyByPortal::update(KNotification* notification, const KNotifyConfig& notifyConfig)
 {
-	// TODO not supported by portals
-	Q_UNUSED(notification);
-	Q_UNUSED(notifyConfig);
+	notify(notification, notifyConfig);
 }
 
 void NotifyByPortal::onServiceOwnerChanged(const QString& serviceName, const QString& oldOwner, const QString& newOwner)
@@ -172,7 +158,6 @@ void NotifyByPortal::onServiceOwnerChanged(const QString& serviceName, const QSt
 	}
 	else if (oldOwner.isEmpty()) {
 		d->dbusServiceExists = true;
-		d->nextId = 1;
 
 		// connect to action invocation signals
 		bool connected = QDBusConnection::sessionBus().connect(QString(),// from any service
@@ -318,7 +303,7 @@ bool NotifyByPortalPrivate::sendNotificationToPortal(KNotification* notification
 	portalArgs.insert(QStringLiteral("body"), text);
 	portalArgs.insert(QStringLiteral("buttons"), QVariant::fromValue<QList<QVariantMap>>(buttons));
 
-	args.append(QString::number(nextId));
+	args.append(QString::number(notification->id()));
 	args.append(portalArgs);
 
 	dbusNotificationMessage.setArguments(args);
@@ -326,7 +311,7 @@ bool NotifyByPortalPrivate::sendNotificationToPortal(KNotification* notification
 	QDBusPendingCall notificationCall = QDBusConnection::sessionBus().asyncCall(dbusNotificationMessage, -1);
 
 	// If we are in sandbox we don't need to wait for returned notification id
-	portalNotifications.insert(nextId++, notification);
+	portalNotifications.insert(notification->id(), notification);
 
 	return true;
 }
