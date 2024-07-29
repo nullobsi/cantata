@@ -81,24 +81,24 @@ void NetworkJob::connectJob()
 		return;
 	}
 
-	connect(job, SIGNAL(finished()), this, SLOT(jobFinished()));
-	connect(job, SIGNAL(readyRead()), this, SLOT(handleReadyRead()));
-	connect(job, SIGNAL(error(QNetworkReply::NetworkError)), this, SIGNAL(error(QNetworkReply::NetworkError)));
-	connect(job, SIGNAL(uploadProgress(qint64, qint64)), this, SIGNAL(uploadProgress(qint64, qint64)));
-	connect(job, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(downloadProg(qint64, qint64)));
-	connect(job, SIGNAL(destroyed(QObject*)), this, SLOT(jobDestroyed(QObject*)));
+	connect(job, &QNetworkReply::finished, this, &NetworkJob::jobFinished);
+	connect(job, &QNetworkReply::readyRead, this, &NetworkJob::handleReadyRead);
+	connect(job, &QNetworkReply::errorOccurred, this, &NetworkJob::errorOccurred);
+	connect(job, &QNetworkReply::uploadProgress, this, &NetworkJob::uploadProgress);
+	connect(job, &QNetworkReply::downloadProgress, this, &NetworkJob::downloadProg);
+	connect(job, &QNetworkReply::destroyed, this, &NetworkJob::jobDestroyed);
 }
 
 void NetworkJob::cancelJob()
 {
 	DBUG << (void*)this << (void*)job;
 	if (job) {
-		disconnect(job, SIGNAL(finished()), this, SLOT(jobFinished()));
-		disconnect(job, SIGNAL(readyRead()), this, SLOT(handleReadyRead()));
-		disconnect(job, SIGNAL(error(QNetworkReply::NetworkError)), this, SIGNAL(error(QNetworkReply::NetworkError)));
-		disconnect(job, SIGNAL(uploadProgress(qint64, qint64)), this, SIGNAL(uploadProgress(qint64, qint64)));
-		disconnect(job, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(downloadProg(qint64, qint64)));
-		disconnect(job, SIGNAL(destroyed(QObject*)), this, SLOT(jobDestroyed(QObject*)));
+		disconnect(job, &QNetworkReply::finished, this, &NetworkJob::jobFinished);
+		disconnect(job, &QNetworkReply::readyRead, this, &NetworkJob::handleReadyRead);
+		disconnect(job, &QNetworkReply::errorOccurred, this, &NetworkJob::errorOccurred);
+		disconnect(job, &QNetworkReply::uploadProgress, this, &NetworkJob::uploadProgress);
+		disconnect(job, &QNetworkReply::downloadProgress, this, &NetworkJob::downloadProg);
+		disconnect(job, &QNetworkReply::destroyed, this, &NetworkJob::jobDestroyed);
 		job->abort();
 		job->close();
 		job->deleteLater();
@@ -224,8 +224,8 @@ NetworkJob* NetworkAccessManager::get(const QNetworkRequest& req, int timeout)
 	}
 
 	if (0 != timeout) {
-		connect(reply, SIGNAL(destroyed()), SLOT(replyFinished()));
-		connect(reply, SIGNAL(finished()), SLOT(replyFinished()));
+		connect(reply, &NetworkJob::destroyed, this, &NetworkAccessManager::replyFinished);
+		connect(reply, &NetworkJob::finished, this, &NetworkAccessManager::replyFinished);
 		timers[reply] = startTimer(timeout);
 	}
 	return reply;

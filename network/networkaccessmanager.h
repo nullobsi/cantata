@@ -60,7 +60,7 @@ public:
 
 Q_SIGNALS:
 	void finished();
-	void error(QNetworkReply::NetworkError);
+	void errorOccurred(QNetworkReply::NetworkError);
 	void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
 	void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 	void downloadPercent(int pc);
