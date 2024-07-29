@@ -127,18 +127,20 @@ void NotifyByMacOSNotificationCenter::notify(KNotification *notification, const 
         internalNotificationId, @"internalId", nil];
     osxNotification.informativeText = text;
 
-    if (notification->image().isNull()) {
-        QIcon notificationIcon = QIcon::fromTheme(notification->iconName());
+	if (notification->image().isNull()) {
+		QIcon notificationIcon = QIcon::fromTheme(notification->iconName());
         if (!notificationIcon.isNull()) {
             osxNotification.contentImage = [[NSImage alloc]
                 initWithCGImage: notificationIcon.pixmap(QSize(64, 64)).toImage().toCGImage() size: NSMakeSize(64, 64)];
         }
-    } else {
-        osxNotification.contentImage = [[NSImage alloc]
-            initWithCGImage: notification->image().toCGImage() size: NSMakeSize(64, 64)];
-    }
+	}
+	else {
+		osxNotification.contentImage = [[NSImage alloc]
+				initWithCGImage:notification->image().toCGImage()
+						   size:NSMakeSize(64, 64)];
+	}
 
-    if (notification->actions().isEmpty()) {
+	if (notification->actions().isEmpty()) {
         // Remove all buttons
         osxNotification.hasReplyButton = false;
         osxNotification.hasActionButton = false;

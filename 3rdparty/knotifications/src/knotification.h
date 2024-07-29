@@ -9,10 +9,10 @@
 #ifndef KNOTIFICATION_H
 #define KNOTIFICATION_H
 
+#include <QImage>
 #include <QList>
 #include <QObject>
 #include <QPair>
-#include <QImage>
 #include <QUrl>
 #include <QVariant>
 #include <QWindow>
