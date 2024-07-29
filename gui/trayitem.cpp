@@ -201,10 +201,11 @@ void TrayItem::songChanged(const Song& song, bool isPlaying)
 		if (useable && isPlaying) {
 			if (songNotif == nullptr) {
 				songNotif = new KNotification("newSong");
+				songNotif->setAutoDelete(false);
 			}
 			songNotif->setTitle(song.mainText());
 			songNotif->setText(song.subText());
-			songNotif->setPixmap(QPixmap::fromImage(CurrentCover::self()->image()));
+			songNotif->setImage(CurrentCover::self()->image().scaledToHeight(512));
 			songNotif->setUrgency(KNotification::LowUrgency);
 			songNotif->sendEvent();
 		}

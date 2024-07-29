@@ -14,7 +14,6 @@
 #include <memory>
 
 class KNotification;
-class QPixmap;
 class KNotificationPlugin;
 
 /**
@@ -43,7 +42,7 @@ public:
 	void close(int id);
 
 	/**
-     * update one notification text and pixmap and actions
+     * update one notification text and image and actions
      */
 	void update(KNotification* n);
 

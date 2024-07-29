@@ -305,13 +305,8 @@ bool NotifyByPopup::sendNotificationToServer(KNotification* notification, const 
 
 	// FIXME - re-enable/fix
 	// let's see if we've got an image, and store the image in the hints map
-	if (!notification->pixmap().isNull()) {
-		QByteArray pixmapData;
-		QBuffer buffer(&pixmapData);
-		buffer.open(QIODevice::WriteOnly);
-		notification->pixmap().save(&buffer, "PNG");
-		buffer.close();
-		hintsMap[QStringLiteral("image_data")] = ImageConverter::variantForImage(QImage::fromData(pixmapData));
+	if (!notification->image().isNull()) {
+		hintsMap[QStringLiteral("image-data")] = ImageConverter::variantForImage(notification->image());
 	}
 
 	// Persistent     => 0  == infinite timeout

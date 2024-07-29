@@ -33,7 +33,7 @@ struct Q_DECL_HIDDEN KNotification::Private {
 	bool ownsActions = true;
 	QString xdgActivationToken;
 	std::unique_ptr<KNotificationReplyAction> replyAction;
-	QPixmap pixmap;
+	QImage image;
 	NotificationFlags flags = KNotification::CloseOnTimeout;
 	QString componentName;
 	KNotification::Urgency urgency = KNotification::DefaultUrgency;

@@ -127,7 +127,7 @@ void NotifyByMacOSNotificationCenter::notify(KNotification *notification, const 
         internalNotificationId, @"internalId", nil];
     osxNotification.informativeText = text;
 
-    if (notification->pixmap().isNull()) {
+    if (notification->image().isNull()) {
         QIcon notificationIcon = QIcon::fromTheme(notification->iconName());
         if (!notificationIcon.isNull()) {
             osxNotification.contentImage = [[NSImage alloc]
@@ -135,7 +135,7 @@ void NotifyByMacOSNotificationCenter::notify(KNotification *notification, const 
         }
     } else {
         osxNotification.contentImage = [[NSImage alloc]
-            initWithCGImage: notification->pixmap().toImage().toCGImage() size: NSMakeSize(64, 64)];
+            initWithCGImage: notification->image().toCGImage() size: NSMakeSize(64, 64)];
     }
 
     if (notification->actions().isEmpty()) {

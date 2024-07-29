@@ -171,15 +171,15 @@ QString KNotification::iconName() const
 	return d->iconName;
 }
 
-QPixmap KNotification::pixmap() const
+const QImage& KNotification::image() const
 {
-	return d->pixmap;
+	return d->image;
 }
 
-void KNotification::setPixmap(const QPixmap& pix)
+void KNotification::setImage(const QImage& img)
 {
 	d->needUpdate = true;
-	d->pixmap = pix;
+	d->image = img;
 	if (d->id >= 0) {
 		d->updateTimer.start();
 	}
@@ -416,14 +416,14 @@ static QString defaultComponentName()
 KNotification* KNotification::event(const QString& eventid,
                                     const QString& title,
                                     const QString& text,
-                                    const QPixmap& pixmap,
+                                    const QImage& image,
                                     const NotificationFlags& flags,
                                     const QString& componentName)
 {
 	KNotification* notify = new KNotification(eventid, flags);
 	notify->setTitle(title);
 	notify->setText(text);
-	notify->setPixmap(pixmap);
+	notify->setImage(image);
 	notify->setComponentName((flags & DefaultEvent) ? defaultComponentName() : componentName);
 
 	QTimer::singleShot(0, notify, &KNotification::sendEvent);
@@ -432,19 +432,19 @@ KNotification* KNotification::event(const QString& eventid,
 }
 
 KNotification*
-KNotification::event(const QString& eventid, const QString& text, const QPixmap& pixmap, const NotificationFlags& flags, const QString& componentName)
+KNotification::event(const QString& eventid, const QString& text, const QImage& image, const NotificationFlags& flags, const QString& componentName)
 {
-	return event(eventid, QString(), text, pixmap, flags, componentName);
+	return event(eventid, QString(), text, image, flags, componentName);
 }
 
-KNotification* KNotification::event(StandardEvent eventid, const QString& title, const QString& text, const QPixmap& pixmap, const NotificationFlags& flags)
+KNotification* KNotification::event(StandardEvent eventid, const QString& title, const QString& text, const QImage& image, const NotificationFlags& flags)
 {
-	return event(standardEventToEventId(eventid), title, text, pixmap, flags | DefaultEvent);
+	return event(standardEventToEventId(eventid), title, text, image, flags | DefaultEvent);
 }
 
-KNotification* KNotification::event(StandardEvent eventid, const QString& text, const QPixmap& pixmap, const NotificationFlags& flags)
+KNotification* KNotification::event(StandardEvent eventid, const QString& text, const QImage& image, const NotificationFlags& flags)
 {
-	return event(eventid, QString(), text, pixmap, flags);
+	return event(eventid, QString(), text, image, flags);
 }
 
 KNotification* KNotification::event(const QString& eventid,
@@ -491,7 +491,7 @@ void KNotification::deref()
 
 void KNotification::beep(const QString& reason)
 {
-	event(QStringLiteral("beep"), reason, QPixmap(), CloseOnTimeout | DefaultEvent);
+	event(QStringLiteral("beep"), reason, QImage(), CloseOnTimeout | DefaultEvent);
 }
 
 void KNotification::sendEvent()

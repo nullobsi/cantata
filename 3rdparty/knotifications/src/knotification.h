@@ -12,7 +12,7 @@
 #include <QList>
 #include <QObject>
 #include <QPair>
-#include <QPixmap>
+#include <QImage>
 #include <QUrl>
 #include <QVariant>
 #include <QWindow>
@@ -302,16 +302,16 @@ public:
 	void setIconName(const QString& icon);
 
 	/**
-     * \return the pixmap shown in the popup
-     * \see setPixmap
+     * \return the image shown in the popup
+     * \see setImage
      */
-	QPixmap pixmap() const;
+	const QImage& image() const;
 	/**
-     * Set the pixmap that will be shown in the popup. If you want to use an icon from the icon theme use setIconName instead.
+     * Set the image that will be shown in the popup. If you want to use an icon from the icon theme use setIconName instead.
      *
-     * @param pix the pixmap
+     * @param img the image
      */
-	void setPixmap(const QPixmap& pix);
+	void setImage(const QImage& img);
 
 	/**
      * @return the default action, or nullptr if none is set
@@ -690,7 +690,7 @@ public:
      * @param eventId is the name of the event
      * @param title is title of the notification to show in the popup.
      * @param text is the text of the notification to show in the popup.
-     * @param pixmap is a picture which may be shown in the popup.
+     * @param image is a picture which may be shown in the popup.
      * @param flags is a bitmask of NotificationFlag
      * @param componentName used to determine the location of the config file.  by default, appname is used
      * @since 4.4
@@ -698,7 +698,7 @@ public:
 	static KNotification* event(const QString& eventId,
 	                            const QString& title,
 	                            const QString& text,
-	                            const QPixmap& pixmap = QPixmap(),
+	                            const QImage& image = QImage(),
 	                            const NotificationFlags& flags = CloseOnTimeout,
 	                            const QString& componentName = QString());
 
@@ -711,13 +711,13 @@ public:
      *
      * @param eventId is the name of the event
      * @param text is the text of the notification to show in the popup.
-     * @param pixmap is a picture which may be shown in the popup.
+     * @param image is a picture which may be shown in the popup.
      * @param flags is a bitmask of NotificationFlag
      * @param componentName used to determine the location of the config file.  by default, plasma_workspace is used
      */
 	static KNotification* event(const QString& eventId,
 	                            const QString& text = QString(),
-	                            const QPixmap& pixmap = QPixmap(),
+	                            const QImage& image = QImage(),
 	                            const NotificationFlags& flags = CloseOnTimeout,
 	                            const QString& componentName = QString());
 
@@ -730,11 +730,11 @@ public:
      *
      * @param eventId is the name of the event
      * @param text is the text of the notification to show in the popup
-     * @param pixmap is a picture which may be shown in the popup
+     * @param image is a picture which may be shown in the popup
      * @param flags is a bitmask of NotificationFlag
      */
 	static KNotification*
-	event(StandardEvent eventId, const QString& text = QString(), const QPixmap& pixmap = QPixmap(), const NotificationFlags& flags = CloseOnTimeout);
+	event(StandardEvent eventId, const QString& text = QString(), const QImage& image = QImage(), const NotificationFlags& flags = CloseOnTimeout);
 
 	/**
      * @brief emit a standard event
@@ -746,12 +746,12 @@ public:
      * @param eventId is the name of the event
      * @param title is title of the notification to show in the popup.
      * @param text is the text of the notification to show in the popup
-     * @param pixmap is a picture which may be shown in the popup
+     * @param image is a picture which may be shown in the popup
      * @param flags is a bitmask of NotificationFlag
      * @since 4.4
      */
 	static KNotification*
-	event(StandardEvent eventId, const QString& title, const QString& text, const QPixmap& pixmap, const NotificationFlags& flags = CloseOnTimeout);
+	event(StandardEvent eventId, const QString& title, const QString& text, const QImage& image, const NotificationFlags& flags = CloseOnTimeout);
 
 	/**
      * @brief emit a standard event with the possibility of setting an icon by icon name

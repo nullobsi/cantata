@@ -296,16 +296,16 @@ bool NotifyByPortalPrivate::sendNotificationToPortal(KNotification* notification
 	qDBusRegisterMetaType<QList<QVariantMap>>();
 	qDBusRegisterMetaType<PortalIcon>();
 
-	if (!notification->pixmap().isNull()) {
-		QByteArray pixmapData;
-		QBuffer buffer(&pixmapData);
+	if (!notification->image().isNull()) {
+		QByteArray imageData;
+		QBuffer buffer(&imageData);
 		buffer.open(QIODevice::WriteOnly);
-		notification->pixmap().save(&buffer, "PNG");
+		notification->image().save(&buffer, "PNG");
 		buffer.close();
 
 		PortalIcon icon;
 		icon.str = QStringLiteral("bytes");
-		icon.data.setVariant(pixmapData);
+		icon.data.setVariant(imageData);
 		portalArgs.insert(QStringLiteral("icon"), QVariant::fromValue<PortalIcon>(icon));
 	}
 	else {
