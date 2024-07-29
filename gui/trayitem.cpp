@@ -205,7 +205,7 @@ void TrayItem::songChanged(const Song& song, bool isPlaying)
 			}
 			songNotif->setTitle(song.mainText());
 			songNotif->setText(song.subText());
-			songNotif->setImage(CurrentCover::self()->image().scaledToHeight(512));
+			songNotif->setImage(CurrentCover::self()->image().scaledToHeight(512, Qt::SmoothTransformation));
 			songNotif->setUrgency(KNotification::LowUrgency);
 			songNotif->sendEvent();
 		}
