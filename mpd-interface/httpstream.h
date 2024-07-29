@@ -62,7 +62,7 @@ private Q_SLOTS:
 	void streamUrl(const QString& url);
 	void checkPlayer();
 #ifndef LIBVLC_FOUND
-	void bufferingProgress(int progress);
+	void mediaStatus(QMediaPlayer::MediaStatus status);
 #endif
 
 private:

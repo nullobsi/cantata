@@ -133,7 +133,7 @@ void HttpStream::toggleMute()
 #ifdef LIBVLC_FOUND
 		libvlc_audio_set_mute(player, muted);
 #else
-		player->audioOutput()->setMuted(!muted);
+		player->audioOutput()->setMuted(muted);
 #endif
 		emit update();
 	}
@@ -172,7 +172,7 @@ void HttpStream::streamUrl(const QString& url)
 		QAudioOutput* audioOutput = new QAudioOutput(this);
 		player->setAudioOutput(audioOutput);
 		player->setSource(qUrl);
-		connect(player, &QMediaPlayer::bufferProgressChanged, this, &HttpStream::bufferingProgress);
+		connect(player, &QMediaPlayer::mediaStatusChanged, this, &HttpStream::mediaStatus);
 #endif
 		muted = false;
 		setVolume(Configuration(metaObject()->className()).get("volume", currentVolume));
@@ -188,15 +188,13 @@ void HttpStream::streamUrl(const QString& url)
 }
 
 #ifndef LIBVLC_FOUND
-void HttpStream::bufferingProgress(int progress)
+void HttpStream::mediaStatus(QMediaPlayer::MediaStatus status)
 {
-	MPDStatus* const status = MPDStatus::self();
-	if (status->state() == MPDState_Playing) {
-		if (progress == 100) {
+	MPDStatus* const mpdstatus = MPDStatus::self();
+	DBUG << status;
+	if (mpdstatus->state() == MPDState_Playing) {
+		if (status == QMediaPlayer::BufferingMedia || status == QMediaPlayer::BufferedMedia) {
 			player->play();
-		}
-		else {
-			player->pause();
 		}
 	}
 }
@@ -220,6 +218,7 @@ void HttpStream::updateStatus()
 #endif
 
 	if (status->state() == state && !playerNeedsToStart) {
+		player->play();
 		return;
 	}
 
