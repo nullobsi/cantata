@@ -51,6 +51,18 @@
   </screenshots>
 
   <releases>
+    <release version="3.2.1" date="2024-08-06">
+	  <description>
+	    <p>Patch release.</p>
+		<ul>
+			<li>Fix now-playing notification being persistent.</li>
+			<li>Respect environment settings for showing icons in app menus.</li>
+			<li>Improve GUI responsiveness when changing tracks &amp; now-playing notifications are enabled.</li>
+			<li>Notifications when running in Flatpak now update properly.</li>
+			<li>Fix in-app HTTP stream playback.</li>
+		</ul>
+	  </description>
+	</release>
     <release version="3.2.0" date="2024-05-30">
 	  <description>
 		<p>Minor release.</p>
