@@ -118,7 +118,7 @@ InitialSettingsWizard::InitialSettingsWizard(QWidget* p)
 
 	// Note that this type of migration is only relevant on Linux/other
 	// Unix systems.
-#if !Q_OS_WIN && !Q_OS_MACOS
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
 	auto oldConfig = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + "/cantata");
 
 	if (oldConfig.exists()) {
