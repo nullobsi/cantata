@@ -35,9 +35,11 @@
 #include "findmpddialog.h"
 #endif
 #include <QDir>
+#include <QProcess>
 #include <QScreen>
 #include <QStandardPaths>
 #include <QTimer>
+#include <filesystem>
 
 enum Pages {
 	PAGE_INTRO,
@@ -112,6 +114,26 @@ InitialSettingsWizard::InitialSettingsWizard(QWidget* p)
 	discoveryButton = new QPushButton(tr("Discover..."), this);
 	hostLayout->insertWidget(hostLayout->count(), discoveryButton);
 	connect(discoveryButton, &QPushButton::clicked, this, &InitialSettingsWizard::detectMPDs);
+#endif
+
+	// Note that this type of migration is only relevant on Linux/other
+	// Unix systems.
+#if !Q_OS_WIN && !Q_OS_MACOS
+	auto oldConfig = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + "/cantata");
+
+	if (oldConfig.exists()) {
+		migrateDataBox->setChecked(true);
+	}
+	else {
+		migrateDataBox->setChecked(false);
+		migrateDataBox->setDisabled(true);
+		migrateDataBoxLabel->setDisabled(true);
+		migrateDataBoxLabel->setText(tr("Data from an older version of Cantata is missing or cannot be located."));
+	}
+#else
+	migrateDataBox->hide();
+	migrateDataBoxLabel->hide();
+	migrateDataBox->setChecked(false);
 #endif
 }
 
@@ -200,6 +222,55 @@ void InitialSettingsWizard::pageChanged(int p)
 			fetchCovers->setChecked(Settings::self()->fetchCovers());
 		}
 	}
+	if (PAGE_END == p) {
+		// Perform data migration.
+		if (migrateDataBox->isChecked()) {
+			auto oldConfig = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + "/cantata");
+			auto oldCache = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) + "/cantata");
+			auto oldData = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/cantata");
+
+			auto newConfig = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + "/Cantata");
+			auto newCache = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) + "/Cantata");
+			auto newData = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/Cantata");
+
+			newConfig.removeRecursively();
+			newCache.removeRecursively();
+			newData.removeRecursively();
+
+			auto copyOpts = std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive;
+
+			try {
+				std::filesystem::copy(oldConfig.absolutePath().toStdString(), newConfig.absolutePath().toStdString(), copyOpts);
+				std::filesystem::rename(newConfig.absolutePath().toStdString() + "/cantata.conf", newConfig.absolutePath().toStdString() + "/Cantata.conf");
+			}
+			catch (std::filesystem::filesystem_error& e) {
+				qWarning() << "Failed to migrate config.";
+				qWarning() << e.what();
+			}
+
+			try {
+				std::filesystem::copy(oldCache.absolutePath().toStdString(), newCache.absolutePath().toStdString(), copyOpts);
+			}
+			catch (std::filesystem::filesystem_error& e) {
+				qWarning() << "Failed to migrate cache.";
+				qWarning() << e.what();
+			}
+
+			try {
+				std::filesystem::copy(oldData.absolutePath().toStdString(), newData.absolutePath().toStdString(), copyOpts);
+			}
+			catch (std::filesystem::filesystem_error& e) {
+				qWarning() << "Failed to migrate data.";
+				qWarning() << e.what();
+			}
+
+			auto app = QCoreApplication::applicationFilePath();
+			auto args = QCoreApplication::arguments();
+			auto pwd = QDir::currentPath();
+			QProcess::startDetached(app, args, pwd);
+			QCoreApplication::exit();
+		}
+	}
 	button(NextButton)->setEnabled(PAGE_END != p);
 }
 
@@ -255,19 +326,20 @@ void InitialSettingsWizard::reject()
 	QDialog::reject();
 }
 
-int InitialSettingsWizard::nextId() const {
-	switch(currentId()) {
-		case PAGE_INTRO:
-			if (migrateDataBox->isChecked()) {
-				return PAGE_END;
-			}
-			return PAGE_CONNECTION;
-		case PAGE_CONNECTION:
-			return PAGE_COVERS;
-		case PAGE_COVERS:
+int InitialSettingsWizard::nextId() const
+{
+	switch (currentId()) {
+	case PAGE_INTRO:
+		if (migrateDataBox->isChecked()) {
 			return PAGE_END;
-		default:
-			return -1;
+		}
+		return PAGE_CONNECTION;
+	case PAGE_CONNECTION:
+		return PAGE_COVERS;
+	case PAGE_COVERS:
+		return PAGE_END;
+	default:
+		return -1;
 	}
 }
 

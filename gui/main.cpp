@@ -437,6 +437,7 @@ int main(int argc, char* argv[])
 		if (QDialog::Rejected == wz.exec()) {
 			return 0;
 		}
+		Settings::self()->save();
 	}
 	else if (cmdLineParser.isSet(collectionOption)) {
 		QString col = cmdLineParser.value(collectionOption);
