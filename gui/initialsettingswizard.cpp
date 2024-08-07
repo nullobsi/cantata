@@ -255,4 +255,20 @@ void InitialSettingsWizard::reject()
 	QDialog::reject();
 }
 
+int InitialSettingsWizard::nextId() const {
+	switch(currentId()) {
+		case PAGE_INTRO:
+			if (migrateDataBox->isChecked()) {
+				return PAGE_END;
+			}
+			return PAGE_CONNECTION;
+		case PAGE_CONNECTION:
+			return PAGE_COVERS;
+		case PAGE_COVERS:
+			return PAGE_END;
+		default:
+			return -1;
+	}
+}
+
 #include "moc_initialsettingswizard.cpp"

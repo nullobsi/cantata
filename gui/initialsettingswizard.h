@@ -56,6 +56,7 @@ private Q_SLOTS:
 #endif
 
 private:
+	int nextId() const override;
 #ifdef Avahi_FOUND
 	QPushButton* discoveryButton;
 #endif
