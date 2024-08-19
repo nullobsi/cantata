@@ -218,7 +218,9 @@ void HttpStream::updateStatus()
 #endif
 
 	if (status->state() == state && !playerNeedsToStart) {
+#ifndef LIBVLC_FOUND
 		player->play();
+#endif
 		return;
 	}
 
