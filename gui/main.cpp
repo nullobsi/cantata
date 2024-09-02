@@ -30,6 +30,7 @@
 #include "settings.h"
 #include "support/thread.h"
 #include "support/utils.h"
+#include "support/icon.h"
 #include <QDir>
 #include <QFile>
 #include <QLibraryInfo>
@@ -429,6 +430,10 @@ int main(int argc, char* argv[])
 	loadTranslation("cantata", QDir(local).exists() ? local : CANTATA_SYS_TRANS_DIR, lang);
 
 	Application::init();
+	// TODO: SHOULD NOT BE NEEDED
+	auto suc = Icon::getFaRaw()->initFontAwesome();
+	Q_ASSERT_X(suc, "initFontAwesome", "could not init");
+
 	// Ensure QColator gets initialised...
 	Utils::compare(QString(), QString());
 

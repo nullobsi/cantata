@@ -112,6 +112,10 @@ QPixmap Icon::getScaledPixmap(const QIcon& icon, int w, int h, int base)
 	return icon.pixmap(base, base).scaled(w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 }
 
+fa::QtAwesome* Icon::getFaRaw() {
+	return awesome;
+}
+
 fa::QtAwesome* Icon::fa()
 {
 	awesome->initFontAwesome();
