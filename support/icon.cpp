@@ -118,18 +118,21 @@ fa::QtAwesome* Icon::getFaRaw() {
 
 fa::QtAwesome* Icon::fa()
 {
-	awesome->initFontAwesome();
+	auto su = awesome->initFontAwesome();
+	Q_ASSERT_X(su, "initFontAwesome", "not successful");
 	return awesome;
 }
 
 QIcon Icon::fa(int s, int c, const QVariantMap& m)
 {
-	awesome->initFontAwesome();
+	auto su = awesome->initFontAwesome();
+	Q_ASSERT_X(su, "initFontAwesome", "not successful");
 	return awesome->icon(s, c, m);
 }
 QIcon Icon::fa(const QString& name, const QVariantMap& m)
 {
-	awesome->initFontAwesome();
+	auto su = awesome->initFontAwesome();
+	Q_ASSERT_X(su, "initFontAwesome", "not successful");
 	return awesome->icon(name, m);
 }
 

@@ -306,7 +306,12 @@ bool QtAwesome::initFontAwesome()
 			res.close();
 
 			// fetch the given font
-			fd.setFontId(QFontDatabase::addApplicationFontFromData(fontData));
+			auto fontID = QFontDatabase::addApplicationFontFromData(fontData);
+			fd.setFontId(fontID);
+			Q_ASSERT_X(fontID != -1, "addApplicationFontFromData", "could not load");
+			if (fontID == -1) {
+				success = false;
+			}
 		}
 
 		QStringList loadedFontFamilies = QFontDatabase::applicationFontFamilies(fd.fontId());
