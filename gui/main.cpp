@@ -36,6 +36,7 @@
 #include <QLibraryInfo>
 #include <QSettings>
 #include <QTranslator>
+#include <iostream>
 
 // To enable debug...
 #include "context/lastfmengine.h"
@@ -432,6 +433,7 @@ int main(int argc, char* argv[])
 	Application::init();
 	// TODO: SHOULD NOT BE NEEDED
 	auto suc = Icon::getFaRaw()->initFontAwesome();
+	std::cerr << "First FA init: " << suc << std::endl;
 	Q_ASSERT_X(suc, "initFontAwesome", "could not init");
 
 	// Ensure QColator gets initialised...
