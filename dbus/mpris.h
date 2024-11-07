@@ -105,7 +105,7 @@ public:
 	bool CanRaise() const { return true; }
 	bool HasTrackList() const { return false; }
 	QString Identity() const { return QLatin1String(PACKAGE_NAME); }
-	QString DesktopEntry() const { return QLatin1String(PROJECT_REV_ID ".desktop"); }
+	QString DesktopEntry() const { return QLatin1String(PROJECT_REV_ID); }
 	QStringList SupportedUriSchemes() const { return QStringList(); }
 	QStringList SupportedMimeTypes() const { return QStringList(); }
 
