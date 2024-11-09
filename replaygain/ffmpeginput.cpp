@@ -249,7 +249,7 @@ FfmpegInput::~FfmpegInput()
 {
 	if (handle) {
 		mutex.lock();
-		avcodec_close(handle->codecContext);
+		avcodec_free_context(&handle->codecContext);
 #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(53, 21, 0)
 		avformat_close_input(&handle->formatContext);
 #else
