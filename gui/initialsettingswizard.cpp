@@ -120,8 +120,11 @@ InitialSettingsWizard::InitialSettingsWizard(QWidget* p)
 	// Unix systems.
 #if !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
 	auto oldConfig = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + "/cantata");
+	// We shouldn't be here if newConfig exists, but since there could
+	// be data-loss...
+	auto newConfig = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + "/Cantata");
 
-	if (oldConfig.exists()) {
+	if (oldConfig.exists() && !newConfig.exists()) {
 		migrateDataBox->setChecked(true);
 	}
 	else {
