@@ -72,7 +72,7 @@ static QDateTime parseRfc822DateTime(const QString& text)
 
 	static const QRegularExpression re(R"(([a-zA-Z]{3}),? (\d{1,2}) ([a-zA-Z]{3}) (\d{4}) (\d{1,2}):(\d{1,2}):(\d{1,2}))");
 	auto match = re.match(text);
-	if (match.hasMatch()) {
+	if (!match.hasMatch()) {
 		return QDateTime();
 	}
 
