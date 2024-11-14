@@ -3,16 +3,21 @@
   <id>@PROJECT_REV_ID@</id>
   
   <name>Cantata</name>
-  <summary>Listen to and manage your Music Player Daemon (MPD) library</summary>
+  <summary>Control your music server</summary>
   
   <metadata_license>CC-BY-SA-4.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   
   <description>
     <p>
-		A graphical MPD client with support for tagging, ReplayGain tag creation,
-		queue management, and online features.
+        A graphical MPD (Music Player Daemon) client with support for
+        tagging, ReplayGain tag creation,
+        queue management, and online features.
     </p>
+	<p>
+		This software connects to a running MPD server on a local or
+		remote machine. Check out their project page for more information.
+	</p>
 	<ul>
 		<li>Manage your playlists with an advanced interface.</li>
 		<li>Flip through your music library with ease.</li>
@@ -27,8 +32,8 @@
   
   <launchable type="desktop-id">@PROJECT_REV_ID@.desktop</launchable>
   <branding>
-    <color type="primary" scheme_preference="light">#1c71d8</color>
-    <color type="primary" scheme_preference="dark">#99c1f1</color>
+    <color type="primary" scheme_preference="light">#96b6ee</color>
+    <color type="primary" scheme_preference="dark">#335371</color>
   </branding>
 
   <content_rating type="oars-1.1" />
@@ -51,6 +56,19 @@
   </screenshots>
 
   <releases>
+    <release version="3.3.0" date="2024-11-13">
+	  <description>
+	    <p>Minor release.</p>
+		<ul>
+		  <li>Migrate data from older Cantata versions.</li>
+		  <li>Fix libVLC build.</li>
+		  <li>Fix MPRIS desktopEntry property.</li>
+		  <li>Fix deprecated FFMPEG function call.</li>
+		  <li>Fix podcast saving and date retrieval.</li>
+		  <li>Use embedded cover art from MPD server when needed.</li>
+		</ul>
+	  </description>
+	</release>
     <release version="3.2.1" date="2024-08-06">
 	  <description>
 	    <p>Patch release.</p>
