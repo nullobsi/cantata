@@ -634,7 +634,7 @@ QDateTime Settings::lastRssUpdate()
 
 QString Settings::podcastDownloadPath()
 {
-	return Utils::fixPath(cfg.get("podcastDownloadPath", Utils::fixPath(QDir::homePath()) + QLatin1String("Podcasts/")));
+	return Utils::fixPath(cfg.get("podcastDownloadPath", Utils::fixPath(QDir::homePath()) + QLatin1String("Music/Podcasts/")));
 }
 
 int Settings::podcastAutoDownloadLimit()
