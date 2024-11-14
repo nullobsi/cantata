@@ -1569,9 +1569,21 @@ void MPDConnection::getCover(const Song& song)
 	QByteArray imageData;
 	bool firstRun = true;
 	QString path = Utils::getDir(song.file);
+	bool embedded = false;
 	while (dataToRead != 0) {
-		Response response = sendCommand("albumart " + encodeName(path) + " " + QByteArray::number(firstRun ? 0 : (imageSize - dataToRead)));
-		if (!response.ok) {
+		Response response;
+		if (embedded) {
+			response = sendCommand("readpicture " + encodeName(song.file) + " " + QByteArray::number(firstRun ? 0 : (imageSize - dataToRead)));
+		}
+		else {
+			response = sendCommand("albumart " + encodeName(path) + " " + QByteArray::number(firstRun ? 0 : (imageSize - dataToRead)));
+		}
+		if (!response.ok && !embedded) {
+			DBUG << "albumart query failed; trying embedded";
+			embedded = true;
+			continue;
+		}
+		else if (!response.ok) {
 			DBUG << "albumart query failed";
 			break;
 		}
