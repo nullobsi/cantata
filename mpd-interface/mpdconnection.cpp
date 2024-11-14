@@ -1578,7 +1578,7 @@ void MPDConnection::getCover(const Song& song)
 		else {
 			response = sendCommand("albumart " + encodeName(path) + " " + QByteArray::number(firstRun ? 0 : (imageSize - dataToRead)));
 		}
-		if (!response.ok && !embedded) {
+		if (!response.ok && !embedded && supportsReadPicture()) {
 			DBUG << "albumart query failed; trying embedded";
 			embedded = true;
 			continue;
