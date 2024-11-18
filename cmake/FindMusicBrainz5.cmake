@@ -40,7 +40,7 @@ The following cache variables may also be set:
 # First use PKG-Config as a starting point.
 find_package(PkgConfig)
 if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_MusicBrainz5 QUIET libmusicbrainz5)
+    pkg_check_modules(PC_MusicBrainz5 QUIET libmusicbrainz5cc)
 endif(PKG_CONFIG_FOUND)
 
 find_path(MusicBrainz5_INCLUDE_DIR
@@ -50,7 +50,7 @@ find_path(MusicBrainz5_INCLUDE_DIR
 )
 
 find_library(MusicBrainz5_LIBRARY
-    NAMES musicbrainz5
+    NAMES musicbrainz5cc
     PATHS ${PC_MusicBrainz5_LIBRARY_DIRS}
 )
 
