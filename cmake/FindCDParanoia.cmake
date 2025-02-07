@@ -43,6 +43,8 @@ The following cache variables may also be set:
   The directory containing ``cdda_interface.h``.
 #]===]
 
+include(CheckCSourceCompiles)
+
 # First use PKG-Config as a starting point.
 find_package(PkgConfig)
 if(PKG_CONFIG_FOUND)
@@ -96,6 +98,7 @@ if(CDParanoia_FOUND)
     )
   endif ()
   if(NOT TARGET CDDA::Interface)
+    add_library(CDDA::Interface UNKNOWN IMPORTED)
     set_target_properties(CDDA::Interface PROPERTIES
             IMPORTED_LOCATION "${CDParanoia_INTERFACE_LIBRARY}"
             INTERFACE_COMPILE_OPTIONS "${PC_CDParanoia_CFLAGS_OTHER}"
