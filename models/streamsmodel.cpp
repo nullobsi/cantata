@@ -44,6 +44,7 @@
 #include <QLocale>
 #include <QMimeData>
 #include <QModelIndex>
+#include <QRegularExpression>
 #include <QSet>
 #include <QString>
 #include <QTimer>
