@@ -56,6 +56,17 @@
   </screenshots>
 
   <releases>
+	<release version="3.3.1" date="2025-04-14">
+		<description>
+			<p>Patch release.</p>
+			<ul>
+				<li>Link to correct musicbrainz library</li>
+				<li>Update flatpak workflow</li>
+				<li>Use latest version of KDE platform</li>
+				<li>Fix cdparanoia</li>
+			</ul>
+		</description>
+	</release>
     <release version="3.3.0" date="2024-11-13">
 	  <description>
 	    <p>Minor release.</p>

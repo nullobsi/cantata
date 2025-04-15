@@ -1,6 +1,6 @@
 id: dog.unix.cantata.Cantata
 runtime: org.kde.Platform
-runtime-version: '6.7'
+runtime-version: '6.9'
 sdk: org.kde.Sdk
 command: cantata
 finish-args:
