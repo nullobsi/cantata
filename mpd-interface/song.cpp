@@ -301,53 +301,60 @@ bool Song::sameMetadata(const Song& o) const
 
 void Song::guessTags()
 {
-	if (isEmpty() && !isStream()) {
+	if (!isStream()) {
+		QString newtitle = title;
+		QString newalbum = album;
+		QString newartist = artist;
+
 		static const QLatin1String constAlbumArtistSep(" - ");
 		guessed = true;
 		QStringList parts = file.split("/", CANTATA_SKIP_EMPTY);
 		if (3 == parts.length()) {
-			title = parts.at(2);
-			album = parts.at(1);
-			artist = parts.at(0);
+			newtitle = parts.at(2);
+			newalbum = parts.at(1);
+			newartist = parts.at(0);
 		}
 		else if (2 == parts.length() && parts.at(0).contains(constAlbumArtistSep)) {
-			title = parts.at(1);
+			newtitle = parts.at(1);
 			QStringList albumArtistParts = parts.at(0).split(constAlbumArtistSep, CANTATA_SKIP_EMPTY);
 			if (2 == albumArtistParts.length()) {
-				album = albumArtistParts.at(1);
-				artist = albumArtistParts.at(0);
+				newalbum = albumArtistParts.at(1);
+				newartist = albumArtistParts.at(0);
 			}
 		}
 		else if (!parts.isEmpty()) {
-			title = parts.at(parts.length() - 1);
+			newtitle = parts.at(parts.length() - 1);
 		}
 
-		if (!title.isEmpty()) {
-			int dot = title.lastIndexOf('.');
-			if (dot > 0 && dot < title.length() - 2) {
-				title = title.left(dot);
+		if (!newtitle.isEmpty()) {
+			int dot = newtitle.lastIndexOf('.');
+			if (dot > 0 && dot < newtitle.length() - 2) {
+				newtitle = newtitle.left(dot);
 			}
 			static const QSet<QChar> constSeparators = QSet<QChar>() << QLatin1Char(' ') << QLatin1Char('-') << QLatin1Char('_') << QLatin1Char('.');
 			int separator = 0;
 
 			for (const QChar& sep : constSeparators) {
-				separator = title.indexOf(sep);
+				separator = newtitle.indexOf(sep);
 				if (1 == separator || 2 == separator) {
 					break;
 				}
 			}
 
-			if ((1 == separator && title[separator - 1].isDigit()) || (2 == separator && title[separator - 2].isDigit() && title[separator - 1].isDigit())) {
+			if ((1 == separator && newtitle[separator - 1].isDigit()) || (2 == separator && newtitle[separator - 2].isDigit() && newtitle[separator - 1].isDigit())) {
 				if (0 == track) {
-					track = title.left(separator).toInt();
+					track = newtitle.left(separator).toInt();
 				}
-				title = title.mid(separator + 1);
+				newtitle = newtitle.mid(separator + 1);
 
-				while (!title.isEmpty() && constSeparators.contains(title[0])) {
-					title = title.mid(1);
+				while (!newtitle.isEmpty() && constSeparators.contains(newtitle[0])) {
+					newtitle = newtitle.mid(1);
 				}
 			}
 		}
+		title = !title.isEmpty() ? title : newtitle;
+		album = !album.isEmpty() ? album : newalbum;
+		artist = !artist.isEmpty() ? artist : newartist;
 	}
 }
 
