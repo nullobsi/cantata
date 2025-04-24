@@ -255,10 +255,10 @@ void KeySequenceWidget::updateShortcutDisplay()
 	if (_isRecording) {
 		if (_modifierKeys) {
 #ifdef Q_OS_MAC
-			if (_modifierKeys & Qt::META) s += QChar(kControlUnicode);
-			if (_modifierKeys & Qt::ALT) s += QChar(kOptionUnicode);
-			if (_modifierKeys & Qt::SHIFT) s += QChar(kShiftUnicode);
-			if (_modifierKeys & Qt::CTRL) s += QChar(kCommandUnicode);
+			if (_modifierKeys & Qt::META) s += QChar::fromUcs2(kControlUnicode);
+			if (_modifierKeys & Qt::ALT) s += QChar::fromUcs2(kOptionUnicode);
+			if (_modifierKeys & Qt::SHIFT) s += QChar::fromUcs2(kShiftUnicode);
+			if (_modifierKeys & Qt::CTRL) s += QChar::fromUcs2(kCommandUnicode);
 #else
 			if (_modifierKeys & Qt::META) s += tr("Meta", "Meta key") + '+';
 			if (_modifierKeys & Qt::CTRL) s += tr("Ctrl", "Ctrl key") + '+';

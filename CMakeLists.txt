@@ -71,9 +71,6 @@ if(WIN32)
     set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/LICENSE.txt")
     set(CPACK_RESOURCE_FILE_README "${CMAKE_BINARY_DIR}/README.txt")
 elseif(APPLE)
-    # Build as an app bundle.
-    set(CMAKE_MACOSX_BUNDLE TRUE)
-
     # CPack.
     set(CPACK_GENERATOR "DragNDrop")
 
