@@ -40,22 +40,36 @@ The following cache variables may also be set:
 # First use PKG-Config as a starting point.
 find_package(PkgConfig)
 if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_MusicBrainz5 QUIET libmusicbrainz5cc)
+    # Newer development versions of musicbrainz split the library into
+    # C++ and C versions.
+    pkg_check_modules(PC_MusicBrainz5cc QUIET libmusicbrainz5cc)
+    pkg_check_modules(PC_MusicBrainz5 QUIET libmusicbrainz5)
 endif(PKG_CONFIG_FOUND)
 
 find_path(MusicBrainz5_INCLUDE_DIR
     NAMES Disc.h
-    PATHS ${PC_MusicBrainz5_INCLUDE_DIRS}
+    PATHS ${PC_MusicBrainz5_INCLUDE_DIRS} ${PC_MusicBrainz5cc_INCLUDE_DIRS}
     PATH_SUFFIXES "musicbrainz5"
 )
 
-find_library(MusicBrainz5_LIBRARY
+find_library(MusicBrainz5cc_LIBRARY
     NAMES musicbrainz5cc
     PATHS ${PC_MusicBrainz5_LIBRARY_DIRS}
 )
 
+find_library(MusicBrainz5_LIBRARY
+    NAMES musicbrainz5
+    PATHS ${PC_MusicBrainz5cc_LIBRARY_DIRS}
+)
+
 # Set version from PC if applicable.
-set(MusicBrainz5_VERSION ${PC_MusicBrainz5_VERSION})
+if (MusicBrainz5cc_LIBRARY)
+    set(MusicBrainz5_VERSION ${PC_MusicBrainz5cc_VERSION})
+    # Copy library from musicbrain5cc
+    set(MusicBrainz5_LIBRARY ${MusicBrainz5cc_LIBRARY})
+elseif (MusicBrainz5_LIBRARY)
+    set(MusicBrainz5_VERSION ${PC_MusicBrainz5_VERSION})
+endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(MusicBrainz5
@@ -67,16 +81,29 @@ find_package_handle_standard_args(MusicBrainz5
 )
 
 if(MusicBrainz5_FOUND)
-    set(MusicBrainz5_LIBRARIES ${MusicBrainz5_LIBRARY})
     set(MusicBrainz5_INCLUDE_DIRS ${MusicBrainz5_INCLUDE_DIR})
-    set(MusicBrainz5_DEFINITIONS ${PC_MusicBrainz5_CFLAGS_OTHER})
+    if(MusicBrainz5cc_LIBRARY)
+        set(MusicBrainz5_DEFINITIONS ${PC_MusicBrainz5cc_CFLAGS_OTHER})
+        set(MusicBrainz5_LIBRARIES ${MusicBrainz5cc_LIBRARY})
+    else()
+        set(MusicBrainz5_DEFINITIONS ${PC_MusicBrainz5_CFLAGS_OTHER})
+        set(MusicBrainz5_LIBRARIES ${MusicBrainz5_LIBRARY})
+    endif()
     if(NOT TARGET MusicBrainz5::MusicBrainz)
         add_library(MusicBrainz5::MusicBrainz UNKNOWN IMPORTED)
-        set_target_properties(MusicBrainz5::MusicBrainz PROPERTIES
-            IMPORTED_LOCATION "${MusicBrainz5_LIBRARY}"
-            INTERFACE_COMPILE_OPTIONS "${PC_MusicBrainz5_CFLAGS_OTHER}"
-            INTERFACE_INCLUDE_DIRECTORIES "${MusicBrainz5_INCLUDE_DIR}"
-        )
+        if(MusicBrainz5cc_LIBRARY)
+            set_target_properties(MusicBrainz5::MusicBrainz PROPERTIES
+                IMPORTED_LOCATION "${MusicBrainz5cc_LIBRARY}"
+                INTERFACE_COMPILE_OPTIONS "${PC_MusicBrainz5cc_CFLAGS_OTHER}"
+                INTERFACE_INCLUDE_DIRECTORIES "${MusicBrainz5_INCLUDE_DIR}"
+            )
+        else()
+            set_target_properties(MusicBrainz5::MusicBrainz PROPERTIES
+                IMPORTED_LOCATION "${MusicBrainz5_LIBRARY}"
+                INTERFACE_COMPILE_OPTIONS "${PC_MusicBrainz5_CFLAGS_OTHER}"
+                INTERFACE_INCLUDE_DIRECTORIES "${MusicBrainz5_INCLUDE_DIR}"
+            )
+        endif()
     endif ()
 endif()
 
