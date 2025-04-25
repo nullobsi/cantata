@@ -1,3 +1,7 @@
+This file documents changelogs for older versions of Cantata.
+For versions since 3.0, please check the GitHub repository or check
+./cantata.metainfo.xml.cmake.
+
 2.5.0
 -----
  1. Update translations.

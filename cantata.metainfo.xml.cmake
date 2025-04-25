@@ -56,14 +56,16 @@
   </screenshots>
 
   <releases>
-	<release version="3.3.1" date="2025-04-14">
+	<release version="3.3.1" date="2025-04-24">
 		<description>
 			<p>Patch release.</p>
 			<ul>
+				<li>Use tags from filename if missing</li>
+				<li>Fix cdparanoia</li>
 				<li>Link to correct musicbrainz library</li>
 				<li>Update flatpak workflow</li>
 				<li>Use latest version of KDE platform</li>
-				<li>Fix cdparanoia</li>
+				<li>Add nix flake</li>
 			</ul>
 		</description>
 	</release>
