@@ -10,9 +10,10 @@
 			pkgs = import nixpkgs {
 				inherit system;
 			};
-			isLinux = pkgs.lib.strings.hasPrefix "-linux" system;
+			isLinux = pkgs.lib.strings.hasSuffix "-linux" system;
 			qtEnv = with pkgs.qt6; env "qt-custom-${qtbase.version}" 
-				[
+				([
+					qtbase
 					qtconnectivity
 					qthttpserver
 					qtimageformats
@@ -20,8 +21,11 @@
 					qtsvg
 					qttranslations
 					qttools
-				];
+				] ++ pkgs.lib.optionals isLinux [
+					qtwayland
+				]);
 			buildInputs = with pkgs; [
+				pkg-config
 				taglib
 				ffmpeg
 				mpg123
@@ -32,7 +36,10 @@
 				cmake
 				ninja
 			] ++ lib.optionals isLinux [
-				cdio-paranoia
+				libGL
+				libGLU
+				libcdio
+				libcdio-paranoia
 				libmusicbrainz5
 				libmtp
 				media-player-info
