@@ -47,6 +47,15 @@ class ActionDialog : public Dialog, Ui::ActionDialog {
 		Sync
 	};
 
+	enum Pages {
+		PAGE_SIZE_CALC,
+		PAGE_INSUFFICIENT_SIZE,
+		PAGE_START,
+		PAGE_ERROR,
+		PAGE_SKIP,
+		PAGE_PROGRESS
+	};
+
 	typedef QPair<QString, QString> StringPair;
 	typedef QList<StringPair> StringPairList;
 

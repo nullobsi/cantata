@@ -32,6 +32,13 @@
 class InitialSettingsWizard : public QWizard, public Ui::InitialSettingsWizard {
 	Q_OBJECT
 
+	enum Pages {
+		PAGE_INTRO,
+		PAGE_CONNECTION,
+		PAGE_COVERS,
+		PAGE_END
+	};
+
 public:
 	InitialSettingsWizard(QWidget* p = nullptr);
 	~InitialSettingsWizard() override;

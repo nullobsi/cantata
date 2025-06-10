@@ -65,15 +65,6 @@ int ActionDialog::instanceCount()
 	return iCount;
 }
 
-enum Pages {
-	PAGE_SIZE_CALC,
-	PAGE_INSUFFICIENT_SIZE,
-	PAGE_START,
-	PAGE_ERROR,
-	PAGE_SKIP,
-	PAGE_PROGRESS
-};
-
 ActionDialog::ActionDialog(QWidget* parent)
 	: Dialog(parent), spaceRequired(0), mpdConfigured(false), currentDev(nullptr), songDialog(nullptr)
 {

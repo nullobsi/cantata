@@ -47,6 +47,15 @@ struct Podcast;
 
 class PodcastPage : public QWidget {
 	Q_OBJECT
+
+	enum Roles {
+		IsPodcastRole = Qt::UserRole,
+		UrlRole,
+		ImageUrlRole,
+		DescriptionRole,
+		WebPageUrlRole
+	};
+
 public:
 	PodcastPage(QWidget* p, const QString& n);
 	~PodcastPage() override

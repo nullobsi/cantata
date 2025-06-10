@@ -41,13 +41,6 @@
 #include <QTimer>
 #include <filesystem>
 
-enum Pages {
-	PAGE_INTRO,
-	PAGE_CONNECTION,
-	PAGE_COVERS,
-	PAGE_END
-};
-
 InitialSettingsWizard::InitialSettingsWizard(QWidget* p)
 	: QWizard(p)
 {

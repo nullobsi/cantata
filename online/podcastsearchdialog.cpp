@@ -64,14 +64,6 @@ static QCache<QUrl, QImage> imageCache(200 * 1024);
 static int maxImageSize = -1;
 static const char* constOrigUrlProperty = "orig-url";
 
-enum Roles {
-	IsPodcastRole = Qt::UserRole,
-	UrlRole,
-	ImageUrlRole,
-	DescriptionRole,
-	WebPageUrlRole
-};
-
 QString PodcastSearchDialog::constCacheDir = QLatin1String("podcast-directories");
 QString PodcastSearchDialog::constExt = QLatin1String(".opml");
 
