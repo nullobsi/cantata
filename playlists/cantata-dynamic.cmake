@@ -210,7 +210,7 @@ sub baseDir() {
     if (!$cacheDir) {
         $cacheDir="$ENV{'HOME'}/.cache";
     }
-    $cacheDir="${cacheDir}/cantata/dynamic";
+    $cacheDir="${cacheDir}/Cantata/dynamic";
     return $cacheDir
 }
 
@@ -358,7 +358,7 @@ sub saveRule() {
     }
 }
 
-# Read rules from ~/.cache/cantata/dynamic/rules
+# Read rules from ~/.cache/Cantata/dynamic/rules
 #  (or from ${filesDir}/rules in server mode)
 #
 # File format:
