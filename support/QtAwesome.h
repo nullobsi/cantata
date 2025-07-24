@@ -41,18 +41,21 @@ class QtAwesomeIconPainter;
 class QtAwesomeFontData {
 public:
 	QtAwesomeFontData() : QtAwesomeFontData(QString()) {}
-	QtAwesomeFontData(const QString& fontFileName, QFont::Weight fontWeight = QFont::Normal);
+	QtAwesomeFontData(const QString& fontFileName, QFont::Weight fontWeight = QFont::Normal, const QString& fontStyle = "Regular");
 	const QString& fontFamily() const;
 	void setFontFamily(const QString& family);
 	const QString& fontFilename() const;
+	const QString& fontStyle() const;
 	int fontId() const;
 	void setFontId(int id);
 	QFont::Weight fontWeight() const;
 	void setFontWeight(QFont::Weight weight);
+	void setFontStyle(const QString& style);
 
 private:
 	QString _fontFamily;
 	QString _fontFilename;
+	QString _fontStyle;
 	int _fontId;
 	QFont::Weight _fontWeight;
 };
@@ -71,6 +74,9 @@ public:
 	static const QFont::Weight FA_BRANDS_FONT_WEIGHT = QFont::Normal;
 	static const QFont::Weight FA_REGULAR_FONT_WEIGHT = QFont::Normal;
 	static const QFont::Weight FA_SOLID_FONT_WEIGHT = QFont::Black;
+	static const QString FA_BRANDS_FONT_STYLE; // Regular
+	static const QString FA_REGULAR_FONT_STYLE;// Regular
+	static const QString FA_SOLID_FONT_STYLE;  // Solid
 
 public:
 	explicit QtAwesome(QObject* parent = nullptr);

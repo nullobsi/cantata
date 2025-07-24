@@ -225,6 +225,9 @@ private:
 const QString QtAwesome::FA_BRANDS_FONT_FILENAME = "Font Awesome 6 Brands-Regular-400.otf";
 const QString QtAwesome::FA_REGULAR_FONT_FILENAME = "Font Awesome 6 Free-Regular-400.otf";
 const QString QtAwesome::FA_SOLID_FONT_FILENAME = "Font Awesome 6 Free-Solid-900.otf";
+const QString QtAwesome::FA_BRANDS_FONT_STYLE = "Regular";
+const QString QtAwesome::FA_REGULAR_FONT_STYLE = "Regular";
+const QString QtAwesome::FA_SOLID_FONT_STYLE = "Solid";
 
 /// The default icon colors
 QtAwesome::QtAwesome(QObject* parent)
@@ -472,6 +475,7 @@ QFont QtAwesome::font(int style, int size) const
 	QFont font(_fontDetails[style].fontFamily());
 	font.setPixelSize(size);
 	font.setWeight(_fontDetails[style].fontWeight());
+	font.setStyleName(_fontDetails[style].fontStyle());
 
 	return font;
 }
@@ -505,11 +509,12 @@ const QString QtAwesome::styleEnumToString(int style) const
 
 //---------------------------------------------------------------------------------------
 
-QtAwesomeFontData::QtAwesomeFontData(const QString& fontFileName, QFont::Weight fontWeight)
+QtAwesomeFontData::QtAwesomeFontData(const QString& fontFileName, QFont::Weight fontWeight, const QString& fontStyle)
 	: _fontFamily(QString()),
 	  _fontFilename(fontFileName),
 	  _fontId(-1),
-	  _fontWeight(fontWeight)
+	  _fontWeight(fontWeight),
+	  _fontStyle(fontStyle)
 {
 }
 
@@ -543,6 +548,10 @@ QFont::Weight QtAwesomeFontData::fontWeight() const
 	return _fontWeight;
 }
 
+const QString& QtAwesomeFontData::fontStyle() const {
+	return _fontStyle;
+}
+
 ///
 /// \brief setFontWeight set the font weight as QFont::weight
 /// \param weight the weight value according to QFont::weight enum
@@ -559,6 +568,10 @@ QFont::Weight QtAwesomeFontData::fontWeight() const
 void QtAwesomeFontData::setFontWeight(QFont::Weight weight)
 {
 	_fontWeight = weight;
+}
+
+void QtAwesomeFontData::setFontStyle(const QString& style) {
+	_fontStyle = style;
 }
 
 }// namespace fa
