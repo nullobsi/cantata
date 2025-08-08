@@ -37,7 +37,7 @@
 #include "gui/stdactions.h"
 #include "mpd-interface/mpdstatus.h"
 #include "network/networkaccessmanager.h"
-#include "qtiocompressor/qtiocompressor.h"
+#include <QtSolutions/qtiocompressor.h>
 #include "support/action.h"
 #include "support/actioncollection.h"
 #include "support/utils.h"

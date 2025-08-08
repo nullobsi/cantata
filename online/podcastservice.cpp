@@ -31,7 +31,7 @@
 #include "mpd-interface/mpdconnection.h"
 #include "network/networkaccessmanager.h"
 #include "podcastsettingsdialog.h"
-#include "qtiocompressor/qtiocompressor.h"
+#include <QtSolutions/qtiocompressor.h>
 #include "rssparser.h"
 #include "support/globalstatic.h"
 #include "support/utils.h"
