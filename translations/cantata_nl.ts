@@ -8174,8 +8174,8 @@ Wil je deze overschrijven?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation>XML-streams (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation>XML-streams (*.xml * *.cantata)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -8184,8 +8184,8 @@ Wil je deze overschrijven?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation>XML-streams (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation>XML-streams (*)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>

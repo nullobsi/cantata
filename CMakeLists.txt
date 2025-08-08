@@ -812,10 +812,12 @@ add_subdirectory(streams/icons)
 add_subdirectory(online/icons)
 
 find_library(QtSolutions_IOCompressor_LIB QtSolutions_IOCompressor-2.3 PATHS /usr/lib64)
-target_link_libraries(cantata PRIVATE support-core KF6Notifications ${QtSolutions_IOCompressor_LIB})
+target_link_libraries(cantata PRIVATE support-core KF6Notifications)
 
 find_package(KF6ItemViews REQUIRED)
+find_package(KF6Archive REQUIRED)
 target_link_libraries(cantata PRIVATE KF6::ItemViews)
+target_link_libraries(cantata PRIVATE KF6::Archive)
 
 # enable warnings
 add_definitions(-DQT_NO_DEBUG_OUTPUT)

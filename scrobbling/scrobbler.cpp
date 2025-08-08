@@ -31,7 +31,6 @@
 #include "mpd-interface/mpdconnection.h"
 #include "network/networkaccessmanager.h"
 #include "pausabletimer.h"
-#include <QtSolutions/qtiocompressor.h>
 #include "support/configuration.h"
 #include "support/globalstatic.h"
 #include "support/utils.h"
@@ -57,7 +56,7 @@ void Scrobbler::enableDebug()
 }
 
 const QLatin1String Scrobbler::constCacheDir("scrobbling");
-const QLatin1String Scrobbler::constCacheFile("tracks.xml.gz");
+const QLatin1String Scrobbler::constCacheFile("tracks.xml");
 static const QLatin1String constSettingsGroup("Scrobbling");
 static const QString constSecretKey = QLatin1String("0753a75ccded9b17b872744d4bb60b35");
 static const int constMaxBatchSize = 50;
@@ -700,10 +699,8 @@ void Scrobbler::loadCache()
 		return;
 	}
 	QFile file(fileName);
-	QtIOCompressor compressor(&file);
-	compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-	if (compressor.open(QIODevice::ReadOnly)) {
-		QXmlStreamReader reader(&compressor);
+		if (file.open(QIODevice::ReadOnly)) {
+		    QXmlStreamReader reader(&file);
 		while (!reader.atEnd()) {
 			reader.readNext();
 			if (reader.isStartElement() && QLatin1String("track") == reader.name()) {
@@ -738,10 +735,8 @@ void Scrobbler::saveCache()
 	}
 
 	QFile file(fileName);
-	QtIOCompressor compressor(&file);
-	compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-	if (compressor.open(QIODevice::WriteOnly)) {
-		QXmlStreamWriter writer(&compressor);
+		if (file.open(QIODevice::WriteOnly)) {
+		    QXmlStreamWriter writer(&file);
 		writer.setAutoFormatting(false);
 		writer.writeStartDocument();
 		writer.writeStartElement("tracks");
