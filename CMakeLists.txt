@@ -794,11 +794,6 @@ else()
     install(TARGETS cantata)
 endif()
 
-if(ENABLE_CATEGORIZED_VIEW)
-    add_subdirectory(3rdparty/kcategorizedview)
-    target_link_libraries(cantata PRIVATE kcategorizedview)
-endif()
-
 if(WIN32 OR APPLE OR HAIKU)
     add_subdirectory(3rdparty/qtsingleapplication)
     target_link_libraries(cantata PRIVATE qtsingleapplication)
@@ -819,6 +814,9 @@ add_subdirectory(online/icons)
 
 target_link_libraries(cantata PRIVATE support-core qtiocompressor
  KF6Notifications)
+
+find_package(KF6ItemViews REQUIRED)
+target_link_libraries(cantata PRIVATE KF6::ItemViews)
 
 # enable warnings
 add_definitions(-DQT_NO_DEBUG_OUTPUT)

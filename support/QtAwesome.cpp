@@ -283,52 +283,18 @@ QtAwesome::~QtAwesome()
 bool QtAwesome::initFontAwesome()
 {
 	if (hasInit) return true;
-	bool success = true;
-	// The macro below internally calls "qInitResources_QtAwesome()". this initializes
-	// the resource system. For a .pri project this isn't required, but when building and using a
-	// static library the resource need to initialized first.
-	///
-	// I've checked th qInitResource_* code and calling this method mutliple times shouldn't be any problem
-	// (More info about this subject:  http://qt-project.org/wiki/QtResources)
-	qtawesome_init_resources();
+// Set font family directly using Fedora's installed font
+    _fontDetails.insert(fa::fa_solid, QtAwesomeFontData("Font Awesome 6 Free Solid", FA_SOLID_FONT_WEIGHT));
+    _fontDetails.insert(fa::fa_regular, QtAwesomeFontData("Font Awesome 6 Free Regular", FA_REGULAR_FONT_WEIGHT));
+    _fontDetails.insert(fa::fa_brands, QtAwesomeFontData("Font Awesome 6 Brands Regular", FA_BRANDS_FONT_WEIGHT));
 
-	for (QtAwesomeFontData& fd : _fontDetails) {
-		// only load font-awesome once
-		if (fd.fontId() < 0) {
-			// load the font file
-			QFile res(":/fonts/" + fd.fontFilename());
-			if (!res.open(QIODevice::ReadOnly)) {
-				qDebug() << "Font awesome font" << fd.fontFilename() << "could not be loaded!";
-				success = false;
-				continue;
-			}
-			QByteArray fontData(res.readAll());
-			res.close();
-
-			// fetch the given font
-			fd.setFontId(QFontDatabase::addApplicationFontFromData(fontData));
-		}
-
-		QStringList loadedFontFamilies = QFontDatabase::applicationFontFamilies(fd.fontId());
-		if (loadedFontFamilies.empty()) {
-			qDebug() << "Font awesome" << fd.fontFilename() << " font is empty?!";
-			fd.setFontId(-1);// restore the font-awesome id
-			return false;
-		}
-		else {
-			fd.setFontFamily(loadedFontFamilies.at(0));
-		}
-	}
-
-	// intialize the brands icon map
+// Restore named codepoint mapping without triggering resource loading
 	addToNamedCodePoints(fa::fa_brands, faBrandsIconArray, sizeof(faBrandsIconArray) / sizeof(QtAwesomeNamedIcon));
 	addToNamedCodePoints(fa::fa_solid, faCommonIconArray, sizeof(faCommonIconArray) / sizeof(QtAwesomeNamedIcon));
-
-	//initialize others code icons maps
 	addToNamedCodePoints(fa::fa_regular, faRegularFreeIconArray, sizeof(faRegularFreeIconArray) / sizeof(QtAwesomeNamedIcon));
 
-	hasInit = success;
-	return success;
+    hasInit = true;
+    return true;
 }
 
 /// Add the given array as named codepoints
@@ -465,15 +431,20 @@ void QtAwesome::give(const QString& name, QtAwesomeIconPainter* painter)
 ///
 ///    QLabel* label = new QLabel(QChar( icon_group ));
 ///    label->setFont(awesome->font(style::fas, 16))
+
 QFont QtAwesome::font(int style, int size) const
 {
-	if (!_fontDetails.contains(style)) return QFont();
+    if (!_fontDetails.contains(style)) return QFont();
 
-	QFont font(_fontDetails[style].fontFamily());
-	font.setPixelSize(size);
-	font.setWeight(_fontDetails[style].fontWeight());
+    QFont font(_fontDetails[style].fontFamily());
+    font.setPixelSize(size);
+    font.setWeight(_fontDetails[style].fontWeight());
 
-	return font;
+    if (style == fa::fa_solid) {
+        font.setStyleName("Solid");  // <-- This is the fix
+    }
+
+    return font;
 }
 
 QString QtAwesome::fontName(int style) const

@@ -24,7 +24,7 @@
 #ifndef CATEGORIZEDVIEW_H
 #define CATEGORIZEDVIEW_H
 
-#include "kcategorizedview/kcategorizedview.h"
+#include <KCategorizedView>
 #include "treeview.h"
 
 class QIcon;
