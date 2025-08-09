@@ -10375,7 +10375,7 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
+        <source>XML Streams (*.xml * *.cantata)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10385,7 +10385,7 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*.xml.gz)</source>
+        <source>XML Streams (*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

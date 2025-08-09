@@ -53,7 +53,6 @@ set(SUPPORT_SRCS
 set(SUPPORT_UIS shortcutssettingswidget.ui)
 
 qt_wrap_ui(SUPPORT_UI_HDRS ${SUPPORT_UIS})
-qt_add_resources(SUPPORT_RC_SRCS QtAwesomeFree.qrc)
 
 add_library(
     support

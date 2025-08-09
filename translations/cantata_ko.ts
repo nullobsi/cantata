@@ -5592,16 +5592,16 @@ i18n: ectx: property (text), widget (UrlNoteLabel, ratingsNote)
         <translation type="vanished">스트림 불러오기</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation type="vanished">XML 스트림 (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation type="vanished">XML 스트림 (*.xml * *.cantata)</translation>
     </message>
     <message>
         <source>Export Streams</source>
         <translation type="vanished">스트림 내보내기</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation type="vanished">XML 스트림 (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation type="vanished">XML 스트림 (*)</translation>
     </message>
     <message>
         <source>Failed to create &apos;%1&apos;!</source>
@@ -14397,8 +14397,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation type="unfinished">XML 스트림 (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation type="unfinished">XML 스트림 (*.xml * *.cantata)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -14407,8 +14407,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation type="unfinished">XML 스트림 (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation type="unfinished">XML 스트림 (*)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>

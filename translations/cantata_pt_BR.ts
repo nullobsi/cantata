@@ -6563,8 +6563,8 @@ Sobrescrevê-la?</translation>
         <translation>Editar</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation>Fluxos XML (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation>Fluxos XML (*)</translation>
     </message>
     <message>
         <source>Digitally Imported</source>
@@ -6628,8 +6628,8 @@ Sobrescrevê-la?</translation>
         <translation>Um fluxo intitulado &apos;%1&apos; já existe!</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation>Fluxos XML (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation>Fluxos XML (*.xml * *.cantata)</translation>
     </message>
     <message>
         <source>Added &apos;%1&apos;&apos; to favorites</source>

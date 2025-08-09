@@ -3483,8 +3483,8 @@ i18n: ectx: property (text), widget (QTreeWidget, files)
         <translation type="vanished">Stream importieren</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation type="vanished">XML-Streams (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation type="vanished">XML-Streams (*.xml * *.cantata)</translation>
     </message>
     <message>
         <source>Export Streams</source>
@@ -12028,8 +12028,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation>XML-Streams (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation>XML-Streams (*.xml * *.cantata)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -12038,8 +12038,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation>XML-Streams (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation>XML-Streams (*)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>
