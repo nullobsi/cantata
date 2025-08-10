@@ -28,8 +28,8 @@
 #include "mpd-interface/mpdconnection.h"
 #include "mpd-interface/mpdparseutils.h"
 #include "network/networkaccessmanager.h"
+#include <QtSolutions/qtiocompressor.h>
 #include "playqueuemodel.h"
-#include "qtiocompressor/qtiocompressor.h"
 #include "roles.h"
 #include "support/action.h"
 #include "support/actioncollection.h"

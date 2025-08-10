@@ -31,7 +31,7 @@
 #include "musiclibraryitemartist.h"
 #include "musiclibraryitemsong.h"
 #include "musiclibrarymodel.h"
-#include "qtiocompressor/qtiocompressor.h"
+#include <QtSolutions/qtiocompressor.h>
 #include <QElapsedTimer>
 #include <QFile>
 #include <QXmlStreamReader>

@@ -809,13 +809,12 @@ endif()
 
 add_subdirectory(translations)
 add_subdirectory(support)
-add_subdirectory(3rdparty/qtiocompressor)
 add_subdirectory(3rdparty/knotifications)
 add_subdirectory(streams/icons)
 add_subdirectory(online/icons)
 
-target_link_libraries(cantata PRIVATE support-core qtiocompressor
- KF6Notifications)
+find_library(QtSolutions_IOCompressor_LIB QtSolutions_IOCompressor-2.3 PATHS /usr/lib64)
+target_link_libraries(cantata PRIVATE support-core KF6Notifications ${QtSolutions_IOCompressor_LIB})
 
 # enable warnings
 add_definitions(-DQT_NO_DEBUG_OUTPUT)
