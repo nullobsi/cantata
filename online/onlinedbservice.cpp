@@ -26,7 +26,7 @@
 #include "gui/covers.h"
 #include "models/roles.h"
 #include "network/networkaccessmanager.h"
-#include "qtiocompressor/qtiocompressor.h"
+#include <QtSolutions/qtiocompressor.h>
 #include <QXmlStreamReader>
 
 OnlineXmlParser::OnlineXmlParser()

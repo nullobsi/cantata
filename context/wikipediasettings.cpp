@@ -24,7 +24,7 @@
 #include "wikipediasettings.h"
 #include "gui/settings.h"
 #include "network/networkaccessmanager.h"
-#include "qtiocompressor/qtiocompressor.h"
+#include <QtSolutions/qtiocompressor.h>
 #include "support/action.h"
 #include "support/icon.h"
 #include "support/spinner.h"

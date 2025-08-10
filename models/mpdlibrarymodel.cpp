@@ -25,7 +25,7 @@
 #include "db/mpdlibrarydb.h"
 #include "gui/covers.h"
 #include "gui/settings.h"
-#include "kcategorizedview/kcategorizedsortfilterproxymodel.h"
+#include <KCategorizedSortFilterProxyModel>
 #include "roles.h"
 #include "support/configuration.h"
 #include "support/globalstatic.h"
