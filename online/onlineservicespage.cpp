@@ -38,9 +38,11 @@ OnlineServicesPage::OnlineServicesPage(QWidget* p)
 {
 	addPage(StreamsModel::self()->name(), StreamsModel::self()->icon(), StreamsModel::self()->title(), StreamsModel::self()->descr(), new StreamsPage(this));
 
-	JamendoService* jamendo = new JamendoService(this);
-	addPage(jamendo->name(), jamendo->icon(), jamendo->title(), jamendo->descr(), new OnlineDbWidget(jamendo, this));
-	connect(jamendo, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
+	// Start hide service
+	//	JamendoService* jamendo = new JamendoService(this);
+	//	addPage(jamendo->name(), jamendo->icon(), jamendo->title(), jamendo->descr(), new OnlineDbWidget(jamendo, this));
+	//	connect(jamendo, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
+	// End hide service
 
 	MagnatuneService* magnatune = new MagnatuneService(this);
 	addPage(magnatune->name(), magnatune->icon(), magnatune->title(), magnatune->descr(), new OnlineDbWidget(magnatune, this));

@@ -627,13 +627,15 @@ PodcastSearchDialog::PodcastSearchDialog(PodcastService* s, QWidget* parent)
 	pageWidget->addPage(urlPage, tr("Enter URL"), urlPage->icon(), tr("Manual podcast URL"));
 	pages << urlPage;
 
-	ITunesSearchPage* itunes = new ITunesSearchPage(pageWidget);
-	pageWidget->addPage(itunes, tr("Search %1").arg(itunes->name()), itunes->icon(), tr("Search for podcasts on %1").arg(itunes->name()));
-	pages << itunes;
-
-	GPodderSearchPage* gpodder = new GPodderSearchPage(pageWidget);
-	pageWidget->addPage(gpodder, tr("Search %1").arg(gpodder->name()), gpodder->icon(), tr("Search for podcasts on %1").arg(gpodder->name()));
-	pages << gpodder;
+	// Start hide service
+	//	ITunesSearchPage* itunes = new ITunesSearchPage(pageWidget);
+	//	pageWidget->addPage(itunes, tr("Search %1").arg(itunes->name()), itunes->icon(), tr("Search for podcasts on %1").arg(itunes->name()));
+	//	pages << itunes;
+	//
+	//	GPodderSearchPage* gpodder = new GPodderSearchPage(pageWidget);
+	//	pageWidget->addPage(gpodder, tr("Search %1").arg(gpodder->name()), gpodder->icon(), tr("Search for podcasts on %1").arg(gpodder->name()));
+	//	pages << gpodder;
+	// End hide service
 
 	QSet<QString> loaded;
 	pages << loadDirectories(Utils::dataDir(), false, loaded);
