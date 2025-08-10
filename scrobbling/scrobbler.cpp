@@ -31,7 +31,7 @@
 #include "mpd-interface/mpdconnection.h"
 #include "network/networkaccessmanager.h"
 #include "pausabletimer.h"
-#include "qtiocompressor/qtiocompressor.h"
+#include <QtSolutions/qtiocompressor.h>
 #include "support/configuration.h"
 #include "support/globalstatic.h"
 #include "support/utils.h"

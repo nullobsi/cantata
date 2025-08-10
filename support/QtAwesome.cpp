@@ -431,20 +431,15 @@ void QtAwesome::give(const QString& name, QtAwesomeIconPainter* painter)
 ///
 ///    QLabel* label = new QLabel(QChar( icon_group ));
 ///    label->setFont(awesome->font(style::fas, 16))
-
 QFont QtAwesome::font(int style, int size) const
 {
-    if (!_fontDetails.contains(style)) return QFont();
+	if (!_fontDetails.contains(style)) return QFont();
 
-    QFont font(_fontDetails[style].fontFamily());
-    font.setPixelSize(size);
-    font.setWeight(_fontDetails[style].fontWeight());
+	QFont font(_fontDetails[style].fontFamily());
+	font.setPixelSize(size);
+	font.setWeight(_fontDetails[style].fontWeight());
 
-    if (style == fa::fa_solid) {
-        font.setStyleName("Solid");  // <-- This is the fix
-    }
-
-    return font;
+	return font;
 }
 
 QString QtAwesome::fontName(int style) const
