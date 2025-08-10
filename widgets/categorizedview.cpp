@@ -24,8 +24,8 @@
 #include "categorizedview.h"
 #include "config.h"
 #include "icons.h"
-#include "kcategorizedview/kcategorizedsortfilterproxymodel.h"
-#include "kcategorizedview/kcategorydrawer.h"
+#include "KCategorizedView"
+#include "KCategoryDrawer"
 #include "support/utils.h"
 #include <QApplication>
 #include <QDrag>
