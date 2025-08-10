@@ -8178,8 +8178,8 @@ Sovrascrivere?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation>Flussi XML (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation>Flussi XML (*.xml * *.cantata)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -8188,8 +8188,8 @@ Sovrascrivere?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation>Flussi XML (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation>Flussi XML (*)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>
