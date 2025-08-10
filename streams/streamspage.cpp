@@ -204,7 +204,7 @@ void StreamsBrowsePage::itemDoubleClicked(const QModelIndex& index)
 void StreamsBrowsePage::importXml()
 {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Import Streams"), QDir::homePath(),
-	                                                tr("XML Streams (*.xml *.xml.gz *.cantata)"));
+	                                                tr("XML Streams (*.xml *.xml *.cantata)"));
 
 	if (fileName.isEmpty()) {
 		return;
@@ -214,8 +214,8 @@ void StreamsBrowsePage::importXml()
 
 void StreamsBrowsePage::exportXml()
 {
-	QLatin1String ext(".xml.gz");
-	QString fileName = QFileDialog::getSaveFileName(this, tr("Export Streams"), QDir::homePath() + QLatin1String("/streams") + ext, tr("XML Streams (*.xml.gz)"));
+	QLatin1String ext(".xml");
+	QString fileName = QFileDialog::getSaveFileName(this, tr("Export Streams"), QDir::homePath() + QLatin1String("/streams") + ext, tr("XML Streams (*.xml)"));
 
 	if (fileName.isEmpty()) {
 		return;

@@ -131,10 +131,7 @@ static void removeOldFiles(const QString& d, const QStringList& types)
 static void removeOldFiles()
 {
 	// Remove Cantata 1.x XML cache files
-	removeOldFiles(Utils::cacheDir("library"), QStringList() << "*.xml"
-	                                                         << "*.xml.gz");
-	removeOldFiles(Utils::cacheDir("jamendo"), QStringList() << "*.xml.gz");
-	removeOldFiles(Utils::cacheDir("magnatune"), QStringList() << "*.xml.gz");
+	removeOldFiles(Utils::cacheDir("library"), QStringList() << "*.xml");
 }
 
 static QString debugAreas()

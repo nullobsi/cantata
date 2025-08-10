@@ -4605,16 +4605,16 @@ i18n: ectx: property (text), widget (UrlNoteLabel, ratingsNote)
         <translation type="obsolete">Importer les flux</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation type="obsolete">Flux XML (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation type="obsolete">Flux XML (*.xml * *.cantata)</translation>
     </message>
     <message>
         <source>Export Streams</source>
         <translation type="obsolete">Exporter les flux</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation type="obsolete">Flux XML (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation type="obsolete">Flux XML (*)</translation>
     </message>
     <message>
         <source>Failed to create &apos;%1&apos;!</source>
@@ -13346,8 +13346,8 @@ Remplacer ?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation>Flux XML (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation>Flux XML (*.xml * *.cantata)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -13356,8 +13356,8 @@ Remplacer ?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation>Flux XML (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation>Flux XML (*)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>
