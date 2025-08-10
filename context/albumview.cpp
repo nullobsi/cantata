@@ -28,7 +28,6 @@
 #include "models/mpdlibrarymodel.h"
 #include "mpd-interface/cuefile.h"
 #include "network/networkaccessmanager.h"
-#include <QtSolutions/qtiocompressor.h>
 #include "support/action.h"
 #include "support/actioncollection.h"
 #include "support/configuration.h"
@@ -46,7 +45,7 @@
 #include <QUrlQuery>
 
 const QLatin1String AlbumView::constCacheDir("albums/");
-const QLatin1String AlbumView::constInfoExt(".html.gz");
+const QLatin1String AlbumView::constInfoExt(".html");
 
 static const QLatin1String constScheme("cantata");
 
@@ -246,11 +245,8 @@ void AlbumView::getDetails()
 		QString cachedFile = cacheFileName(Covers::fixArtist(currentSong.albumArtistOrComposer()), currentSong.album, prefix, false);
 		if (QFile::exists(cachedFile)) {
 			QFile f(cachedFile);
-			QtIOCompressor compressor(&f);
-			compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-			if (compressor.open(QIODevice::ReadOnly)) {
-				QByteArray data = compressor.readAll();
-
+			if (f.open(QIODevice::ReadOnly)) {
+			    QByteArray data = f.readAll();
 				if (!data.isEmpty()) {
 					searchResponse(QString::fromUtf8(data), QString());
 					Utils::touchFile(cachedFile);
@@ -301,11 +297,9 @@ void AlbumView::searchResponse(const QString& resp, const QString& lang)
 		details = engine->translateLinks(resp);
 		if (!lang.isEmpty()) {
 			QFile f(cacheFileName(Covers::fixArtist(currentSong.albumArtistOrComposer()), currentSong.album, lang, true));
-			QtIOCompressor compressor(&f);
-			compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-			if (compressor.open(QIODevice::WriteOnly)) {
-				compressor.write(resp.toUtf8().constData());
-			}
+			if (f.open(QIODevice::WriteOnly)) {
+				f.write(resp.toUtf8().constData());
+		}
 		}
 		updateDetails();
 	}

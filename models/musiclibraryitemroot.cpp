@@ -31,7 +31,6 @@
 #include "musiclibraryitemartist.h"
 #include "musiclibraryitemsong.h"
 #include "musiclibrarymodel.h"
-#include <QtSolutions/qtiocompressor.h>
 #include <QElapsedTimer>
 #include <QFile>
 #include <QXmlStreamReader>
@@ -191,17 +190,17 @@ void MusicLibraryItemRoot::toXML(const QString& filename, MusicLibraryProgressMo
 		return;
 	}
 
+
 	QFile file(filename);
-	QtIOCompressor compressor(&file);
-	compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-	if (!compressor.open(QIODevice::WriteOnly)) {
+	if (!file.open(QIODevice::WriteOnly)) {
 		return;
 	}
 
-	QXmlStreamWriter writer(&compressor);
+	QXmlStreamWriter writer(&file);
 	toXML(writer, prog);
-	compressor.close();
-}
+	file.close();
+	}
+
 
 static const quint32 constVersion = 1;
 static const QString constTopTag = QLatin1String("tagcache");
@@ -353,19 +352,18 @@ bool MusicLibraryItemRoot::fromXML(const QString& filename, const QString& baseF
 #endif
 
 	QFile file(filename);
-	QtIOCompressor compressor(&file);
-	compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-	if (!compressor.open(QIODevice::ReadOnly)) {
+	if (!file.open(QIODevice::ReadOnly)) {
 		return false;
 	}
-	QXmlStreamReader reader(&compressor);
+	QXmlStreamReader reader(&file);
 	bool rv = fromXML(reader, baseFolder, prog, em);
-	compressor.close();
-#ifdef TIME_XML_FILE_LOADING
+	file.close();
+	#ifdef TIME_XML_FILE_LOADING
 	qWarning() << filename << timer.elapsed();
-#endif
+	#endif
 	return rv;
-}
+	}
+
 
 bool MusicLibraryItemRoot::fromXML(QXmlStreamReader& reader, const QString& baseFolder, MusicLibraryProgressMonitor* prog, MusicLibraryErrorMonitor* em)
 {

@@ -5062,16 +5062,16 @@ i18n: ectx: property (text), widget (UrlNoteLabel, ratingsNote)
         <translation type="vanished">Импортировать потоки</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation type="vanished">Потоки XML (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation type="vanished">Потоки XML (*.xml * *.cantata)</translation>
     </message>
     <message>
         <source>Export Streams</source>
         <translation type="vanished">Экспортировать потоки</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation type="vanished">Потоки XML (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation type="vanished">Потоки XML (*)</translation>
     </message>
     <message>
         <source>Failed to create &apos;%1&apos;!</source>
@@ -13871,8 +13871,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation type="unfinished">Потоки XML (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation type="unfinished">Потоки XML (*.xml * *.cantata)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -13881,8 +13881,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation type="unfinished">Потоки XML (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation type="unfinished">Потоки XML (*)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>

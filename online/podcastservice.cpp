@@ -31,7 +31,6 @@
 #include "mpd-interface/mpdconnection.h"
 #include "network/networkaccessmanager.h"
 #include "podcastsettingsdialog.h"
-#include <QtSolutions/qtiocompressor.h>
 #include "rssparser.h"
 #include "support/globalstatic.h"
 #include "support/utils.h"
@@ -55,7 +54,6 @@ GLOBAL_STATIC(PodcastService, instance)
 static QString encodeName(const QString& name)
 {
 	QString n = name;
-	n = n.replace("/", "_");
 	n = n.replace("\\", "_");
 	n = n.replace(":", "_");
 	return n;
@@ -143,7 +141,7 @@ bool PodcastService::Proxy::filterAcceptsRow(int sourceRow, const QModelIndex& s
 }
 
 const QLatin1String PodcastService::constName("podcasts");
-static const QLatin1String constExt(".xml.gz");
+static const QLatin1String constExt(".xml");
 static const char* constNewFeedProperty = "new-feed";
 static const char* constRssUrlProperty = "rss-url";
 static const char* constDestProperty = "dest";
@@ -257,14 +255,11 @@ bool PodcastService::Podcast::load()
 	}
 
 	QFile file(fileName);
-	QtIOCompressor compressor(&file);
-	compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-	if (!compressor.open(QIODevice::ReadOnly)) {
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		return false;
 	}
 
-	QXmlStreamReader reader(&compressor);
-	unplayedCount = 0;
+	QXmlStreamReader reader(&file);
 
 	QString podPath = Settings::self()->podcastDownloadPath();
 	while (!reader.atEnd()) {
@@ -325,13 +320,11 @@ bool PodcastService::Podcast::save() const
 	}
 
 	QFile file(fileName);
-	QtIOCompressor compressor(&file);
-	compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-	if (!compressor.open(QIODevice::WriteOnly)) {
-		return false;
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+	    return false;
 	}
 
-	QXmlStreamWriter writer(&compressor);
+	QXmlStreamWriter writer(&file);
 	writer.writeStartElement(constTopTag);
 	writer.writeAttribute(constImageAttribute, imageUrl.toString());// ??
 	writer.writeAttribute(constRssAttribute, url.toString());       // ??
@@ -357,7 +350,6 @@ bool PodcastService::Podcast::save() const
 		writer.writeEndElement();
 	}
 	writer.writeEndElement();
-	compressor.close();
 	return true;
 }
 

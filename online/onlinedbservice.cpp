@@ -26,8 +26,9 @@
 #include "gui/covers.h"
 #include "models/roles.h"
 #include "network/networkaccessmanager.h"
-#include <QtSolutions/qtiocompressor.h>
+#include <QBuffer>
 #include <QXmlStreamReader>
+#include <KCompressionDevice>
 
 OnlineXmlParser::OnlineXmlParser()
 {
@@ -48,26 +49,35 @@ void OnlineXmlParser::start(NetworkJob* job)
 
 void OnlineXmlParser::doParsing(NetworkJob* job)
 {
-	QtIOCompressor comp(job->actualJob());
-	comp.setStreamFormat(QtIOCompressor::GzipFormat);
-	if (comp.open(QIODevice::ReadOnly)) {
-		QXmlStreamReader reader;
-		reader.setDevice(&comp);
-		emit startUpdate();
-		int artistCount = parse(reader);
-		if (artistCount > 0) {
-			emit endUpdate();
-			emit stats(artistCount);
-		}
-		else {
-			emit error(tr("Failed to parse"));
-			emit abortUpdate();
-		}
-	}
-	else {
-		emit error(tr("Failed to parse"));
-	}
-	emit complete();
+    QByteArray compressed = job->actualJob()->readAll();
+
+    QBuffer buffer(&compressed);
+    buffer.open(QIODevice::ReadOnly);
+
+    KCompressionDevice dev(&buffer, false, KCompressionDevice::GZip);
+    if (!dev.open(QIODevice::ReadOnly)) {
+        emit error(tr("Failed to decompress"));
+        emit abortUpdate();
+        emit complete();
+        return;
+    }
+
+    QByteArray decompressed = dev.readAll();
+    QXmlStreamReader reader(decompressed);
+
+    emit startUpdate();
+
+    int artistCount = parse(reader);
+
+    if (artistCount > 0) {
+        emit endUpdate();
+        emit stats(artistCount);
+    } else {
+        emit error(tr("Failed to parse"));
+        emit abortUpdate();
+    }
+
+    emit complete();
 }
 
 OnlineDbService::OnlineDbService(LibraryDb* d, QObject* p)

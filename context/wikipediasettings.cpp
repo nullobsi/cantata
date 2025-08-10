@@ -24,7 +24,6 @@
 #include "wikipediasettings.h"
 #include "gui/settings.h"
 #include "network/networkaccessmanager.h"
-#include <QtSolutions/qtiocompressor.h>
 #include "support/action.h"
 #include "support/icon.h"
 #include "support/spinner.h"
@@ -35,8 +34,8 @@
 #include <QUrlQuery>
 #include <QXmlStreamReader>
 
-static const QString constOldFileName = QLatin1String("wikipedia-available.xml.gz");
-static const QString constFileName = QLatin1String("languages.xml.gz");
+static const QString constOldFileName = QLatin1String("wikipedia-available.xml");
+static const QString constFileName = QLatin1String("languages.xml");
 
 QString WikipediaSettings::constSubDir = QLatin1String("wikipedia");
 
@@ -105,10 +104,8 @@ void WikipediaSettings::showEvent(QShowEvent* e)
 		QString fileName = localeFile();
 		if (QFile::exists(fileName)) {
 			QFile f(fileName);
-			QtIOCompressor compressor(&f);
-			compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-			if (compressor.open(QIODevice::ReadOnly)) {
-				data = compressor.readAll();
+			if (f.open(QIODevice::ReadOnly)) {
+			    data = f.readAll();
 			}
 		}
 
@@ -190,10 +187,8 @@ void WikipediaSettings::parseLangs()
 	QByteArray data = reply->readAll();
 	parseLangs(data);
 	QFile f(localeFile());
-	QtIOCompressor compressor(&f);
-	compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-	if (compressor.open(QIODevice::WriteOnly)) {
-		compressor.write(data);
+	if (f.open(QIODevice::WriteOnly)) {
+	    f.write(data);
 	}
 }
 

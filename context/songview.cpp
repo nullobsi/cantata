@@ -37,7 +37,6 @@
 #include "gui/stdactions.h"
 #include "mpd-interface/mpdstatus.h"
 #include "network/networkaccessmanager.h"
-#include <QtSolutions/qtiocompressor.h>
 #include "support/action.h"
 #include "support/actioncollection.h"
 #include "support/utils.h"
@@ -57,7 +56,7 @@
 const QLatin1String SongView::constLyricsDir("lyrics/");
 const QLatin1String SongView::constExtension(".lyrics");
 const QLatin1String SongView::constCacheDir("tracks/");
-const QLatin1String SongView::constInfoExt(".html.gz");
+const QLatin1String SongView::constInfoExt(".html");
 
 static QString infoCacheFileName(const Song& song, const QString& lang, bool createDir)
 {
@@ -440,11 +439,8 @@ void SongView::loadInfo()
 		QString cachedFile = infoCacheFileName(currentSong, prefix, false);
 		if (QFile::exists(cachedFile)) {
 			QFile f(cachedFile);
-			QtIOCompressor compressor(&f);
-			compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-			if (compressor.open(QIODevice::ReadOnly)) {
-				QByteArray data = compressor.readAll();
-
+			if (f.open(QIODevice::ReadOnly)) {
+			    QByteArray data = f.readAll();
 				if (!data.isEmpty()) {
 					infoSearchResponse(QString::fromUtf8(data), QString());
 					Utils::touchFile(cachedFile);
@@ -684,10 +680,8 @@ void SongView::infoSearchResponse(const QString& resp, const QString& lang)
 		str = engine->translateLinks(resp);
 		if (!lang.isEmpty()) {
 			QFile f(infoCacheFileName(currentSong, lang, true));
-			QtIOCompressor compressor(&f);
-			compressor.setStreamFormat(QtIOCompressor::GzipFormat);
-			if (compressor.open(QIODevice::WriteOnly)) {
-				compressor.write(resp.toUtf8().constData());
+			if (f.open(QIODevice::WriteOnly)) {
+			    f.write(resp.toUtf8().constData());
 			}
 		}
 	}

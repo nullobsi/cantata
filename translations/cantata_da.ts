@@ -7946,8 +7946,8 @@ Overskriv?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml *.xml.gz *.cantata)</source>
-        <translation>XML-strømme (*.xml *.xml.gz *.cantata)</translation>
+        <source>XML Streams (*.xml * *.cantata)</source>
+        <translation>XML-strømme (*.xml * *.cantata)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -7956,8 +7956,8 @@ Overskriv?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*.xml.gz)</source>
-        <translation>XML-strømme (*.xml.gz)</translation>
+        <source>XML Streams (*)</source>
+        <translation>XML-strømme (*)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>
