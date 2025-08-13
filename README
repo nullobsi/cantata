@@ -711,7 +711,6 @@ Cantata contains code/icons from:
     libebur128         - https://github.com/jiixyj/libebur128 (Replay gain
                          calculation)
     IcoMoon            - http://icomoon.io/#icons (Monochrome sidebar icons)
-    Qxt                - Multi-media key support
     QtSolutions        - QtIOCompressor, and QtSingleApplication
     QMPDClient         - Last.fm scrobbling
 

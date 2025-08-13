@@ -28,12 +28,7 @@
 #include <qglobal.h>
 
 class GnomeMediaKeys;
-class QxtMediaKeys;
 class MultiMediaKeysInterface;
-
-#if defined Q_OS_WIN
-// #define CANTATA_USE_QXT_MEDIAKEYS
-#endif
 
 class MediaKeys {
 public:
@@ -53,9 +48,6 @@ private:
 private:
 #ifdef QT_QTDBUS_FOUND
 	GnomeMediaKeys* gnome;
-#endif
-#ifdef CANTATA_USE_QXT_MEDIAKEYS
-	QxtMediaKeys* qxt;
 #endif
 };
 

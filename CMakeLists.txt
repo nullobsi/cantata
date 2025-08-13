@@ -747,9 +747,6 @@ else()
 endif()
 
 if(WIN32)
-    #add_definitions(-DQXT_STATIC)
-    #add_subdirectory(3rdparty/qxt)
-    #target_sources(cantata PRIVATE gui/qxtmediakeys.cpp)
     set_target_properties(cantata PROPERTIES WIN32_EXECUTABLE TRUE)
     # Install to root of prefix.
     install(TARGETS cantata RUNTIME DESTINATION ".")
@@ -807,10 +804,6 @@ if(WIN32 OR APPLE OR HAIKU)
 else()
     set(XDG_APPS_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/applications")
 endif()
-
-if(WIN32)
-    #target_link_libraries(cantata qxt)
-endif(WIN32)
 
 add_subdirectory(translations)
 add_subdirectory(support)
