@@ -207,9 +207,7 @@ private:
 	QSize listGridSize;
 	GroupedView* groupedView;
 	TableView* tableView;
-#ifdef ENABLE_CATEGORIZED_VIEW
 	CategorizedView* categorizedView;
-#endif
 	Spinner* spinner;
 	MessageOverlay* msgOverlay;
 	QIcon bgndIcon;

@@ -143,13 +143,14 @@ option(
     "Use libVLC for MPD HTTP stream playback (if ENABLE_HTTP_STREAM_PLAYBACK=ON)"
     OFF
 )
-option(ENABLE_CATEGORIZED_VIEW "Enable support for categorised view" OFF)
 option(ENABLE_SCROBBLING "Enable scrobbling" ON)
 
 if(WIN32 OR APPLE OR HAIKU)
     option(ENABLE_DEVICES_SUPPORT "Enable suport for external devices" OFF)
+	option(BUNDLED_KCATEGORIZEDVIEW "Compile vendored KCategorizedView" ON)
 else()
     option(ENABLE_DEVICES_SUPPORT "Enable suport for external devices" ON)
+	option(BUNDLED_KCATEGORIZEDVIEW "Compile vendored KCategorizedView" OFF)
     option(
         ENABLE_REMOTE_DEVICES
         "Enable support for remote (sshfs, samba) devices"
@@ -413,6 +414,7 @@ target_sources(
         widgets/treeview.cpp
         widgets/listview.cpp
         widgets/itemview.cpp
+        widgets/categorizedview.cpp
         widgets/autohidingsplitter.cpp
         widgets/nowplayingwidget.cpp
         widgets/actionlabel.cpp
@@ -528,9 +530,6 @@ target_sources(
         gui/mediakeys.cpp
 )
 
-if(ENABLE_CATEGORIZED_VIEW)
-    target_sources(cantata PRIVATE widgets/categorizedview.cpp)
-endif()
 if(ENABLE_SIMPLE_MPD_SUPPORT)
     target_sources(cantata PRIVATE mpd-interface/mpduser.cpp)
 endif()
@@ -794,6 +793,14 @@ else()
     install(TARGETS cantata)
 endif()
 
+if(BUNDLED_KCATEGORIZEDVIEW)
+    add_subdirectory(3rdparty/kcategorizedview)
+    target_link_libraries(cantata PRIVATE kcategorizedview)
+else()
+	find_package(KF6ItemViews REQUIRED)
+	target_link_libraries(cantata PRIVATE KF6::ItemViews)
+endif()
+
 if(WIN32 OR APPLE OR HAIKU)
     add_subdirectory(3rdparty/qtsingleapplication)
     target_link_libraries(cantata PRIVATE qtsingleapplication)
@@ -814,9 +821,6 @@ add_subdirectory(online/icons)
 
 target_link_libraries(cantata PRIVATE support-core qtiocompressor
  KF6Notifications)
-
-find_package(KF6ItemViews REQUIRED)
-target_link_libraries(cantata PRIVATE KF6::ItemViews)
 
 # enable warnings
 add_definitions(-DQT_NO_DEBUG_OUTPUT)

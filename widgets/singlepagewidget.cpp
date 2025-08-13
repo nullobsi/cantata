@@ -43,9 +43,7 @@ static QString viewTypeString(ItemView::Mode mode)
 	case ItemView::Mode_List: return QObject::tr("List");
 	case ItemView::Mode_IconTop: return QObject::tr("Grid");
 	case ItemView::Mode_Table: return QObject::tr("Table");
-#ifdef ENABLE_CATEGORIZED_VIEW
 	case ItemView::Mode_Categorized: return QObject::tr("Categorized");
-#endif
 	}
 }
 
@@ -198,9 +196,7 @@ QList<QAction*> SinglePageWidget::createViewActions(QList<ItemView::Mode> modes)
 {
 	QList<QPair<QString, int>> vals;
 	for (ItemView::Mode m : modes) {
-#ifndef ENABLE_CATEGORIZED_VIEW
 		if (m != ItemView::Mode_Categorized)
-#endif
 			vals.append(MenuItem(viewTypeString(m), m));
 	}
 	return createActions(vals, view->viewMode(), this, SLOT(viewModeSelected()));

@@ -24,7 +24,14 @@
 #ifndef CATEGORIZEDVIEW_H
 #define CATEGORIZEDVIEW_H
 
+#include "config.h"
+
+#ifdef BUNDLED_KCATEGORIZEDVIEW
+#include "kcategorizedview/kcategorizedview.h"
+#else
 #include <KCategorizedView>
+#endif
+
 #include "treeview.h"
 
 class QIcon;

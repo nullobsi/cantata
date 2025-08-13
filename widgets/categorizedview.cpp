@@ -24,8 +24,14 @@
 #include "categorizedview.h"
 #include "config.h"
 #include "icons.h"
-#include "KCategorizedView"
-#include "KCategoryDrawer"
+#if BUNDLED_KCATEGORIZEDVIEW
+#include "kcategorizedview/kcategorizedsortfilterproxymodel.h"
+#include "kcategorizedview/kcategorydrawer.h"
+#else
+#include <KCategorizedView>
+#include <KCategorizedSortFilterProxyModel>
+#include <KCategoryDrawer>
+#endif
 #include "support/utils.h"
 #include <QApplication>
 #include <QDrag>

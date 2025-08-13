@@ -43,6 +43,7 @@
 				libmusicbrainz5
 				libmtp
 				media-player-info
+				kdePackages.kitemviews
 			];
 		in
 		{

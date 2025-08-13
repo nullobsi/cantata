@@ -22,9 +22,9 @@ The following options may be passed to CMake:
         Specify which type of build. Debug builds will be *much* larger, as
         they will contain extra debugging information.
 
-    -ENABLE_CATEGORIZED_VIEW=ON
-        Enable categorized view. Disabled due to reported crash - #1530
-        Default: OFF
+    -BUNDLED_KCATEGORIZEDVIEW=ON
+        Compile in-tree KCategorizedView.
+        Default: ON on Windows/Mac, OFF on other platforms.
 
     -DENABLE_HTTP_STREAM_PLAYBACK=ON
         Enable support for playing back MPD HTTP streams via QtMultiMedia or

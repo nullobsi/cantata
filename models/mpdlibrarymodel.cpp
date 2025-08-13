@@ -21,11 +21,16 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "config.h"
 #include "mpdlibrarymodel.h"
 #include "db/mpdlibrarydb.h"
 #include "gui/covers.h"
 #include "gui/settings.h"
+#ifdef BUNDLED_KCATEGORIZEDVIEW
+#include "kcategorizedview/kcategorizedsortfilterproxymodel.h"
+#else
 #include <KCategorizedSortFilterProxyModel>
+#endif
 #include "roles.h"
 #include "support/configuration.h"
 #include "support/globalstatic.h"

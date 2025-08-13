@@ -38,7 +38,7 @@
 #cmakedefine IOKIT_FOUND 1
 #cmakedefine ENABLE_SIMPLE_MPD_SUPPORT 1
 #cmakedefine Avahi_FOUND 1
-#cmakedefine ENABLE_CATEGORIZED_VIEW 1
+#cmakedefine BUNDLED_KCATEGORIZEDVIEW 1
 #cmakedefine ENABLE_SCROBBLING 1
 
 #define PROJECT_REV_ID "@PROJECT_REV_ID@"
