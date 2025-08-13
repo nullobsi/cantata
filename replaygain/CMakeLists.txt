@@ -34,19 +34,8 @@ if(FFMPEG_FOUND OR MPG123_FOUND)
         target_link_libraries(cantata-replaygain PRIVATE MPG123::MPG123)
     endif()
 
-    find_package(EBUR128)
-
-    if(EBUR128_FOUND)
-        message("-- Using system libebur128")
-        target_link_libraries(cantata-replaygain PRIVATE EBUR128::EBUR128)
-    else()
-        message("-- Using supplied libebur128")
-        add_subdirectory(
-            ${CMAKE_SOURCE_DIR}/3rdparty/ebur128
-            ${CMAKE_BINARY_DIR}/3rdparty/ebur128
-        )
-        target_link_libraries(cantata-replaygain PRIVATE ebur128)
-    endif()
+	find_package(EBUR128 REQUIRED)
+	target_link_libraries(cantata-replaygain PRIVATE EBUR128::EBUR128)
 
     if(UNIX AND NOT APPLE)
         target_link_libraries(cantata-replaygain PRIVATE pthread)
