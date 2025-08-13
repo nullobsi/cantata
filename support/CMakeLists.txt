@@ -53,6 +53,9 @@ set(SUPPORT_SRCS
 set(SUPPORT_UIS shortcutssettingswidget.ui)
 
 qt_wrap_ui(SUPPORT_UI_HDRS ${SUPPORT_UIS})
+if (BUNDLED_FONTAWESOME)
+	qt_add_resources(SUPPORT_RC_SRCS QtAwesomeFree.qrc)
+endif()
 
 add_library(
     support

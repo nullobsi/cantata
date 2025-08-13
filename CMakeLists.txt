@@ -148,9 +148,11 @@ option(ENABLE_SCROBBLING "Enable scrobbling" ON)
 if(WIN32 OR APPLE OR HAIKU)
     option(ENABLE_DEVICES_SUPPORT "Enable suport for external devices" OFF)
 	option(BUNDLED_KCATEGORIZEDVIEW "Compile vendored KCategorizedView" ON)
+	option(BUNDLED_FONTAWESOME "Use bundled QResources for FontAwesome." ON)
 else()
     option(ENABLE_DEVICES_SUPPORT "Enable suport for external devices" ON)
 	option(BUNDLED_KCATEGORIZEDVIEW "Compile vendored KCategorizedView" OFF)
+	option(BUNDLED_FONTAWESOME "Use bundled QResources for FontAwesome." OFF)
     option(
         ENABLE_REMOTE_DEVICES
         "Enable support for remote (sshfs, samba) devices"

@@ -9,6 +9,7 @@
 
 #ifndef QTAWESOME_H
 #define QTAWESOME_H
+#include "config.h"
 
 #include <QIcon>
 #include <QIconEngine>
@@ -41,20 +42,23 @@ class QtAwesomeIconPainter;
 class QtAwesomeFontData {
 public:
 	QtAwesomeFontData() : QtAwesomeFontData(QString()) {}
-	QtAwesomeFontData(const QString& fontFileName, QFont::Weight fontWeight = QFont::Normal);
+	QtAwesomeFontData(const QString& fontFileName, QFont::Weight fontWeight = QFont::Normal, const QString& fontStyle = "Regular");
 	const QString& fontFamily() const;
 	void setFontFamily(const QString& family);
 	const QString& fontFilename() const;
 	int fontId() const;
 	void setFontId(int id);
 	QFont::Weight fontWeight() const;
+	const QString& fontStyle() const;
 	void setFontWeight(QFont::Weight weight);
+	void setFontStyle(const QString& style);
 
 private:
 	QString _fontFamily;
 	QString _fontFilename;
 	int _fontId;
 	QFont::Weight _fontWeight;
+	QString _fontStyle;
 };
 
 //---------------------------------------------------------------------------------------
@@ -71,6 +75,9 @@ public:
 	static const QFont::Weight FA_BRANDS_FONT_WEIGHT = QFont::Normal;
 	static const QFont::Weight FA_REGULAR_FONT_WEIGHT = QFont::Normal;
 	static const QFont::Weight FA_SOLID_FONT_WEIGHT = QFont::Black;
+	static const QString FA_BRANDS_FONT_STYLE; // Regular
+	static const QString FA_REGULAR_FONT_STYLE;// Regular
+	static const QString FA_SOLID_FONT_STYLE;  // Solid
 
 public:
 	explicit QtAwesome(QObject* parent = nullptr);

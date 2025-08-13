@@ -225,6 +225,9 @@ private:
 const QString QtAwesome::FA_BRANDS_FONT_FILENAME = "Font Awesome 6 Brands-Regular-400.otf";
 const QString QtAwesome::FA_REGULAR_FONT_FILENAME = "Font Awesome 6 Free-Regular-400.otf";
 const QString QtAwesome::FA_SOLID_FONT_FILENAME = "Font Awesome 6 Free-Solid-900.otf";
+const QString QtAwesome::FA_BRANDS_FONT_STYLE = "Regular";
+const QString QtAwesome::FA_REGULAR_FONT_STYLE = "Regular";
+const QString QtAwesome::FA_SOLID_FONT_STYLE = "Solid";
 
 /// The default icon colors
 QtAwesome::QtAwesome(QObject* parent)
@@ -236,9 +239,16 @@ QtAwesome::QtAwesome(QObject* parent)
 
 	_fontIconPainter = new QtAwesomeCharIconPainter();
 
-	_fontDetails.insert(fa::fa_solid, QtAwesomeFontData(FA_SOLID_FONT_FILENAME, FA_SOLID_FONT_WEIGHT));
-	_fontDetails.insert(fa::fa_regular, QtAwesomeFontData(FA_REGULAR_FONT_FILENAME, FA_REGULAR_FONT_WEIGHT));
-	_fontDetails.insert(fa::fa_brands, QtAwesomeFontData(FA_BRANDS_FONT_FILENAME, FA_BRANDS_FONT_WEIGHT));
+#ifdef BUNDLED_FONTAWESOME
+	_fontDetails.insert(fa::fa_solid, QtAwesomeFontData(FA_SOLID_FONT_FILENAME, FA_SOLID_FONT_WEIGHT, FA_SOLID_FONT_STYLE));
+	_fontDetails.insert(fa::fa_regular, QtAwesomeFontData(FA_REGULAR_FONT_FILENAME, FA_REGULAR_FONT_WEIGHT, FA_REGULAR_FONT_STYLE));
+	_fontDetails.insert(fa::fa_brands, QtAwesomeFontData(FA_BRANDS_FONT_FILENAME, FA_BRANDS_FONT_WEIGHT, FA_BRANDS_FONT_STYLE));
+#else
+	// use "filename" to store font family name...
+	_fontDetails.insert(fa::fa_solid, QtAwesomeFontData("Font Awesome 6 Free Solid", FA_SOLID_FONT_WEIGHT, FA_SOLID_FONT_STYLE));
+	_fontDetails.insert(fa::fa_regular, QtAwesomeFontData("Font Awesome 6 Free Regular", FA_REGULAR_FONT_WEIGHT, FA_REGULAR_FONT_STYLE));
+	_fontDetails.insert(fa::fa_brands, QtAwesomeFontData("Font Awesome 6 Brands Regular", FA_BRANDS_FONT_WEIGHT, FA_BRANDS_FONT_STYLE));
+#endif
 
 #ifdef USE_COLOR_SCHEME
 	// support dark/light mode
@@ -283,18 +293,59 @@ QtAwesome::~QtAwesome()
 bool QtAwesome::initFontAwesome()
 {
 	if (hasInit) return true;
-// Set font family directly using Fedora's installed font
-    _fontDetails.insert(fa::fa_solid, QtAwesomeFontData("Font Awesome 6 Free Solid", FA_SOLID_FONT_WEIGHT));
-    _fontDetails.insert(fa::fa_regular, QtAwesomeFontData("Font Awesome 6 Free Regular", FA_REGULAR_FONT_WEIGHT));
-    _fontDetails.insert(fa::fa_brands, QtAwesomeFontData("Font Awesome 6 Brands Regular", FA_BRANDS_FONT_WEIGHT));
+	bool success = true;
 
-// Restore named codepoint mapping without triggering resource loading
+	#ifdef BUNDLED_FONTAWESOME
+	// The macro below internally calls "qInitResources_QtAwesome()". this initializes
+	// the resource system. For a .pri project this isn't required, but when building and using a
+	// static library the resource need to initialized first.
+	///
+	// I've checked th qInitResource_* code and calling this method mutliple times shouldn't be any problem
+	// (More info about this subject:  http://qt-project.org/wiki/QtResources)
+	qtawesome_init_resources();
+
+	for (QtAwesomeFontData& fd : _fontDetails) {
+		// only load font-awesome once
+		if (fd.fontId() < 0) {
+			// load the font file
+			QFile res(":/fonts/" + fd.fontFilename());
+			if (!res.open(QIODevice::ReadOnly)) {
+				qDebug() << "Font awesome font" << fd.fontFilename() << "could not be loaded!";
+				success = false;
+				continue;
+			}
+			QByteArray fontData(res.readAll());
+			res.close();
+
+			// fetch the given font
+			fd.setFontId(QFontDatabase::addApplicationFontFromData(fontData));
+		}
+
+		QStringList loadedFontFamilies = QFontDatabase::applicationFontFamilies(fd.fontId());
+		if (loadedFontFamilies.empty()) {
+			qDebug() << "Font awesome" << fd.fontFilename() << " font is empty?!";
+			fd.setFontId(-1);// restore the font-awesome id
+			return false;
+		}
+		else {
+			fd.setFontFamily(loadedFontFamilies.at(0));
+		}
+	}
+	#else
+	for (QtAwesomeFontData& fd : _fontDetails) {
+		fd.setFontFamily(fd.fontFilename()); // yes, what a great semantic use of the variable...
+	}
+	#endif
+
+	// intialize the brands icon map
 	addToNamedCodePoints(fa::fa_brands, faBrandsIconArray, sizeof(faBrandsIconArray) / sizeof(QtAwesomeNamedIcon));
 	addToNamedCodePoints(fa::fa_solid, faCommonIconArray, sizeof(faCommonIconArray) / sizeof(QtAwesomeNamedIcon));
+
+	//initialize others code icons maps
 	addToNamedCodePoints(fa::fa_regular, faRegularFreeIconArray, sizeof(faRegularFreeIconArray) / sizeof(QtAwesomeNamedIcon));
 
-    hasInit = true;
-    return true;
+	hasInit = success;
+	return success;
 }
 
 /// Add the given array as named codepoints
@@ -431,20 +482,16 @@ void QtAwesome::give(const QString& name, QtAwesomeIconPainter* painter)
 ///
 ///    QLabel* label = new QLabel(QChar( icon_group ));
 ///    label->setFont(awesome->font(style::fas, 16))
-
 QFont QtAwesome::font(int style, int size) const
 {
-    if (!_fontDetails.contains(style)) return QFont();
+	if (!_fontDetails.contains(style)) return QFont();
 
-    QFont font(_fontDetails[style].fontFamily());
-    font.setPixelSize(size);
-    font.setWeight(_fontDetails[style].fontWeight());
+	QFont font(_fontDetails[style].fontFamily());
+	font.setPixelSize(size);
+	font.setWeight(_fontDetails[style].fontWeight());
+	font.setStyleName(_fontDetails[style].fontStyle());
 
-    if (style == fa::fa_solid) {
-        font.setStyleName("Solid");  // <-- This is the fix
-    }
-
-    return font;
+	return font;
 }
 
 QString QtAwesome::fontName(int style) const
@@ -476,11 +523,12 @@ const QString QtAwesome::styleEnumToString(int style) const
 
 //---------------------------------------------------------------------------------------
 
-QtAwesomeFontData::QtAwesomeFontData(const QString& fontFileName, QFont::Weight fontWeight)
+QtAwesomeFontData::QtAwesomeFontData(const QString& fontFileName, QFont::Weight fontWeight, const QString& fontStyle)
 	: _fontFamily(QString()),
 	  _fontFilename(fontFileName),
 	  _fontId(-1),
-	  _fontWeight(fontWeight)
+	  _fontWeight(fontWeight),
+	  _fontStyle(fontStyle)
 {
 }
 
@@ -514,6 +562,10 @@ QFont::Weight QtAwesomeFontData::fontWeight() const
 	return _fontWeight;
 }
 
+const QString& QtAwesomeFontData::fontStyle() const {
+	return _fontStyle;
+}
+
 ///
 /// \brief setFontWeight set the font weight as QFont::weight
 /// \param weight the weight value according to QFont::weight enum
@@ -530,6 +582,10 @@ QFont::Weight QtAwesomeFontData::fontWeight() const
 void QtAwesomeFontData::setFontWeight(QFont::Weight weight)
 {
 	_fontWeight = weight;
+}
+
+void QtAwesomeFontData::setFontStyle(const QString& style) {
+	_fontStyle = style;
 }
 
 }// namespace fa
