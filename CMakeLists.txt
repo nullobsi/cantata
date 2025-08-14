@@ -145,6 +145,10 @@ option(
 )
 option(ENABLE_CATEGORIZED_VIEW "Enable support for categorised view" OFF)
 option(ENABLE_SCROBBLING "Enable scrobbling" ON)
+option(ENABLE_TAGEDITOR_SUPPORT "Enable tag editor support" OFF)
+option(ENABLE_TRACKORGANIZER_SUPPORT "Enable track organizer support" OFF)
+
+
 
 if(WIN32 OR APPLE OR HAIKU)
     option(ENABLE_DEVICES_SUPPORT "Enable suport for external devices" OFF)
@@ -260,8 +264,17 @@ if(TagLib_FOUND)
         endif()
     endif()
 
-    set(ENABLE_TAGEDITOR_SUPPORT 1)
-    set(ENABLE_TRACKORGANIZER_SUPPORT 1)
+	if(ENABLE_TAGEDITOR_SUPPORT)
+		set(ENABLE_TAGEDITOR_SUPPORT 1)
+	else()
+		set(ENABLE_TAGEDITOR_SUPPORT 0)
+	endif()
+
+	if(ENABLE_TRACKORGANIZER_SUPPORT)
+		set(ENABLE_TRACKORGANIZER_SUPPORT 1)
+	else()
+		set(ENABLE_TRACKORGANIZER_SUPPORT 0)
+	endif()
 
     if(ENABLE_FFMPEG)
         find_package(FFMPEG COMPONENTS avcodec avutil avformat)
@@ -612,15 +625,23 @@ endif()
 target_sources(cantata PRIVATE cantata.qrc cantata_media.qrc)
 
 if(TagLib_FOUND)
-    target_sources(
-        cantata
-        PRIVATE
-            tags/tageditor.cpp
-            tags/trackorganiser.cpp
-            devices/filenameschemedialog.cpp
-            widgets/tagspinbox.cpp
-            tags/taghelperiface.cpp
-    )
+	if(ENABLE_TAGEDITOR_SUPPORT)
+	    target_sources(cantata PRIVATE
+			tags/tageditor.cpp
+			widgets/tagspinbox.cpp
+		)	
+	endif()
+
+	if(ENABLE_TRACKORGANIZER_SUPPORT)
+		target_sources(cantata PRIVATE
+			tags/trackorganiser.cpp
+		)
+	endif()
+
+	target_sources(cantata PRIVATE
+	    devices/filenameschemedialog.cpp
+        tags/taghelperiface.cpp
+	)
 
     # Cantata still links to taglib, even if external tag reader/writer is used, because JamendoService uses taglib for ID3 genres.
     target_link_libraries(cantata PRIVATE TagLib::TagLib)
@@ -640,7 +661,10 @@ if(TagLib_FOUND)
         set(ENABLE_REPLAYGAIN_SUPPORT 1)
         add_subdirectory(replaygain)
     endif()
-    add_subdirectory(tags)
+
+	if(ENABLE_TAGEDITOR_SUPPORT OR ENABLE_TRACKORGANIZER_SUPPORT)
+	    add_subdirectory(tags)
+	endif()
 
     if(ENABLE_DEVICES_SUPPORT)
         add_subdirectory(3rdparty/solid-lite)

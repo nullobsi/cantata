@@ -67,9 +67,13 @@
 #include "http/httpserver.h"
 #include "online/onlineservicespage.h"
 #ifdef TagLib_FOUND
+#if ENABLE_TAGEDITOR_SUPPORT
 #include "tags/tageditor.h"
+#endif
 #include "tags/tags.h"
+#if ENABLE_TRACKORGANIZER_SUPPORT
 #include "tags/trackorganiser.h"
+#endif
 #ifdef ENABLE_REPLAYGAIN_SUPPORT
 #include "replaygain/rgdialog.h"
 #endif
@@ -1287,21 +1291,24 @@ void MainWindow::expand()
 
 bool MainWindow::canShowDialog()
 {
-	if (PreferencesDialog::instanceCount() || CoverDialog::instanceCount()
-#ifdef TagLib_FOUND
-	    || TagEditor::instanceCount() || TrackOrganiser::instanceCount()
+if (PreferencesDialog::instanceCount() || CoverDialog::instanceCount()
+#if defined(ENABLE_TAGEDITOR_SUPPORT) && ENABLE_TAGEDITOR_SUPPORT
+    || TagEditor::instanceCount()
+#endif
+#if defined(ENABLE_TRACKORGANIZER_SUPPORT) && ENABLE_TRACKORGANIZER_SUPPORT
+    || TrackOrganiser::instanceCount()
 #endif
 #ifdef ENABLE_DEVICES_SUPPORT
-	    || ActionDialog::instanceCount() || SyncDialog::instanceCount()
+    || ActionDialog::instanceCount() || SyncDialog::instanceCount()
 #endif
 #ifdef ENABLE_REPLAYGAIN_SUPPORT
-	    || RgDialog::instanceCount()
+    || RgDialog::instanceCount()
 #endif
-	) {
-		MessageBox::error(this, tr("Please close other dialogs first."));
-		return false;
-	}
-	return true;
+) {
+    MessageBox::error(this, tr("Please close other dialogs first."));
+    return false;
+}
+return true;
 }
 
 void MainWindow::showPreferencesDialog(const QString& page)
@@ -1334,9 +1341,19 @@ void MainWindow::quit()
 	}
 #endif
 #ifdef TagLib_FOUND
-	if (TagEditor::instanceCount() || 0 != TrackOrganiser::instanceCount()) {
+#if defined(ENABLE_TAGEDITOR_SUPPORT) && ENABLE_TAGEDITOR_SUPPORT
+	if (TagEditor::instanceCount()
+#if defined(ENABLE_TRACKORGANIZER_SUPPORT) && ENABLE_TRACKORGANIZER_SUPPORT
+		|| 0 != TrackOrganiser::instanceCount()
+#endif
+	) {
 		return;
 	}
+#elif defined(ENABLE_TRACKORGANIZER_SUPPORT) && ENABLE_TRACKORGANIZER_SUPPORT
+	if (0 != TrackOrganiser::instanceCount()) {
+		return;
+	}
+#endif
 #endif
 #ifdef ENABLE_DEVICES_SUPPORT
 	if (ActionDialog::instanceCount() || SyncDialog::instanceCount()) {
@@ -2672,9 +2689,15 @@ void MainWindow::collapseAll()
 void MainWindow::editTags()
 {
 #ifdef TagLib_FOUND
-	if (TagEditor::instanceCount() || !canShowDialog()) {
-		return;
-	}
+#if defined(ENABLE_TAGEDITOR_SUPPORT) && ENABLE_TAGEDITOR_SUPPORT
+	if (TagEditor::instanceCount()) {
+        return;
+    }
+#endif
+#endif
+    if (!canShowDialog()) {
+        return;
+    }
 	QList<Song> songs;
 	bool isPlayQueue = playQueue->hasFocus();
 	if (isPlayQueue) {
@@ -2698,16 +2721,32 @@ void MainWindow::editTags()
 	}
 #endif
 	MpdLibraryModel::self()->getDetails(artists, albumArtists, composers, albums, genres);
-	TagEditor* dlg = new TagEditor(this, songs, artists, albumArtists, composers, albums, genres, udi);
-	dlg->show();
+#if defined(ENABLE_TAGEDITOR_SUPPORT) && ENABLE_TAGEDITOR_SUPPORT
+#ifdef TagLib_FOUND
+    TagEditor* dlg = new TagEditor(this, songs, artists, albumArtists, composers, albums, genres, udi);
+    dlg->show();
+#endif
 #endif
 }
 
 void MainWindow::organiseFiles()
 {
 #ifdef TagLib_FOUND
-	if (TrackOrganiser::instanceCount() || !canShowDialog()) {
-		return;
+	#if defined(ENABLE_TRACKORGANIZER_SUPPORT) && ENABLE_TRACKORGANIZER_SUPPORT
+#ifdef TagLib_FOUND
+    if (TrackOrganiser::instanceCount() || !canShowDialog()) {
+        return;
+    }
+#else
+    if (!canShowDialog()) {
+        return;
+    }
+#endif
+#else
+    if (!canShowDialog()) {
+        return;
+    }
+#endif
 	}
 
 	QList<Song> songs;
@@ -2726,8 +2765,13 @@ void MainWindow::organiseFiles()
 		}
 #endif
 
-		TrackOrganiser* dlg = new TrackOrganiser(this);
-		dlg->show(songs, udi);
+#if defined(ENABLE_TRACKORGANIZER_SUPPORT) && ENABLE_TRACKORGANIZER_SUPPORT
+#ifdef TagLib_FOUND
+    TrackOrganiser* dlg = new TrackOrganiser(this);
+    dlg->show(songs, udi);
+#endif
+#endif
+
 	}
 #endif
 }
