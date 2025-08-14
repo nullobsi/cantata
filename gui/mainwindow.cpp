@@ -2163,6 +2163,16 @@ void MainWindow::updateStatus(MPDStatus* const status)
 	}
 	if (status->state() != lastState && (MPDState_Playing == status->state() || MPDState_Stopped == status->state())) {
 		startContextTimer();
+// Queue finished (end of playlist or stop-after-current)
+		if (status->state() == MPDState_Stopped &&
+			status->nextSongId() == -1 &&
+		    Settings::self()->showPopups()) {    
+			auto *n = new KNotification(QStringLiteral("queueFinished"));
+		    n->setTitle(tr("Queue finished"));
+		    n->setText(QString());
+		    n->setUrgency(KNotification::NormalUrgency);
+		    n->sendEvent();
+		}
 	}
 
 	// Update status info

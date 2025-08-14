@@ -28,7 +28,7 @@
 #endif
 
 // Initializing namespaces need to happen outside a namespace
-static void qtawesome_init_resources()
+[[maybe_unused]] static void qtawesome_init_resources()
 {
 	Q_INIT_RESOURCE(QtAwesomeFree);
 }

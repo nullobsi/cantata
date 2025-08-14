@@ -840,8 +840,15 @@ target_link_libraries(cantata PRIVATE support-core KF6Notifications)
 
 find_package(KF6ItemViews REQUIRED)
 find_package(KF6Archive REQUIRED)
+find_package(KF6StatusNotifierItem QUIET)
+
 target_link_libraries(cantata PRIVATE KF6::ItemViews)
 target_link_libraries(cantata PRIVATE KF6::Archive)
+
+if (KF6StatusNotifierItem_FOUND AND UNIX AND NOT APPLE)
+    target_link_libraries(cantata PRIVATE KF6::StatusNotifierItem)
+    target_compile_definitions(cantata PRIVATE USE_KSNI)
+endif()
 
 # enable warnings
 add_definitions(-DQT_NO_DEBUG_OUTPUT)
@@ -867,6 +874,11 @@ if(UNIX AND NOT APPLE)
             PROGRAMS ${CMAKE_BINARY_DIR}/cantata-remote
             DESTINATION ${CMAKE_INSTALL_DATADIR}/${CMAKE_PROJECT_NAME}/scripts
         )
+# KNotifications descriptor
+	    install(
+		    FILES data/cantata.notifyrc
+			DESTINATION ${CMAKE_INSTALL_DATADIR}/knotifications6
+	    )
         install(
             FILES ${CMAKE_BINARY_DIR}/${PROJECT_REV_ID}.desktop
             DESTINATION ${XDG_APPS_INSTALL_DIR}
