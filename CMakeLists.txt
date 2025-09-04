@@ -148,10 +148,12 @@ option(ENABLE_SCROBBLING "Enable scrobbling" ON)
 if(WIN32 OR APPLE OR HAIKU)
     option(ENABLE_DEVICES_SUPPORT "Enable suport for external devices" OFF)
 	option(BUNDLED_KCATEGORIZEDVIEW "Compile vendored KCategorizedView" ON)
+	option(BUNDLED_KARCHIVE "Compile vendored KArchive" ON)
 	option(BUNDLED_FONTAWESOME "Use bundled QResources for FontAwesome." ON)
 else()
     option(ENABLE_DEVICES_SUPPORT "Enable suport for external devices" ON)
 	option(BUNDLED_KCATEGORIZEDVIEW "Compile vendored KCategorizedView" OFF)
+	option(BUNDLED_KARCHIVE "Compile vendored KArchive" OFF)
 	option(BUNDLED_FONTAWESOME "Use bundled QResources for FontAwesome." OFF)
     option(
         ENABLE_REMOTE_DEVICES
@@ -800,6 +802,13 @@ else()
 	target_link_libraries(cantata PRIVATE KF6::ItemViews)
 endif()
 
+if(BUNDLED_KARCHIVE)
+    add_subdirectory(3rdparty/karchive)
+else()
+	find_package(KF6Archive REQUIRED)
+endif()
+target_link_libraries(cantata PRIVATE KF6::Archive)
+
 if(WIN32 OR APPLE OR HAIKU)
     add_subdirectory(3rdparty/qtsingleapplication)
     target_link_libraries(cantata PRIVATE qtsingleapplication)
@@ -815,10 +824,6 @@ add_subdirectory(online/icons)
 
 find_library(QtSolutions_IOCompressor_LIB QtSolutions_IOCompressor-2.3 PATHS /usr/lib64)
 target_link_libraries(cantata PRIVATE support-core KF6Notifications)
-
-# TODO: Vendor this and add option
-find_package(KF6Archive REQUIRED)
-target_link_libraries(cantata PRIVATE KF6::Archive)
 
 # enable warnings
 add_definitions(-DQT_NO_DEBUG_OUTPUT)

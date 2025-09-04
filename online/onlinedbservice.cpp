@@ -28,7 +28,11 @@
 #include "network/networkaccessmanager.h"
 #include <QBuffer>
 #include <QXmlStreamReader>
+#ifdef BUNDLED_KARCHIVE
+#include <kcompressiondevice.h>
+#else
 #include <KCompressionDevice>
+#endif
 
 OnlineXmlParser::OnlineXmlParser()
 {

@@ -39,6 +39,7 @@
 #cmakedefine ENABLE_SIMPLE_MPD_SUPPORT 1
 #cmakedefine Avahi_FOUND 1
 #cmakedefine BUNDLED_KCATEGORIZEDVIEW 1
+#cmakedefine BUNDLED_KARCHIVE 1
 #cmakedefine BUNDLED_FONTAWESOME 1
 #cmakedefine ENABLE_SCROBBLING 1
 

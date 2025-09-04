@@ -29,7 +29,11 @@
 #include "support/icon.h"
 #include <QUrl>
 #include <QXmlStreamReader>
+#ifdef BUNDLED_KARCHIVE
+#include <kcompressiondevice.h>
+#else
 #include <KCompressionDevice>
+#endif
 
 int MagnatuneXmlParser::parse(QXmlStreamReader& xml)
 {
