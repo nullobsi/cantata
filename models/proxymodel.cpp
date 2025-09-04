@@ -150,7 +150,12 @@ bool ProxyModel::update(const QString& txt)
 			filterEnabled = false;
 			if (!wasEmpty) {
 				//                qWarning() << "INVALIDATE (empty from non)";
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 10, 0))
+				beginFilterChange();
+				endFilterChange();
+#else
 				invalidateFilter();
+#endif
 				//                qWarning() << "DONE";
 			}
 			return true;
@@ -159,7 +164,12 @@ bool ProxyModel::update(const QString& txt)
 	else {
 		filterEnabled = true;
 		//        qWarning() << "INVALIDATE (changed)";
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 10, 0))
+		beginFilterChange();
+		endFilterChange();
+#else
 		invalidateFilter();
+#endif
 		//        qWarning() << "DONE";
 		return true;
 	}

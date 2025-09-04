@@ -78,8 +78,14 @@ PodcastService::Proxy::Proxy(QObject* parent)
 void PodcastService::Proxy::showUnplayedOnly(bool on)
 {
 	if (on != unplayedOnly) {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 10, 0))
+		beginFilterChange();
+		unplayedOnly = on;
+		endFilterChange();
+#else
 		unplayedOnly = on;
 		invalidateFilter();
+#endif
 	}
 }
 
