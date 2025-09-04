@@ -263,7 +263,9 @@ bool CueFile::parse(const QString& fileName, const QString& dir, QList<Song>& so
 		if (!textStream) {
 			decoded.clear();
 			// Failed to use text decoders, fall back to old method...
-			f.open(QIODevice::ReadOnly | QIODevice::Text);
+			if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+				return false;
+			}
 			textStream.reset(new QTextStream(&f));
 			std::optional<QStringConverter::Encoding> encoding = QStringDecoder::encodingForData(f.peek(1024));
 			textStream->setEncoding(encoding.value_or(QStringConverter::Utf8));
