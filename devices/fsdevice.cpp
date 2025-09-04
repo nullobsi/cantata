@@ -731,7 +731,7 @@ QString FsDevice::cacheFileName() const
 	if (audioFolder.isEmpty()) {
 		setAudioFolder();
 	}
-	return audioFolder + constCantataCacheFile + ".xml";
+	return audioFolder + constCantataCacheFile + ".xml.gz";
 }
 
 void FsDevice::saveCache()

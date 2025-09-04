@@ -268,12 +268,17 @@ CacheSettings::CacheSettings(QWidget* parent)
 	                                                                                                   << "*.png",
 	              tree);
 	new CacheItem(tr("Lyrics"), Utils::cacheDir(SongView::constLyricsDir, false), QStringList() << "*" + SongView::constExtension, tree);
+	new CacheItem(tr("Artist Information"), Utils::cacheDir(ArtistView::constCacheDir, false), QStringList() << "*" + ArtistView::constInfoExt << "*" + ArtistView::constSimilarInfoExt << "*.json.gz" << "*.jpg" << "*.png", tree);
 	new CacheItem(tr("Album Information"), Utils::cacheDir(AlbumView::constCacheDir, false), QStringList() << "*" + AlbumView::constInfoExt << "*.jpg"
 	                                                                                                       << "*.png",
 	              tree);
 	new CacheItem(tr("Track Information"), Utils::cacheDir(SongView::constCacheDir, false), QStringList() << "*" + AlbumView::constInfoExt, tree);
 	new CacheItem(tr("Stream Listings"), Utils::cacheDir(StreamsModel::constSubDir, false), QStringList() << "*" + StreamsModel::constCacheExt, tree);
 	new CacheItem(tr("Podcast Directories"), Utils::cacheDir(PodcastSearchDialog::constCacheDir, false), QStringList() << "*" + PodcastSearchDialog::constExt, tree);
+	new CacheItem(tr("Wikipedia Languages"), Utils::cacheDir(WikipediaSettings::constSubDir, false), QStringList() << "*.xml.gz", tree);
+#ifdef ENABLE_SCROBBLING
+	new CacheItem(tr("Scrobble Tracks"), Utils::cacheDir(Scrobbler::constCacheDir, false), QStringList() << "*.xml.gz", tree);
+#endif
 
 	for (int i = 0; i < tree->topLevelItemCount(); ++i) {
 		connect(static_cast<CacheItem*>(tree->topLevelItem(i)), SIGNAL(updated()), this, SLOT(updateSpace()));

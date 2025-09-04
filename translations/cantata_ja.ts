@@ -8144,8 +8144,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation>XML ストリーム (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation>XML ストリーム (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -8154,8 +8154,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*)</source>
-        <translation>XML ストリーム (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation>XML ストリーム (*.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>

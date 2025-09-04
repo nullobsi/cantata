@@ -43,9 +43,14 @@
 #include <QTimer>
 #include <QUrl>
 #include <QUrlQuery>
+#ifdef BUNDLED_KARCHIVE
+#include <kcompressiondevice.h>
+#else
+#include <KCompressionDevice>
+#endif
 
 const QLatin1String AlbumView::constCacheDir("albums/");
-const QLatin1String AlbumView::constInfoExt(".html");
+const QLatin1String AlbumView::constInfoExt(".html.gz");
 
 static const QLatin1String constScheme("cantata");
 
@@ -244,7 +249,7 @@ void AlbumView::getDetails()
 		QString prefix = engine->getPrefix(lang);
 		QString cachedFile = cacheFileName(Covers::fixArtist(currentSong.albumArtistOrComposer()), currentSong.album, prefix, false);
 		if (QFile::exists(cachedFile)) {
-			QFile f(cachedFile);
+			KCompressionDevice f(cachedFile, KCompressionDevice::GZip);
 			if (f.open(QIODevice::ReadOnly)) {
 			    QByteArray data = f.readAll();
 				if (!data.isEmpty()) {
@@ -296,10 +301,10 @@ void AlbumView::searchResponse(const QString& resp, const QString& lang)
 	if (!resp.isEmpty()) {
 		details = engine->translateLinks(resp);
 		if (!lang.isEmpty()) {
-			QFile f(cacheFileName(Covers::fixArtist(currentSong.albumArtistOrComposer()), currentSong.album, lang, true));
+			KCompressionDevice f(cacheFileName(Covers::fixArtist(currentSong.albumArtistOrComposer()), currentSong.album, lang, true), KCompressionDevice::GZip);
 			if (f.open(QIODevice::WriteOnly)) {
 				f.write(resp.toUtf8().constData());
-		}
+			}
 		}
 		updateDetails();
 	}

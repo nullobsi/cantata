@@ -43,12 +43,17 @@
 #include <QUrlQuery>
 #include <QXmlStreamReader>
 #include <algorithm>
+#ifdef BUNDLED_KARCHIVE
+#include <kcompressiondevice.h>
+#else
+#include <KCompressionDevice>
+#endif
 
 static const char* constNameKey = "name";
 
 const int ArtistView::constCacheAge = 0;// 0 => dont automatically clean cache
 const QLatin1String ArtistView::constCacheDir("artists/");
-const QLatin1String ArtistView::constInfoExt(".html");
+const QLatin1String ArtistView::constInfoExt(".html.gz");
 const QLatin1String ArtistView::constSimilarInfoExt(".txt");
 
 static QString cacheFileName(const QString& artist, const QString& lang, bool similar, bool createDir)
@@ -226,7 +231,7 @@ void ArtistView::loadBio()
 		QString prefix = engine->getPrefix(lang);
 		QString cachedFile = cacheFileName(currentSong.artist, prefix, false, false);
 		if (QFile::exists(cachedFile)) {
-			QFile f(cachedFile);
+			KCompressionDevice f(cachedFile, KCompressionDevice::GZip);
 			if (f.open(QIODevice::ReadOnly)) {
 			    QString data = QString::fromUtf8(f.readAll());
 				if (!data.isEmpty()) {
@@ -383,7 +388,7 @@ void ArtistView::searchResponse(const QString& resp, const QString& lang)
 	hideSpinner();
 
 	if (!resp.isEmpty() && !lang.isEmpty()) {
-		QFile f(cacheFileName(currentSong.artist, lang, false, true));
+		KCompressionDevice f(cacheFileName(currentSong.artist, lang, false, true), KCompressionDevice::GZip);
 		if (f.open(QIODevice::WriteOnly)) {
 		    f.write(resp.toUtf8().constData());
 	}

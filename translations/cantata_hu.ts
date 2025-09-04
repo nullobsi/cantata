@@ -5042,16 +5042,16 @@ i18n: ectx: property (text), widget (UrlNoteLabel, ratingsNote)
         <translation type="vanished">Stream-ek importálása</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation type="vanished">XML stream-ek (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation type="vanished">XML stream-ek (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <source>Export Streams</source>
         <translation type="vanished">Stream-ek exportálása</translation>
     </message>
     <message>
-        <source>XML Streams (*)</source>
-        <translation type="vanished">XML adatfolyamok (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation type="vanished">XML adatfolyamok (*.xml.gz)</translation>
     </message>
     <message>
         <source>Failed to create &apos;%1&apos;!</source>
@@ -13809,8 +13809,8 @@ Felülírod?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation type="unfinished">XML stream-ek (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation type="unfinished">XML stream-ek (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -13819,8 +13819,8 @@ Felülírod?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*)</source>
-        <translation type="unfinished">XML adatfolyamok (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation type="unfinished">XML adatfolyamok (*.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>

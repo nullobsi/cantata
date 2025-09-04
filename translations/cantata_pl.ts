@@ -5629,16 +5629,16 @@ i18n: ectx: property (text), widget (UrlNoteLabel, ratingsNote)
         <translation type="vanished">Importuj strumienie</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation type="vanished">Strumienie XML (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation type="vanished">Strumienie XML (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <source>Export Streams</source>
         <translation type="vanished">Eksportuj strumienie</translation>
     </message>
     <message>
-        <source>XML Streams (*)</source>
-        <translation type="vanished">Strumienie XML (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation type="vanished">Strumienie XML (*.xml.gz)</translation>
     </message>
     <message>
         <source>Failed to create &apos;%1&apos;!</source>
@@ -14484,8 +14484,8 @@ Nadpisać?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation>Strumienie XML (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation>Strumienie XML (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -14494,8 +14494,8 @@ Nadpisać?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*)</source>
-        <translation>Strumienie XML (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation>Strumienie XML (*.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>

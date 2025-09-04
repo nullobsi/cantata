@@ -33,9 +33,14 @@
 #include <QFile>
 #include <QUrlQuery>
 #include <QXmlStreamReader>
+#ifdef BUNDLED_KARCHIVE
+#include <kcompressiondevice.h>
+#else
+#include <KCompressionDevice>
+#endif
 
-static const QString constOldFileName = QLatin1String("wikipedia-available.xml");
-static const QString constFileName = QLatin1String("languages.xml");
+static const QString constOldFileName = QLatin1String("wikipedia-available.xml.gz");
+static const QString constFileName = QLatin1String("languages.xml.gz");
 
 QString WikipediaSettings::constSubDir = QLatin1String("wikipedia");
 
@@ -103,7 +108,7 @@ void WikipediaSettings::showEvent(QShowEvent* e)
 		QByteArray data;
 		QString fileName = localeFile();
 		if (QFile::exists(fileName)) {
-			QFile f(fileName);
+			KCompressionDevice f(fileName, KCompressionDevice::GZip);
 			if (f.open(QIODevice::ReadOnly)) {
 			    data = f.readAll();
 			}
@@ -186,7 +191,7 @@ void WikipediaSettings::parseLangs()
 	job = nullptr;
 	QByteArray data = reply->readAll();
 	parseLangs(data);
-	QFile f(localeFile());
+	KCompressionDevice f(localeFile(), KCompressionDevice::GZip);
 	if (f.open(QIODevice::WriteOnly)) {
 	    f.write(data);
 	}

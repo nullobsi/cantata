@@ -39,6 +39,11 @@
 #ifdef TIME_XML_FILE_LOADING
 #include <QDebug>
 #endif
+#ifdef BUNDLED_KARCHIVE
+#include <kcompressiondevice.h>
+#else
+#include <KCompressionDevice>
+#endif
 
 MusicLibraryItemArtist* MusicLibraryItemRoot::artist(const Song& s, bool create)
 {
@@ -191,7 +196,7 @@ void MusicLibraryItemRoot::toXML(const QString& filename, MusicLibraryProgressMo
 	}
 
 
-	QFile file(filename);
+	KCompressionDevice file(filename, KCompressionDevice::GZip);
 	if (!file.open(QIODevice::WriteOnly)) {
 		return;
 	}
@@ -351,16 +356,16 @@ bool MusicLibraryItemRoot::fromXML(const QString& filename, const QString& baseF
 	timer.start();
 #endif
 
-	QFile file(filename);
+	KCompressionDevice file(filename, KCompressionDevice::GZip);
 	if (!file.open(QIODevice::ReadOnly)) {
 		return false;
 	}
 	QXmlStreamReader reader(&file);
 	bool rv = fromXML(reader, baseFolder, prog, em);
 	file.close();
-	#ifdef TIME_XML_FILE_LOADING
+#ifdef TIME_XML_FILE_LOADING
 	qWarning() << filename << timer.elapsed();
-	#endif
+#endif
 	return rv;
 	}
 

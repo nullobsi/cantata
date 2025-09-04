@@ -60,7 +60,7 @@ void OnlineXmlParser::doParsing(NetworkJob* job)
 
     KCompressionDevice dev(&buffer, false, KCompressionDevice::GZip);
     if (!dev.open(QIODevice::ReadOnly)) {
-        emit error(tr("Failed to decompress"));
+        emit error(tr("Failed to parse"));
         emit abortUpdate();
         emit complete();
         return;

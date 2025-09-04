@@ -5612,16 +5612,16 @@ i18n: ectx: property (text), widget (UrlNoteLabel, ratingsNote)
         <translation type="vanished">Zavést proudy</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation type="vanished">Proudy XML (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation type="vanished">Proudy XML (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <source>Export Streams</source>
         <translation type="vanished">Vyvést proudy</translation>
     </message>
     <message>
-        <source>XML Streams (*)</source>
-        <translation type="vanished">Proudy XML (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation type="vanished">Proudy XML (*.xml.gz)</translation>
     </message>
     <message>
         <source>Failed to create &apos;%1&apos;!</source>
@@ -14462,8 +14462,8 @@ Přepsat?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation>Vysílání XML (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation>Vysílání XML (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -14472,8 +14472,8 @@ Přepsat?</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*)</source>
-        <translation>Vysílání XML (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation>Vysílání XML (*.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>

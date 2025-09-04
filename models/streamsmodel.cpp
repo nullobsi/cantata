@@ -57,15 +57,20 @@
 #include <algorithm>
 #include <stdio.h>
 #include <time.h>
+#ifdef BUNDLED_KARCHIVE
+#include <kcompressiondevice.h>
+#else
+#include <KCompressionDevice>
+#endif
 
 #include <QDebug>
 GLOBAL_STATIC(StreamsModel, instance)
 
 const QString StreamsModel::constSubDir = QLatin1String("streams");
-const QString StreamsModel::constCacheExt = QLatin1String(".xml");
+const QString StreamsModel::constCacheExt = QLatin1String(".xml.gz");
 const QString StreamsModel::constShoutCastHost = QLatin1String("api.shoutcast.com");
 const QString StreamsModel::constCommunityHost = QLatin1String("all.api.radio-browser.info");
-const QString StreamsModel::constCompressedXmlFile = QLatin1String("streams.xml");
+const QString StreamsModel::constCompressedXmlFile = QLatin1String("streams.xml.gz");
 const QString StreamsModel::constXmlFile = QLatin1String("streams.xml");
 const QString StreamsModel::constSettingsFile = QLatin1String("settings.json");
 const QString StreamsModel::constPngIcon = QLatin1String("icon.png");
@@ -153,7 +158,7 @@ void StreamsModel::CategoryItem::saveBookmarks()
 			CategoryItem* cat = static_cast<CategoryItem*>(child);
 			if (cat->isBookmarks) {
 				if (cat->children.count()) {
-					QFile file(categoryBookmarksName(bookmarksName, true));
+					KCompressionDevice file(categoryBookmarksName(bookmarksName, true), KCompressionDevice::GZip);
 					if (file.open(QIODevice::WriteOnly)) {
 					    QXmlStreamWriter doc(&file);
 						doc.writeStartDocument();
@@ -188,7 +193,7 @@ QList<StreamsModel::Item*> StreamsModel::CategoryItem::loadBookmarks()
 		return newItems;
 	}
 
-	QFile file(fileName);
+	KCompressionDevice file(fileName, KCompressionDevice::GZip);
 	if (file.open(QIODevice::ReadOnly)) {
 		QXmlStreamReader doc(&file);
 		while (!doc.atEnd()) {
@@ -280,12 +285,14 @@ bool StreamsModel::CategoryItem::saveXml(const QString& fileName, bool format) c
 		return !QFile::exists(fileName) || QFile::remove(fileName);
 	}
 
-	QFile file(fileName);
-
-	if (!file.open(QIODevice::WriteOnly)) {
-    return false;
+	if (fileName.endsWith(".xml")) {
+		QFile file(fileName);
+		return file.open(QIODevice::WriteOnly) && saveXml(&file, format);
 	}
-return saveXml(&file, format);
+	else {
+		KCompressionDevice file(fileName, KCompressionDevice::GZip);
+		return file.open(QIODevice::WriteOnly) && saveXml(&file, format);
+	}
 }
 
 static void saveStream(QXmlStreamWriter& doc, const StreamsModel::Item* item)
@@ -350,6 +357,18 @@ QList<StreamsModel::Item*> StreamsModel::CategoryItem::loadXml(const QString& fi
 	if (!file.open(QIODevice::ReadOnly)) {
 		return QList<StreamsModel::Item*>();
 	}
+	QByteArray header = file.read(2);
+	bool isCompressed = ((unsigned char)header[0]) == 0x1f && ((unsigned char)header[1]) == 0x8b;
+	file.seek(0);
+
+	if (isCompressed) {
+		KCompressionDevice compressor(&file, false, KCompressionDevice::GZip);
+		if (!compressor.open(QIODevice::ReadOnly)) {
+			return {};
+		}
+		return loadXml((QIODevice*)&compressor);
+	}
+
 	return loadXml(&file);
 }
 
@@ -434,8 +453,9 @@ QList<StreamsModel::Item*> StreamsModel::FavouritesCategoryItem::loadXml(QIODevi
 	return newItems;
 }
 
-void StreamsModel::IceCastCategoryItem::addHeaders(QNetworkRequest& /*req*/)
+void StreamsModel::IceCastCategoryItem::addHeaders(QNetworkRequest& req)
 {
+	req.setRawHeader("Accept-Encoding", "gzip");
 }
 
 void StreamsModel::ShoutCastCategoryItem::addHeaders(QNetworkRequest& req)
@@ -1266,9 +1286,26 @@ static void trimGenres(QMap<QString, QList<StreamsModel::Item*>>& genres)
 
 QList<StreamsModel::Item*> StreamsModel::parseIceCastResponse(QIODevice* dev, CategoryItem* cat)
 {
-    QList<Item*> newItems;
-    QIODevice* readDev = dev;
-    QXmlStreamReader doc(readDev);
+	bool isGZipped = true;
+	QNetworkReply* nr = qobject_cast<QNetworkReply*>(dev);
+	if (nr) {
+		const auto hdr = nr->rawHeader("Content-Type");
+		if ("application/xml" == hdr) {
+			isGZipped = false;
+		}
+	}
+	QList<Item*> newItems;
+	KCompressionDevice* compressor = nullptr;
+	QIODevice* readDev = dev;
+
+	if (isGZipped) {
+		compressor = new KCompressionDevice(dev, false, KCompressionDevice::GZip);
+		compressor->open(QIODevice::ReadOnly);
+		readDev = compressor;
+	}
+	QXmlStreamReader doc(readDev);
+
+
 	QSet<QString> names;
 	QMap<QString, QList<Item*>> genres;
 	while (!doc.atEnd()) {
@@ -1319,6 +1356,8 @@ QList<StreamsModel::Item*> StreamsModel::parseIceCastResponse(QIODevice* dev, Ca
 		}
 		newItems.append(genre);
 	}
+
+	if (isGZipped) delete compressor;
 
 	return newItems;
 }

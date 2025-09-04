@@ -3948,7 +3948,7 @@ i18n: ectx: property (text), widget (NoteLabel, label_7)
         <extracomment>i18n: file: dynamic/dynamicrule.ui:248
 i18n: ectx: property (text), widget (NoteLabel, label_7x)
 </extracomment>
-        <translation type="vanished">Для указания жанров заканчивайте каждую строку знаком звёздочки (*). Например, жанру «рок*» будет соответствовать и «хард-рок» и «рок-н-ролл».</translation>
+        <translation type="vanished">Для указания жанров заканчивайте каждую строку знаком звёздочки (*.xml.gz). Например, жанру «рок*» будет соответствовать и «хард-рок» и «рок-н-ролл».</translation>
     </message>
     <message>
         <source>Add a local file</source>
@@ -5062,16 +5062,16 @@ i18n: ectx: property (text), widget (UrlNoteLabel, ratingsNote)
         <translation type="vanished">Импортировать потоки</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation type="vanished">Потоки XML (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation type="vanished">Потоки XML (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <source>Export Streams</source>
         <translation type="vanished">Экспортировать потоки</translation>
     </message>
     <message>
-        <source>XML Streams (*)</source>
-        <translation type="vanished">Потоки XML (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation type="vanished">Потоки XML (*.xml.gz)</translation>
     </message>
     <message>
         <source>Failed to create &apos;%1&apos;!</source>
@@ -10266,7 +10266,7 @@ This cannot be undone.</source>
     <message>
         <location filename="../playlists/playlistrule.ui" line="263"/>
         <source>For genre, end string with an asterisk to match various genres. e.g &apos;rock*&apos; matches &apos;Hard Rock&apos; and &apos;Rock and Roll&apos;.</source>
-        <translation type="unfinished">Для указания жанров заканчивайте каждую строку знаком звёздочки (*). Например, жанру «рок*» будет соответствовать и «хард-рок» и «рок-н-ролл».</translation>
+        <translation type="unfinished">Для указания жанров заканчивайте каждую строку знаком звёздочки (*.xml.gz). Например, жанру «рок*» будет соответствовать и «хард-рок» и «рок-н-ролл».</translation>
     </message>
 </context>
 <context>
@@ -13871,8 +13871,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation type="unfinished">Потоки XML (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation type="unfinished">Потоки XML (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -13881,8 +13881,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*)</source>
-        <translation type="unfinished">Потоки XML (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation type="unfinished">Потоки XML (*.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>

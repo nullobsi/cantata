@@ -52,11 +52,16 @@
 #include <QTimer>
 #include <QUrl>
 #include <QUrlQuery>
+#ifdef BUNDLED_KARCHIVE
+#include <kcompressiondevice.h>
+#else
+#include <KCompressionDevice>
+#endif
 
 const QLatin1String SongView::constLyricsDir("lyrics/");
 const QLatin1String SongView::constExtension(".lyrics");
 const QLatin1String SongView::constCacheDir("tracks/");
-const QLatin1String SongView::constInfoExt(".html");
+const QLatin1String SongView::constInfoExt(".html.gz");
 
 static QString infoCacheFileName(const Song& song, const QString& lang, bool createDir)
 {
@@ -438,7 +443,7 @@ void SongView::loadInfo()
 		QString prefix = engine->getPrefix(lang);
 		QString cachedFile = infoCacheFileName(currentSong, prefix, false);
 		if (QFile::exists(cachedFile)) {
-			QFile f(cachedFile);
+			KCompressionDevice f(cachedFile, KCompressionDevice::GZip);
 			if (f.open(QIODevice::ReadOnly)) {
 			    QByteArray data = f.readAll();
 				if (!data.isEmpty()) {
@@ -679,7 +684,7 @@ void SongView::infoSearchResponse(const QString& resp, const QString& lang)
 	if (!resp.isEmpty()) {
 		str = engine->translateLinks(resp);
 		if (!lang.isEmpty()) {
-			QFile f(infoCacheFileName(currentSong, lang, true));
+			KCompressionDevice f(infoCacheFileName(currentSong, lang, true), KCompressionDevice::GZip);
 			if (f.open(QIODevice::WriteOnly)) {
 			    f.write(resp.toUtf8().constData());
 			}

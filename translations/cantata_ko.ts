@@ -4256,7 +4256,7 @@ i18n: ectx: property (text), widget (NoteLabel, label_7)
         <extracomment>i18n: file: dynamic/dynamicrule.ui:248
 i18n: ectx: property (text), widget (NoteLabel, label_7x)
 </extracomment>
-        <translation type="vanished">장르에서 별표(*)로 끝나는 문자열은 다양한 장르를 포함합니다. 예) &apos;rock*&apos;은 &apos;Hard Rock&apos;과 &apos;Rock and Roll&apos;을 포함.</translation>
+        <translation type="vanished">장르에서 별표(*.xml.gz)로 끝나는 문자열은 다양한 장르를 포함합니다. 예) &apos;rock*&apos;은 &apos;Hard Rock&apos;과 &apos;Rock and Roll&apos;을 포함.</translation>
     </message>
     <message>
         <source>Add a local file</source>
@@ -5592,16 +5592,16 @@ i18n: ectx: property (text), widget (UrlNoteLabel, ratingsNote)
         <translation type="vanished">스트림 불러오기</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation type="vanished">XML 스트림 (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation type="vanished">XML 스트림 (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <source>Export Streams</source>
         <translation type="vanished">스트림 내보내기</translation>
     </message>
     <message>
-        <source>XML Streams (*)</source>
-        <translation type="vanished">XML 스트림 (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation type="vanished">XML 스트림 (*.xml.gz)</translation>
     </message>
     <message>
         <source>Failed to create &apos;%1&apos;!</source>
@@ -10800,7 +10800,7 @@ This cannot be undone.</source>
     <message>
         <location filename="../playlists/playlistrule.ui" line="263"/>
         <source>For genre, end string with an asterisk to match various genres. e.g &apos;rock*&apos; matches &apos;Hard Rock&apos; and &apos;Rock and Roll&apos;.</source>
-        <translation type="unfinished">장르에서 별표(*)로 끝나는 문자열은 다양한 장르를 포함합니다. 예) &apos;rock*&apos;은 &apos;Hard Rock&apos;과 &apos;Rock and Roll&apos;을 포함.</translation>
+        <translation type="unfinished">장르에서 별표(*.xml.gz)로 끝나는 문자열은 다양한 장르를 포함합니다. 예) &apos;rock*&apos;은 &apos;Hard Rock&apos;과 &apos;Rock and Roll&apos;을 포함.</translation>
     </message>
 </context>
 <context>
@@ -14397,8 +14397,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation type="unfinished">XML 스트림 (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation type="unfinished">XML 스트림 (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -14407,8 +14407,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*)</source>
-        <translation type="unfinished">XML 스트림 (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation type="unfinished">XML 스트림 (*.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>

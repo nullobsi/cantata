@@ -48,6 +48,11 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <stdio.h>
+#ifdef BUNDLED_KARCHIVE
+#include <kcompressiondevice.h>
+#else
+#include <KCompressionDevice>
+#endif
 
 GLOBAL_STATIC(PodcastService, instance)
 
@@ -141,7 +146,7 @@ bool PodcastService::Proxy::filterAcceptsRow(int sourceRow, const QModelIndex& s
 }
 
 const QLatin1String PodcastService::constName("podcasts");
-static const QLatin1String constExt(".xml");
+static const QLatin1String constExt(".xml.gz");
 static const char* constNewFeedProperty = "new-feed";
 static const char* constRssUrlProperty = "rss-url";
 static const char* constDestProperty = "dest";
@@ -254,12 +259,13 @@ bool PodcastService::Podcast::load()
 		return false;
 	}
 
-	QFile file(fileName);
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+	KCompressionDevice file(fileName, KCompressionDevice::GZip);
+	if (!file.open(QIODevice::ReadOnly)) {
 		return false;
 	}
 
 	QXmlStreamReader reader(&file);
+	unplayedCount = 0;
 
 	QString podPath = Settings::self()->podcastDownloadPath();
 	while (!reader.atEnd()) {
@@ -319,8 +325,8 @@ bool PodcastService::Podcast::save() const
 		return false;
 	}
 
-	QFile file(fileName);
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+	KCompressionDevice file(fileName, KCompressionDevice::GZip);
+	if (!file.open(QIODevice::WriteOnly)) {
 	    return false;
 	}
 

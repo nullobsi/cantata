@@ -4414,16 +4414,16 @@ i18n: ectx: property (text), widget (QTreeWidget, files)
         <translation type="vanished">Importar flujos</translation>
     </message>
     <message>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation type="vanished">Flujos XML (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation type="vanished">Flujos XML (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <source>Export Streams</source>
         <translation type="vanished">Exportar flujos</translation>
     </message>
     <message>
-        <source>XML Streams (*)</source>
-        <translation type="vanished">Flujos XML (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation type="vanished">Flujos XML (*.xml.gz)</translation>
     </message>
     <message>
         <source>Bookmark added</source>
@@ -12960,8 +12960,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="207"/>
-        <source>XML Streams (*.xml * *.cantata)</source>
-        <translation type="unfinished">Flujos XML (*.xml * *.cantata)</translation>
+        <source>XML Streams (*.xml *.xml.gz)</source>
+        <translation type="unfinished">Flujos XML (*.xml *.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
@@ -12970,8 +12970,8 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="218"/>
-        <source>XML Streams (*)</source>
-        <translation type="unfinished">Flujos XML (*)</translation>
+        <source>XML Streams (*.xml.gz)</source>
+        <translation type="unfinished">Flujos XML (*.xml.gz)</translation>
     </message>
     <message>
         <location filename="../streams/streamspage.cpp" line="229"/>
