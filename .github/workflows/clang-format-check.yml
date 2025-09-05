@@ -1,0 +1,37 @@
+name: clang-format check
+
+on:
+  pull_request:
+    types: 
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    name: 📝 Code Formatting
+    steps:
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v5
+    - name: '⚙️ Install clang-format'
+      run: |
+        sudo tee /etc/dpkg/dpkg.cfg.d/01_nodoc > /dev/null << 'EOF'
+        path-exclude /usr/share/doc/*
+        path-exclude /usr/share/man/*
+        path-exclude /usr/share/info/*
+        EOF
+        sudo apt-get install clang-format
+    - name: '⚙️ Fetch main branch'
+      run: |
+        git fetch --depth=1 origin ${{ github.base_ref }}
+    - name: '📝 Run clang-format'
+      run: |
+        BASE_REF=$(git rev-parse FETCH_HEAD)
+        git clang-format --diff $BASE_REF --
