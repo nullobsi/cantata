@@ -6883,7 +6883,7 @@ This cannot be undone.</source>
     </message>
     <message>
         <location filename="../playlists/playlistrule.ui" line="256"/>
-        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be inclued. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
+        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be included. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
         <translation>如果选中“精确匹配”，则将字符串值匹配为精确值。否则，将包括部分匹配。例如“AB”将与“ABBA”匹配。</translation>
     </message>
     <message>

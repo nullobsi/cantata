@@ -10860,7 +10860,7 @@ Ta operacja nie może być cofnięta.</translation>
     </message>
     <message>
         <location filename="../playlists/playlistrule.ui" line="256"/>
-        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be inclued. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
+        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be included. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
         <translation>Jeżeli opcja &apos;Dokładne dopasowanie&apos; jest zaznaczona, to wartości tekstowe będą dopasowywane w całości. W przeciwnym wypadku częściowe dopasowania również będą uwzględnione, np. do wyszukania &apos;AB&apos; zostanie dopasowane &apos;ABBA&apos;.</translation>
     </message>
     <message>
