@@ -6275,7 +6275,7 @@ This cannot be undone.</source>
     </message>
     <message>
         <location filename="../online/onlinedbwidget.cpp" line="117"/>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation>下载音乐列表吗？</translation>
     </message>
     <message>

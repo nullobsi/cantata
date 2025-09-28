@@ -3227,7 +3227,7 @@ Não será possível desfazer esta escolha.</translation>
         <translation>Agrupar por</translation>
     </message>
     <message>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation>Baixar a listagem de músicas?</translation>
     </message>
 </context>

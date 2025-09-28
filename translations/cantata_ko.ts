@@ -3104,7 +3104,7 @@ i18n: ectx: property (text), widget (BuddyLabel, label_3)
         <translation type="vanished">음악 항목을 내려받는 데에 %1Mb 디스크 용량이 필요합니다</translation>
     </message>
     <message>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation type="vanished">음악 항목을 내려받을까요?</translation>
     </message>
     <message>
@@ -10186,7 +10186,7 @@ This cannot be undone.</source>
     </message>
     <message>
         <location filename="../online/onlinedbwidget.cpp" line="117"/>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation type="unfinished">음악 항목을 내려받을까요?</translation>
     </message>
     <message>

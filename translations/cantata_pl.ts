@@ -3141,7 +3141,7 @@ i18n: ectx: property (text), widget (BuddyLabel, label_3)
         <translation type="vanished">Listing muzyki musi zostać pobrany, to może zająć ponad %1Mb miejsca na dysku</translation>
     </message>
     <message>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation type="vanished">Pobrać listing muzyki?</translation>
     </message>
     <message>
@@ -10250,7 +10250,7 @@ Ta operacja nie może być cofnięta.</translation>
     </message>
     <message>
         <location filename="../online/onlinedbwidget.cpp" line="117"/>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation>Pobrać listing muzyki?</translation>
     </message>
     <message>
