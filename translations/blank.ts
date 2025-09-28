@@ -3795,7 +3795,7 @@ This cannot be undone.</source>
     </message>
     <message>
         <location filename="../online/onlinedbwidget.cpp" line="117"/>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

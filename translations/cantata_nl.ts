@@ -3951,7 +3951,7 @@ Dit kan niet ongedaan worden gemaakt.</translation>
     </message>
     <message>
         <location filename="../online/onlinedbwidget.cpp" line="117"/>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation>Wil je de muzieklijst downloaden?</translation>
     </message>
     <message>

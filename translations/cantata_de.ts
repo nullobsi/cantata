@@ -7810,7 +7810,7 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <location filename="../online/onlinedbwidget.cpp" line="117"/>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation>Musikliste herunterladen?</translation>
     </message>
     <message>

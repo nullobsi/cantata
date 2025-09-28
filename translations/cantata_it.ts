@@ -3955,7 +3955,7 @@ Non sarà possibile tornare indietro.</translation>
     </message>
     <message>
         <location filename="../online/onlinedbwidget.cpp" line="117"/>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation>Scaricare la lista musicale?</translation>
     </message>
     <message>

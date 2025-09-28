@@ -3124,7 +3124,7 @@ i18n: ectx: property (text), widget (BuddyLabel, label_3)
         <translation type="vanished">Je třeba stáhnout seznamu hudby. To může spotřebovat přes %1 MB místa na disku</translation>
     </message>
     <message>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation type="vanished">Stáhnout seznam hudby</translation>
     </message>
     <message>
@@ -10228,7 +10228,7 @@ Tento krok nelze vrátit zpět.</translation>
     </message>
     <message>
         <location filename="../online/onlinedbwidget.cpp" line="117"/>
-        <source>Dowload music listing?</source>
+        <source>Download music listing?</source>
         <translation>Stáhnout seznam hudby?</translation>
     </message>
     <message>
