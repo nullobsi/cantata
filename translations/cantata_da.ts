@@ -4450,7 +4450,7 @@ Det kan ikke fortrydes.</translation>
     </message>
     <message>
         <location filename="../playlists/playlistrule.ui" line="256"/>
-        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be inclued. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
+        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be included. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
         <translation>Hvis &apos;Præcist match&apos; er tilvalgt, så vil strengværdier blive matchet for præcise værdier. Ellers inkluderes også delvise match, f.eks. vil &apos;AB&apos; matche &apos;ABBA&apos;.</translation>
     </message>
     <message>

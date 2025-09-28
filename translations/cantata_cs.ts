@@ -10838,7 +10838,7 @@ Tento krok nelze vrátit zpět.</translation>
     </message>
     <message>
         <location filename="../playlists/playlistrule.ui" line="256"/>
-        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be inclued. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
+        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be included. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
         <translation>Pokud je zaškrtnuta Přesná shoda, budou se v hodnotách řetězců hledat přesné hodnoty. V opačném případě budou zahrnuty i částečné shody, například AB odpovídá ABBA.</translation>
     </message>
     <message>

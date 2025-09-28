@@ -253,7 +253,7 @@
    <item>
     <widget class="NoteLabel" name="label_7y">
      <property name="text">
-      <string>If 'Exact match' is checked, then string values will be matched for exact values. Otherwise partial matches will also be inclued. e.g. 'AB' would match 'ABBA'.</string>
+      <string>If 'Exact match' is checked, then string values will be matched for exact values. Otherwise partial matches will also be included. e.g. 'AB' would match 'ABBA'.</string>
      </property>
     </widget>
    </item>

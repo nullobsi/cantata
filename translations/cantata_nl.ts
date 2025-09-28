@@ -4560,7 +4560,7 @@ Dit kan niet ongedaan worden gemaakt.</translation>
     </message>
     <message>
         <location filename="../playlists/playlistrule.ui" line="256"/>
-        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be inclued. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
+        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be included. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
         <translation>Als &apos;Exacte overeenkomst&apos; is ingeschakeld, worden tekenreekswaarden overeengekomen met exacte waarden. Indien uitgeschakeld, worden ook delen overeengekomen. Voorbeeld: &apos;AB&apos; zou &apos;ABBA&apos; overeen laten komen.</translation>
     </message>
     <message>

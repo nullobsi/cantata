@@ -4564,7 +4564,7 @@ Non sarà possibile tornare indietro.</translation>
     </message>
     <message>
         <location filename="../playlists/playlistrule.ui" line="256"/>
-        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be inclued. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
+        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be included. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
         <translation>Quando &apos;Corrispondenza esatta&apos; è attivo, i valori delle stringhe verranno confrontati con i valori esatti. In caso contrario, verranno incluse anche le corrispondenze parziali. es. &apos;AB&apos; farebbe risultare &apos;ABBA&apos;.</translation>
     </message>
     <message>

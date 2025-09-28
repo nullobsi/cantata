@@ -10794,7 +10794,7 @@ This cannot be undone.</source>
     </message>
     <message>
         <location filename="../playlists/playlistrule.ui" line="256"/>
-        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be inclued. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
+        <source>If &apos;Exact match&apos; is checked, then string values will be matched for exact values. Otherwise partial matches will also be included. e.g. &apos;AB&apos; would match &apos;ABBA&apos;.</source>
         <translation type="unfinished">&apos;정확한 맞춤&apos;을 사용하면, 문자열 값을 정확하게 맞춥니다. 아니면 부분 맞춤이 포함됩니다. 예. &apos;AB&apos;는  &apos;ABBA&apos;를 포함합니다.</translation>
     </message>
     <message>
