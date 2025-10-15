@@ -65,6 +65,8 @@
 #ifdef Avahi_FOUND
 #include "avahidiscovery.h"
 #endif
+#include "context/ultimatelyricscommandprovider.h"
+#include "context/ultimatelyricshttpprovider.h"
 #include "customactions.h"
 
 #include <QByteArray>
@@ -221,7 +223,8 @@ static void installDebugMessageHandler(const QString& cmdLine)
 			NetworkAccessManager::enableDebug();
 		}
 		if (all || QLatin1String("context-lyrics") == area) {
-			UltimateLyricsProvider::enableDebug();
+			UltimateLyricsHttpProvider::enableDebug();
+			UltimateLyricsCommandProvider::enableDebug();
 		}
 		if (all || QLatin1String("threads") == area) {
 			ThreadCleaner::enableDebug();

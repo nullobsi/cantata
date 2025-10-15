@@ -22,8 +22,12 @@
 */
 
 #include "ultimatelyrics.h"
+
 #include "gui/settings.h"
+#include "lyrics_providers/lrcliblyricsprovider.h"
 #include "support/globalstatic.h"
+#include "ultimatelyricscommandprovider.h"
+#include "ultimatelyricshttpprovider.h"
 #include "ultimatelyricsprovider.h"
 #include <QDir>
 #include <QFile>
@@ -31,84 +35,13 @@
 #include <QSet>
 #include <QXmlStreamReader>
 #include <algorithm>
+#include <unistd.h>
 
 GLOBAL_STATIC(UltimateLyrics, instance)
 
 static bool compareLyricProviders(const UltimateLyricsProvider* a, const UltimateLyricsProvider* b)
 {
 	return a->getRelevance() < b->getRelevance();
-}
-
-static QString parseInvalidIndicator(QXmlStreamReader* reader)
-{
-	QString ret = reader->attributes().value("value").toString();
-	reader->skipCurrentElement();
-	return ret;
-}
-
-static UltimateLyricsProvider::Rule parseRule(QXmlStreamReader* reader)
-{
-	UltimateLyricsProvider::Rule ret;
-
-	while (!reader->atEnd()) {
-		reader->readNext();
-
-		if (QXmlStreamReader::EndElement == reader->tokenType()) {
-			break;
-		}
-
-		if (QXmlStreamReader::StartElement == reader->tokenType()) {
-			if (QLatin1String("item") == reader->name()) {
-				QXmlStreamAttributes attr = reader->attributes();
-				if (attr.hasAttribute("tag")) {
-					ret << UltimateLyricsProvider::RuleItem(attr.value("tag").toString(), QString());
-				}
-				else if (attr.hasAttribute("begin")) {
-					ret << UltimateLyricsProvider::RuleItem(attr.value("begin").toString(), attr.value("end").toString());
-				}
-			}
-			reader->skipCurrentElement();
-		}
-	}
-	return ret;
-}
-
-static UltimateLyricsProvider* parseProvider(QXmlStreamReader* reader)
-{
-	QXmlStreamAttributes attributes = reader->attributes();
-
-	UltimateLyricsProvider* scraper = new UltimateLyricsProvider;
-	scraper->setName(attributes.value("name").toString());
-	scraper->setCharset(attributes.value("charset").toString());
-	scraper->setUrl(attributes.value("url").toString());
-
-	while (!reader->atEnd()) {
-		reader->readNext();
-
-		if (QXmlStreamReader::EndElement == reader->tokenType()) {
-			break;
-		}
-
-		if (QXmlStreamReader::StartElement == reader->tokenType()) {
-			if (QLatin1String("extract") == reader->name()) {
-				scraper->addExtractRule(parseRule(reader));
-			}
-			else if (QLatin1String("exclude") == reader->name()) {
-				scraper->addExcludeRule(parseRule(reader));
-			}
-			else if (QLatin1String("invalidIndicator") == reader->name()) {
-				scraper->addInvalidIndicator(parseInvalidIndicator(reader));
-			}
-			else if (QLatin1String("urlFormat") == reader->name()) {
-				scraper->addUrlFormat(reader->attributes().value("replace").toString(), reader->attributes().value("with").toString());
-				reader->skipCurrentElement();
-			}
-			else {
-				reader->skipCurrentElement();
-			}
-		}
-	}
-	return scraper;
 }
 
 void UltimateLyrics::release()
@@ -150,6 +83,12 @@ UltimateLyricsProvider* UltimateLyrics::getNext(int& index)
 	return nullptr;
 }
 
+void UltimateLyrics::registerExtra(UltimateLyricsProvider* provider)
+{
+	providers << provider;
+	connect(provider, &UltimateLyricsProvider::lyricsReady, this, &UltimateLyrics::lyricsReady);
+}
+
 void UltimateLyrics::load()
 {
 	if (!providers.isEmpty()) {
@@ -178,10 +117,22 @@ void UltimateLyrics::load()
 				reader.readNext();
 
 				if (QLatin1String("provider") == reader.name()) {
-					QString name = reader.attributes().value("name").toString();
+					auto attributes = reader.attributes();
+					QString name = attributes.value("name").toString();
+					QString type = attributes.value("type").toString();
 
 					if (!providerNames.contains(name)) {
-						UltimateLyricsProvider* provider = parseProvider(&reader);
+						UltimateLyricsProvider* provider;
+
+						if (type == QString("http")) {
+							provider = UltimateLyricsHttpProvider::parseProvider(&reader);
+						} else if (type == QString("command")) {
+							provider = UltimateLyricsCommandProvider::parseProvider(&reader);
+						} else {
+							// TODO: Throw exception
+							__builtin_unreachable();
+						}
+
 						if (provider) {
 							providers << provider;
 							connect(provider, SIGNAL(lyricsReady(int, QString)), this, SIGNAL(lyricsReady(int, QString)));
@@ -192,6 +143,9 @@ void UltimateLyrics::load()
 			}
 		}
 	}
+
+	// Register extra providers
+	registerExtra(new LRCLibLyricsProvider());
 
 	setEnabled(Settings::self()->lyricProviders());
 }

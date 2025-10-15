@@ -453,6 +453,8 @@ target_sources(
         widgets/volumecontrol.cpp
         context/lyricsettings.cpp
         context/ultimatelyricsprovider.cpp
+        context/ultimatelyricshttpprovider.cpp
+        context/ultimatelyricscommandprovider.cpp
         context/ultimatelyrics.cpp
         context/lyricsdialog.cpp
         context/contextwidget.cpp
@@ -469,6 +471,7 @@ target_sources(
         context/lastfmengine.cpp
         context/metaengine.cpp
         context/onlineview.cpp
+        context/lyrics_providers/lrcliblyricsprovider.cpp
         streams/streamspage.cpp
         streams/streamdialog.cpp
         streams/streamfetcher.cpp
