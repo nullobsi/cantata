@@ -36,6 +36,7 @@ public:
 	UltimateLyrics() {}
 
 	UltimateLyricsProvider* getNext(int& index);
+	void registerExtra(UltimateLyricsProvider* provider);
 	const QList<UltimateLyricsProvider*> getProviders();
 	void release();
 	void setEnabled(const QStringList& enabled);
