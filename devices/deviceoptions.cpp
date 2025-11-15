@@ -130,7 +130,7 @@ QString vfatPath(const QString& path)
 
 	/* whitespace at the end of folder/file names or extensions are bad */
 	len = s.length();
-	if (' ' == s[len - 1]) {
+	if (len > 0 && ' ' == s[len - 1]) {
 		s[len - 1] = '_';
 	}
 
