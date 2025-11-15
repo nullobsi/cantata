@@ -2066,14 +2066,11 @@ void Covers::gotAlbumCover(const Song& song, const QImage& img, const QString& f
 	mutex.unlock();
 	//    }
 	if (emitResult) {
-		bool updatedCover = false;
 		if (!img.isNull()) {
-			updatedCover = updateCache(song, img, true);
+			updateCache(song, img, true);
 		}
-		if (updatedCover || song.isCdda() /* || !song.isSpecificSizeRequest()*/) {
-			DBUG << "emit cover" << song.file << song.artist << song.albumartist << song.album << song.mbAlbumId() << img.width() << img.height() << fileName;
-			emit cover(song, img, fileName.startsWith(constCoverInTagPrefix) ? QString() : fileName);
-		}
+		DBUG << "emit cover" << song.file << song.artist << song.albumartist << song.album << song.mbAlbumId() << img.width() << img.height() << fileName;
+		emit cover(song, img, fileName.startsWith(constCoverInTagPrefix) ? QString() : fileName);
 	}
 }
 
