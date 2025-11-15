@@ -33,8 +33,17 @@ ShortcutsFilter::ShortcutsFilter(QObject* parent) : QSortFilterProxyModel(parent
 
 void ShortcutsFilter::setFilterString(const QString& filterString)
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 10, 0))
+	beginFilterChange();
+#endif
+
 	_filterString = filterString;
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 10, 0))
+	endFilterChange();
+#else
 	invalidateFilter();
+#endif
 }
 
 bool ShortcutsFilter::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
