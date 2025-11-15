@@ -811,6 +811,10 @@ QString Utils::helper(const QString& app)
 	if (QFile::exists(local)) {
 		return local;
 	}
+	if (QDir::isAbsolutePath(INSTALL_LIBEXECDIR)) {
+		return fixPath(INSTALL_LIBEXECDIR + constDirSep + QCoreApplication::applicationName() + constDirSep) + app;
+	}
+
 	return fixPath(
 				   QCoreApplication::applicationDirPath() + constDirSep + "../" + INSTALL_LIBEXECDIR + constDirSep + QCoreApplication::applicationName() + constDirSep)
 			+ app;
