@@ -30,7 +30,9 @@
 // Initializing namespaces need to happen outside a namespace
 static void qtawesome_init_resources()
 {
+#ifdef BUNDLED_FONTAWESOME
 	Q_INIT_RESOURCE(QtAwesomeFree);
+#endif
 }
 
 namespace fa {
