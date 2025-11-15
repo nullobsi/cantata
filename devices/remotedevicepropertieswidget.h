@@ -31,6 +31,11 @@ class RemoteDevicePropertiesWidget : public QWidget, Ui::RemoteDevicePropertiesW
 	Q_OBJECT
 
 public:
+	enum Type {
+		Type_SshFs,
+		Type_File
+	};
+
 	RemoteDevicePropertiesWidget(QWidget* parent);
 	virtual ~RemoteDevicePropertiesWidget() {}
 	void update(const RemoteFsDevice::Details& d, bool create, bool isConnected);

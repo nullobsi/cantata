@@ -61,6 +61,11 @@ public:
 		State_Stopped
 	};
 
+	enum Type {
+		AlbumHeader,
+		AlbumTrack
+	};
+
 	static void setup();
 	static int coverSize();
 	static int borderSize();

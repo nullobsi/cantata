@@ -30,11 +30,6 @@
 #include <QTabWidget>
 #include <QUrlQuery>
 
-enum Type {
-	Type_SshFs,
-	Type_File
-};
-
 RemoteDevicePropertiesWidget::RemoteDevicePropertiesWidget(QWidget* parent)
 	: QWidget(parent), modified(false), saveable(false)
 {

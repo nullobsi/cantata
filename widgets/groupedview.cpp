@@ -45,6 +45,8 @@
 #include <QPixmap>
 #include <QStyledItemDelegate>
 
+using Type = GroupedView::Type;
+
 static int constCoverSize = 32;
 static int constIconSize = 16;
 static int constBorder = 1;
@@ -144,23 +146,18 @@ void GroupedView::drawPlayState(QPainter* painter, const QStyleOptionViewItem& o
 	}
 }
 
-enum Type {
-	AlbumHeader,
-	AlbumTrack
-};
-
 static Type getType(const QModelIndex& index)
 {
 	QModelIndex prev = index.row() > 0 ? index.sibling(index.row() - 1, 0) : QModelIndex();
 	quint16 thisKey = index.data(Cantata::Role_Key).toUInt();
 	quint16 prevKey = prev.isValid() ? prev.data(Cantata::Role_Key).toUInt() : (quint16)Song::Null_Key;
 
-	return thisKey == prevKey ? AlbumTrack : AlbumHeader;
+	return thisKey == prevKey ? Type::AlbumTrack : Type::AlbumHeader;
 }
 
 static bool isAlbumHeader(const QModelIndex& index)
 {
-	return !index.data(Cantata::Role_IsCollection).toBool() && AlbumHeader == getType(index);
+	return !index.data(Cantata::Role_IsCollection).toBool() && Type::AlbumHeader == getType(index);
 }
 
 static QString streamText(const Song& song, const QString& trackTitle, bool useName = true)
@@ -199,7 +196,7 @@ QSize GroupedViewDelegate::sizeHint(int type, bool isCollection) const
 {
 	int textHeight = QFontMetricsF(QApplication::font()).height() * sizeAdjust;
 
-	if (isCollection || AlbumHeader == type) {
+	if (isCollection || Type::AlbumHeader == type) {
 		return QSize(64, qMax(constCoverSize, (qMax(constIconSize, textHeight) * 2) + constBorder) + (2 * constBorder));
 	}
 	return QSize(64, qMax(constIconSize, textHeight) + (2 * constBorder));
@@ -229,7 +226,7 @@ void GroupedViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
 	bool gtk = mouseOver && GtkStyle::isActive();
 	bool rtl = QApplication::isRightToLeft();
 
-	if (!isCollection && AlbumHeader == type) {
+	if (!isCollection && Type::AlbumHeader == type) {
 		if (mouseOver && gtk) {
 			GtkStyle::drawSelection(option, painter, (selected ? 0.75 : 0.25) * 0.75);
 		}
@@ -283,7 +280,7 @@ void GroupedViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
 	if (isCollection) {
 		title = index.data(Qt::DisplayRole).toString();
 	}
-	else if (AlbumHeader == type) {
+	else if (Type::AlbumHeader == type) {
 		if (stream) {
 			QModelIndex next = index.sibling(index.row() + 1, 0);
 			quint16 nextKey = next.isValid() ? next.data(Cantata::Role_Key).toUInt() : (quint16)Song::Null_Key;
@@ -361,7 +358,7 @@ void GroupedViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
 	painter->setPen(textColor);
 	bool showTrackDuration = !duration.isEmpty();
 
-	if (isCollection || AlbumHeader == type) {
+	if (isCollection || Type::AlbumHeader == type) {
 		QPixmap pix;
 		// Draw cover...
 		if (isCollection) {
@@ -444,7 +441,7 @@ void GroupedViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
 	}
 
 	if (mouseOver) {
-		drawIcons(painter, option.rect, mouseOver, rtl, AlbumHeader == type || isCollection ? AP_HBottom : AP_HMiddle, index);
+		drawIcons(painter, option.rect, mouseOver, rtl, Type::AlbumHeader == type || isCollection ? AP_HBottom : AP_HMiddle, index);
 	}
 	BasicItemDelegate::drawLine(painter, option.rect, textColor);
 	painter->restore();
