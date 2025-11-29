@@ -77,11 +77,9 @@ bool StorageAccess::isAccessible() const
 static QString getMountPoint(const QVariant& mountPoints)
 {
 	QByteArrayList mntPoints = qdbus_cast<QByteArrayList>(mountPoints);
-	if (!mntPoints.isEmpty())
-	{
+	if (!mntPoints.isEmpty()) {
 		QByteArray mntPoint = mntPoints.first();
-		if (mntPoint.size() > 0 && mntPoint.back() == '\0')
-		{
+		if (mntPoint.size() > 0 && mntPoint.back() == '\0') {
 			mntPoint.chop(1);
 		}
 		return QFile::decodeName(mntPoint);// FIXME Solid doesn't support multiple mount points
