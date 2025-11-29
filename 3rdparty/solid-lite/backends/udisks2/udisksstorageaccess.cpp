@@ -74,28 +74,33 @@ bool StorageAccess::isAccessible() const
 	return m_device->isMounted();
 }
 
+static QString getMountPoint(const QVariant& mountPoints)
+{
+	QByteArrayList mntPoints = qdbus_cast<QByteArrayList>(mountPoints);
+	if (!mntPoints.isEmpty())
+	{
+		QByteArray mntPoint = mntPoints.first();
+		if (mntPoint.size() > 0 && mntPoint.back() == '\0')
+		{
+			mntPoint.chop(1);
+		}
+		return QFile::decodeName(mntPoint);// FIXME Solid doesn't support multiple mount points
+	}
+	else
+		return QString();
+}
+
 QString StorageAccess::filePath() const
 {
-	QByteArrayList mntPoints;
-
 	if (isLuksDevice()) {// encrypted (and unlocked) device
 		const QString path = clearTextPath();
 		if (path.isEmpty() || path == "/")
 			return QString();
 		Device holderDevice(path);
-		mntPoints = qdbus_cast<QByteArrayList>(holderDevice.prop("MountPoints"));
-		if (!mntPoints.isEmpty())
-			return QFile::decodeName(mntPoints.first());// FIXME Solid doesn't support multiple mount points
-		else
-			return QString();
+		return getMountPoint(holderDevice.prop("MountPoints"));
 	}
 
-	mntPoints = qdbus_cast<QByteArrayList>(m_device->prop("MountPoints"));
-
-	if (!mntPoints.isEmpty())
-		return QFile::decodeName(mntPoints.first());// FIXME Solid doesn't support multiple mount points
-	else
-		return QString();
+	return getMountPoint(m_device->prop("MountPoints"));
 }
 
 bool StorageAccess::isIgnored() const
