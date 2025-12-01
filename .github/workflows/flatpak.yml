@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
     name: 🚧 Flatpak
     container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:kde-6.8
+      image: ghcr.io/flathub-infra/flatpak-github-actions:kde-6.10
       options: --privileged
     steps:
     - name: '🧰 Checkout'
