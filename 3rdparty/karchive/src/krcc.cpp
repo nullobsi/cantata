@@ -116,18 +116,18 @@ bool KRcc::openArchive(QIODevice::OpenMode mode)
     if (mode != QIODevice::ReadOnly && mode != QIODevice::ReadWrite) {
 		setErrorString(tr("Unsupported mode %1").arg((int)mode));
 		return false;
-    }
+	}
 
-    QUuid uuid = QUuid::createUuid();
-    d->m_prefix = QLatin1Char('/') + uuid.toString();
-    if (!QResource::registerResource(fileName(), d->m_prefix)) {
-        setErrorString(tr("Failed to register resource %1 under prefix %2").arg(fileName(), d->m_prefix));
-        return false;
-    }
+	QUuid uuid = QUuid::createUuid();
+	d->m_prefix = QLatin1Char('/') + uuid.toString();
+	if (!QResource::registerResource(fileName(), d->m_prefix)) {
+		setErrorString(tr("Failed to register resource %1 under prefix %2").arg(fileName(), d->m_prefix));
+		return false;
+	}
 
-    QDir dir(QLatin1Char(':') + d->m_prefix);
-    d->createEntries(dir, rootDir(), this);
-    return true;
+	QDir dir(QLatin1Char(':') + d->m_prefix);
+	d->createEntries(dir, rootDir(), this);
+	return true;
 }
 
 void KRcc::KRccPrivate::createEntries(const QDir &dir, KArchiveDirectory *parentDir, KRcc *q)

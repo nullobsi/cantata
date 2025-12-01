@@ -161,14 +161,14 @@ bool KArchive::open(QIODevice::OpenMode mode)
     if (!d->dev->isOpen() && !d->dev->open(mode)) {
 		setErrorString(tr("Could not open device in mode %1").arg((int)mode));
 		return false;
-    }
+	}
 
-    d->mode = mode;
+	d->mode = mode;
 
-    Q_ASSERT(!d->rootDir);
-    d->rootDir = nullptr;
+	Q_ASSERT(!d->rootDir);
+	d->rootDir = nullptr;
 
-    return openArchive(mode);
+	return openArchive(mode);
 }
 
 bool KArchive::createDevice(QIODevice::OpenMode mode)
@@ -207,8 +207,8 @@ bool KArchive::createDevice(QIODevice::OpenMode mode)
     default:
 		setErrorString(tr("Unsupported mode %1").arg((int)d->mode));
 		return false;
-    }
-    return true;
+	}
+	return true;
 }
 
 bool KArchive::close()
