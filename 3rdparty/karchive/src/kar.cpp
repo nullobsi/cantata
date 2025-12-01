@@ -87,8 +87,8 @@ bool KAr::openArchive(QIODevice::OpenMode mode)
         return true;
     }
     if (mode != QIODevice::ReadOnly && mode != QIODevice::ReadWrite) {
-        setErrorString(tr("Unsupported mode %1").arg((int)mode));
-        return false;
+		setErrorString(tr("Unsupported mode %1").arg((int)mode));
+		return false;
     }
 
     QIODevice *dev = device();
