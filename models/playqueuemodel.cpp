@@ -1592,7 +1592,8 @@ void PlayQueueModel::sortBy()
 		}
 		else if (constSortByGrouping == key) {
 			std::stable_sort(copy.begin(), copy.end(), groupingSort);
-		} else if (constSortByRating == key) {
+		}
+		else if (constSortByRating == key) {
 			std::stable_sort(copy.begin(), copy.end(), ratingSort);
 		}
 
