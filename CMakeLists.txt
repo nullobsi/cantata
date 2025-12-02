@@ -869,9 +869,7 @@ configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
 if(APPLE)
     # Using macdeployqt from the official Qt download works.
     # With homebrew, the libraries are more entangled and it doesn't work.
-    install(
-        CODE "execute_process(COMMAND ${MACDEPLOYQT_EXECUTABLE} \"${APPS}\")"
-    )
+    install(CODE "execute_process(COMMAND ${MACDEPLOYQT_EXECUTABLE} \"${APPS}\" \"-executable=${APPS}/Contents/MacOS/cantata-replaygain\" \"-executable=${APPS}/Contents/MacOS/cantata-tags\")")
     #install(CODE "include(BundleUtilities)
     #	fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")")
     #install(CODE "execute_process(COMMAND ${MACDEPLOYQT_EXECUTABLE} \"${APPS}\")")

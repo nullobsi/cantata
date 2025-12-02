@@ -1,0 +1,1 @@
+create-dmg --volname "Cantata" --volicon cantata.icns --background dmg/background.png --window-size 600 500 --icon-size 75 --icon "Cantata.app" -25 175 --hide-extension "Cantata.app" --app-drop-link 310 175 $argv[1] $argv[2]
