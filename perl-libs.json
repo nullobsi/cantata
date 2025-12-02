@@ -1,0 +1,36 @@
+[
+   {
+      "dest": "perl-libs/MIME-Base32",
+      "sha256": "ab21fa99130e33a0aff6cdb596f647e5e565d207d634ba2ef06bdbef50424e99",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/R/RE/REHSACK/MIME-Base32-1.303.tar.gz"
+   },
+   {
+      "dest": "perl-libs/URI",
+      "sha256": "de64c779a212ff1821896c5ca2bb69e74767d2674cee411e777deea7a22604a8",
+      "type": "archive",
+      "url": "https://cpan.metacpan.org/authors/id/O/OA/OALDERS/URI-5.34.tar.gz"
+   },
+   {
+      "commands": [
+         "set -e",
+         "function make_install {",
+         "    mod_dir=$1",
+         "    cd $mod_dir",
+         "    if [ -f 'Makefile.PL' ]; then",
+         "        perl Makefile.PL PREFIX=${FLATPAK_DEST} && make install PREFIX=${FLATPAK_DEST}",
+         "    elif [ -f 'Build.PL' ]; then",
+         "        perl Build.PL && ./Build && ./Build install",
+         "    else",
+         "        echo 'No Makefile.PL or Build.PL found. Do not know how to install this module'",
+         "        exit 1",
+         "    fi",
+         "}",
+         "(make_install perl-libs/MIME-Base32)",
+         "(make_install perl-libs/URI)"
+      ],
+      "dest": "perl-libs",
+      "dest-filename": "install.sh",
+      "type": "script"
+   }
+]
