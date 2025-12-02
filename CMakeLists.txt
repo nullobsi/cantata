@@ -826,7 +826,6 @@ add_subdirectory(3rdparty/knotifications)
 add_subdirectory(streams/icons)
 add_subdirectory(online/icons)
 
-find_library(QtSolutions_IOCompressor_LIB QtSolutions_IOCompressor-2.3 PATHS /usr/lib64)
 target_link_libraries(cantata PRIVATE support-core KF6Notifications)
 
 # enable warnings
