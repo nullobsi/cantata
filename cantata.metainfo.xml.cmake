@@ -130,4 +130,9 @@
   </releases>
 
   <translation type="qt">cantata</translation>
+
+  <requires>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </requires>
 </component>
