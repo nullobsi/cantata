@@ -78,7 +78,7 @@ elseif(APPLE)
     set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
     set(MACOSX_BUNDLE_VERSION ${PROJECT_VERSION})
     set(MACOSX_BUNDLE_COPYRIGHT "Copyright © 2024 Cantata Contributors.")
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER ${PROJECT_ID})
+	set(MACOSX_BUNDLE_GUI_IDENTIFIER ${PROJECT_REV_ID})
     set(MACOSX_BUNDLE_EXECUTABLE cantata)
     set(MACOSX_BUNDLE_ICON_FILE cantata.icns)
     set(MACOSX_BUNDLE_LONG_VERSION_STRING ${PROJECT_VERSION})
@@ -349,21 +349,24 @@ find_package(ZLIB REQUIRED)
 
 if(APPLE)
     target_sources(cantata PRIVATE mac/dockmenu.cpp)
+
     find_package(IOKit)
-    if(IOKIT_FOUND)
-        target_link_libraries(cantata PRIVATE ${IOKIT_LIBRARY})
+    if(IOKit_FOUND)
+        target_link_libraries(cantata PRIVATE IOKit::IOKit)
         target_sources(cantata PRIVATE mac/powermanagement.cpp)
     endif()
+
     find_package(Foundation REQUIRED)
-    find_library(MAC_APPKIT_LIBRARY AppKit REQUIRED)
+    find_package(AppKit REQUIRED)
     target_link_libraries(
         cantata
-        PRIVATE ${FOUNDATION_LIBRARY} ${MAC_APPKIT_LIBRARY}
+        PRIVATE Foundation::Foundation AppKit::AppKit
     )
-    find_library(MAC_MEDIAPLAYER_LIBRARY MediaPlayer)
-    if(MAC_MEDIAPLAYER_LIBRARY)
+
+    find_package(MediaPlayer)
+    if(MediaPlayer_FOUND)
         target_sources(cantata PRIVATE mac/macnowplaying.mm)
-        target_link_libraries(cantata PRIVATE ${MAC_MEDIAPLAYER_LIBRARY})
+        target_link_libraries(cantata PRIVATE MediaPlayer::MediaPlayer)
         target_compile_definitions(cantata PRIVATE MAC_MEDIAPLAYER_FOUND)
     endif()
 elseif(WIN32 AND QT_VERSION_MAJOR EQUAL 5)
@@ -762,6 +765,7 @@ elseif(APPLE)
             MACOSX_RPATH TRUE
             OUTPUT_NAME ${MACOSX_BUNDLE_BUNDLE_NAME}
             XCODE_ATTRIBUTE_EXECUTABLE_NAME ${EXECUTABLE_NAME}
+            XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME YES
     )
 
     add_subdirectory(mac)
