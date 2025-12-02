@@ -13,6 +13,7 @@ finish-args:
   - --filesystem=/run/mpd
   - --filesystem=xdg-run/mpd
   - --filesystem=/run/media
+  - --filesystem=/media
   - --talk-name=org.kde.StatusNotifierWatcher
   - --system-talk-name=org.freedesktop.UDisks2
 modules:
