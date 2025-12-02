@@ -307,7 +307,6 @@ void Song::guessTags()
 		QString newartist = artist;
 
 		static const QLatin1String constAlbumArtistSep(" - ");
-		guessed = true;
 		QStringList parts = file.split("/", CANTATA_SKIP_EMPTY);
 		if (3 == parts.length()) {
 			newtitle = parts.at(2);
@@ -352,9 +351,19 @@ void Song::guessTags()
 				}
 			}
 		}
-		title = !title.isEmpty() ? title : newtitle;
-		album = !album.isEmpty() ? album : newalbum;
-		artist = !artist.isEmpty() ? artist : newartist;
+
+		if (title.isEmpty() && newtitle != title) {
+			title = newtitle;
+			guessed = true;
+		}
+		if (album.isEmpty() && newalbum != album) {
+			album = newalbum;
+			guessed = true;
+		}
+		if (artist.isEmpty() && newartist != artist) {
+			artist = newartist;
+			guessed = true;
+		}
 	}
 }
 
