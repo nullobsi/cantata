@@ -56,6 +56,20 @@
   </screenshots>
 
   <releases>
+	<release version="3.4.0" date="2025-12-02">
+		<url type="details">https://github.com/nullobsi/cantata/releases/tag/v3.4.0</url>
+		<description>
+			<p>Minor release.</p>
+			<ul>
+				<li>Update to Qt 6.10.</li>
+				<li>Feature: Sort playlist by rating.</li>
+				<li>Hide old, broken services.</li>
+				<li>Fix device access via UDisks2 in Flatpak.</li>
+				<li>Fix bounds check crash in vfatPath.</li>
+				<li>Various minor fixes.</li>
+			</ul>
+		</description>
+	</release>
 	<release version="3.3.1" date="2025-04-24">
 		<description>
 			<p>Patch release.</p>
