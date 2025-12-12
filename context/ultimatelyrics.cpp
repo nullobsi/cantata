@@ -23,6 +23,7 @@
 
 #include "ultimatelyrics.h"
 #include "gui/settings.h"
+#include "lrcliblyricsprovider.h"
 #include "support/globalstatic.h"
 #include "ultimatelyricsprovider.h"
 #include <QDir>
@@ -34,7 +35,7 @@
 
 GLOBAL_STATIC(UltimateLyrics, instance)
 
-static bool compareLyricProviders(const UltimateLyricsProvider* a, const UltimateLyricsProvider* b)
+static bool compareLyricProviders(const LyricsProvider* a, const LyricsProvider* b)
 {
 	return a->getRelevance() < b->getRelevance();
 }
@@ -113,21 +114,21 @@ static UltimateLyricsProvider* parseProvider(QXmlStreamReader* reader)
 
 void UltimateLyrics::release()
 {
-	for (UltimateLyricsProvider* provider : providers) {
+	for (LyricsProvider* provider : providers) {
 		delete provider;
 	}
 	providers.clear();
 }
 
-const QList<UltimateLyricsProvider*> UltimateLyrics::getProviders()
+const QList<LyricsProvider*> UltimateLyrics::getProviders()
 {
 	load();
 	return providers;
 }
 
-UltimateLyricsProvider* UltimateLyrics::providerByName(const QString& name) const
+LyricsProvider* UltimateLyrics::providerByName(const QString& name) const
 {
-	for (UltimateLyricsProvider* provider : providers) {
+	for (LyricsProvider* provider : providers) {
 		if (provider->getName() == name) {
 			return provider;
 		}
@@ -135,7 +136,7 @@ UltimateLyricsProvider* UltimateLyrics::providerByName(const QString& name) cons
 	return nullptr;
 }
 
-UltimateLyricsProvider* UltimateLyrics::getNext(int& index)
+LyricsProvider* UltimateLyrics::getNext(int& index)
 {
 	load();
 	index++;
@@ -193,19 +194,23 @@ void UltimateLyrics::load()
 		}
 	}
 
+	LyricsProvider* lrclibProvider = new LrclibLyricsProvider;
+	connect(lrclibProvider, &LyricsProvider::lyricsReady, this, &UltimateLyrics::lyricsReady);
+	providers << lrclibProvider;
+
 	setEnabled(Settings::self()->lyricProviders());
 }
 
 void UltimateLyrics::setEnabled(const QStringList& enabled)
 {
-	for (UltimateLyricsProvider* provider : providers) {
+	for (LyricsProvider* provider : providers) {
 		provider->setEnabled(false);
 		provider->setRelevance(0xFFFF);
 	}
 
 	int relevance = 0;
 	for (const QString& p : enabled) {
-		UltimateLyricsProvider* provider = providerByName(p);
+		LyricsProvider* provider = providerByName(p);
 		if (provider) {
 			provider->setEnabled(true);
 			provider->setRelevance(relevance++);
