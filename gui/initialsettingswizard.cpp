@@ -44,6 +44,11 @@
 InitialSettingsWizard::InitialSettingsWizard(QWidget* p)
 	: QWizard(p)
 {
+#ifdef Q_OS_WIN
+	// Workaround for dark mode issue: https://qt-project.atlassian.net/browse/QTBUG-123853
+	setWizardStyle(WizardStyle::ModernStyle);
+#endif
+
 	setupUi(this);
 	connect(this, SIGNAL(currentIdChanged(int)), SLOT(pageChanged(int)));
 	connect(this, SIGNAL(setDetails(MPDConnectionDetails)), MPDConnection::self(), SLOT(setDetails(MPDConnectionDetails)));
