@@ -54,11 +54,11 @@ void LyricSettings::save()
 void LyricSettings::showEvent(QShowEvent* e)
 {
 	if (!loadedXml) {
-		const QList<UltimateLyricsProvider*>& lprov = UltimateLyrics::self()->getProviders();
+		const QList<LyricsProvider*>& lprov = UltimateLyrics::self()->getProviders();
 
 		available->clear();
 		selected->clear();
-		for (const UltimateLyricsProvider* provider : lprov) {
+		for (const LyricsProvider* provider : lprov) {
 			QListWidgetItem* item = new QListWidgetItem(provider->isEnabled() ? selected : available);
 			item->setText(provider->displayName());
 			item->setData(Qt::UserRole, provider->getName());
