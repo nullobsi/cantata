@@ -57,6 +57,12 @@ bool LrclibLyricsProvider::processResponseImpl(int id, [[maybe_unused]] Song met
 		return false;
 	}
 
+	QJsonValue instrumental = result["instrumental"];
+	if (instrumental.isBool() && instrumental.toBool()) {
+		emit lyricsReady(id, "{Instrumental}");
+		return true;
+	}
+
 	QJsonValue lyrics = result["plainLyrics"];
 	if (!lyrics.isString()) {
 		return false;
