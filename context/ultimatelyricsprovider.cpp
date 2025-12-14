@@ -346,7 +346,7 @@ void UltimateLyricsProvider::wikiMediaLyricsFetched()
 	emit lyricsReady(id, extract(contents, QLatin1String("&lt;lyrics&gt;"), QLatin1String("&lt;/lyrics&gt;")));
 }
 
-bool UltimateLyricsProvider::processResponseImpl(int id, Song song, const QByteArray& response)
+void UltimateLyricsProvider::processResponseImpl(int id, Song song, const QByteArray& response)
 {
 	auto decode = QStringDecoder(charset.toLatin1().constData());
 	QString originalContent = decode(response);
@@ -358,7 +358,8 @@ bool UltimateLyricsProvider::processResponseImpl(int id, Song song, const QByteA
 		if (originalContent.contains(indicator)) {
 			//emit Finished(id);
 			DBUG << getName() << "invalid";
-			return false;
+			gotNoLyrics(id, song);
+			return;
 		}
 	}
 
@@ -389,11 +390,10 @@ bool UltimateLyricsProvider::processResponseImpl(int id, Song song, const QByteA
 	lyrics.replace("<br>\n", "<br/>");
 	DBUG << getName() << (lyrics.isEmpty() ? "empty" : "succeeded");
 	if (lyrics.isEmpty() && tryWithoutThe(song)) {
-		return false;
+		gotNoLyrics(id, song);
 	}
 	else {
 		emit lyricsReady(id, lyrics);
-		return true;
 	}
 }
 

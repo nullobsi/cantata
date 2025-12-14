@@ -111,6 +111,16 @@ void LyricsProvider::performRequest(int id, const QUrl& url)
 	connect(reply, &NetworkJob::finished, this, &LyricsProvider::processResponse);
 }
 
+void LyricsProvider::gotNoLyrics(int id, Song song)
+{
+	if (tryWithoutThe(song)) {
+		fetchInfo(id, song, true);
+	}
+	else {
+		emit lyricsReady(id, QString());
+	}
+}
+
 void LyricsProvider::processResponse()
 {
 	NetworkJob* response = qobject_cast<NetworkJob*>(sender());
@@ -122,14 +132,17 @@ void LyricsProvider::processResponse()
 	response->deleteLater();
 	Song song = songs.take(id);
 
-	if (!response->ok() || !processResponseImpl(id, song, response->readAll())) {
-		if (tryWithoutThe(song)) {
-			fetchInfo(id, song, true);
-		}
-		else {
-			emit lyricsReady(id, QString());
-		}
+	if (!response->ok()) {
+		processRequestFailed(id, song);
+		return;
 	}
+
+	processResponseImpl(id, song, response->readAll());
+}
+
+void LyricsProvider::processRequestFailed(int id, Song song)
+{
+	gotNoLyrics(id, song);
 }
 
 #include "moc_lyricsprovider.cpp"

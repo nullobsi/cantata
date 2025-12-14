@@ -33,7 +33,11 @@ public:
 
 protected:
 	void fetchInfoImpl(int id, Song metadata) override;
-	bool processResponseImpl(int id, Song metadata, const QByteArray& response) override;
+	void processResponseImpl(int id, Song song, const QByteArray& response) override;
+	void processRequestFailed(int id, Song song) override;
+
+private:
+	void gotNoLyricsRetryWithoutAlbum(int id, Song song);
 };
 
 #endif// LRCLIBLYRICSPROVIDER_H

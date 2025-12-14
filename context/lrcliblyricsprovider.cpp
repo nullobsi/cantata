@@ -50,24 +50,41 @@ void LrclibLyricsProvider::fetchInfoImpl(int id, Song metadata)
 	performRequest(id, url);
 }
 
-bool LrclibLyricsProvider::processResponseImpl(int id, [[maybe_unused]] Song metadata, const QByteArray& response)
+void LrclibLyricsProvider::processResponseImpl(int id, Song song, const QByteArray& response)
 {
 	QJsonDocument result = QJsonDocument::fromJson(response);
 	if (result.isNull() || !result["id"].isDouble()) {
-		return false;
+		gotNoLyricsRetryWithoutAlbum(id, song);
+		return;
 	}
 
 	QJsonValue instrumental = result["instrumental"];
 	if (instrumental.isBool() && instrumental.toBool()) {
 		emit lyricsReady(id, "{Instrumental}");
-		return true;
+		return;
 	}
 
 	QJsonValue lyrics = result["plainLyrics"];
 	if (!lyrics.isString()) {
-		return false;
+		gotNoLyricsRetryWithoutAlbum(id, song);
+		return;
 	}
 
 	emit lyricsReady(id, lyrics.toString());
-	return true;
+}
+
+void LrclibLyricsProvider::processRequestFailed(int id, Song song)
+{
+	gotNoLyricsRetryWithoutAlbum(id, song);
+}
+
+void LrclibLyricsProvider::gotNoLyricsRetryWithoutAlbum(int id, Song song)
+{
+	if (!song.album.isEmpty()) {
+		song.album.clear();
+		fetchInfo(id, song);
+	}
+	else {
+		gotNoLyrics(id, song);
+	}
 }

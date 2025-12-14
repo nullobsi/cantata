@@ -57,10 +57,12 @@ Q_SIGNALS:
 	void lyricsReady(int id, const QString& data);
 
 protected:
-	virtual void fetchInfoImpl(int id, Song metadata) = 0;
-	virtual bool processResponseImpl(int id, Song metadata, const QByteArray& response) = 0;
+	virtual void fetchInfoImpl(int id, Song song) = 0;
+	virtual void processResponseImpl(int id, Song song, const QByteArray& response) = 0;
+	virtual void processRequestFailed(int id, Song song);
 
 	void performRequest(int id, const QUrl& url);
+	void gotNoLyrics(int id, Song song);
 
 private Q_SLOTS:
 	void processResponse();
