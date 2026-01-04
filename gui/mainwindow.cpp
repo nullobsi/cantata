@@ -1011,6 +1011,9 @@ MainWindow::~MainWindow()
 	}
 	Settings::self()->save();
 	disconnect(MPDConnection::self(), nullptr, nullptr, nullptr);
+	if (Utils::isFlatpak()) {
+		DynamicPlaylists::self()->stop();
+	}
 	if (Settings::self()->stopOnExit()) {
 		DynamicPlaylists::self()->stop();
 		emit terminating();

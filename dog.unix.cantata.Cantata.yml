@@ -16,6 +16,7 @@ finish-args:
   - --filesystem=/media
   - --talk-name=org.kde.StatusNotifierWatcher
   - --system-talk-name=org.freedesktop.UDisks2
+  - --env=FLATPAK=1
 modules:
   - name: ebur128
     buildsystem: cmake-ninja
