@@ -16,6 +16,7 @@ finish-args:
   - --filesystem=/media
   - --talk-name=org.kde.StatusNotifierWatcher
   - --system-talk-name=org.freedesktop.UDisks2
+  - --env=FLATPAK=1
 modules:
   - name: ebur128
     buildsystem: cmake-ninja
@@ -27,6 +28,49 @@ modules:
         url: https://github.com/jiixyj/libebur128.git
         tag: v1.2.6
         commit: 67b33abe1558160ed76ada1322329b0e9e058b02
+#   Based on https://github.com/flathub/io.github.Hexchat.Plugin.Perl/
+  - name: perl
+    no-autogen: true
+    config-opts: ["-des", "-Duseshrplib", "-Dusethreads"]
+    build-options:
+      cflags: "-fPIC"
+      ldflags: "-fpic"
+    cleanup:
+      - "/man"
+      - "/lib/perl5/site_perl"
+      - "*.pod"
+      - "*.h"
+    sources:
+      - type: archive
+        url: "https://www.cpan.org/src/5.0/perl-5.38.2.tar.gz"
+        sha256: a0a31534451eb7b83c7d6594a497543a54d488bc90ca00f5e34762577f40655e
+        x-data-checker:
+          type: anitya
+          project-id: 13599
+          url-template: "https://www.cpan.org/src/5.0/perl-$version.tar.gz"
+      - type: script
+        dest-filename: configure
+        commands:
+          - "exec ./configure.gnu $@"
+    post-install:
+      - 'chmod -R u+w /app/lib/perl5'
+      - dest: perl-libs/MIME-Base32
+    # https://github.com/flatpak/flatpak-builder-tools/tree/master/cpan with URI::Escape
+  - name: perl-libs
+    buildsystem: simple
+    build-commands:
+      - 'perl-libs/install.sh'
+    # Same as with the Perl module, we need to restore write permission.
+    # However, -f is now passed to avoid errors from trying to touch files from the
+    # above module that are now marked as read-only.
+    post-install:
+      - 'chmod -Rf u+w /app/lib/perl5/site_perl'
+    sources:
+      - perl-libs.json
+    # This step should be customized based on the CPAN packages you're using.
+    cleanup:
+      - '/bin'
+      - '/man'
   - name: cantata
     buildsystem: cmake-ninja
     config-opts:

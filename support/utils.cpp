@@ -1097,3 +1097,9 @@ int Utils::compare(const QString& a, const QString& b)
 	}
 	return collator->compare(a, b);
 }
+
+bool Utils::isFlatpak()
+{
+	const QByteArray flatpakVar = qgetenv("FLATPAK");
+	return !flatpakVar.isEmpty() && flatpakVar.trimmed() != "0";
+}
