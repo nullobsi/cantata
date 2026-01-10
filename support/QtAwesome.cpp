@@ -224,9 +224,9 @@ private:
 
 //---------------------------------------------------------------------------------------
 
-const QString QtAwesome::FA_BRANDS_FONT_FILENAME = "Font Awesome 6 Brands-Regular-400.otf";
-const QString QtAwesome::FA_REGULAR_FONT_FILENAME = "Font Awesome 6 Free-Regular-400.otf";
-const QString QtAwesome::FA_SOLID_FONT_FILENAME = "Font Awesome 6 Free-Solid-900.otf";
+const QString QtAwesome::FA_BRANDS_FONT_FILENAME = "Font Awesome 7 Brands-Regular-400.otf";
+const QString QtAwesome::FA_REGULAR_FONT_FILENAME = "Font Awesome 7 Free-Regular-400.otf";
+const QString QtAwesome::FA_SOLID_FONT_FILENAME = "Font Awesome 7 Free-Solid-900.otf";
 const QString QtAwesome::FA_BRANDS_FONT_STYLE = "Regular";
 const QString QtAwesome::FA_REGULAR_FONT_STYLE = "Regular";
 const QString QtAwesome::FA_SOLID_FONT_STYLE = "Solid";
@@ -247,9 +247,9 @@ QtAwesome::QtAwesome(QObject* parent)
 	_fontDetails.insert(fa::fa_brands, QtAwesomeFontData(FA_BRANDS_FONT_FILENAME, FA_BRANDS_FONT_WEIGHT, FA_BRANDS_FONT_STYLE));
 #else
 	// use "filename" to store font family name...
-	_fontDetails.insert(fa::fa_solid, QtAwesomeFontData("Font Awesome 6 Free Solid", FA_SOLID_FONT_WEIGHT, FA_SOLID_FONT_STYLE));
-	_fontDetails.insert(fa::fa_regular, QtAwesomeFontData("Font Awesome 6 Free Regular", FA_REGULAR_FONT_WEIGHT, FA_REGULAR_FONT_STYLE));
-	_fontDetails.insert(fa::fa_brands, QtAwesomeFontData("Font Awesome 6 Brands Regular", FA_BRANDS_FONT_WEIGHT, FA_BRANDS_FONT_STYLE));
+	_fontDetails.insert(fa::fa_solid, QtAwesomeFontData("Font Awesome 7 Free Solid", FA_SOLID_FONT_WEIGHT, FA_SOLID_FONT_STYLE));
+	_fontDetails.insert(fa::fa_regular, QtAwesomeFontData("Font Awesome 7 Free Regular", FA_REGULAR_FONT_WEIGHT, FA_REGULAR_FONT_STYLE));
+	_fontDetails.insert(fa::fa_brands, QtAwesomeFontData("Font Awesome 7 Brands Regular", FA_BRANDS_FONT_WEIGHT, FA_BRANDS_FONT_STYLE));
 #endif
 
 #ifdef USE_COLOR_SCHEME
