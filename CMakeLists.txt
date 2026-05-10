@@ -206,7 +206,7 @@ add_executable(cantata)
 
 set_property(TARGET cantata PROPERTY CXX_STANDARD 17)
 set_property(TARGET cantata PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_property(TARGET cantata PROPERTY COMPILE_WARNING_AS_ERROR ON)
+set_property(TARGET cantata PROPERTY COMPILE_WARNING_AS_ERROR ON CACHE BOOL "")
 target_compile_options(
     cantata
     PRIVATE
