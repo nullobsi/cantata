@@ -1220,13 +1220,53 @@ void MPDConnection::playListChanges()
 	playListInfo();
 }
 
+std::pair<QList<Song>, bool> MPDConnection::readPlaylistInfoChunked()
+{
+	quint32 playlistLength = 0;
+	quint32 playlistVersion = 0;
+	Response status = sendCommand("status");
+	if (!status.ok) {
+		return {{}, false};
+	}
+
+	MPDStatusValues sv = MPDParseUtils::parseStatus(status.data);
+	playlistLength = sv.playlistLength;
+	playlistVersion = sv.playlist;
+
+	for (int retry = 0; retry < 10; ++retry) {
+		QList<Song> songs;
+		const quint32 batchSize = 10000;
+		for (quint32 batchStart = 0; batchStart < playlistLength; batchStart += batchSize) {
+			const quint32 batchEnd = std::min(batchStart + batchSize, playlistLength);
+			Response response = sendCommand("playlistinfo " + QByteArray::number(batchStart) + ":" + QByteArray::number(batchEnd));
+			if (!response.ok) {
+				return {{}, false};
+			}
+
+			songs.append(MPDParseUtils::parseSongs(response.data, MPDParseUtils::Loc_PlayQueue));
+		}
+
+		Response status = sendCommand("status");
+		if (!status.ok) {
+			return {{}, false};
+		}
+		MPDStatusValues sv = MPDParseUtils::parseStatus(status.data);
+		if (playlistVersion == sv.playlist && playlistLength == sv.playlistLength) {
+			lastUpdatePlayQueueVersion = lastStatusPlayQueueVersion = sv.playlist;
+			emitStatusUpdated(sv);
+			return {songs, true};
+		}
+
+		// retry if playlist has changed while reading it
+	}
+	return {{}, false};
+}
+
 void MPDConnection::playListInfo()
 {
-	Response response = sendCommand("playlistinfo");
-	QList<Song> songs;
-	if (response.ok) {
-		lastUpdatePlayQueueVersion = lastStatusPlayQueueVersion;
-		songs = MPDParseUtils::parseSongs(response.data, MPDParseUtils::Loc_PlayQueue);
+	const auto& [songs, ok] = readPlaylistInfoChunked();
+
+	if (ok) {
 		playQueueIds.clear();
 		streamIds.clear();
 
@@ -1249,12 +1289,9 @@ void MPDConnection::playListInfo()
 		if (songs.isEmpty()) {
 			stopVolumeFade();
 		}
-		Response status = sendCommand("status");
-		if (status.ok) {
-			MPDStatusValues sv = MPDParseUtils::parseStatus(status.data);
-			lastUpdatePlayQueueVersion = lastStatusPlayQueueVersion = sv.playlist;
-			emitStatusUpdated(sv);
-		}
+	}
+	else {
+		emit error(tr("Failed loading play queue from MPD"));
 	}
 	emit playlistUpdated(songs, true);
 }
