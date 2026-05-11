@@ -1300,7 +1300,7 @@ QList<StreamsModel::Item*> StreamsModel::parseIceCastResponse(QIODevice* dev, Ca
 
 	if (isGZipped) {
 		compressor = new KCompressionDevice(dev, false, KCompressionDevice::GZip);
-		compressor->open(QIODevice::ReadOnly);
+		if (!compressor->open(QIODevice::ReadOnly)) return {};
 		readDev = compressor;
 	}
 	QXmlStreamReader doc(readDev);
