@@ -121,10 +121,20 @@ void TrayItem::setup()
 	//if (!QSystemTrayIcon::isSystemTrayAvailable()) {
 	//    return;
 	//}
-
+	// Create tray backend
+#if defined(USE_KSNI)
+	trayItem = new KStatusNotifierItem(this);
+	trayItem->setCategory(KStatusNotifierItem::ApplicationStatus);
+	trayItem->setStatus(KStatusNotifierItem::Active);
+	trayItemMenu = new QMenu(nullptr);
+	trayItem->setContextMenu(trayItemMenu);
+#else
 	trayItem = new QSystemTrayIcon(this);
 	trayItem->installEventFilter(new VolumeSliderEventHandler(this));
 	trayItemMenu = new QMenu(nullptr);
+	trayItem->setContextMenu(trayItemMenu);
+#endif
+	// Populate common menu
 	trayItemMenu->addAction(StdActions::self()->prevTrackAction);
 	trayItemMenu->addAction(StdActions::self()->playPauseTrackAction);
 	trayItemMenu->addAction(StdActions::self()->stopPlaybackAction);
@@ -162,12 +172,33 @@ void TrayItem::setup()
 		icon.addFile(QLatin1String(ICON_INSTALL_PREFIX "/scalable/apps/" PROJECT_REV_ID ".svg"));
 	}
 #endif
+
 	trayItem->setIcon(icon);
+#if defined(USE_KSNI)
+	trayItem->setToolTip(QIcon::fromTheme(QStringLiteral(PROJECT_REV_ID)), tr("Cantata"), QString());
+	// KStatusNotifierItem does not need show() or QSystemTrayIcon connections
+#else
 	trayItem->setToolTip(tr("Cantata"));
 	trayItem->show();
-	connect(trayItem, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayItemClicked(QSystemTrayIcon::ActivationReason)));
+	connect(trayItem, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+	        this, SLOT(trayItemClicked(QSystemTrayIcon::ActivationReason)));
+#endif
+
 #endif
 }
+
+#if defined(USE_KSNI)
+void TrayItem::setOverlayPaused(bool paused)
+{
+	if (!trayItem) return;
+	if (paused) {
+		trayItem->setOverlayIconByName(QStringLiteral("media-playback-pause"));
+	}
+	else {
+		trayItem->setOverlayIcon(QIcon());// clear overlay
+	}
+}
+#endif
 
 void TrayItem::trayItemClicked(QSystemTrayIcon::ActivationReason reason)
 {
@@ -194,22 +225,34 @@ void TrayItem::trayItemClicked(QSystemTrayIcon::ActivationReason reason)
 
 void TrayItem::songChanged(const Song& song, bool isPlaying)
 {
-	if (Settings::self()->showPopups()) {
-		bool useable = song.isStandardStream()
-				? !song.title.isEmpty() && !song.name().isEmpty()
-				: !song.title.isEmpty() && !song.artist.isEmpty() && !song.album.isEmpty();
-		if (useable && isPlaying) {
-			if (songNotif == nullptr) {
-				songNotif = new KNotification("newSong");
-				songNotif->setAutoDelete(false);
-			}
-			songNotif->setTitle(song.mainText());
-			songNotif->setText(song.subText());
-			songNotif->setImage(CurrentCover::self()->image().scaledToHeight(512, Qt::SmoothTransformation));
-			songNotif->setUrgency(KNotification::LowUrgency);
-			songNotif->sendEvent();
-		}
+	bool useable = song.isStandardStream()
+			? !song.title.isEmpty() && !song.name().isEmpty()
+			: !song.title.isEmpty() && !song.artist.isEmpty() && !song.album.isEmpty();
+	if (useable && isPlaying) {
+		// Always emit a KDE notification: Plasma can suppress popups but still keep history.
+		auto* n = new KNotification(QStringLiteral("newSong"));
+		// Ensure it maps to cantata.notifyrc (safer for per‑app settings/history)
+		n->setComponentName(QStringLiteral("cantata"));
+		n->setTitle(song.mainText());
+		n->setText(song.subText());
+		n->setImage(CurrentCover::self()->image().scaledToHeight(512, Qt::SmoothTransformation));
+		n->setUrgency(KNotification::LowUrgency);
+		n->sendEvent();
 	}
+
+#if defined(USE_KSNI)
+	const QString title = song.isStandardStream()
+			? song.name()
+			: QStringLiteral("%1 — %2").arg(song.artist, song.title);
+	const QString sub = song.isStandardStream() ? song.title : song.album;
+	setToolTip(QStringLiteral("audio-x-generic"), title, sub);
+	setOverlayPaused(!isPlaying);
+#else
+	const QString oneLine = song.isStandardStream()
+			? QStringLiteral("%1 — %2").arg(song.name(), song.title)
+			: QStringLiteral("%1 — %2").arg(song.artist, song.title);
+	setToolTip(QString(), oneLine, QString());
+#endif
 }
 
 #ifndef Q_OS_MAC

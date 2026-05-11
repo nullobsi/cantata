@@ -28,6 +28,10 @@
 #include "support/icon.h"
 #include <QObject>
 #include <QSystemTrayIcon>
+#if defined(USE_KSNI)
+#include <KStatusNotifierItem>
+#endif
+
 class QMenu;
 #include "config.h"
 
@@ -49,19 +53,26 @@ public:
 	void setToolTip(const QString&, const QString&, const QString&) {}
 #else
 	bool isActive() const { return nullptr != trayItem; }
+
 	void setIcon(const QIcon& icon)
 	{
-		if (trayItem) {
-			trayItem->setIcon(icon);
-		}
+#if defined(USE_KSNI)
+		if (trayItem) trayItem->setIcon(icon);
+#else
+		if (trayItem) trayItem->setIcon(icon);
+#endif
 	}
 	void setToolTip(const QString& iconName, const QString& title, const QString& subTitle)
 	{
-		if (trayItem) {
-			Q_UNUSED(iconName)
-			Q_UNUSED(subTitle)
-			trayItem->setToolTip(title);
-		}
+		if (!trayItem) return;
+#if defined(USE_KSNI)
+		Q_UNUSED(subTitle)// body comes from separate call below if needed
+		trayItem->setToolTip(QIcon::fromTheme(iconName), title, QString());
+#else
+		Q_UNUSED(iconName)
+		Q_UNUSED(subTitle)
+		trayItem->setToolTip(title);
+#endif
 	}
 #endif
 	void songChanged(const Song& song, bool isPlaying);
@@ -69,20 +80,27 @@ public:
 	void updatePartitions();
 	void updateOutputs();
 
+#if defined(USE_KSNI)
+	void setOverlayPaused(bool paused);
+#endif
+
 private Q_SLOTS:
 	void trayItemClicked(QSystemTrayIcon::ActivationReason reason);
 
 private:
 #ifndef Q_OS_MAC
-
 	MainWindow* mw;
-	QSystemTrayIcon* trayItem;
-	QMenu* trayItemMenu;
-	Action* connectionsAction;
-	Action* partitionsAction;
-	Action* outputsAction;
-
+#if defined(USE_KSNI)
+	KStatusNotifierItem* trayItem = nullptr;
+#else
+	QSystemTrayIcon* trayItem = nullptr;
 #endif
+	QMenu* trayItemMenu = nullptr;
+	Action* connectionsAction = nullptr;
+	Action* partitionsAction = nullptr;
+	Action* outputsAction = nullptr;
+#endif
+
 	KNotification* songNotif = nullptr;
 };
 
