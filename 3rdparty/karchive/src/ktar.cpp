@@ -163,8 +163,8 @@ bool KTar::createDevice(QIODevice::OpenMode mode)
         Q_ASSERT(!d->tmpFile);
         d->tmpFile = new QTemporaryFile();
         d->tmpFile->setFileTemplate(QDir::tempPath() + QLatin1Char('/') + QLatin1String("ktar-XXXXXX.tar"));
-        d->tmpFile->open();
-        // qCDebug(KArchiveLog) << "creating tempfile:" << d->tmpFile->fileName();
+		if (!d->tmpFile->open()) return false;
+		// qCDebug(KArchiveLog) << "creating tempfile:" << d->tmpFile->fileName();
 
         setDevice(d->tmpFile);
         return true;
