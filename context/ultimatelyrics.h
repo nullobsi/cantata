@@ -26,7 +26,7 @@
 
 #include <QObject>
 
-class UltimateLyricsProvider;
+class LyricsProvider;
 
 class UltimateLyrics : public QObject {
 	Q_OBJECT
@@ -35,8 +35,8 @@ public:
 	static UltimateLyrics* self();
 	UltimateLyrics() {}
 
-	UltimateLyricsProvider* getNext(int& index);
-	const QList<UltimateLyricsProvider*> getProviders();
+	LyricsProvider* getNext(int& index);
+	const QList<LyricsProvider*> getProviders();
 	void release();
 	void setEnabled(const QStringList& enabled);
 
@@ -44,11 +44,11 @@ Q_SIGNALS:
 	void lyricsReady(int id, const QString& data);
 
 private:
-	UltimateLyricsProvider* providerByName(const QString& name) const;
+	LyricsProvider* providerByName(const QString& name) const;
 	void load();
 
 private:
-	QList<UltimateLyricsProvider*> providers;
+	QList<LyricsProvider*> providers;
 };
 
 #endif// ULTIMATELYRICS_H

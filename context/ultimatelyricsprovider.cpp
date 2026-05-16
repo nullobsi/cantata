@@ -200,25 +200,15 @@ static bool tryWithoutThe(const Song& s)
 	return 0 == s.priority && s.basicArtist().startsWith(constThe);
 }
 
-UltimateLyricsProvider::UltimateLyricsProvider()
-	: enabled(true), relevance(0)
-{
-}
-
-UltimateLyricsProvider::~UltimateLyricsProvider()
-{
-	abort();
-}
-
 QString UltimateLyricsProvider::displayName() const
 {
-	QString n(name);
+	QString n(getName());
 	n.replace("(POLISH)", tr("(Polish Translations)"));
 	n.replace("(PORTUGUESE)", tr("(Portuguese Translations)"));
 	return n;
 }
 
-void UltimateLyricsProvider::fetchInfo(int id, Song metadata, bool removeThe)
+void UltimateLyricsProvider::fetchInfoImpl(int id, Song metadata)
 {
 	auto converter = QStringDecoder(charset.toLatin1().constData(), QStringConverter::Flag::Default);
 
@@ -231,11 +221,7 @@ void UltimateLyricsProvider::fetchInfo(int id, Song metadata, bool removeThe)
 	QString titleFixed = metadata.basicTitle();
 	QString urlText(url);
 
-	if (removeThe && artistFixed.startsWith(constThe)) {
-		artistFixed = artistFixed.mid(constThe.length());
-	}
-
-	if (QLatin1String("lyrics.wikia.com") == name) {
+	if (QLatin1String("lyrics.wikia.com") == getName()) {
 		QUrl url(urlText);
 		QUrlQuery query;
 
@@ -251,7 +237,6 @@ void UltimateLyricsProvider::fetchInfo(int id, Song metadata, bool removeThe)
 		return;
 	}
 
-	metadata.priority = removeThe ? 1 : 0;// HACK Use this to indicate if searching without 'The '
 	songs.insert(id, metadata);
 
 	// Fill in fields in the URL
@@ -283,23 +268,7 @@ void UltimateLyricsProvider::fetchInfo(int id, Song metadata, bool removeThe)
 		url = QUrl::fromEncoded(data, QUrl::StrictMode);
 	}
 
-	QNetworkRequest req(url);
-	req.setRawHeader("User-Agent", "Mozilla/5.0 (X11; Linux i686; rv:6.0) Gecko/20100101 Firefox/6.0");
-	NetworkJob* reply = NetworkAccessManager::self()->get(req);
-	requests[reply] = id;
-	connect(reply, SIGNAL(finished()), this, SLOT(lyricsFetched()));
-}
-
-void UltimateLyricsProvider::abort()
-{
-	QHash<NetworkJob*, int>::ConstIterator it(requests.constBegin());
-	QHash<NetworkJob*, int>::ConstIterator end(requests.constEnd());
-
-	for (; it != end; ++it) {
-		it.key()->cancelAndDelete();
-	}
-	requests.clear();
-	songs.clear();
+	performRequest(id, url);
 }
 
 void UltimateLyricsProvider::wikiMediaSearchResponse()
@@ -373,48 +342,23 @@ void UltimateLyricsProvider::wikiMediaLyricsFetched()
 	auto fromCharset = QStringDecoder(charset.toLatin1().constData(), QStringConverter::Flag::Default);
 	QString contents = fromCharset(reply->readAll());
 	contents = contents.replace("<br />", "<br/>");
-	DBUG << name << "response" << contents;
+	DBUG << getName() << "response" << contents;
 	emit lyricsReady(id, extract(contents, QLatin1String("&lt;lyrics&gt;"), QLatin1String("&lt;/lyrics&gt;")));
 }
 
-void UltimateLyricsProvider::lyricsFetched()
+void UltimateLyricsProvider::processResponseImpl(int id, Song song, const QByteArray& response)
 {
-	NetworkJob* reply = qobject_cast<NetworkJob*>(sender());
-	if (!reply) {
-		return;
-	}
-
-	int id = requests.take(reply);
-	reply->deleteLater();
-	Song song = songs.take(id);
-
-	if (!reply->ok()) {
-		//emit Finished(id);
-		if (tryWithoutThe(song)) {
-			fetchInfo(id, song, true);
-		}
-		else {
-			emit lyricsReady(id, QString());
-		}
-		return;
-	}
-
 	auto decode = QStringDecoder(charset.toLatin1().constData());
-	QString originalContent = decode(reply->readAll());
+	QString originalContent = decode(response);
 	originalContent = originalContent.replace("<br />", "<br/>");
 
-	DBUG << name << "response" << originalContent;
+	DBUG << getName() << "response" << originalContent;
 	// Check for invalid indicators
 	for (const QString& indicator : invalidIndicators) {
 		if (originalContent.contains(indicator)) {
 			//emit Finished(id);
-			DBUG << name << "invalid";
-			if (tryWithoutThe(song)) {
-				fetchInfo(id, song, true);
-			}
-			else {
-				emit lyricsReady(id, QString());
-			}
+			DBUG << getName() << "invalid";
+			gotNoLyrics(id, song);
 			return;
 		}
 	}
@@ -444,9 +388,9 @@ void UltimateLyricsProvider::lyricsFetched()
 	lyrics = lyrics.trimmed();
 	lyrics.replace("<br/>\n", "<br/>");
 	lyrics.replace("<br>\n", "<br/>");
-	DBUG << name << (lyrics.isEmpty() ? "empty" : "succeeded");
+	DBUG << getName() << (lyrics.isEmpty() ? "empty" : "succeeded");
 	if (lyrics.isEmpty() && tryWithoutThe(song)) {
-		fetchInfo(id, song, true);
+		gotNoLyrics(id, song);
 	}
 	else {
 		emit lyricsReady(id, lyrics);

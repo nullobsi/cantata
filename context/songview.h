@@ -28,7 +28,7 @@
 #include "view.h"
 #include <QWidget>
 
-class UltimateLyricsProvider;
+class LyricsProvider;
 class QImage;
 class Action;
 class NetworkJob;
@@ -121,7 +121,7 @@ private:
 	QString lyricsFile;
 	QString preEdit;
 	NetworkJob* job;
-	UltimateLyricsProvider* currentProv;
+	LyricsProvider* currentProv;
 
 	bool lyricsNeedsUpdating;
 	bool infoNeedsUpdating;

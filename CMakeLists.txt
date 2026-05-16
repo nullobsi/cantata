@@ -453,6 +453,8 @@ target_sources(
         widgets/mirrormenu.cpp
         widgets/genrecombo.cpp
         widgets/volumecontrol.cpp
+        context/lyricsprovider.cpp
+        context/lrcliblyricsprovider.cpp
         context/lyricsettings.cpp
         context/ultimatelyricsprovider.cpp
         context/ultimatelyrics.cpp
