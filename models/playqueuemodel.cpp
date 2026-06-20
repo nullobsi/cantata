@@ -292,7 +292,7 @@ QStringList PlayQueueModel::parseUrls(const QStringList& urls)
 			QDir d(u.path());
 
 			if (d.exists()) {
-				useable = listFiles(d, useServer, useLocal, handlers);
+				useable += listFiles(d, useServer, useLocal, handlers);
 			}
 			else if (checkExtension(u.path(), constM3uPlaylists)) {
 				useable += expandM3uPlaylist(u.path(), useServer, useLocal, handlers);
