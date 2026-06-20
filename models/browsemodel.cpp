@@ -236,8 +236,11 @@ QVariant BrowseModel::data(const QModelIndex& index, int role) const
 		if (!Settings::self()->infoTooltips()) {
 			return QVariant();
 		}
-		if (item->isFolder() || Song::Playlist == static_cast<TrackItem*>(item)->getSong().type) {
+		if (item->isFolder()) {
 			return static_cast<FolderItem*>(item)->getPath();
+		}
+		else if (Song::Playlist == static_cast<TrackItem*>(item)->getSong().type) {
+			return static_cast<TrackItem*>(item)->getSong().filePath();
 		}
 		return static_cast<TrackItem*>(item)->getSong().toolTip();
 	case Cantata::Role_SubText:
