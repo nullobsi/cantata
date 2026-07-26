@@ -127,8 +127,16 @@
     </extract>
     <invalidIndicator value="The lyrics you requested is not in our archive yet,"/>
   </provider>
-  <provider name="lyricsmode.com" charset="iso-8859-1" url="http://www.lyricsmode.com/lyrics/{a}/{artist}/{title}.html">
+  <provider name="lyricsmode.com" charset="utf-8" url="https://www.lyricsmode.com/lyrics/{a}/{artist}/{title}.html">
     <urlFormat replace=" ._@,;&amp;\/&quot;" with="_"/>
+    <!-- Use the tag form rather than begin/end: it retries without the closing '>', so the
+         match survives the extra attributes (class="ui-annotatable") carried by the element. -->
+    <extract>
+      <item tag="&lt;div id=&quot;lyrics_text&quot;&gt;"/>
+    </extract>
+    <extract>
+      <item tag="&lt;p id=&quot;lyrics_text&quot;&gt;"/>
+    </extract>
     <extract>
       <item tag="&lt;div id='songlyrics_h' class='dn'&gt;"/>
     </extract>
