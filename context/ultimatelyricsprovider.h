@@ -42,7 +42,20 @@ public:
 	UltimateLyricsProvider();
 	~UltimateLyricsProvider() override;
 
-	typedef QPair<QString, QString> RuleItem;
+	struct RuleItem {
+		enum Type {
+			XmlTag,   // <item tag="&lt;div class=&quot;x&quot;&gt;"/>
+			Range,    // <item begin="..." end="..."/>
+			Container // <item container="attribute-name"/>
+		};
+
+		RuleItem(Type t, const QString& b, const QString& e = QString())
+			: type(t), begin(b), end(e) {}
+
+		Type type;
+		QString begin;
+		QString end;
+	};
 	typedef QList<RuleItem> Rule;
 	typedef QPair<QString, QString> UrlFormat;
 

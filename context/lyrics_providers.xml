@@ -128,10 +128,20 @@
       <urlFormat replace="Çç" with="c"/>
       <urlFormat replace="ß" with="ss"/>
       <urlFormat replace="&amp;" with="and"/>
+    <!-- Current (React) pages hold the lyrics in one or more
+         <div data-lyrics-container="true" class="Lyrics__Container-sc-HASH">
+         elements. The class carries a build-specific hash, so match on the
+         attribute instead. The old <div class="lyrics"> is kept as a fallback. -->
+    <extract>
+      <item container="data-lyrics-container"/>
+    </extract>
     <extract>
       <item tag="&lt;div class=&quot;lyrics&quot;&gt;"/>
     </extract>
     <exclude>
+      <!-- The containers also hold page furniture - contributor count, song title, summary.
+           Genius marks all of it as excluded from selection, so drop those elements whole. -->
+      <item container="data-exclude-from-selection"/>
       <item begin="&lt;!--" end="--&gt;"/>
       <item begin="&lt;a href=" end="&gt;"/>
       <item begin="&lt;/a" end="&gt;"/>
