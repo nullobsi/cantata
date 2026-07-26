@@ -66,6 +66,11 @@ public:
 	// Providers queried through an API endpoint set this to the human readable page for the song,
 	// so that we can link to something useful. When unset, the fetched url is used.
 	void setPageUrl(const QString& u) { pageUrl = u; }
+	// Set for providers whose output carries enough structure to be worth rendering as more than
+	// plain text. Anything that inspects what a provider returned is kept behind this, so that
+	// providers we cannot check stay untouched.
+	void setProvidesMarkup(bool m) { markup = m; }
+	bool providesMarkup() const { return markup; }
 	void setCharset(const QString& c) { charset = c; }
 	void setRelevance(int r) { relevance = r; }
 	void addUrlFormat(const QString& replace, const QString& with) { urlFormats << UrlFormat(replace, with); }
@@ -103,6 +108,7 @@ private:
 	QString pageUrl;
 	QString charset;
 	int relevance;
+	bool markup;
 	QList<UrlFormat> urlFormats;
 	QList<Rule> extractRules;
 	QList<Rule> excludeRules;

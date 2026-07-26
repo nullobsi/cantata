@@ -49,6 +49,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMenu>
+#include <QRegularExpression>
 #include <QScrollBar>
 #include <QTextStream>
 #include <QTimer>
@@ -107,13 +108,32 @@ static inline QString mpdLyricsFilePath(const Song& song)
 	return Utils::changeExtension(song.filePath(MPDConnection::self()->getDetails().dir), SongView::constExtension);
 }
 
+// Emphasises the section markers - '[Verse 1]', '[Chorus]' - that some providers put on a line of
+// their own, so that they read as structure rather than as part of the lyric. Only a line that is
+// nothing but a marker qualifies; bracketed asides within a line ('[sic]', '[?]') are left alone.
+static QString styleSectionHeaders(const QString& lyrics)
+{
+	static const QRegularExpression constHeader(QLatin1String("^\\s*\\[([^\\]]{1,80})\\]\\s*$"));
+
+	QStringList lines = lyrics.split(QLatin1Char('\n'));
+
+	for (QString& line : lines) {
+		QRegularExpressionMatch match = constHeader.match(line);
+		if (match.hasMatch()) {
+			line = QLatin1String("<b>[") + match.captured(1).toHtmlEscaped() + QLatin1String("]</b>");
+		}
+	}
+
+	return lines.join(QLatin1Char('\n'));
+}
+
 static inline QString fixNewLines(const QString& o)
 {
 	return QString(o).replace("\\n", "\n").replace("\\t", " ").replace("\t", " ").replace(QLatin1String("\n\n\n"), QLatin1String("\n\n")).replace("\n", "<br/>");
 }
 
 SongView::SongView(QWidget* p)
-	: View(p, QStringList() << tr("Lyrics") << tr("Information") << tr("Metadata")), scrollTimer(nullptr), songPos(0), currentProvider(-1), currentRequest(0), mode(Mode_Display), job(nullptr), currentProv(nullptr), lyricsNeedsUpdating(true), infoNeedsUpdating(true), metadataNeedsUpdating(true)
+	: View(p, QStringList() << tr("Lyrics") << tr("Information") << tr("Metadata")), scrollTimer(nullptr), songPos(0), currentProvider(-1), currentRequest(0), mode(Mode_Display), sourceProvidesMarkup(false), job(nullptr), currentProv(nullptr), lyricsNeedsUpdating(true), infoNeedsUpdating(true), metadataNeedsUpdating(true)
 {
 	scrollAction = ActionCollection::get()->createAction("scrolllyrics", tr("Scroll Lyrics"), Icons::self()->downIcon);
 	refreshAction = ActionCollection::get()->createAction("refreshlyrics", tr("Refresh Lyrics"), Icons::self()->refreshIcon);
@@ -398,6 +418,7 @@ void SongView::loadLyricsFromFile()
 			lyricsPlain = tagLyrics;
 			lyricsSource = QUrl();
 			lyricsSourceName = QString();
+			sourceProvidesMarkup = false;
 			renderLyrics();
 			setMode(Mode_Display);
 			//                    controls->setVisible(false);
@@ -744,6 +765,7 @@ void SongView::abort()
 	lyricsPlain = QString();
 	lyricsSource = QUrl();
 	lyricsSourceName = QString();
+	sourceProvidesMarkup = false;
 	if (currentProv) {
 		currentProv->abort();
 		currentProv = nullptr;
@@ -831,6 +853,7 @@ void SongView::downloadFinished()
 						lyricsPlain = lyrics;
 						lyricsSource = QUrl();
 						lyricsSourceName = QString();
+						sourceProvidesMarkup = false;
 						renderLyrics();
 						cancelJobAction->setEnabled(false);
 						hideSpinner();
@@ -876,6 +899,7 @@ void SongView::lyricsReady(int id, QString lyrics, QUrl source)
 			}
 			lyricsSource = source;
 			lyricsSourceName = currentProv ? currentProv->displayName() : QString();
+			sourceProvidesMarkup = currentProv && currentProv->providesMarkup();
 			// After saveFile(), so that the source info is never older than the lyrics it describes.
 			saveSourceInfo();
 			renderLyrics();
@@ -886,7 +910,7 @@ void SongView::lyricsReady(int id, QString lyrics, QUrl source)
 
 void SongView::renderLyrics()
 {
-	QString html = fixNewLines(lyricsPlain);
+	QString html = fixNewLines(sourceProvidesMarkup ? styleSectionHeaders(lyricsPlain) : lyricsPlain);
 
 	if (lyricsSource.isValid() && !lyricsSourceName.isEmpty()) {
 		QString link = QLatin1String("<a href=\"") + lyricsSource.toString().toHtmlEscaped() + QLatin1String("\">") + lyricsSourceName.toHtmlEscaped() + QLatin1String("</a>");
@@ -950,10 +974,13 @@ void SongView::loadSourceInfo(const QString& lyricsFilePath)
 	lyricsSourceName = obj.value(QLatin1String("provider")).toString();
 
 	// Prefer how the provider presents itself, as the stored name carries markers - '(PORTUGUESE)'
-	// and the like - that are meant to be translated before being shown.
+	// and the like - that are meant to be translated before being shown. Looking the provider up
+	// also tells us how these lyrics may be rendered, which we cannot ask currentProv about as
+	// nothing was fetched.
 	for (UltimateLyricsProvider* provider : UltimateLyrics::self()->getProviders()) {
 		if (provider->getName() == lyricsSourceName) {
 			lyricsSourceName = provider->displayName();
+			sourceProvidesMarkup = provider->providesMarkup();
 			break;
 		}
 	}
@@ -1004,6 +1031,7 @@ void SongView::getLyrics()
 		lyricsPlain = QString();
 		lyricsSource = QUrl();
 		lyricsSourceName = QString();
+		sourceProvidesMarkup = false;
 		// Set lyrics file anyway - so that editing is enabled!
 		lyricsFile = Settings::self()->storeLyricsInMpdDir() && !currentSong.isNonMPD()
 				? mpdLyricsFilePath(currentSong)
@@ -1046,6 +1074,7 @@ bool SongView::setLyricsFromFile(const QString& filePath, bool useSourceInfo)
 
 		lyricsSource = QUrl();
 		lyricsSourceName = QString();
+		sourceProvidesMarkup = false;
 		if (useSourceInfo) {
 			loadSourceInfo(filePath);
 		}

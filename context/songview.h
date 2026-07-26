@@ -148,6 +148,7 @@ private:
 	QString lyricsPlain;
 	QUrl lyricsSource;
 	QString lyricsSourceName;
+	bool sourceProvidesMarkup;
 	QString preEdit;
 	NetworkJob* job;
 	UltimateLyricsProvider* currentProv;

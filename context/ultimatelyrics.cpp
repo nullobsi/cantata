@@ -94,6 +94,7 @@ static UltimateLyricsProvider* parseProvider(QXmlStreamReader* reader)
 	scraper->setCharset(attributes.value("charset").toString());
 	scraper->setUrl(attributes.value("url").toString());
 	scraper->setPageUrl(attributes.value("pageUrl").toString());
+	scraper->setProvidesMarkup(QLatin1String("true") == attributes.value("markup"));
 
 	while (!reader->atEnd()) {
 		reader->readNext();

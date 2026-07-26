@@ -369,7 +369,7 @@ static bool tryWithoutThe(const Song& s)
 }
 
 UltimateLyricsProvider::UltimateLyricsProvider()
-	: enabled(true), relevance(0)
+	: enabled(true), relevance(0), markup(false)
 {
 }
 
