@@ -386,18 +386,53 @@ QString UltimateLyricsProvider::displayName() const
 	return n;
 }
 
+QUrl UltimateLyricsProvider::buildUrl(const QString& templateUrl, const QString& artist, const QString& title, const Song& metadata) const
+{
+	QString urlText(templateUrl);
+
+	// Fill in fields in the URL
+	bool urlContainsDetails = urlText.contains(QLatin1Char('{'));
+	if (urlContainsDetails) {
+		doUrlReplace(constArtistArg, artist, urlText);
+		doUrlReplace(constArtistLowerArg, artist.toLower(), urlText);
+		doUrlReplace(constArtistLowerNoSpaceArg, noSpace(artist.toLower()), urlText);
+		doUrlReplace(constArtistFirstCharArg, firstChar(artist), urlText);
+		doUrlReplace(constAlbumArg, metadata.album, urlText);
+		doUrlReplace(constAlbumLowerArg, metadata.album.toLower(), urlText);
+		doUrlReplace(constAlbumLowerNoSpaceArg, noSpace(metadata.album.toLower()), urlText);
+		doUrlReplace(constTitleArg, title, urlText);
+		doUrlReplace(constTitleLowerArg, title.toLower(), urlText);
+		doUrlReplace(constTitleCaseArg, titleCase(title), urlText);
+		doUrlReplace(constYearArg, QString::number(metadata.year), urlText);
+		doUrlReplace(constTrackNoArg, QString::number(metadata.track), urlText);
+	}
+
+	// For some reason Qt messes up the ? -> %3F and & -> %26 conversions - by placing 25 after the %
+	// So, try and revert this...
+	QUrl built(urlText);
+
+	if (urlContainsDetails) {
+		QByteArray data = built.toEncoded();
+		data.replace("%253F", "%3F");
+		data.replace("%253f", "%3f");
+		data.replace("%2526", "%26");
+		built = QUrl::fromEncoded(data, QUrl::StrictMode);
+	}
+
+	return built;
+}
+
 void UltimateLyricsProvider::fetchInfo(int id, Song metadata, bool removeThe)
 {
 	auto converter = QStringDecoder(charset.toLatin1().constData(), QStringConverter::Flag::Default);
 
 	if (!converter.isValid()) {
-		emit lyricsReady(id, QString());
+		emit lyricsReady(id, QString(), QUrl());
 		return;
 	}
 
 	QString artistFixed = metadata.basicArtist();
 	QString titleFixed = metadata.basicTitle();
-	QString urlText(url);
 
 	if (removeThe && artistFixed.startsWith(constThe)) {
 		artistFixed = artistFixed.mid(constThe.length());
@@ -406,36 +441,14 @@ void UltimateLyricsProvider::fetchInfo(int id, Song metadata, bool removeThe)
 	metadata.priority = removeThe ? 1 : 0;// HACK Use this to indicate if searching without 'The '
 	songs.insert(id, metadata);
 
-	// Fill in fields in the URL
-	bool urlContainsDetails = urlText.contains(QLatin1Char('{'));
-	if (urlContainsDetails) {
-		doUrlReplace(constArtistArg, artistFixed, urlText);
-		doUrlReplace(constArtistLowerArg, artistFixed.toLower(), urlText);
-		doUrlReplace(constArtistLowerNoSpaceArg, noSpace(artistFixed.toLower()), urlText);
-		doUrlReplace(constArtistFirstCharArg, firstChar(artistFixed), urlText);
-		doUrlReplace(constAlbumArg, metadata.album, urlText);
-		doUrlReplace(constAlbumLowerArg, metadata.album.toLower(), urlText);
-		doUrlReplace(constAlbumLowerNoSpaceArg, noSpace(metadata.album.toLower()), urlText);
-		doUrlReplace(constTitleArg, titleFixed, urlText);
-		doUrlReplace(constTitleLowerArg, titleFixed.toLower(), urlText);
-		doUrlReplace(constTitleCaseArg, titleCase(titleFixed), urlText);
-		doUrlReplace(constYearArg, QString::number(metadata.year), urlText);
-		doUrlReplace(constTrackNoArg, QString::number(metadata.track), urlText);
-	}
+	QUrl fetchUrl = buildUrl(url, artistFixed, titleFixed, metadata);
 
-	// For some reason Qt messes up the ? -> %3F and & -> %26 conversions - by placing 25 after the %
-	// So, try and revert this...
-	QUrl url(urlText);
+	// Remember where these lyrics came from, so that we can offer a link to the source. For
+	// providers queried through an API the fetched url is of no use to the user, so those supply a
+	// separate, human readable, page url instead.
+	sourceUrls.insert(id, pageUrl.isEmpty() ? fetchUrl : buildUrl(pageUrl, artistFixed, titleFixed, metadata));
 
-	if (urlContainsDetails) {
-		QByteArray data = url.toEncoded();
-		data.replace("%253F", "%3F");
-		data.replace("%253f", "%3f");
-		data.replace("%2526", "%26");
-		url = QUrl::fromEncoded(data, QUrl::StrictMode);
-	}
-
-	QNetworkRequest req(url);
+	QNetworkRequest req(fetchUrl);
 	req.setRawHeader("User-Agent", "Mozilla/5.0 (X11; Linux i686; rv:6.0) Gecko/20100101 Firefox/6.0");
 	NetworkJob* reply = NetworkAccessManager::self()->get(req);
 	requests[reply] = id;
@@ -452,6 +465,7 @@ void UltimateLyricsProvider::abort()
 	}
 	requests.clear();
 	songs.clear();
+	sourceUrls.clear();
 }
 
 void UltimateLyricsProvider::wikiMediaSearchResponse()
@@ -466,11 +480,12 @@ void UltimateLyricsProvider::wikiMediaSearchResponse()
 
 	if (!reply->ok()) {
 		Song song = songs.take(id);
+		sourceUrls.remove(id);
 		if (tryWithoutThe(song)) {
 			fetchInfo(id, song, true);
 		}
 		else {
-			emit lyricsReady(id, QString());
+			emit lyricsReady(id, QString(), QUrl());
 		}
 		return;
 	}
@@ -497,7 +512,8 @@ void UltimateLyricsProvider::wikiMediaSearchResponse()
 		connect(reply, SIGNAL(finished()), this, SLOT(wikiMediaLyricsFetched()));
 	}
 	else {
-		emit lyricsReady(id, QString());
+		sourceUrls.remove(id);
+		emit lyricsReady(id, QString(), QUrl());
 	}
 }
 
@@ -513,11 +529,12 @@ void UltimateLyricsProvider::wikiMediaLyricsFetched()
 
 	if (!reply->ok()) {
 		Song song = songs.take(id);
+		sourceUrls.remove(id);
 		if (tryWithoutThe(song)) {
 			fetchInfo(id, song, true);
 		}
 		else {
-			emit lyricsReady(id, QString());
+			emit lyricsReady(id, QString(), QUrl());
 		}
 		return;
 	}
@@ -526,7 +543,7 @@ void UltimateLyricsProvider::wikiMediaLyricsFetched()
 	QString contents = fromCharset(reply->readAll());
 	contents = contents.replace("<br />", "<br/>");
 	DBUG << name << "response" << contents;
-	emit lyricsReady(id, extract(contents, QLatin1String("&lt;lyrics&gt;"), QLatin1String("&lt;/lyrics&gt;")));
+	emit lyricsReady(id, extract(contents, QLatin1String("&lt;lyrics&gt;"), QLatin1String("&lt;/lyrics&gt;")), sourceUrls.take(id));
 }
 
 void UltimateLyricsProvider::lyricsFetched()
@@ -539,6 +556,7 @@ void UltimateLyricsProvider::lyricsFetched()
 	int id = requests.take(reply);
 	reply->deleteLater();
 	Song song = songs.take(id);
+	QUrl source = sourceUrls.take(id);
 
 	if (!reply->ok()) {
 		//emit Finished(id);
@@ -546,7 +564,7 @@ void UltimateLyricsProvider::lyricsFetched()
 			fetchInfo(id, song, true);
 		}
 		else {
-			emit lyricsReady(id, QString());
+			emit lyricsReady(id, QString(), QUrl());
 		}
 		return;
 	}
@@ -565,7 +583,7 @@ void UltimateLyricsProvider::lyricsFetched()
 				fetchInfo(id, song, true);
 			}
 			else {
-				emit lyricsReady(id, QString());
+				emit lyricsReady(id, QString(), QUrl());
 			}
 			return;
 		}
@@ -601,7 +619,7 @@ void UltimateLyricsProvider::lyricsFetched()
 		fetchInfo(id, song, true);
 	}
 	else {
-		emit lyricsReady(id, lyrics);
+		emit lyricsReady(id, lyrics, lyrics.isEmpty() ? QUrl() : source);
 	}
 }
 

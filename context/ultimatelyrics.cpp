@@ -93,6 +93,7 @@ static UltimateLyricsProvider* parseProvider(QXmlStreamReader* reader)
 	scraper->setName(attributes.value("name").toString());
 	scraper->setCharset(attributes.value("charset").toString());
 	scraper->setUrl(attributes.value("url").toString());
+	scraper->setPageUrl(attributes.value("pageUrl").toString());
 
 	while (!reader->atEnd()) {
 		reader->readNext();
@@ -196,7 +197,7 @@ void UltimateLyrics::load()
 						UltimateLyricsProvider* provider = parseProvider(&reader);
 						if (provider) {
 							providers << provider;
-							connect(provider, SIGNAL(lyricsReady(int, QString)), this, SIGNAL(lyricsReady(int, QString)));
+							connect(provider, SIGNAL(lyricsReady(int, QString, QUrl)), this, SIGNAL(lyricsReady(int, QString, QUrl)));
 							providerNames.insert(name);
 						}
 					}

@@ -26,6 +26,7 @@
 
 #include "config.h"
 #include "view.h"
+#include <QUrl>
 #include <QWidget>
 
 class UltimateLyricsProvider;
@@ -52,6 +53,7 @@ class SongView : public View {
 public:
 	static const QLatin1String constLyricsDir;
 	static const QLatin1String constExtension;
+	static const QLatin1String constSourceExt;
 	static const QLatin1String constCacheDir;
 	static const QLatin1String constInfoExt;
 
@@ -66,7 +68,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 	void downloadFinished();
-	void lyricsReady(int, QString lyrics);
+	void lyricsReady(int, QString lyrics, QUrl source);
 	void update();
 	void search();
 	void edit();
@@ -99,14 +101,38 @@ private:
 	bool saveFile(const QString& fileName);
 
 	/**
+     * Builds the lyrics page from lyricsPlain, appending a link to where the lyrics came from
+     * if we know it. All lyrics display goes through here, so that whatever we add to the page
+     * can never end up in the file we save.
+     */
+	void renderLyrics();
+
+	/**
+     * Records, alongside the cached lyrics, which provider supplied them and the page they can be
+     * read on. The lyrics file itself is left alone - other MPD clients read it too.
+     */
+	void saveSourceInfo();
+
+	/**
+     * Restores what saveSourceInfo() recorded, provided it is no older than the lyrics it
+     * describes.
+     *
+     * @param lyricsFilePath The lyrics file the source information has to match.
+     */
+	void loadSourceInfo(const QString& lyricsFilePath);
+
+	/**
      * Reads the lyrics from the given filePath and updates
      * the UI with those lyrics.
      *
      * @param filePath The path to the lyrics file which will be read.
      *
+     * @param useSourceInfo Whether the file is one we wrote ourselves, and may therefore have
+     *                      recorded source information for. False for user supplied files.
+     *
      * @return Returns true if the file could be read; otherwise false.
      */
-	bool setLyricsFromFile(const QString& filePath);
+	bool setLyricsFromFile(const QString& filePath, bool useSourceInfo = false);
 
 private:
 	QTimer* scrollTimer;
@@ -119,6 +145,9 @@ private:
 	Action* delAction;
 	Mode mode;
 	QString lyricsFile;
+	QString lyricsPlain;
+	QUrl lyricsSource;
+	QString lyricsSourceName;
 	QString preEdit;
 	NetworkJob* job;
 	UltimateLyricsProvider* currentProv;

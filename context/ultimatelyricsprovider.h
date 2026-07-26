@@ -30,6 +30,7 @@
 #include <QObject>
 #include <QPair>
 #include <QStringList>
+#include <QUrl>
 
 class NetworkJob;
 
@@ -62,6 +63,9 @@ public:
 
 	void setName(const QString& n) { name = n; }
 	void setUrl(const QString& u) { url = u; }
+	// Providers queried through an API endpoint set this to the human readable page for the song,
+	// so that we can link to something useful. When unset, the fetched url is used.
+	void setPageUrl(const QString& u) { pageUrl = u; }
 	void setCharset(const QString& c) { charset = c; }
 	void setRelevance(int r) { relevance = r; }
 	void addUrlFormat(const QString& replace, const QString& with) { urlFormats << UrlFormat(replace, with); }
@@ -77,7 +81,7 @@ public:
 	void abort();
 
 Q_SIGNALS:
-	void lyricsReady(int id, const QString& data);
+	void lyricsReady(int id, const QString& data, const QUrl& source);
 
 private Q_SLOTS:
 	void wikiMediaSearchResponse();
@@ -87,13 +91,16 @@ private Q_SLOTS:
 private:
 	QString doTagReplace(QString str, const Song& song, bool doAll = true);
 	void doUrlReplace(const QString& tag, const QString& value, QString& u) const;
+	QUrl buildUrl(const QString& templateUrl, const QString& artist, const QString& title, const Song& metadata) const;
 
 private:
 	bool enabled;
 	QHash<NetworkJob*, int> requests;
 	QMap<int, Song> songs;
+	QMap<int, QUrl> sourceUrls;
 	QString name;
 	QString url;
+	QString pageUrl;
 	QString charset;
 	int relevance;
 	QList<UrlFormat> urlFormats;
