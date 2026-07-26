@@ -113,19 +113,6 @@
     <invalidIndicator value="we do not have the lyric for this song"/>
     <invalidIndicator value="Your name will be printed as part of the credit when your lyric is approved"/>
   </provider>
-  <provider name="lyrics.wikia.com" charset="utf-8" url="https://lyrics.wikia.com/api.php">
-    <!-- These are not used, as mediawiki API is used instead...
-    <urlFormat replace=" _@;\&quot;" with="_"/>
-    <urlFormat replace="?" with="%3F"/>
-    <extract>
-      <item begin="&lt;div class='lyricbox'&gt;" end="&lt;!- -"/>  TODO: This was a comment ( ! - - ) but brakes commentinging out!
-    </extract>
-    <exclude>
-      <item tag="&lt;div class='rtMatcher'&gt;"/>
-      <item tag="&lt;span style=&quot;padding:1em&quot;&gt;"/>
-    </exclude>
-    -->
-  </provider>
   <provider name="lyricsmania.com" charset="iso-8859-1" url="https://www.lyricsmania.com/{title}_lyrics_{artist}.html">
     <urlFormat replace=" _@;&amp;\/&quot;'." with="_"/>
     <extract> <!-- new -->

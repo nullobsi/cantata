@@ -355,22 +355,6 @@ void UltimateLyricsProvider::fetchInfo(int id, Song metadata, bool removeThe)
 		artistFixed = artistFixed.mid(constThe.length());
 	}
 
-	if (QLatin1String("lyrics.wikia.com") == name) {
-		QUrl url(urlText);
-		QUrlQuery query;
-
-		query.addQueryItem(QLatin1String("artist"), artistFixed);
-		query.addQueryItem(QLatin1String("song"), titleFixed);
-		query.addQueryItem(QLatin1String("func"), QLatin1String("getSong"));
-		query.addQueryItem(QLatin1String("fmt"), QLatin1String("xml"));
-		url.setQuery(query);
-
-		NetworkJob* reply = NetworkAccessManager::self()->get(url);
-		requests[reply] = id;
-		connect(reply, SIGNAL(finished()), this, SLOT(wikiMediaSearchResponse()));
-		return;
-	}
-
 	metadata.priority = removeThe ? 1 : 0;// HACK Use this to indicate if searching without 'The '
 	songs.insert(id, metadata);
 
