@@ -91,7 +91,10 @@ QString render(const Prepared& prepared, const QHash<QString, QString>& bodies, 
  * their own, so that they read as structure rather than as part of the lyric. Only a line that is
  * nothing but a marker qualifies; bracketed asides within a line ('[sic]', '[?]') are left alone.
  *
- * @param lyrics One or more newline separated lines.
+ * For the plain text path - prepare() emphasises the markers it comes across itself, keeping the
+ * markup they carry.
+ *
+ * @param lyrics One or more newline separated lines of plain text.
  *
  * @return The lines, with any section markers emphasised.
  */

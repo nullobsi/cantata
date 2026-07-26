@@ -70,16 +70,44 @@ static QString referentId(const QString& tag)
 	return referent.hasMatch() ? referent.captured(1) : QString();
 }
 
+// What a line marks a section with, or a null string if the line is not a section marker. A marker
+// is short; a bracketed line longer than that is a lyric rather than structure.
+static QString sectionMarker(const QString& line)
+{
+	static const QRegularExpression constHeader(QLatin1String("^\\s*\\[([^\\]]*)\\]\\s*$"));
+	static const QRegularExpression constTag(QLatin1String("<[^>]*>"));
+
+	QRegularExpressionMatch match = constHeader.match(line);
+
+	if (!match.hasMatch()) {
+		return QString();
+	}
+
+	// Measured without the markup in it, so that an emphasised or annotated marker is judged by
+	// what the reader actually sees.
+	QString marker = match.captured(1);
+	int length = QString(marker).remove(constTag).length();
+
+	return length >= 1 && length <= 80 ? marker : QString();
+}
+
+// The marker on a line prepare() has already turned into markup. The only tags left in it are the
+// ones we chose to keep, so it is emphasised as it stands rather than escaped back into view.
+static QString styleSectionHeader(const QString& line)
+{
+	QString marker = sectionMarker(line);
+
+	return marker.isNull() ? line : QLatin1String("<b>[") + marker + QLatin1String("]</b>");
+}
+
 QString styleSectionHeaders(const QString& lyrics)
 {
-	static const QRegularExpression constHeader(QLatin1String("^\\s*\\[([^\\]]{1,80})\\]\\s*$"));
-
 	QStringList lines = lyrics.split(QLatin1Char('\n'));
 
 	for (QString& line : lines) {
-		QRegularExpressionMatch match = constHeader.match(line);
-		if (match.hasMatch()) {
-			line = QLatin1String("<b>[") + match.captured(1).toHtmlEscaped() + QLatin1String("]</b>");
+		QString marker = sectionMarker(line);
+		if (!marker.isNull()) {
+			line = QLatin1String("<b>[") + marker.toHtmlEscaped() + QLatin1String("]</b>");
 		}
 	}
 
@@ -105,7 +133,7 @@ Prepared prepare(const QString& providerText)
 		QChar ch = source.at(pos);
 
 		if (QLatin1Char('\n') == ch) {
-			prepared.lines.append(styleSectionHeaders(line));
+			prepared.lines.append(styleSectionHeader(line));
 			line.clear();
 			pos++;
 			continue;
@@ -131,7 +159,7 @@ Prepared prepare(const QString& providerText)
 		pos = close + 1;
 
 		if (QLatin1String("br") == name) {
-			prepared.lines.append(styleSectionHeaders(line));
+			prepared.lines.append(styleSectionHeader(line));
 			line.clear();
 		}
 		else if (QLatin1String("script") == name || QLatin1String("style") == name) {
@@ -167,7 +195,7 @@ Prepared prepare(const QString& providerText)
 		// Everything else is page furniture. Drop the tag, but keep whatever text it wraps.
 	}
 
-	prepared.lines.append(styleSectionHeaders(line));
+	prepared.lines.append(styleSectionHeader(line));
 	return prepared;
 }
 
