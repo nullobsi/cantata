@@ -113,8 +113,11 @@
     <invalidIndicator value="we do not have the lyric for this song"/>
     <invalidIndicator value="Your name will be printed as part of the credit when your lyric is approved"/>
   </provider>
-  <provider name="lyricsmania.com" charset="iso-8859-1" url="https://www.lyricsmania.com/{title}_lyrics_{artist}.html">
+  <provider name="lyricsmania.com" charset="utf-8" url="https://www.lyricsmania.com/{title}_lyrics_{artist}.html">
     <urlFormat replace=" _@;&amp;\/&quot;'." with="_"/>
+    <extract>
+      <item tag="&lt;div class=&quot;lyrics-body&quot;&gt;"/>
+    </extract>
     <extract> <!-- new -->
       <item tag="&lt;div id='songlyrics_h' class='dn'&gt;"/>
     </extract>
