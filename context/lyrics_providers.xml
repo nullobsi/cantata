@@ -129,8 +129,9 @@
   </provider>
   <provider name="lyricsmode.com" charset="utf-8" url="https://www.lyricsmode.com/lyrics/{a}/{artist}/{title}.html">
     <urlFormat replace=" ._@,;&amp;\/&quot;" with="_"/>
-    <!-- Use the tag form rather than begin/end: it retries without the closing '>', so the
-         match survives the extra attributes (class="ui-annotatable") carried by the element. -->
+    <!-- The lyrics moved from <p id="lyrics_text"> to <div id="lyrics_text">. The tag form is
+         used rather than begin/end as it retries without the closing '>', so the match also
+         survives any attributes added to the element later on. -->
     <extract>
       <item tag="&lt;div id=&quot;lyrics_text&quot;&gt;"/>
     </extract>
@@ -143,6 +144,11 @@
     <extract> <!-- new -->
       <item begin="&lt;p id=&quot;lyrics_text&quot;&gt;" end="&lt;/p&gt;"/>
     </extract>
+    <exclude>
+      <!-- The annotation buttons ("Explain", "Request") sit within the lyrics element. They
+           are the only elements carrying this attribute, so drop them whole. -->
+      <item container="data-annotation-type"/>
+    </exclude>
     <invalidIndicator value="Sorry, we have no"/>
   </provider>
   <provider name="lyriki.com" charset="utf-8" url="http://www.lyriki.com/{artist}:{title}">
