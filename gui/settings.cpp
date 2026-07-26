@@ -291,6 +291,11 @@ bool Settings::storeLyricsInMpdDir()
 	return cfg.get("storeLyricsInMpdDir", false);
 }
 
+bool Settings::lyricsAnnotations()
+{
+	return cfg.get("lyricsAnnotations", true);
+}
+
 QString Settings::coverFilename()
 {
 	QString name = cfg.get("coverFilename", QString());
@@ -842,6 +847,11 @@ void Settings::saveStoreCoversInMpdDir(bool v)
 void Settings::saveStoreLyricsInMpdDir(bool v)
 {
 	cfg.set("storeLyricsInMpdDir", v);
+}
+
+void Settings::saveLyricsAnnotations(bool v)
+{
+	cfg.set("lyricsAnnotations", v);
 }
 
 void Settings::saveCoverFilename(const QString& v)

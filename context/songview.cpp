@@ -26,6 +26,7 @@
 #include "gui/covers.h"
 #include "gui/settings.h"
 #include "lyricsdialog.h"
+#include "lyricsmarkup.h"
 #include "support/messagebox.h"
 #include "support/squeezedtextlabel.h"
 #include "support/utils.h"
@@ -49,7 +50,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMenu>
-#include <QRegularExpression>
+#include <QNetworkRequest>
 #include <QScrollBar>
 #include <QTextStream>
 #include <QTimer>
@@ -106,25 +107,6 @@ static QString lyricsOtherFileName(const Song& song)
 static inline QString mpdLyricsFilePath(const Song& song)
 {
 	return Utils::changeExtension(song.filePath(MPDConnection::self()->getDetails().dir), SongView::constExtension);
-}
-
-// Emphasises the section markers - '[Verse 1]', '[Chorus]' - that some providers put on a line of
-// their own, so that they read as structure rather than as part of the lyric. Only a line that is
-// nothing but a marker qualifies; bracketed asides within a line ('[sic]', '[?]') are left alone.
-static QString styleSectionHeaders(const QString& lyrics)
-{
-	static const QRegularExpression constHeader(QLatin1String("^\\s*\\[([^\\]]{1,80})\\]\\s*$"));
-
-	QStringList lines = lyrics.split(QLatin1Char('\n'));
-
-	for (QString& line : lines) {
-		QRegularExpressionMatch match = constHeader.match(line);
-		if (match.hasMatch()) {
-			line = QLatin1String("<b>[") + match.captured(1).toHtmlEscaped() + QLatin1String("]</b>");
-		}
-	}
-
-	return lines.join(QLatin1Char('\n'));
 }
 
 static inline QString fixNewLines(const QString& o)
@@ -334,6 +316,12 @@ void SongView::songPosition()
 
 void SongView::scroll()
 {
+	// An open annotation both moves the lyrics down and is something the reader is in the middle
+	// of, so leave the view where they put it until they close it again.
+	if (!expandedAnnotations.isEmpty()) {
+		return;
+	}
+
 	if (Mode_Display == mode && scrollAction->isChecked() && scrollTimer) {
 		QScrollBar* bar = text->verticalScrollBar();
 
@@ -419,6 +407,7 @@ void SongView::loadLyricsFromFile()
 			lyricsSource = QUrl();
 			lyricsSourceName = QString();
 			sourceProvidesMarkup = false;
+			clearAnnotations();
 			renderLyrics();
 			setMode(Mode_Display);
 			//                    controls->setVisible(false);
@@ -745,6 +734,13 @@ void SongView::abortInfoSearch()
 
 void SongView::showMoreInfo(const QUrl& url)
 {
+	QUrlQuery query(url);
+
+	if (QLatin1String("cantata") == url.scheme() && query.hasQueryItem(LyricsMarkup::constAnnotationQuery)) {
+		toggleAnnotation(query.queryItemValue(LyricsMarkup::constAnnotationQuery));
+		return;
+	}
+
 	QDesktopServices::openUrl(url);
 }
 
@@ -766,6 +762,7 @@ void SongView::abort()
 	lyricsSource = QUrl();
 	lyricsSourceName = QString();
 	sourceProvidesMarkup = false;
+	clearAnnotations();
 	if (currentProv) {
 		currentProv->abort();
 		currentProv = nullptr;
@@ -854,6 +851,7 @@ void SongView::downloadFinished()
 						lyricsSource = QUrl();
 						lyricsSourceName = QString();
 						sourceProvidesMarkup = false;
+						clearAnnotations();
 						renderLyrics();
 						cancelJobAction->setEnabled(false);
 						hideSpinner();
@@ -900,6 +898,13 @@ void SongView::lyricsReady(int id, QString lyrics, QUrl source)
 			lyricsSource = source;
 			lyricsSourceName = currentProv ? currentProv->displayName() : QString();
 			sourceProvidesMarkup = currentProv && currentProv->providesMarkup();
+			clearAnnotations();
+			if (sourceProvidesMarkup && Settings::self()->lyricsAnnotations()) {
+				lyricsMarkup = LyricsMarkup::prepare(lyrics);
+				// Keep what the provider sent, so that the annotations are still there next time
+				// these lyrics are read back from the cache.
+				lyricsProviderMarkup = lyricsMarkup.hasAnnotations() ? lyrics : QString();
+			}
 			// After saveFile(), so that the source info is never older than the lyrics it describes.
 			saveSourceInfo();
 			renderLyrics();
@@ -908,16 +913,105 @@ void SongView::lyricsReady(int id, QString lyrics, QUrl source)
 	}
 }
 
-void SongView::renderLyrics()
+void SongView::renderLyrics(bool keepPosition)
 {
-	QString html = fixNewLines(sourceProvidesMarkup ? styleSectionHeaders(lyricsPlain) : lyricsPlain);
+	QString html = lyricsMarkup.hasAnnotations()
+			? LyricsMarkup::render(lyricsMarkup, annotationBodies, expandedAnnotations)
+			: fixNewLines(sourceProvidesMarkup ? LyricsMarkup::styleSectionHeaders(lyricsPlain) : lyricsPlain);
 
 	if (lyricsSource.isValid() && !lyricsSourceName.isEmpty()) {
 		QString link = QLatin1String("<a href=\"") + lyricsSource.toString().toHtmlEscaped() + QLatin1String("\">") + lyricsSourceName.toHtmlEscaped() + QLatin1String("</a>");
 		html += QLatin1String("<p>") + tr("Lyrics from %1").arg(link) + QLatin1String("</p>");
 	}
 
+	QScrollBar* bar = keepPosition ? text->verticalScrollBar() : nullptr;
+	int position = bar ? bar->value() : 0;
+
 	setHtml(html, Page_Lyrics);
+
+	if (bar) {
+		bar->setValue(position);
+	}
+}
+
+void SongView::toggleAnnotation(const QString& id)
+{
+	if (id.isEmpty()) {
+		return;
+	}
+
+	if (expandedAnnotations.contains(id)) {
+		expandedAnnotations.remove(id);
+	}
+	else {
+		expandedAnnotations.insert(id);
+
+		if (!annotationBodies.contains(id)) {
+			// Only ever fetched when a reader asks for one, so a song with fifty annotations costs
+			// nothing until they are opened.
+			QNetworkRequest req(QUrl(QLatin1String("https://genius.com/api/annotations/") + id + QLatin1String("?text_format=plain")));
+			req.setRawHeader("User-Agent", "Mozilla/5.0 (X11; Linux i686; rv:6.0) Gecko/20100101 Firefox/6.0");
+			NetworkJob* reply = NetworkAccessManager::self()->get(req, 5000);
+			annotationJobs.insert(reply, id);
+			connect(reply, SIGNAL(finished()), this, SLOT(annotationFetched()));
+		}
+	}
+
+	renderLyrics(true);
+}
+
+void SongView::annotationFetched()
+{
+	NetworkJob* reply = qobject_cast<NetworkJob*>(sender());
+
+	if (!reply) {
+		return;
+	}
+
+	reply->deleteLater();
+	QString id = annotationJobs.take(reply);
+
+	if (id.isEmpty()) {
+		return;
+	}
+
+	QString body;
+
+	if (reply->ok()) {
+		// Asking for the plain text form keeps Genius' own markup - images, embedded links - out of
+		// the document the lyrics live in.
+		body = QJsonDocument::fromJson(reply->readAll())
+					   .object()
+					   .value(QLatin1String("response"))
+					   .toObject()
+					   .value(QLatin1String("annotation"))
+					   .toObject()
+					   .value(QLatin1String("body"))
+					   .toObject()
+					   .value(QLatin1String("plain"))
+					   .toString()
+					   .trimmed();
+	}
+
+	annotationBodies.insert(id, body.isEmpty()
+									 ? tr("Annotation unavailable.")
+									 : body.toHtmlEscaped().replace(QLatin1String("\n"), QLatin1String("<br/>")));
+	renderLyrics(true);
+}
+
+void SongView::clearAnnotations()
+{
+	// Emptied before cancelling, as aborting a reply reports it as finished - which would otherwise
+	// come back through annotationFetched() while we are still tearing down.
+	QList<NetworkJob*> jobs = annotationJobs.keys();
+	annotationJobs.clear();
+	for (NetworkJob* job : jobs) {
+		job->cancelAndDelete();
+	}
+	lyricsProviderMarkup = QString();
+	lyricsMarkup.clear();
+	annotationBodies.clear();
+	expandedAnnotations.clear();
 }
 
 void SongView::saveSourceInfo()
@@ -936,6 +1030,9 @@ void SongView::saveSourceInfo()
 	QJsonObject obj;
 	obj.insert(QLatin1String("provider"), currentProv->getName());
 	obj.insert(QLatin1String("url"), lyricsSource.toString());
+	if (!lyricsProviderMarkup.isEmpty()) {
+		obj.insert(QLatin1String("markup"), lyricsProviderMarkup);
+	}
 
 	QFile f(fileName);
 	if (f.open(QIODevice::WriteOnly)) {
@@ -982,6 +1079,13 @@ void SongView::loadSourceInfo(const QString& lyricsFilePath)
 			lyricsSourceName = provider->displayName();
 			sourceProvidesMarkup = provider->providesMarkup();
 			break;
+		}
+	}
+
+	if (sourceProvidesMarkup && Settings::self()->lyricsAnnotations()) {
+		lyricsProviderMarkup = obj.value(QLatin1String("markup")).toString();
+		if (!lyricsProviderMarkup.isEmpty()) {
+			lyricsMarkup = LyricsMarkup::prepare(lyricsProviderMarkup);
 		}
 	}
 }
@@ -1032,6 +1136,7 @@ void SongView::getLyrics()
 		lyricsSource = QUrl();
 		lyricsSourceName = QString();
 		sourceProvidesMarkup = false;
+		clearAnnotations();
 		// Set lyrics file anyway - so that editing is enabled!
 		lyricsFile = Settings::self()->storeLyricsInMpdDir() && !currentSong.isNonMPD()
 				? mpdLyricsFilePath(currentSong)
@@ -1075,6 +1180,7 @@ bool SongView::setLyricsFromFile(const QString& filePath, bool useSourceInfo)
 		lyricsSource = QUrl();
 		lyricsSourceName = QString();
 		sourceProvidesMarkup = false;
+		clearAnnotations();
 		if (useSourceInfo) {
 			loadSourceInfo(filePath);
 		}

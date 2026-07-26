@@ -25,7 +25,10 @@
 #define SONG_VIEW_H
 
 #include "config.h"
+#include "lyricsmarkup.h"
 #include "view.h"
+#include <QHash>
+#include <QSet>
 #include <QUrl>
 #include <QWidget>
 
@@ -85,6 +88,7 @@ private Q_SLOTS:
 	void infoSearchResponse(const QString& resp, const QString& lang);
 	void abortInfoSearch();
 	void showMoreInfo(const QUrl& url);
+	void annotationFetched();
 
 private:
 	void loadLyrics();
@@ -104,8 +108,11 @@ private:
      * Builds the lyrics page from lyricsPlain, appending a link to where the lyrics came from
      * if we know it. All lyrics display goes through here, so that whatever we add to the page
      * can never end up in the file we save.
+     *
+     * @param keepPosition Whether to leave the view where it is, for a re-render of lyrics the
+     *                     reader is already part way through. False when showing new lyrics.
      */
-	void renderLyrics();
+	void renderLyrics(bool keepPosition = false);
 
 	/**
      * Records, alongside the cached lyrics, which provider supplied them and the page they can be
@@ -120,6 +127,16 @@ private:
      * @param lyricsFilePath The lyrics file the source information has to match.
      */
 	void loadSourceInfo(const QString& lyricsFilePath);
+
+	/**
+     * Opens or closes an annotation, fetching its text the first time it is opened.
+     *
+     * @param id The annotation's id, as carried by the link that was clicked.
+     */
+	void toggleAnnotation(const QString& id);
+
+	/** Discards the annotations, along with anything still being fetched for them. */
+	void clearAnnotations();
 
 	/**
      * Reads the lyrics from the given filePath and updates
@@ -149,6 +166,11 @@ private:
 	QUrl lyricsSource;
 	QString lyricsSourceName;
 	bool sourceProvidesMarkup;
+	QString lyricsProviderMarkup;
+	LyricsMarkup::Prepared lyricsMarkup;
+	QHash<QString, QString> annotationBodies;
+	QSet<QString> expandedAnnotations;
+	QHash<NetworkJob*, QString> annotationJobs;
 	QString preEdit;
 	NetworkJob* job;
 	UltimateLyricsProvider* currentProv;
