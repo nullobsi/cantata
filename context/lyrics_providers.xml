@@ -86,8 +86,6 @@
            Genius marks all of it as excluded from selection, so drop those elements whole. -->
       <item container="data-exclude-from-selection"/>
       <item begin="&lt;!--" end="--&gt;"/>
-      <item begin="&lt;a href=" end="&gt;"/>
-      <item begin="&lt;/a" end="&gt;"/>
     </exclude>
   </provider>
   <provider name="lololyrics.com" charset="utf-8" url="http://api.lololyrics.com/0.5/getLyric?artist={artist}&amp;track={title}">
