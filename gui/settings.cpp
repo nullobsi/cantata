@@ -340,7 +340,7 @@ MPDParseUtils::CueSupport Settings::cueSupport()
 
 QStringList Settings::lyricProviders()
 {
-	return cfg.get("lyricProviders", QStringList() << "azlyrics.com");
+	return cfg.get("lyricProviders", QStringList() << "genius.com");
 }
 
 QStringList Settings::wikipediaLangs()
