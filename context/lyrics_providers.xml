@@ -179,6 +179,13 @@
   <provider name="songlyrics.com" charset="utf-8" url="https://www.songlyrics.com/{artist}/{title}-lyrics/">
     <urlFormat replace=" ._@,;&amp;\/&quot;" with="-"/>
     <urlFormat replace="'" with="_"/>
+    <!-- The lyrics are in the schema.org JSON-LD block rather than in the markup. Within it a
+         double quote is always written as an escape, so the first one following the start of
+         the value is the one closing it, and a quote followed by a brace ends the object. -->
+    <extract>
+      <item begin="&quot;lyrics&quot;:{&quot;@type&quot;:&quot;CreativeWork&quot;,&quot;text&quot;:&quot;" end="&quot;}"/>
+      <item unescape="json"/>
+    </extract>
     <extract>
       <item tag="&lt;p id=&quot;songLyricsDiv&quot; ondragstart=&quot;return false;&quot; onselectstart=&quot;return false;&quot; oncontextmenu=&quot;return false;&quot; class=&quot;songLyricsV14&quot; style=&quot;font-size: 14px;z-index: 9999;position: absolute;left: -6000px;&quot;&gt;"/>
     </extract>
