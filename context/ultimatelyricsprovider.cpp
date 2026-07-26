@@ -138,6 +138,46 @@ static QString extractXmlTag(const QString& source, const QString& tag)
 	return extract(source, tag, "</" + match.captured(1) + ">", true);
 }
 
+// Decode a JSON string literal. Sites that render client-side (e.g. Musixmatch) embed the
+// lyrics in a JSON blob rather than in markup, so what the extract rules pull out still has
+// its escapes intact.
+static QString jsonUnescape(const QString& source)
+{
+	QString ret;
+	ret.reserve(source.length());
+
+	for (int i = 0; i < source.length(); ++i) {
+		if (QLatin1Char('\\') != source.at(i) || i + 1 >= source.length()) {
+			ret += source.at(i);
+			continue;
+		}
+
+		QChar esc = source.at(++i);
+		switch (esc.toLatin1()) {
+		case 'n': ret += QLatin1Char('\n'); break;
+		case 't': ret += QLatin1Char('\t'); break;
+		case 'r': ret += QLatin1Char('\r'); break;
+		case 'b': ret += QLatin1Char('\b'); break;
+		case 'f': ret += QLatin1Char('\f'); break;
+		case 'u': {
+			bool ok = false;
+			ushort code = i + 4 < source.length() ? source.mid(i + 1, 4).toUShort(&ok, 16) : 0;
+			if (ok) {
+				ret += QChar(code);
+				i += 4;
+			}
+			else {
+				ret += esc;
+			}
+			break;
+		}
+		// Covers \" \\ \/ - and leaves anything unrecognised as-is.
+		default: ret += esc; break;
+		}
+	}
+	return ret;
+}
+
 // Matches the opening tag of an element carrying the named attribute. The attribute must be a
 // whitespace-separated name followed by '=', so that a name is not matched by a longer one that
 // merely starts with it - a word boundary would not do, as '-' ends a word.
@@ -286,6 +326,11 @@ static void applyExtractRule(const UltimateLyricsProvider::Rule& rule, QString& 
 		case UltimateLyricsProvider::RuleItem::Container:
 			content = extractContainers(content, doTagReplace(item.begin, song));
 			break;
+		case UltimateLyricsProvider::RuleItem::Unescape:
+			if (QLatin1String("json") == item.begin) {
+				content = jsonUnescape(content);
+			}
+			break;
 		}
 	}
 }
@@ -302,6 +347,9 @@ static void applyExcludeRule(const UltimateLyricsProvider::Rule& rule, QString& 
 			break;
 		case UltimateLyricsProvider::RuleItem::Container:
 			content = excludeContainers(content, doTagReplace(item.begin, song));
+			break;
+		case UltimateLyricsProvider::RuleItem::Unescape:
+			// Not meaningful as an exclusion - ignored.
 			break;
 		}
 	}

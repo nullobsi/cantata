@@ -75,6 +75,9 @@ static UltimateLyricsProvider::Rule parseRule(QXmlStreamReader* reader)
 				else if (attr.hasAttribute("container")) {
 					ret << UltimateLyricsProvider::RuleItem(UltimateLyricsProvider::RuleItem::Container, attr.value("container").toString());
 				}
+				else if (attr.hasAttribute("unescape")) {
+					ret << UltimateLyricsProvider::RuleItem(UltimateLyricsProvider::RuleItem::Unescape, attr.value("unescape").toString());
+				}
 			}
 			reader->skipCurrentElement();
 		}

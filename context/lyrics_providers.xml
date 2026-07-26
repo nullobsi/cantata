@@ -162,6 +162,12 @@
   <provider name="musixmatch.com" charset="utf-8" url="https://www.musixmatch.com/lyrics/{Artist}/{Title}">
     <urlFormat replace=" _@;\/&quot;'()[]" with="-"/>
     <urlFormat replace="?" with=""/>
+    <!-- The page renders client-side, so the lyrics are in the __NEXT_DATA__ JSON rather than
+         in the markup, and still carry their JSON escapes once pulled out. -->
+    <extract>
+      <item begin="&quot;lyrics&quot;:{&quot;body&quot;:&quot;" end="&quot;,&quot;canEdit&quot;"/>
+      <item unescape="json"/>
+    </extract>
     <extract>
       <item begin="&lt;span id=&quot;lyrics-html&quot;" end="&lt;/span&gt;"/>
     </extract>
