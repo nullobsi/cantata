@@ -121,7 +121,7 @@ static QString extract(const QString& source, const QString& begin, const QStrin
 	}
 
 	DBUG << "Found match";
-	return source.mid(beginIdx, endIdx - beginIdx - 1);
+	return source.mid(beginIdx, endIdx - beginIdx);
 }
 
 static QRegularExpression xmlTagRegex = QRegularExpression("<(\\w+).*>");
