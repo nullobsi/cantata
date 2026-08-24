@@ -28,7 +28,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: '🚧 Build Cantata'
-      uses: flathub-infra/flatpak-github-actions/flatpak-builder@master
+      uses: flatpak/flatpak-github-actions/flatpak-builder@v6
       with:
         bundle: cantata.flatpak
         manifest-path: dog.unix.cantata.Cantata.yml
