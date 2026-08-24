@@ -63,7 +63,7 @@ jobs:
       run: cmake --install build --prefix $PWD/package
 
     - name: '⏫ Upload Artifact'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: windows-standalone-${{ matrix.sys }}
         path: package/
