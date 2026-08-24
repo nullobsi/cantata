@@ -25,9 +25,8 @@ jobs:
       run: brew install ninja create-dmg fish
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
-        aqtversion: '==3.1.*'
         version: '6.10'
         host: 'mac'
         target: 'desktop'
