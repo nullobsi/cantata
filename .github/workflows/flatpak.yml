@@ -32,4 +32,3 @@ jobs:
       with:
         bundle: cantata.flatpak
         manifest-path: dog.unix.cantata.Cantata.yml
-        cache-key: flatpak-builder-${{ github.sha }}
