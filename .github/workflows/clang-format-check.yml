@@ -19,7 +19,7 @@ jobs:
     name: 📝 Code Formatting
     steps:
     - name: '🧰 Checkout'
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
     - name: '⚙️ Install clang-format'
       run: |
         sudo tee /etc/dpkg/dpkg.cfg.d/01_nodoc > /dev/null << 'EOF'
