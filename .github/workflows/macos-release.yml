@@ -55,7 +55,7 @@ jobs:
         cmake --install build --prefix bundle
     
     - name: '🔏 Sign app bundle'
-      uses: indygreg/apple-code-sign-action@v1.1
+      uses: indygreg/apple-code-sign-action@v1.2
       with:
         input_path: bundle/Cantata.app
         sign: true
@@ -72,7 +72,7 @@ jobs:
         create-dmg --volname "Cantata" --volicon mac/cantata.icns --background mac/dmg/background.png --window-size 600 500 --icon-size 75 --icon "Cantata.app" -25 175 --hide-extension "Cantata.app" --app-drop-link 310 175 package/Cantata.dmg bundle
 
     - name: '🔏 Sign DMG'
-      uses: indygreg/apple-code-sign-action@v1.1
+      uses: indygreg/apple-code-sign-action@v1.2
       with:
         input_path: package/Cantata.dmg
         sign: true
