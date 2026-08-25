@@ -44,6 +44,7 @@
 #include <QStringList>
 #include <QTcpSocket>
 #include <time.h>
+#include <utility>
 
 class QTimer;
 class Thread;
@@ -507,6 +508,7 @@ private:
 	void getStickerSupport();
 	void playFirstTrack(bool emitErrors);
 	void determineIfaceIp();
+	std::pair<QList<Song>, bool> readPlaylistInfoChunked();
 
 private:
 	bool isInitialConnect;
