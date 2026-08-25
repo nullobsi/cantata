@@ -267,7 +267,7 @@ CacheSettings::CacheSettings(QWidget* parent)
 	new CacheItem(tr("Backdrops"), Utils::cacheDir(ContextWidget::constCacheDir, false), QStringList() << "*.jpg"
 	                                                                                                   << "*.png",
 	              tree);
-	new CacheItem(tr("Lyrics"), Utils::cacheDir(SongView::constLyricsDir, false), QStringList() << "*" + SongView::constExtension, tree);
+	new CacheItem(tr("Lyrics"), Utils::cacheDir(SongView::constLyricsDir, false), QStringList() << "*" + SongView::constExtension << "*" + SongView::constSourceExt, tree);
 	new CacheItem(tr("Artist Information"), Utils::cacheDir(ArtistView::constCacheDir, false), QStringList() << "*" + ArtistView::constInfoExt << "*" + ArtistView::constSimilarInfoExt << "*.json.gz" << "*.jpg" << "*.png", tree);
 	new CacheItem(tr("Album Information"), Utils::cacheDir(AlbumView::constCacheDir, false), QStringList() << "*" + AlbumView::constInfoExt << "*.jpg"
 	                                                                                                       << "*.png",

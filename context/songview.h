@@ -25,7 +25,11 @@
 #define SONG_VIEW_H
 
 #include "config.h"
+#include "lyricsmarkup.h"
 #include "view.h"
+#include <QHash>
+#include <QSet>
+#include <QUrl>
 #include <QWidget>
 
 class UltimateLyricsProvider;
@@ -52,6 +56,7 @@ class SongView : public View {
 public:
 	static const QLatin1String constLyricsDir;
 	static const QLatin1String constExtension;
+	static const QLatin1String constSourceExt;
 	static const QLatin1String constCacheDir;
 	static const QLatin1String constInfoExt;
 
@@ -66,7 +71,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 	void downloadFinished();
-	void lyricsReady(int, QString lyrics);
+	void lyricsReady(int, QString lyrics, QUrl source);
 	void update();
 	void search();
 	void edit();
@@ -83,6 +88,7 @@ private Q_SLOTS:
 	void infoSearchResponse(const QString& resp, const QString& lang);
 	void abortInfoSearch();
 	void showMoreInfo(const QUrl& url);
+	void annotationFetched();
 
 private:
 	void loadLyrics();
@@ -99,14 +105,51 @@ private:
 	bool saveFile(const QString& fileName);
 
 	/**
+     * Builds the lyrics page from lyricsPlain, appending a link to where the lyrics came from
+     * if we know it. All lyrics display goes through here, so that whatever we add to the page
+     * can never end up in the file we save.
+     *
+     * @param keepPosition Whether to leave the view where it is, for a re-render of lyrics the
+     *                     reader is already part way through. False when showing new lyrics.
+     */
+	void renderLyrics(bool keepPosition = false);
+
+	/**
+     * Records, alongside the cached lyrics, which provider supplied them and the page they can be
+     * read on. The lyrics file itself is left alone - other MPD clients read it too.
+     */
+	void saveSourceInfo();
+
+	/**
+     * Restores what saveSourceInfo() recorded, provided it is no older than the lyrics it
+     * describes.
+     *
+     * @param lyricsFilePath The lyrics file the source information has to match.
+     */
+	void loadSourceInfo(const QString& lyricsFilePath);
+
+	/**
+     * Opens or closes an annotation, fetching its text the first time it is opened.
+     *
+     * @param id The annotation's id, as carried by the link that was clicked.
+     */
+	void toggleAnnotation(const QString& id);
+
+	/** Discards the annotations, along with anything still being fetched for them. */
+	void clearAnnotations();
+
+	/**
      * Reads the lyrics from the given filePath and updates
      * the UI with those lyrics.
      *
      * @param filePath The path to the lyrics file which will be read.
      *
+     * @param useSourceInfo Whether the file is one we wrote ourselves, and may therefore have
+     *                      recorded source information for. False for user supplied files.
+     *
      * @return Returns true if the file could be read; otherwise false.
      */
-	bool setLyricsFromFile(const QString& filePath);
+	bool setLyricsFromFile(const QString& filePath, bool useSourceInfo = false);
 
 private:
 	QTimer* scrollTimer;
@@ -119,6 +162,15 @@ private:
 	Action* delAction;
 	Mode mode;
 	QString lyricsFile;
+	QString lyricsPlain;
+	QUrl lyricsSource;
+	QString lyricsSourceName;
+	bool sourceProvidesMarkup;
+	QString lyricsProviderMarkup;
+	LyricsMarkup::Prepared lyricsMarkup;
+	QHash<QString, QString> annotationBodies;
+	QSet<QString> expandedAnnotations;
+	QHash<NetworkJob*, QString> annotationJobs;
 	QString preEdit;
 	NetworkJob* job;
 	UltimateLyricsProvider* currentProv;
