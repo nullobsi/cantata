@@ -409,7 +409,7 @@ void NowPlayingWidget::rating(const QString& file, quint8 r)
 
 void NowPlayingWidget::updateTimes()
 {
-	if (slider->value() < 172800 && slider->value() != slider->maximum()) {
+	if (slider->value() != slider->maximum()) {
 		time->updateTime();
 	}
 }

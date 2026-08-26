@@ -2098,7 +2098,7 @@ void MainWindow::updateStatus(MPDStatus* const status)
 	consumePlayQueueAction->setChecked(status->consume());
 	updateNextTrack(status->nextSongId());
 
-	if (status->timeElapsed() < 64800 && (!currentIsStream() || (status->timeTotal() > 0 && status->timeElapsed() <= status->timeTotal()))) {
+	if (!currentIsStream() || (status->timeTotal() > 0 && status->timeElapsed() <= status->timeTotal())) {
 		if (status->state() == MPDState_Stopped || status->state() == MPDState_Inactive) {
 			nowPlaying->setRange(0, 0);
 		}
