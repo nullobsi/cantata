@@ -1347,7 +1347,7 @@ void MPDConnection::seek(qint32 offset)
 			return;
 		}
 		if (offset > 0) {
-			if (sv.timeElapsed + offset < sv.timeTotal) {
+			if ((qint32)sv.timeElapsed + offset < (qint32)sv.timeTotal) {
 				setSeek(sv.song, sv.timeElapsed + offset);
 			}
 			else {
@@ -1355,7 +1355,7 @@ void MPDConnection::seek(qint32 offset)
 			}
 		}
 		else {
-			if (sv.timeElapsed + offset >= 0) {
+			if ((qint32)sv.timeElapsed + offset >= 0) {
 				setSeek(sv.song, sv.timeElapsed + offset);
 			}
 			else {
@@ -1384,7 +1384,7 @@ void MPDConnection::goToPrevious()
 {
 	toggleStopAfterCurrent(false);
 	stopVolumeFade();
-	int prevSeekDuration = Settings::self()->prevSeekDuration();
+	quint32 prevSeekDuration = Settings::self()->prevSeekDuration();
 	if (prevSeekDuration > 0) {
 		Response status = sendCommand("status");
 		if (status.ok) {
@@ -1520,7 +1520,7 @@ void MPDConnection::getStatus()
 		if (currentSongId != sv.songId) {
 			stopVolumeFade();
 		}
-		if (stopAfterCurrent && (currentSongId != sv.songId || (songPos > 0 && sv.timeElapsed < (qint32)songPos))) {
+		if (stopAfterCurrent && (currentSongId != sv.songId || (songPos > 0 && sv.timeElapsed < songPos))) {
 			stopVolumeFade();
 			if (sendCommand("stop").ok) {
 				sv.state = MPDState_Stopped;

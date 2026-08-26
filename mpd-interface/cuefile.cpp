@@ -575,7 +575,7 @@ bool CueFile::parse(const QString& fileName, const QString& dir, QList<Song>& so
 			if (!indexTime(tracks.at(i).value("index"), tracks[i + 1].value("index"), time)) {
 				continue;// if incorrect, then skip the track (jump to the next one)
 			}
-			song.time = static_cast<quint16>(time);
+			song.time = static_cast<quint32>(time);
 		}
 		else {
 			// incorrect index?

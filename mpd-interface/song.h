@@ -35,6 +35,7 @@
 #include <QMetaType>
 #include <QSet>
 #include <QString>
+#include <limits>
 
 struct Song {
 	enum Constants {
@@ -104,7 +105,7 @@ struct Song {
 	mutable quint8 priority;
 	quint8 disc : 5;
 	quint8 blank : 3;// Which field were blank, and Cantata set to Unknown
-	quint16 time;
+	quint32 time;
 	quint16 track;
 	quint16 origYear;
 	quint16 year;
@@ -273,9 +274,9 @@ struct Song {
 	void setSpecificSizeRequest(int sz)
 	{
 		size = track = id = sz;
-		time = 0xFFFF;
+		time = std::numeric_limits<quint32>::max();
 	}
-	bool isSpecificSizeRequest() const { return size > 4 && size < 1024 && track == size && id == size && 0xFFFF == time; }
+	bool isSpecificSizeRequest() const { return size > 4 && size < 1024 && track == size && id == size && std::numeric_limits<quint32>::max() == time; }
 
 	// podcast functions...
 	bool hasBeenPlayed() const { return 0 != id; }

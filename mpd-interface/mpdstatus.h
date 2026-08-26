@@ -55,8 +55,8 @@ struct MPDStatusValues {
 	qint32 songId;
 	qint32 nextSong;
 	qint32 nextSongId;
-	quint16 timeElapsed;
-	quint16 timeTotal;
+	quint32 timeElapsed;
+	quint32 timeTotal;
 	quint32 bitrate;
 	quint32 samplerate;
 	quint8 bits;
@@ -89,8 +89,8 @@ public:
 	qint32 songId() const { return values.songId; }
 	qint32 nextSong() const { return values.nextSong; }
 	qint32 nextSongId() const { return values.nextSongId; }
-	quint16 timeElapsed() const { return values.timeElapsed; }
-	quint16 timeTotal() const { return values.timeTotal; }
+	quint32 timeElapsed() const { return values.timeElapsed; }
+	quint32 timeTotal() const { return values.timeTotal; }
 	quint32 bitrate() const { return values.bitrate; }
 	quint32 samplerate() const { return values.samplerate; }
 	quint8 bits() const { return values.bits; }
@@ -101,8 +101,8 @@ public:
 
 	// Cantata does not poll MPD for current position, but instead used a timer
 	// This timer will update its value here - so this can be used elsewhere...
-	void setGuessedElapsed(quint16 v) { guessed = v; }
-	quint16 guessedElapsed() const { return guessed; }
+	void setGuessedElapsed(quint32 v) { guessed = v; }
+	quint32 guessedElapsed() const { return guessed; }
 
 public Q_SLOTS:
 	void update(const MPDStatusValues& v);
@@ -115,7 +115,7 @@ private:
 	MPDStatus& operator=(const MPDStatus& other);
 
 private:
-	quint16 guessed;
+	quint32 guessed;
 	MPDStatusValues values;
 };
 

@@ -386,7 +386,7 @@ void GroupedViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
 			r.adjust(constCoverSize + constBorder, 0, 0, 0);
 		}
 
-		int td = index.data(Cantata::Role_AlbumDuration).toUInt();
+		quint32 td = index.data(Cantata::Role_AlbumDuration).toUInt();
 		QString totalDuration = td > 0 && td != song.time ? Utils::formatTime(td) : QString();
 		QRect duratioRect(r.x(), r.y(), r.width(), textHeight);
 		int totalDurationWidth = fm.horizontalAdvance(totalDuration) + 8;

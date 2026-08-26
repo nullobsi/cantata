@@ -194,7 +194,7 @@ void SmartPlaylistsPage::filterCommand()
 		uint maxAge = time(nullptr) - (command.maxAge * 24 * 60 * 60);
 		QSet<Song> toRemove;
 		for (const auto& s : command.songs) {
-			if ((filterAge && s.lastModified < maxAge) || (filterDuration && ((command.minDuration > s.time || (command.maxDuration > 0 && s.time > command.maxDuration))))) {
+			if ((filterAge && s.lastModified < maxAge) || (filterDuration && (((quint32)command.minDuration > s.time || (command.maxDuration > 0 && s.time > (quint32)command.maxDuration))))) {
 				toRemove.insert(s);
 			}
 			else {
