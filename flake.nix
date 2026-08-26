@@ -1,66 +1,56 @@
 {
+	description = "Cantata development environment";
+
 	inputs = {
 		nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-		flake-utils.url = "github:numtide/flake-utils";
+
+		flake-parts = {
+			url = "github:hercules-ci/flake-parts";
+			inputs.nixpkgs-lib.follows = "nixpkgs";
+		};
+
+		treefmt-nix = {
+			url = "github:numtide/treefmt-nix";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 	};
-	outputs = { self, nixpkgs, flake-utils }: flake-utils.lib.eachDefaultSystem (system:
+
+	outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; }
+	{
+		systems = [
+			"x86_64-linux"
+			"aarch64-linux"
+			"x86_64-darwin"
+			"aarch64-darwin"
+		];
+
+		perSystem = { config, pkgs, ... }:
 		let
-			name = "cantata";
-			version = "3.5.0";
-			pkgs = import nixpkgs {
-				inherit system;
+			options = if pkgs.stdenv.hostPlatform.isLinux then {} else {
+				withUdisks2 = false;
+				withMtp = false;
+				withLibVlc = false;
+				withDevices = false;
+				withCdioParanoia = false;
+				withMusicbrainz = false;
+				withCddb = false;
 			};
-			isLinux = pkgs.lib.strings.hasSuffix "-linux" system;
-			qtEnv = with pkgs.qt6; env "qt-custom-${qtbase.version}"
-				([
-					qtbase
-					qtconnectivity
-					qthttpserver
-					qtimageformats
-					qtmultimedia
-					qtsvg
-					qttranslations
-					qttools
-				] ++ pkgs.lib.optionals isLinux [
-					qtwayland
-				]);
-			buildInputs = with pkgs; [
-				pkg-config
-				taglib
-				ffmpeg
-				mpg123
-				libebur128
-				avahi
-				zlib
-				qtEnv
-				cmake
-				ninja
-			] ++ lib.optionals isLinux [
-				libGL
-				libGLU
-				libcdio
-				libcdio-paranoia
-				libmusicbrainz5
-				libmtp
-				media-player-info
-				kdePackages.kitemviews
-				kdePackages.karchive
-			];
 		in
 		{
-			packages.default =
-				let
-					inherit (pkgs) stdenv lib;
-				in
-				stdenv.mkDerivation {
-					inherit version buildInputs;
-					src = self;
-					pname = name;
-				};
-			devShells.default = pkgs.mkShell {
-				inherit buildInputs;
-			};
-		}
-	);
+			packages.default = pkgs.callPackage ./nix/package.nix options;
 
+			devShells.default = pkgs.mkShell {
+				inputsFrom = [ config.packages.default ];
+
+				packages = with pkgs; [
+					clang-tools
+					ninja
+				];
+			};
+		};
+
+		imports = [
+			./nix/treefmt.nix
+		];
+	};
 }
