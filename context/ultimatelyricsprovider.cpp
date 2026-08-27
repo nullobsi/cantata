@@ -121,7 +121,7 @@ static QString extract(const QString& source, const QString& begin, const QStrin
 	}
 
 	DBUG << "Found match";
-	return source.mid(beginIdx, endIdx - beginIdx - 1);
+	return source.mid(beginIdx, endIdx - beginIdx);
 }
 
 static QRegularExpression xmlTagRegex = QRegularExpression("<(\\w+).*>");
@@ -136,6 +136,156 @@ static QString extractXmlTag(const QString& source, const QString& tag)
 
 	DBUG << "Found match";
 	return extract(source, tag, "</" + match.captured(1) + ">", true);
+}
+
+// Decode a JSON string literal. Sites that render client-side (e.g. Musixmatch) embed the
+// lyrics in a JSON blob rather than in markup, so what the extract rules pull out still has
+// its escapes intact.
+static QString jsonUnescape(const QString& source)
+{
+	QString ret;
+	ret.reserve(source.length());
+
+	for (int i = 0; i < source.length(); ++i) {
+		if (QLatin1Char('\\') != source.at(i) || i + 1 >= source.length()) {
+			ret += source.at(i);
+			continue;
+		}
+
+		QChar esc = source.at(++i);
+		switch (esc.toLatin1()) {
+		case 'n': ret += QLatin1Char('\n'); break;
+		case 't': ret += QLatin1Char('\t'); break;
+		case 'r': ret += QLatin1Char('\r'); break;
+		case 'b': ret += QLatin1Char('\b'); break;
+		case 'f': ret += QLatin1Char('\f'); break;
+		case 'u': {
+			bool ok = false;
+			ushort code = i + 4 < source.length() ? source.mid(i + 1, 4).toUShort(&ok, 16) : 0;
+			if (ok) {
+				ret += QChar(code);
+				i += 4;
+			}
+			else {
+				ret += esc;
+			}
+			break;
+		}
+		// Covers \" \\ \/ - and leaves anything unrecognised as-is.
+		default: ret += esc; break;
+		}
+	}
+	return ret;
+}
+
+// Matches the opening tag of an element carrying the named attribute. The attribute must be a
+// whitespace-separated name followed by '=', so that a name is not matched by a longer one that
+// merely starts with it - a word boundary would not do, as '-' ends a word.
+static QRegularExpression containerRegex(const QString& attribute)
+{
+	return QRegularExpression("<(\\w+)\\b[^>]*\\s" + QRegularExpression::escape(attribute) + "\\s*=[^>]*>",
+	                          QRegularExpression::CaseInsensitiveOption);
+}
+
+// Given the opening tag matched by containerRegex(), walks the same tag in and out until the
+// element's own closing tag is reached, so that nested markup does not terminate it early.
+// Sets contentEnd to the start of that closing tag, and elementEnd to just past it.
+static bool findContainerEnd(const QString& source, const QRegularExpressionMatch& open, int& contentEnd, int& elementEnd)
+{
+	QRegularExpression nestRegex("<(/?)" + open.captured(1) + "\\b[^>]*>", QRegularExpression::CaseInsensitiveOption);
+	int scan = open.capturedEnd();
+	int depth = 1;
+
+	while (depth > 0) {
+		auto nest = nestRegex.match(source, scan);
+		if (!nest.hasMatch()) {
+			DBUG << "Failed to find end of container";
+			return false;
+		}
+		if (nest.captured(1).isEmpty()) {
+			++depth;
+		}
+		else if (0 == --depth) {
+			contentEnd = nest.capturedStart();
+			elementEnd = nest.capturedEnd();
+		}
+		scan = nest.capturedEnd();
+	}
+	return true;
+}
+
+// Extract the contents of every element carrying the named attribute. Used for sites (e.g.
+// Genius) that split the lyrics over several containers whose class names are build-specific,
+// and whose contents hold nested markup - so neither a literal tag match nor a naive begin/end
+// pair works.
+static QString extractContainers(const QString& source, const QString& attribute)
+{
+	DBUG << "Looking for containers with" << attribute;
+	QRegularExpression openRegex = containerRegex(attribute);
+	QStringList parts;
+	int pos = 0;
+
+	while (pos < source.length()) {
+		auto open = openRegex.match(source, pos);
+		if (!open.hasMatch()) {
+			break;
+		}
+
+		int contentEnd = -1;
+		int elementEnd = -1;
+		if (!findContainerEnd(source, open, contentEnd, elementEnd)) {
+			break;
+		}
+
+		// Empty containers are used as placeholders around ad slots - skip them, so that
+		// joining does not introduce stray breaks between the sections that do have lyrics.
+		QString content = source.mid(open.capturedEnd(), contentEnd - open.capturedEnd());
+		if (!content.trimmed().isEmpty()) {
+			parts << content;
+		}
+		pos = elementEnd;
+	}
+
+	if (parts.isEmpty()) {
+		DBUG << "Failed to find container";
+		return QString();
+	}
+
+	DBUG << "Found" << parts.length() << "container(s)";
+	return parts.join(QLatin1String("<br/>"));
+}
+
+// Remove every element carrying the named attribute, contents included. Genius marks the
+// page furniture it embeds within the lyrics containers (contributor count, song title,
+// summary) with such an attribute, and it has to go along with the markup it sits in.
+static QString excludeContainers(const QString& source, const QString& attribute)
+{
+	DBUG << "Looking for containers with" << attribute;
+	QRegularExpression openRegex = containerRegex(attribute);
+	QString ret = source;
+	int removed = 0;
+	int pos = 0;
+
+	while (pos < ret.length()) {
+		auto open = openRegex.match(ret, pos);
+		if (!open.hasMatch()) {
+			break;
+		}
+
+		int contentEnd = -1;
+		int elementEnd = -1;
+		if (!findContainerEnd(ret, open, contentEnd, elementEnd)) {
+			break;
+		}
+
+		// Any nested match is removed along with this one, so resume from where it started.
+		ret.remove(open.capturedStart(), elementEnd - open.capturedStart());
+		pos = open.capturedStart();
+		++removed;
+	}
+
+	DBUG << "Removed" << removed << "container(s)";
+	return ret;
 }
 
 static QString exclude(const QString& source, const QString& begin, const QString& end)
@@ -166,11 +316,21 @@ static QString excludeXmlTag(const QString& source, const QString& tag)
 static void applyExtractRule(const UltimateLyricsProvider::Rule& rule, QString& content, const Song& song)
 {
 	for (const UltimateLyricsProvider::RuleItem& item : rule) {
-		if (item.second.isNull()) {
-			content = extractXmlTag(content, doTagReplace(item.first, song));
-		}
-		else {
-			content = extract(content, doTagReplace(item.first, song), doTagReplace(item.second, song));
+		switch (item.type) {
+		case UltimateLyricsProvider::RuleItem::XmlTag:
+			content = extractXmlTag(content, doTagReplace(item.begin, song));
+			break;
+		case UltimateLyricsProvider::RuleItem::Range:
+			content = extract(content, doTagReplace(item.begin, song), doTagReplace(item.end, song));
+			break;
+		case UltimateLyricsProvider::RuleItem::Container:
+			content = extractContainers(content, doTagReplace(item.begin, song));
+			break;
+		case UltimateLyricsProvider::RuleItem::Unescape:
+			if (QLatin1String("json") == item.begin) {
+				content = jsonUnescape(content);
+			}
+			break;
 		}
 	}
 }
@@ -178,11 +338,19 @@ static void applyExtractRule(const UltimateLyricsProvider::Rule& rule, QString& 
 static void applyExcludeRule(const UltimateLyricsProvider::Rule& rule, QString& content, const Song& song)
 {
 	for (const UltimateLyricsProvider::RuleItem& item : rule) {
-		if (item.second.isNull()) {
-			content = excludeXmlTag(content, doTagReplace(item.first, song));
-		}
-		else {
-			content = exclude(content, doTagReplace(item.first, song), doTagReplace(item.second, song));
+		switch (item.type) {
+		case UltimateLyricsProvider::RuleItem::XmlTag:
+			content = excludeXmlTag(content, doTagReplace(item.begin, song));
+			break;
+		case UltimateLyricsProvider::RuleItem::Range:
+			content = exclude(content, doTagReplace(item.begin, song), doTagReplace(item.end, song));
+			break;
+		case UltimateLyricsProvider::RuleItem::Container:
+			content = excludeContainers(content, doTagReplace(item.begin, song));
+			break;
+		case UltimateLyricsProvider::RuleItem::Unescape:
+			// Not meaningful as an exclusion - ignored.
+			break;
 		}
 	}
 }
@@ -233,22 +401,6 @@ void UltimateLyricsProvider::fetchInfo(int id, Song metadata, bool removeThe)
 
 	if (removeThe && artistFixed.startsWith(constThe)) {
 		artistFixed = artistFixed.mid(constThe.length());
-	}
-
-	if (QLatin1String("lyrics.wikia.com") == name) {
-		QUrl url(urlText);
-		QUrlQuery query;
-
-		query.addQueryItem(QLatin1String("artist"), artistFixed);
-		query.addQueryItem(QLatin1String("song"), titleFixed);
-		query.addQueryItem(QLatin1String("func"), QLatin1String("getSong"));
-		query.addQueryItem(QLatin1String("fmt"), QLatin1String("xml"));
-		url.setQuery(query);
-
-		NetworkJob* reply = NetworkAccessManager::self()->get(url);
-		requests[reply] = id;
-		connect(reply, SIGNAL(finished()), this, SLOT(wikiMediaSearchResponse()));
-		return;
 	}
 
 	metadata.priority = removeThe ? 1 : 0;// HACK Use this to indicate if searching without 'The '
