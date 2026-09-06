@@ -47,7 +47,7 @@ public:
 			XmlTag,    // <item tag="&lt;div class=&quot;x&quot;&gt;"/>
 			Range,     // <item begin="..." end="..."/>
 			Container, // <item container="attribute-name"/>
-			Unescape   // <item unescape="json"/>
+			Json       // <item json="path/to/key"/>
 		};
 
 		RuleItem(Type t, const QString& b, const QString& e = QString())

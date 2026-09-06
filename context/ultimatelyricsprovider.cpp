@@ -24,6 +24,10 @@
 #include "ultimatelyricsprovider.h"
 #include "network/networkaccessmanager.h"
 #include <QDebug>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
@@ -138,44 +142,57 @@ static QString extractXmlTag(const QString& source, const QString& tag)
 	return extract(source, tag, "</" + match.captured(1) + ">", true);
 }
 
-// Decode a JSON string literal. Sites that render client-side (e.g. Musixmatch) embed the
-// lyrics in a JSON blob rather than in markup, so what the extract rules pull out still has
-// its escapes intact.
-static QString jsonUnescape(const QString& source)
+// Follow a '/'-separated path of keys into a JSON document, where a numeric key indexes an
+// array. Returns an undefined value if the path does not lead anywhere.
+static QJsonValue jsonValue(const QJsonDocument& doc, const QString& path)
 {
-	QString ret;
-	ret.reserve(source.length());
+	QJsonValue value = doc.isArray() ? QJsonValue(doc.array()) : QJsonValue(doc.object());
+	const QStringList keys = path.split(QLatin1Char('/'), Qt::SkipEmptyParts);
 
-	for (int i = 0; i < source.length(); ++i) {
-		if (QLatin1Char('\\') != source.at(i) || i + 1 >= source.length()) {
-			ret += source.at(i);
-			continue;
+	for (const QString& key : keys) {
+		if (value.isObject()) {
+			value = value.toObject().value(key);
 		}
-
-		QChar esc = source.at(++i);
-		switch (esc.toLatin1()) {
-		case 'n': ret += QLatin1Char('\n'); break;
-		case 't': ret += QLatin1Char('\t'); break;
-		case 'r': ret += QLatin1Char('\r'); break;
-		case 'b': ret += QLatin1Char('\b'); break;
-		case 'f': ret += QLatin1Char('\f'); break;
-		case 'u': {
-			bool ok = false;
-			ushort code = i + 4 < source.length() ? source.mid(i + 1, 4).toUShort(&ok, 16) : 0;
-			if (ok) {
-				ret += QChar(code);
-				i += 4;
-			}
-			else {
-				ret += esc;
-			}
-			break;
+		else if (value.isArray()) {
+			bool isIndex = false;
+			int index = key.toInt(&isIndex);
+			value = isIndex ? value.toArray().at(index) : QJsonValue(QJsonValue::Undefined);
 		}
-		// Covers \" \\ \/ - and leaves anything unrecognised as-is.
-		default: ret += esc; break;
+		else {
+			return QJsonValue(QJsonValue::Undefined);
 		}
 	}
-	return ret;
+	return value;
+}
+
+// Matches a script element holding JSON - either a plain payload (e.g. Musixmatch's
+// __NEXT_DATA__) or a schema.org JSON-LD block.
+static QRegularExpression jsonScriptRegex = QRegularExpression("<script[^>]*\\btype\\s*=\\s*[\"']application/(?:ld\\+)?json[\"'][^>]*>(.*?)</script>",
+                                                               QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
+
+// Sites that render client-side hold the lyrics in a JSON document rather than in the markup.
+// The response may be that document itself, or - the common case - carry it in one of the
+// page's JSON script elements, so try each in turn and take the first the path resolves in.
+static QString extractJson(const QString& source, const QString& path)
+{
+	DBUG << "Looking for" << path;
+	QStringList documents(source);
+	auto scripts = jsonScriptRegex.globalMatch(source);
+
+	while (scripts.hasNext()) {
+		documents << scripts.next().captured(1);
+	}
+
+	for (const QString& document : documents) {
+		QString value = jsonValue(QJsonDocument::fromJson(document.toUtf8()), path).toString();
+		if (!value.isEmpty()) {
+			DBUG << "Found match";
+			return value;
+		}
+	}
+
+	DBUG << "Failed to find match";
+	return QString();
 }
 
 // Matches the opening tag of an element carrying the named attribute. The attribute must be a
@@ -326,10 +343,8 @@ static void applyExtractRule(const UltimateLyricsProvider::Rule& rule, QString& 
 		case UltimateLyricsProvider::RuleItem::Container:
 			content = extractContainers(content, doTagReplace(item.begin, song));
 			break;
-		case UltimateLyricsProvider::RuleItem::Unescape:
-			if (QLatin1String("json") == item.begin) {
-				content = jsonUnescape(content);
-			}
+		case UltimateLyricsProvider::RuleItem::Json:
+			content = extractJson(content, item.begin);
 			break;
 		}
 	}
@@ -348,7 +363,7 @@ static void applyExcludeRule(const UltimateLyricsProvider::Rule& rule, QString& 
 		case UltimateLyricsProvider::RuleItem::Container:
 			content = excludeContainers(content, doTagReplace(item.begin, song));
 			break;
-		case UltimateLyricsProvider::RuleItem::Unescape:
+		case UltimateLyricsProvider::RuleItem::Json:
 			// Not meaningful as an exclusion - ignored.
 			break;
 		}
