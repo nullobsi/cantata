@@ -55,6 +55,7 @@ void OtherSettings::load()
 	contextDarkBackground->setChecked(Settings::self()->contextDarkBackground());
 	contextAlwaysCollapsed->setChecked(Settings::self()->contextAlwaysCollapsed());
 	storeLyricsInMpdDir->setChecked(Settings::self()->storeLyricsInMpdDir());
+	lyricsAnnotations->setChecked(Settings::self()->lyricsAnnotations());
 
 	int bgnd = Settings::self()->contextBackdrop();
 	contextBackdrop_none->setChecked(bgnd == contextBackdrop_none->property(constValueProperty).toInt());
@@ -77,6 +78,7 @@ void OtherSettings::save()
 	Settings::self()->saveContextDarkBackground(contextDarkBackground->isChecked());
 	Settings::self()->saveContextAlwaysCollapsed(contextAlwaysCollapsed->isChecked());
 	Settings::self()->saveStoreLyricsInMpdDir(storeLyricsInMpdDir->isChecked());
+	Settings::self()->saveLyricsAnnotations(lyricsAnnotations->isChecked());
 
 	if (contextBackdrop_none->isChecked()) {
 		Settings::self()->saveContextBackdrop(contextBackdrop_none->property(constValueProperty).toInt());

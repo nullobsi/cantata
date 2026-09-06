@@ -291,6 +291,11 @@ bool Settings::storeLyricsInMpdDir()
 	return cfg.get("storeLyricsInMpdDir", false);
 }
 
+bool Settings::lyricsAnnotations()
+{
+	return cfg.get("lyricsAnnotations", true);
+}
+
 QString Settings::coverFilename()
 {
 	QString name = cfg.get("coverFilename", QString());
@@ -340,9 +345,7 @@ MPDParseUtils::CueSupport Settings::cueSupport()
 
 QStringList Settings::lyricProviders()
 {
-	return cfg.get("lyricProviders", QStringList() << "azlyrics.com"
-	                                               << "chartlyrics.com"
-	                                               << "lyrics.wikia.com");
+	return cfg.get("lyricProviders", QStringList() << "genius.com");
 }
 
 QStringList Settings::wikipediaLangs()
@@ -844,6 +847,11 @@ void Settings::saveStoreCoversInMpdDir(bool v)
 void Settings::saveStoreLyricsInMpdDir(bool v)
 {
 	cfg.set("storeLyricsInMpdDir", v);
+}
+
+void Settings::saveLyricsAnnotations(bool v)
+{
+	cfg.set("lyricsAnnotations", v);
 }
 
 void Settings::saveCoverFilename(const QString& v)

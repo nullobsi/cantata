@@ -23,42 +23,6 @@
     </extract>
     <invalidIndicator value="Couldn't find that page."/>
   </provider>
-  <provider name="chartlyrics.com" charset="utf-8" url="http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect?artist={artist}&amp;song={title}">
-    <urlFormat replace="_@,;&amp;\/&quot;#" with="_"/>
-    <extract>
-      <item tag="&lt;Lyric&gt;"/>
-    </extract>
-    <invalidIndicator value="ERROR"/>
-  </provider>
-  <provider name="darklyrics.com" charset="utf-8" url="http://www.darklyrics.com/lyrics/{artist2}/{album2}.html">
-    <extract> <!-- modified -->
-      <item begin="&lt;h3&gt;&lt;a name=&quot;{track}&quot;&gt;{track}. {Title}&lt;/a&gt;&lt;/h3&gt;&lt;br/&gt;" end="&lt;h3&gt;"/>
-    </extract>
-    <extract> <!-- modified -->
-      <item begin="&lt;h3&gt;&lt;a name=&quot;{track}&quot;&gt;{track}. {Title}&lt;/a&gt;&lt;/h3&gt;&lt;br/&gt;" end="&lt;div class=&quot;thanks&quot;&gt;"/>
-    </extract>
-    <extract> <!-- new -->
-      <item begin="&lt;h3&gt;&lt;a name=&quot;{track}&quot;&gt;{track}. {Title}&lt;/a&gt;&lt;/h3&gt;&lt;br/&gt;" end="&lt;br/&gt;&lt;br/&gt;"/>
-    </extract>
-    <invalidIndicator value="The page you requested was not found on DarkLyrics.com."/>
-  </provider>
-  <provider name="directlyrics.com" charset="utf-8" url="http://www.directlyrics.com/{artist}-{title}-lyrics.html"> <!-- was iso-8859-1 -->
-    <urlFormat replace=" _@,;&amp;\/'&quot;" with="-"/>
-    <urlFormat replace="." with=""/>
-    <extract>
-      <item tag="&lt;div id=&quot;lyricsContent&quot;&gt;"/>
-      <item tag="&lt;p&gt;"/>
-    </extract>
-    <extract> <!-- new -->
-      <item begin="&lt;div class=&quot;lyrics&quot;&gt;" end="&lt;/div&gt;"/>
-    </extract>
-    <exclude>
-      <item begin="&lt;b&gt;" end="&lt;/b&gt;"/>
-    </exclude>
-    <exclude> <!-- new -->
-      <item begin="&lt;script async src=&quot;" end="&lt;/script&gt;&lt;br&gt;"/>
-    </exclude>
-  </provider>
   <provider name="elyrics.net" charset="iso-8859-1" url="https://www.elyrics.net/read/{a}/{artist}-lyrics/{title}-lyrics.html">
     <urlFormat replace=" _@;&amp;\/&quot;" with="-"/>
     <urlFormat replace="'" with="_"/>
@@ -77,27 +41,6 @@
     </exclude>
     <invalidIndicator value="Page not Found"/>
   </provider>
-  <provider name="hindilyrics.net (Bollywood songs)" charset="utf-8" url="http://www.hindilyrics.net/lyrics/of-{Title}.html">
-    <urlFormat replace=" _@;\/&quot;'()[]" with="%20"/>
-    <urlFormat replace="?" with=""/>
-    <extract>
-      <item begin="&lt;div class=nm&gt;Movie&lt;/div&gt;:" end="&lt;/pre&gt;"/>
-    </extract>
-    <exclude>
-      <item begin="&lt;span class=" end="&quot;&gt;"/>
-    </exclude>
-    <invalidIndicator value="Couldn't find that page."/>
-  </provider>
-<!-- Issue #1571
-  <provider name="Encyclopaedia Metallum" charset="utf-8" url="https://www.metal-archives.com/search/ajax-advanced/searching/songs/?songTitle={title}&amp;bandName={artist}&amp;ExactBandMatch=1">
-    <extract>
-      <item url="http://www.metal-archives.com/release/ajax-view-lyrics/id/{id}"/>
-      <item begin="id=\&quot;lyricsLink_" end="&quot;"/>
-    </extract>
-    <invalidIndicator value="&quot;iTotalRecords&quot;: 0"/>
-    <invalidIndicator value="lyrics not available"/>
-  </provider>
--->
   <provider name="letras.mus.br" charset="utf-8" url="https://www.letras.mus.br/winamp.php?musica={title}&amp;artista={artist}">
     <urlFormat replace="_@,;&amp;\/&quot;" with="_"/>
     <urlFormat replace=" " with="+"/>
@@ -109,7 +52,7 @@
     </extract>
     <invalidIndicator value="Verifique se o nome do seu arquivo e sua"/>
   </provider>
-  <provider name="genius.com" charset="utf-8" url="https://www.genius.com/{artist}-{title}-lyrics">
+  <provider name="genius.com" charset="utf-8" url="https://www.genius.com/{artist}-{title}-lyrics" markup="true">
       <urlFormat replace=",._@!#%^*+;\/&quot;'()[]?" with=""/>
       <urlFormat replace=" :" with="-"/>
       <!-- When $ is used as the dollar sign it is ommitted from the url
@@ -128,13 +71,21 @@
       <urlFormat replace="Çç" with="c"/>
       <urlFormat replace="ß" with="ss"/>
       <urlFormat replace="&amp;" with="and"/>
+    <!-- Current (React) pages hold the lyrics in one or more
+         <div data-lyrics-container="true" class="Lyrics__Container-sc-HASH">
+         elements. The class carries a build-specific hash, so match on the
+         attribute instead. The old <div class="lyrics"> is kept as a fallback. -->
+    <extract>
+      <item container="data-lyrics-container"/>
+    </extract>
     <extract>
       <item tag="&lt;div class=&quot;lyrics&quot;&gt;"/>
     </extract>
     <exclude>
+      <!-- The containers also hold page furniture - contributor count, song title, summary.
+           Genius marks all of it as excluded from selection, so drop those elements whole. -->
+      <item container="data-exclude-from-selection"/>
       <item begin="&lt;!--" end="--&gt;"/>
-      <item begin="&lt;a href=" end="&gt;"/>
-      <item begin="&lt;/a" end="&gt;"/>
     </exclude>
   </provider>
   <provider name="lololyrics.com" charset="utf-8" url="http://api.lololyrics.com/0.5/getLyric?artist={artist}&amp;track={title}">
@@ -143,16 +94,6 @@
       <item tag="&lt;response&gt;"/>
     </extract>
     <invalidIndicator value="ERROR"/>
-  </provider>
-  <provider name="loudson.gs" charset="utf-8" url="http://www.loudson.gs/{a}/{artist}/{album}/{title}">
-    <urlFormat replace=" _@,;&amp;\/&quot;" with="-"/>
-    <urlFormat replace="." with=""/>
-    <extract>
-      <item tag="&lt;div class=&quot;middle_col_TracksLyrics &quot;&gt;"/>
-    </extract>
-    <extract> <!-- new -->
-      <item tag="&lt;div class=&quot;middle_col_TracksLyrics&quot;&gt;"/>
-    </extract>
   </provider>
   <provider name="lyrics.com" charset="utf-8" url="https://www.lyrics.com/lyrics/{artist}/{title}.html">
     <urlFormat replace=" _@,;&amp;\/&quot;" with="-"/>
@@ -170,29 +111,11 @@
     <invalidIndicator value="we do not have the lyric for this song"/>
     <invalidIndicator value="Your name will be printed as part of the credit when your lyric is approved"/>
   </provider>
-  <provider name="lyrics.wikia.com" charset="utf-8" url="https://lyrics.wikia.com/api.php">
-    <!-- These are not used, as mediawiki API is used instead...
-    <urlFormat replace=" _@;\&quot;" with="_"/>
-    <urlFormat replace="?" with="%3F"/>
-    <extract>
-      <item begin="&lt;div class='lyricbox'&gt;" end="&lt;!- -"/>  TODO: This was a comment ( ! - - ) but brakes commentinging out!
-    </extract>
-    <exclude>
-      <item tag="&lt;div class='rtMatcher'&gt;"/>
-      <item tag="&lt;span style=&quot;padding:1em&quot;&gt;"/>
-    </exclude>
-    -->
-  </provider>
-  <provider name="lyricsdownload.com" charset="utf-8" url="http://www.lyricsdownload.com/{artist}-{title}-lyrics.html">
-    <urlFormat replace=" _@,;&amp;\/&quot;" with="-"/>
-    <urlFormat replace="." with=""/>
-    <extract>
-      <item tag="&lt;div id=&quot;div_customCSS&quot;&gt;"/>
-    </extract>
-    <invalidIndicator value="We haven't lyrics of this song"/>
-  </provider>
-  <provider name="lyricsmania.com" charset="iso-8859-1" url="https://www.lyricsmania.com/{title}_lyrics_{artist}.html">
+  <provider name="lyricsmania.com" charset="utf-8" url="https://www.lyricsmania.com/{title}_lyrics_{artist}.html">
     <urlFormat replace=" _@;&amp;\/&quot;'." with="_"/>
+    <extract>
+      <item tag="&lt;div class=&quot;lyrics-body&quot;&gt;"/>
+    </extract>
     <extract> <!-- new -->
       <item tag="&lt;div id='songlyrics_h' class='dn'&gt;"/>
     </extract>
@@ -202,28 +125,29 @@
     </extract>
     <invalidIndicator value="The lyrics you requested is not in our archive yet,"/>
   </provider>
-  <provider name="lyricsmode.com" charset="iso-8859-1" url="http://www.lyricsmode.com/lyrics/{a}/{artist}/{title}.html">
+  <provider name="lyricsmode.com" charset="utf-8" url="https://www.lyricsmode.com/lyrics/{a}/{artist}/{title}.html">
     <urlFormat replace=" ._@,;&amp;\/&quot;" with="_"/>
+    <!-- The lyrics moved from <p id="lyrics_text"> to <div id="lyrics_text">. The tag form is
+         used rather than begin/end as it retries without the closing '>', so the match also
+         survives any attributes added to the element later on. -->
+    <extract>
+      <item tag="&lt;div id=&quot;lyrics_text&quot;&gt;"/>
+    </extract>
+    <extract>
+      <item tag="&lt;p id=&quot;lyrics_text&quot;&gt;"/>
+    </extract>
     <extract>
       <item tag="&lt;div id='songlyrics_h' class='dn'&gt;"/>
     </extract>
     <extract> <!-- new -->
       <item begin="&lt;p id=&quot;lyrics_text&quot;&gt;" end="&lt;/p&gt;"/>
     </extract>
+    <exclude>
+      <!-- The annotation buttons ("Explain", "Request") sit within the lyrics element. They
+           are the only elements carrying this attribute, so drop them whole. -->
+      <item container="data-annotation-type"/>
+    </exclude>
     <invalidIndicator value="Sorry, we have no"/>
-  </provider>
-  <provider name="lyricsreg.com" charset="iso-8859-1" url="https://www.lyricsreg.com/lyrics/{artist}/{title}/">
-    <urlFormat replace=" _@,;&amp;\/&quot;" with="+"/>
-    <urlFormat replace="'." with=""/>
-    <extract>
-      <item begin="Ringtone to your Cell" end="Ringtone to your Cell"/>
-      <item begin="&lt;div style=&quot;text-align:center;&quot;&gt;" end="&lt;a"/>
-    </extract>
-    <extract> <!-- new -->
-      <item begin="Ringtone to your Cell" end="Ringtone to your Cell"/>
-      <item begin="&lt;/a&gt;&lt;br/&gt;&lt;br/&gt;" end="&lt;a"/>
-    </extract>
-    <invalidIndicator value="Page not Found"/>
   </provider>
   <provider name="lyriki.com" charset="utf-8" url="http://www.lyriki.com/{artist}:{title}">
     <urlFormat replace=" _@,;&amp;\/&quot;" with="_"/>
@@ -233,47 +157,15 @@
       <item tag="&lt;p&gt;"/>
     </extract>
   </provider>
-  <!-- broken
-  <provider name="metrolyrics.com" charset="utf-8" url="http://www.metrolyrics.com/{title}-lyrics-{artist}.html">
-    <urlFormat replace=" _@,;&amp;\/&quot;" with="-"/>
-    <urlFormat replace="'." with=""/>
-    <extract>
-      <item tag="&lt;span id=&quot;lyrics&quot;&gt;"/>
-    </extract>
-    <extract>
-      <item tag="&lt;div id=&quot;lyrics&quot;&gt;"/>
-    </extract>
-    <extract>
-      <item tag="&lt;div id=&quot;lyrics-body-text&quot;&gt;"/>
-    </extract>
-    <exclude>
-      <item tag="&lt;h5&gt;"/>
-    </exclude>
-    <invalidIndicator value="These lyrics are missing"/>
-  </provider>
-  -->
-  <provider name="mp3lyrics.org" charset="utf-8" url="http://www.mp3lyrics.org/{a}/{artist}/{title}/">
-    <urlFormat replace=" _@,;&amp;\/&quot;" with="-"/>
-    <urlFormat replace="'." with=""/>
-    <extract>
-      <item tag="&lt;span id=gn_lyricsB&gt;"/>
-    </extract>
-    <extract>
-      <item tag="&lt;div class=&quot;KonaBody&quot; id=&quot;EchoTopic&quot;&gt;"/>
-    </extract>
-    <extract> <!-- new -->
-      <item tag="&lt;div id=&quot;lyrics_text&quot;&gt;"/>
-    </extract>
-    <exclude>
-      <item tag="&lt;font size=2&gt;"/>
-      <item begin="&lt;b&gt;&lt;i&gt;" end="&lt;/u&gt;&lt;/b&gt;:"/>
-      <item begin="&lt;b&gt;Lyrics" end="&lt;/b&gt;"/>
-    </exclude>
-    <invalidIndicator value="Something went wrong"/>
-  </provider>
   <provider name="musixmatch.com" charset="utf-8" url="https://www.musixmatch.com/lyrics/{Artist}/{Title}">
     <urlFormat replace=" _@;\/&quot;'()[]" with="-"/>
     <urlFormat replace="?" with=""/>
+    <!-- The page renders client-side, so the lyrics are in the __NEXT_DATA__ JSON rather than
+         in the markup, and still carry their JSON escapes once pulled out. -->
+    <extract>
+      <item begin="&quot;lyrics&quot;:{&quot;body&quot;:&quot;" end="&quot;,&quot;canEdit&quot;"/>
+      <item unescape="json"/>
+    </extract>
     <extract>
       <item begin="&lt;span id=&quot;lyrics-html&quot;" end="&lt;/span&gt;"/>
     </extract>
@@ -285,6 +177,13 @@
   <provider name="songlyrics.com" charset="utf-8" url="https://www.songlyrics.com/{artist}/{title}-lyrics/">
     <urlFormat replace=" ._@,;&amp;\/&quot;" with="-"/>
     <urlFormat replace="'" with="_"/>
+    <!-- The lyrics are in the schema.org JSON-LD block rather than in the markup. Within it a
+         double quote is always written as an escape, so the first one following the start of
+         the value is the one closing it, and a quote followed by a brace ends the object. -->
+    <extract>
+      <item begin="&quot;lyrics&quot;:{&quot;@type&quot;:&quot;CreativeWork&quot;,&quot;text&quot;:&quot;" end="&quot;}"/>
+      <item unescape="json"/>
+    </extract>
     <extract>
       <item tag="&lt;p id=&quot;songLyricsDiv&quot; ondragstart=&quot;return false;&quot; onselectstart=&quot;return false;&quot; oncontextmenu=&quot;return false;&quot; class=&quot;songLyricsV14&quot; style=&quot;font-size: 14px;z-index: 9999;position: absolute;left: -6000px;&quot;&gt;"/>
     </extract>
@@ -317,13 +216,6 @@
     <exclude>
       <item begin="&quot;id-" end="&quot;&gt;"/>
     </exclude>
-  </provider>
-  <provider name="teksty.org" title="{artist} - {title} - tekst" charset="utf-8" url="http://teksty.org/{artist},{title},tekst-piosenki">
-    <urlFormat replace=" _@,;&amp;\/&quot;'" with="-"/>
-    <urlFormat replace="." with=""/>
-    <extract>
-      <item begin="&lt;div class=&quot;songText&quot; id=&quot;songContent&quot;&gt;" end="&lt;/div&gt;"/>
-    </extract>
   </provider>
   <provider name="vagalume.com.br" charset="iso-8859-1" url="http://vagalume.com.br/{artist}/{title}.html">
     <urlFormat replace=" _@,;&amp;\/'&quot;." with="-"/>

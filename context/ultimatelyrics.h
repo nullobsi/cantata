@@ -25,6 +25,7 @@
 #define ULTIMATELYRICS_H
 
 #include <QObject>
+#include <QUrl>
 
 class UltimateLyricsProvider;
 
@@ -41,7 +42,7 @@ public:
 	void setEnabled(const QStringList& enabled);
 
 Q_SIGNALS:
-	void lyricsReady(int id, const QString& data);
+	void lyricsReady(int id, const QString& data, const QUrl& source);
 
 private:
 	UltimateLyricsProvider* providerByName(const QString& name) const;

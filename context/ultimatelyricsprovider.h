@@ -30,6 +30,7 @@
 #include <QObject>
 #include <QPair>
 #include <QStringList>
+#include <QUrl>
 
 class NetworkJob;
 
@@ -42,12 +43,34 @@ public:
 	UltimateLyricsProvider();
 	~UltimateLyricsProvider() override;
 
-	typedef QPair<QString, QString> RuleItem;
+	struct RuleItem {
+		enum Type {
+			XmlTag,    // <item tag="&lt;div class=&quot;x&quot;&gt;"/>
+			Range,     // <item begin="..." end="..."/>
+			Container, // <item container="attribute-name"/>
+			Unescape   // <item unescape="json"/>
+		};
+
+		RuleItem(Type t, const QString& b, const QString& e = QString())
+			: type(t), begin(b), end(e) {}
+
+		Type type;
+		QString begin;
+		QString end;
+	};
 	typedef QList<RuleItem> Rule;
 	typedef QPair<QString, QString> UrlFormat;
 
 	void setName(const QString& n) { name = n; }
 	void setUrl(const QString& u) { url = u; }
+	// Providers queried through an API endpoint set this to the human readable page for the song,
+	// so that we can link to something useful. When unset, the fetched url is used.
+	void setPageUrl(const QString& u) { pageUrl = u; }
+	// Set for providers whose output carries enough structure to be worth rendering as more than
+	// plain text. Anything that inspects what a provider returned is kept behind this, so that
+	// providers we cannot check stay untouched.
+	void setProvidesMarkup(bool m) { markup = m; }
+	bool providesMarkup() const { return markup; }
 	void setCharset(const QString& c) { charset = c; }
 	void setRelevance(int r) { relevance = r; }
 	void addUrlFormat(const QString& replace, const QString& with) { urlFormats << UrlFormat(replace, with); }
@@ -63,7 +86,7 @@ public:
 	void abort();
 
 Q_SIGNALS:
-	void lyricsReady(int id, const QString& data);
+	void lyricsReady(int id, const QString& data, const QUrl& source);
 
 private Q_SLOTS:
 	void wikiMediaSearchResponse();
@@ -73,15 +96,19 @@ private Q_SLOTS:
 private:
 	QString doTagReplace(QString str, const Song& song, bool doAll = true);
 	void doUrlReplace(const QString& tag, const QString& value, QString& u) const;
+	QUrl buildUrl(const QString& templateUrl, const QString& artist, const QString& title, const Song& metadata) const;
 
 private:
 	bool enabled;
 	QHash<NetworkJob*, int> requests;
 	QMap<int, Song> songs;
+	QMap<int, QUrl> sourceUrls;
 	QString name;
 	QString url;
+	QString pageUrl;
 	QString charset;
 	int relevance;
+	bool markup;
 	QList<UrlFormat> urlFormats;
 	QList<Rule> extractRules;
 	QList<Rule> excludeRules;

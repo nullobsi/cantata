@@ -454,6 +454,7 @@ target_sources(
         widgets/genrecombo.cpp
         widgets/volumecontrol.cpp
         context/lyricsettings.cpp
+        context/lyricsmarkup.cpp
         context/ultimatelyricsprovider.cpp
         context/ultimatelyrics.cpp
         context/lyricsdialog.cpp
