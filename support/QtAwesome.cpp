@@ -28,7 +28,7 @@
 #endif
 
 // Initializing namespaces need to happen outside a namespace
-static void qtawesome_init_resources()
+[[maybe_unused]] static void qtawesome_init_resources()
 {
 #ifdef BUNDLED_FONTAWESOME
 	Q_INIT_RESOURCE(QtAwesomeFree);
@@ -297,7 +297,7 @@ bool QtAwesome::initFontAwesome()
 	if (hasInit) return true;
 	bool success = true;
 
-	#ifdef BUNDLED_FONTAWESOME
+#ifdef BUNDLED_FONTAWESOME
 	// The macro below internally calls "qInitResources_QtAwesome()". this initializes
 	// the resource system. For a .pri project this isn't required, but when building and using a
 	// static library the resource need to initialized first.
@@ -333,11 +333,11 @@ bool QtAwesome::initFontAwesome()
 			fd.setFontFamily(loadedFontFamilies.at(0));
 		}
 	}
-	#else
+#else
 	for (QtAwesomeFontData& fd : _fontDetails) {
-		fd.setFontFamily(fd.fontFilename()); // yes, what a great semantic use of the variable...
+		fd.setFontFamily(fd.fontFilename());// yes, what a great semantic use of the variable...
 	}
-	#endif
+#endif
 
 	// intialize the brands icon map
 	addToNamedCodePoints(fa::fa_brands, faBrandsIconArray, sizeof(faBrandsIconArray) / sizeof(QtAwesomeNamedIcon));
@@ -564,7 +564,8 @@ QFont::Weight QtAwesomeFontData::fontWeight() const
 	return _fontWeight;
 }
 
-const QString& QtAwesomeFontData::fontStyle() const {
+const QString& QtAwesomeFontData::fontStyle() const
+{
 	return _fontStyle;
 }
 
@@ -586,7 +587,8 @@ void QtAwesomeFontData::setFontWeight(QFont::Weight weight)
 	_fontWeight = weight;
 }
 
-void QtAwesomeFontData::setFontStyle(const QString& style) {
+void QtAwesomeFontData::setFontStyle(const QString& style)
+{
 	_fontStyle = style;
 }
 
