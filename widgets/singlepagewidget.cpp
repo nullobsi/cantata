@@ -196,8 +196,7 @@ QList<QAction*> SinglePageWidget::createViewActions(QList<ItemView::Mode> modes)
 {
 	QList<QPair<QString, int>> vals;
 	for (ItemView::Mode m : modes) {
-		if (m != ItemView::Mode_Categorized)
-			vals.append(MenuItem(viewTypeString(m), m));
+		vals.append(MenuItem(viewTypeString(m), m));
 	}
 	return createActions(vals, view->viewMode(), this, SLOT(viewModeSelected()));
 }
