@@ -62,6 +62,7 @@ const QLatin1String SongView::constLyricsDir("lyrics/");
 const QLatin1String SongView::constExtension(".lyrics");
 const QLatin1String SongView::constCacheDir("tracks/");
 const QLatin1String SongView::constInfoExt(".html.gz");
+const QChar constMBIDTagSeparator(',');
 
 static QString infoCacheFileName(const Song& song, const QString& lang, bool createDir)
 {
@@ -469,10 +470,25 @@ static QString createRow(const QString& key, const QString& value, bool htmlEsca
 			: QString("<tr><td>%1:&nbsp;</td><td>%2</td></tr>").arg(key).arg(fixNewLine(htmlEscape ? value.toHtmlEscaped() : value));
 }
 
+static QString createMusicbrainzIdRow(const QString& key, const QString& idType, const QString& value)
+{
+	auto ids = value.split(constMBIDTagSeparator);
+	QStringList linkTags;
+	for (auto id : ids) {
+		linkTags.append(QString("<a href=\"https://musicbrainz.org/%1/%2\">%2</a>").arg(idType, id.trimmed()));
+	}
+	return createRow(key, linkTags.join(constMBIDTagSeparator + ' '), false);
+}
+
 struct MapEntry {
 	MapEntry(int v = 0, const QString& s = QString()) : val(v), str(s) {}
 	int val;
 	QString str;
+};
+
+struct MusicbrainzIdMapEntry : MapEntry {
+	MusicbrainzIdMapEntry(int v = 0, const QString& s = QString(), const QString& id = QString()) : MapEntry(v, s), idType(id) { }
+	QString idType;
 };
 
 #ifdef TagLib_FOUND
@@ -508,6 +524,7 @@ void SongView::loadMetadata()
 		if (!songFile.isEmpty()) {
 			static QMap<QString, MapEntry> tagMap;
 			static QMap<QString, MapEntry> tagTimeMap;
+			static QMap<QString, MusicbrainzIdMapEntry> tagMusicbrainzIdMap;
 			static const QString constTitle = QLatin1String("TITLE");
 			static const QString constPerformer = QLatin1String("PERFORMER:");
 			static const QString constAudio = QLatin1String("X-AUDIO:");
@@ -545,6 +562,15 @@ void SongView::loadMetadata()
 				tagMap.insert(constAudio + QLatin1String("CHANNELS"), MapEntry(pos++, tr("Channels")));
 
 				tagTimeMap.insert(QLatin1String("TAGGING TIME"), MapEntry(pos++, tr("Tagging time")));
+
+				tagMusicbrainzIdMap.insert(QLatin1String("MUSICBRAINZ_ARTISTID"), MusicbrainzIdMapEntry(pos++, tr("MusicBrainz artist ID"), "artist"));
+				tagMusicbrainzIdMap.insert(QLatin1String("MUSICBRAINZ_ALBUMARTISTID"), MusicbrainzIdMapEntry(pos++, tr("MusicBrainz album artist ID"), "artist"));
+				tagMusicbrainzIdMap.insert(QLatin1String("MUSICBRAINZ_RELEASEGROUPID"), MusicbrainzIdMapEntry(pos++, tr("MusicBrainz releasegroup ID"), "release-group"));
+				tagMusicbrainzIdMap.insert(QLatin1String("MUSICBRAINZ_ALBUMID"), MusicbrainzIdMapEntry(pos++, tr("MusicBrainz album ID"), "release"));
+				tagMusicbrainzIdMap.insert(QLatin1String("MUSICBRAINZ_DISCID"), MusicbrainzIdMapEntry(pos++, tr("MusicBrainz disc ID"), "cdtoc"));
+				tagMusicbrainzIdMap.insert(QLatin1String("MUSICBRAINZ_TRACKID"), MusicbrainzIdMapEntry(pos++, tr("MusicBrainz track ID"), "recording"));
+				tagMusicbrainzIdMap.insert(QLatin1String("MUSICBRAINZ_RELEASETRACKID"), MusicbrainzIdMapEntry(pos++, tr("MusicBrainz releasetrack ID"), "track"));
+				tagMusicbrainzIdMap.insert(QLatin1String("MUSICBRAINZ_WORKID"), MusicbrainzIdMapEntry(pos++, tr("MusicBrainz work ID"), "work"));
 			}
 
 			QMap<QString, QString> allTags = Tags::readAll(songFile);
@@ -570,6 +596,9 @@ void SongView::loadMetadata()
 					}
 					else if (it.key().startsWith(constPerformer)) {
 						tags.insert(3, createRow(tr("Performer (%1)").arg(clean(it.key().mid(constPerformer.length()))), it.value()));
+					}
+					else if (tagMusicbrainzIdMap.contains(it.key())) {
+						tags.insert(tagMusicbrainzIdMap[it.key()].val, createMusicbrainzIdRow(tagMusicbrainzIdMap[it.key()].str, tagMusicbrainzIdMap[it.key()].idType, it.value()));
 					}
 					else {
 						tags.insert(tagMap.count() + tagTimeMap.count(), createRow(clean(it.key()), it.value()));
