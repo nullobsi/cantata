@@ -1163,9 +1163,9 @@ sub loadConfig() {
 
 sub readRulesFile() {
     my @result=();
-    my $fileName=uri_unescape(shift);
-    open(my $fileHandle, $fileName);
-    if (tell($fileHandle) != -1) {
+    # Note: the name must not be URI-unescaped, or "%2F" could be used to escape $filesDir
+    my $fileName=shift;
+    if (open(my $fileHandle, '<', $fileName)) {
         my @lines = <$fileHandle>; # Read into an array...
         close($fileHandle);
         foreach my $line (@lines) {
@@ -1244,8 +1244,7 @@ sub saveRulesToFile() {
     my $rulesName=$name;
     $rulesName="${filesDir}/${rulesName}.rules";
 
-    open (my $fileHandle, '>'.$rulesName);
-    if (tell($fileHandle) != -1) {
+    if (open(my $fileHandle, '>', $rulesName)) {
         print $fileHandle $content;
         close($fileHandle);
         $currentStatusTime = time;
@@ -1307,6 +1306,7 @@ sub setActiveRules() {
     my $origName=shift;
     my $start=shift;
     my $name=&decodeString($origName);
+    $name =~ s/\///g;
     if ($name eq "") {
         &sendMessage($req, "1", $clientId);
         return;
@@ -1335,8 +1335,8 @@ sub setActiveRules() {
             &sendMessage($req, "7:${origName}", $clientId);
             return;
         }
-        system("ln -s \"${rulesName}\" \"${activeFile}\"");
-        if (0!=$?) {
+        # Create the link directly - never pass client supplied names to a shell
+        if (!symlink($rulesName, $activeFile)) {
             &sendMessage($req, "8:${origName}", $clientId);
             return;
         }
@@ -1414,6 +1414,16 @@ sub sendCommandViaMpd() {
     sleep(1);
 }
 
+sub htmlEscape() {
+    my $str=shift;
+    $str =~ s/&/&amp;/g;
+    $str =~ s/</&lt;/g;
+    $str =~ s/>/&gt;/g;
+    $str =~ s/\"/&quot;/g;
+    $str =~ s/'/&#39;/g;
+    return $str;
+}
+
 sub buildControlPage() {
     my $body="<html><head><title>Dynamic Playlists</title></head><body><h2>Dynamic Playlists</h2>"
              . "<p><i>Click on a playlist name to load</i></p>";
@@ -1433,8 +1443,8 @@ sub buildControlPage() {
             if ($rule eq $active) {
                 $body = $body . "<b>";
             }
-            $body = $body . "<form name=\"ruleForm". ${num} ."\" method=\"post\" action=\"/setActive?name=" . $rule . "&start=1\">"
-                            . "<a href=\"javascript: loadRule" .${num} ."()\">" .$rule ."</a></form>"
+            $body = $body . "<form name=\"ruleForm". ${num} ."\" method=\"post\" action=\"/setActive?name=" . &htmlEscape(uri_escape($rule)) . "&amp;start=1\">"
+                            . "<a href=\"javascript: loadRule" .${num} ."()\">" .&htmlEscape($rule) ."</a></form>"
                             . "<script type=\"text/javascript\">function loadRule" .${num} ."() {  document.ruleForm". ${num} .".submit(); }</script>";
             if ($rule eq $active) {
                 $body = $body . "</b>";
@@ -1542,7 +1552,7 @@ sub httpServer() {
             &writeToClient($client, "HTTP/1.0 201 Created", 1);
             # Reload start page :-)
             $response =  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
-                        . "<html><head><meta http-equiv=\"REFRESH\" content=\"0;url=http://" . $request{host} . "\"></head></body></html>";
+                        . "<html><head><meta http-equiv=\"REFRESH\" content=\"0;url=http://" . &htmlEscape($request{host}) . "\"></head></body></html>";
             &writeToClient($client, "Content-type: text/html", 1);
             &writeToClient($client, Socket::CRLF);
             &writeToClient($client, $response, 1);
