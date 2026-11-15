@@ -311,6 +311,14 @@ sub checkRulesChanged() {
     $lastIncludeUnrated=$includeUnrated;
 }
 
+# Quote a value for an MPD command, escaping backslashes and double quotes
+sub mpdQuote() {
+    my $str=shift;
+    $str =~ s/\\/\\\\/g;
+    $str =~ s/\"/\\\"/g;
+    return "\"${str}\"";
+}
+
 # Add a rule to the list of rules that will be used to query MPD
 sub saveRule() {
     my $rule=$_[0];
@@ -343,12 +351,12 @@ sub saveRule() {
             if (scalar(@dates)>0) { # Create rule for each date (as MPDs search does not take ranges)
                 my $baseRule=$rule;
                 foreach my $date (@dates) {
-                    $type[$ruleNum]="${ruleMatch} ${baseRule} Date \"${date}\"";
+                    $type[$ruleNum]="${ruleMatch} ${baseRule} Date " . &mpdQuote($date);
                     if ($artist ne "") {
-                        $type[$ruleNum]=$type[$ruleNum]." Artist \"${artist}\"";
+                        $type[$ruleNum]=$type[$ruleNum]." Artist " . &mpdQuote($artist);
                     }
                     if ($genre ne "") {
-                        $type[$ruleNum]=$type[$ruleNum]." Genre \"${genre}\"";
+                        $type[$ruleNum]=$type[$ruleNum]." Genre " . &mpdQuote($genre);
                     }
                     if ($isInclude && $maxAge>0) {
                         $type[$ruleNum]=$type[$ruleNum]." modified-since ${maxAge}";
@@ -358,10 +366,10 @@ sub saveRule() {
             } elsif ($artist ne "" || $genre ne "" || $rule ne "" || ($isInclude && $maxAge>0)) {
                 $type[$ruleNum]="${ruleMatch} $rule";
                 if ($artist ne "") {
-                    $type[$ruleNum]=$type[$ruleNum]." Artist \"${artist}\"";
+                    $type[$ruleNum]=$type[$ruleNum]." Artist " . &mpdQuote($artist);
                 }
                 if ($genre ne "") {
-                    $type[$ruleNum]=$type[$ruleNum]." Genre \"${genre}\"";
+                    $type[$ruleNum]=$type[$ruleNum]." Genre " . &mpdQuote($genre);
                 }
                 if ($maxAge>0) {
                     $type[$ruleNum]=$type[$ruleNum]." modified-since ${maxAge}";
@@ -545,7 +553,7 @@ sub readRules() {
                                 $genres[$pos]="XXXXXXXX";
                             }
                         } elsif ($key eq "Artist" || $key eq "Album" || $key eq "AlbumArtist" || $key eq "Composer" || $key eq "Comment" || $key eq "Title" || $key eq "Genre"  || $key eq "File") {
-                            $currentRule="${currentRule} ${key} \"${val}\"";
+                            $currentRule="${currentRule} ${key} " . &mpdQuote($val);
                         } elsif ($key eq "SimilarArtists") {
                             &querySimilarArtists($val); # Perform a last.fm query to find similar artists
                             @artistSearchResults; # Save results of query
@@ -790,7 +798,7 @@ sub getSongs() {
             my $tag='Artist';
             my @entries = &getEntries("list ${tag}", $tag);
             foreach my $entry (@entries) {
-                my @songs = &getEntries("find ${tag} \"${entry}\"", 'file');
+                my @songs = &getEntries("find ${tag} " . &mpdQuote($entry), 'file');
                 foreach my $song (@songs) {
                     if (! $excludeSongSet{$song}) {
                         push(@mpdSongs, $song);
