@@ -1279,7 +1279,10 @@ sub deleteRules() {
     }
     $currentStatusTime = time;
     if ($name eq $active) {
-        &control("stop");
+        # The active rules are gone - leave dynamic mode (sendStatus below informs clients).
+        # Note: not &control(), which would also send this client a reply for a "control" request.
+        $dynamicIsActive=0;
+        $currentStatus="IDLE";
     }
     &sendMessage($req, "0:${origName}", $clientId);
     &sendStatus();
