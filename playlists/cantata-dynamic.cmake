@@ -885,7 +885,9 @@ sub populatePlayQueue() {
             $socketData=&sendCommand("status");
         } elsif (1==$isServerMode) {
             while (0==$dynamicIsActive) {
-                &waitForEvent();
+                if (!&waitForEvent()) {
+                    sleep 2; # MPD is not reachable - don't spin
+                }
             }
         }
         
@@ -992,10 +994,10 @@ sub populatePlayQueue() {
                         exit(0);
                     }
                 }
-            } elsif (0==$isServerMode) {
+            } else {
                 sleep 2;
             }
-        } elsif (0==$isServerMode) {
+        } else {
             sleep 2;
         }
     }
@@ -1161,11 +1163,17 @@ sub loadConfig() {
     }
 }
 
+# Server mode file names are byte strings, whereas names exchanged with clients
+# are (decoded) character strings.
+sub rulesPath() {
+    return "${filesDir}/" . encode_utf8(shift) . ".rules";
+}
+
 sub readRulesFile() {
     my @result=();
     # Note: the name must not be URI-unescaped, or "%2F" could be used to escape $filesDir
     my $fileName=shift;
-    if (open(my $fileHandle, '<', $fileName)) {
+    if (open(my $fileHandle, '<:encoding(UTF-8)', $fileName)) {
         my @lines = <$fileHandle>; # Read into an array...
         close($fileHandle);
         foreach my $line (@lines) {
@@ -1187,7 +1195,7 @@ sub listAllRules() {
     opendir(D, "$filesDir");
     while (my $f = readdir(D)) {
         if ($f=~m/.rules$/) {
-            push(@result, "FILENAME:${f}\n");
+            push(@result, "FILENAME:" . decode_utf8($f) . "\n");
             if ($showContents eq "" || $showContents>0) {
                 push(@result, &readRulesFile($filesDir."/".$f));
             }
@@ -1205,7 +1213,7 @@ sub listAllRules() {
 sub determineActiveRules() {
     local $fileName="";
     if (-f $activeFile && -l $activeFile) {
-        $fileName=basename abs_path($activeFile);
+        $fileName=decode_utf8(basename abs_path($activeFile));
         $fileName =~ s/.rules//g;
     }
     return $fileName;
@@ -1218,8 +1226,7 @@ sub getRulesContents() {
     my $name=&decodeString($origName);
     $name =~ s/\///g;
     my $active=&determineActiveRules();
-    my $rulesName=$name;
-    $rulesName="${filesDir}/${rulesName}.rules";
+    my $rulesName=&rulesPath($name);
     my @result=&readRulesFile($rulesName);
     my $response=&encodeString(join('', @result));
     &sendMessage($req, $response, $clientId);
@@ -1241,10 +1248,9 @@ sub saveRulesToFile() {
     }
     my $content=&decodeString(shift);
     # TODO: Parse content!!!
-    my $rulesName=$name;
-    $rulesName="${filesDir}/${rulesName}.rules";
+    my $rulesName=&rulesPath($name);
 
-    if (open(my $fileHandle, '>', $rulesName)) {
+    if (open(my $fileHandle, '>:encoding(UTF-8)', $rulesName)) {
         print $fileHandle $content;
         close($fileHandle);
         $currentStatusTime = time;
@@ -1262,8 +1268,7 @@ sub deleteRules() {
     my $name=&decodeString($origName);
     $name =~ s/\///g;
     my $active=&determineActiveRules();
-    my $rulesName=$name;
-    $rulesName="${filesDir}/${rulesName}.rules";
+    my $rulesName=&rulesPath($name);
     if (!unlink($rulesName)) {
         &sendMessage($req, "4:${origName}", $clientId);
         return;
@@ -1324,7 +1329,7 @@ sub setActiveRules() {
         return;
     }
 
-    $rulesName="${filesDir}/${rulesName}.rules";
+    $rulesName=&rulesPath($rulesName);
     if (-f $rulesName) {
         if (-l $activeFile) {
             if (!unlink($activeFile)) {
@@ -1367,7 +1372,7 @@ sub sendStatus() {
 
 sub handleClientMessage() {
     $sock->send("readmessages\n");
-    my $sockData=&readReply($sock);
+    my $sockData=decode_utf8(&readReply($sock) // '');
     my @lines = split("\n", $sockData);
     foreach my $line (@lines) {
         if ($line=~ m/^(message\:)/) {
@@ -1443,7 +1448,7 @@ sub buildControlPage() {
             if ($rule eq $active) {
                 $body = $body . "<b>";
             }
-            $body = $body . "<form name=\"ruleForm". ${num} ."\" method=\"post\" action=\"/setActive?name=" . &htmlEscape(uri_escape($rule)) . "&amp;start=1\">"
+            $body = $body . "<form name=\"ruleForm". ${num} ."\" method=\"post\" action=\"/setActive?name=" . &htmlEscape(uri_escape_utf8($rule)) . "&amp;start=1\">"
                             . "<a href=\"javascript: loadRule" .${num} ."()\">" .&htmlEscape($rule) ."</a></form>"
                             . "<script type=\"text/javascript\">function loadRule" .${num} ."() {  document.ruleForm". ${num} .".submit(); }</script>";
             if ($rule eq $active) {
@@ -1466,9 +1471,9 @@ sub writeToClient() {
     my $addCrlf=shift;
     if ($client->connected()) {
         if (1==$addCrlf) {
-            print $client $message, Socket::CRLF;
+            print $client encode_utf8($message), Socket::CRLF;
         } else {
-            print $client $message;
+            print $client encode_utf8($message);
         }
     }
 }
@@ -1497,7 +1502,7 @@ sub httpServer() {
                     s/^\s+//;
                     s/\s+$//;
                 }
-                $request{lc $type} = $val;
+                $request{lc $type} = decode_utf8($val);
             } # POST data
             elsif (/^$/) {
                 read($client, $request{CONTENT}, $request{'content-length'})
@@ -1521,7 +1526,7 @@ sub httpServer() {
 #             print "${request{METHOD}} URL:${request{URL}} QUERY:${request{QUERY}}\n";
         if ($request{METHOD} eq 'GET') {
             if ($request{URL} eq '/') {
-                $responseType="text/html";
+                $responseType="text/html; charset=utf-8";
                 $response = &buildControlPage();
             } else {
                 $response="ERROR: Invalid URL";
@@ -1529,14 +1534,14 @@ sub httpServer() {
         } elsif ($request{METHOD} eq 'POST') {
             if ($request{URL} eq '/setActive') {
                 my @args=split("&", $request{QUERY});
-                &sendCommandViaMpd("setActive", uri_unescape($queryItems{name}));
+                &sendCommandViaMpd("setActive", decode_utf8(uri_unescape($queryItems{name})));
                 $response = &buildControlPage();
             } elsif ($request{URL} eq '/stop') {
                 &sendCommandViaMpd("control", "stop");
                 $response = &buildControlPage();
             }
         } else {
-            $responseType="text/html";
+            $responseType="text/html; charset=utf-8";
             $response = &buildControlPage();
         }
 
@@ -1553,7 +1558,7 @@ sub httpServer() {
             # Reload start page :-)
             $response =  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
                         . "<html><head><meta http-equiv=\"REFRESH\" content=\"0;url=http://" . &htmlEscape($request{host}) . "\"></head></body></html>";
-            &writeToClient($client, "Content-type: text/html", 1);
+            &writeToClient($client, "Content-type: text/html; charset=utf-8", 1);
             &writeToClient($client, Socket::CRLF);
             &writeToClient($client, $response, 1);
         } else {
