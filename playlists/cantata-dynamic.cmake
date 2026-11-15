@@ -859,6 +859,7 @@ sub canAdd() {
     if ($pqLimit != $playQueueHistoryLimit) {
         $playQueueHistoryLimit=$pqLimit;
         @playQueueHistory=();
+        $playQueueHistoryPos=0;
         return 1;
     }
 
@@ -942,7 +943,7 @@ sub populatePlayQueue() {
                                 $mpdDbUpdated=1;
                             }
                         }
-                        break;
+                        last;
                     }
                 }
             }
