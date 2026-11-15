@@ -226,7 +226,6 @@ sub lockFile() {
     return $fileName;
 }
 
-$lastArtistSearch="";
 @artistSearchResults=();
 
 $api_key="5a854b839b10f8d46e630e8287c2299b";
@@ -235,21 +234,23 @@ $api_key="5a854b839b10f8d46e630e8287c2299b";
 sub querySimilarArtists() {
     # last.fm expects UTF-8; uri_escape would send Latin-1 (and dies on characters above U+00FF)
     my $artist=uri_escape_utf8(shift);
-    if ($artist ne $lastArtistSearch) {
-        @artistSearchResults=();
-        my $xml=`wget "https://ws.audioscrobbler.com/2.0/?method=artist.getSimilar&api_key=${api_key}&artist=${artist}&format=xml&limit=50" -O -`;
-        $xml=decode_utf8($xml // '');
-        # Parse every <artist><name> - the first one shares its line with <similarartists ...>
-        while ($xml =~ m{<artist><name>(.*?)</name>}g) {
-            my $name=$1;
-            $name =~ s/&lt;/</g;
-            $name =~ s/&gt;/>/g;
-            $name =~ s/&quot;/"/g;
-            $name =~ s/&apos;/'/g;
-            $name =~ s/&#39;/'/g;
-            $name =~ s/&amp;/&/g;
-            push(@artistSearchResults, $name);
-        }
+    # Always start afresh - an empty artist must not reuse the previous artist's results
+    @artistSearchResults=();
+    if ($artist eq "") {
+        return;
+    }
+    my $xml=`wget "https://ws.audioscrobbler.com/2.0/?method=artist.getSimilar&api_key=${api_key}&artist=${artist}&format=xml&limit=50" -O -`;
+    $xml=decode_utf8($xml // '');
+    # Parse every <artist><name> - the first one shares its line with <similarartists ...>
+    while ($xml =~ m{<artist><name>(.*?)</name>}g) {
+        my $name=$1;
+        $name =~ s/&lt;/</g;
+        $name =~ s/&gt;/>/g;
+        $name =~ s/&quot;/"/g;
+        $name =~ s/&apos;/'/g;
+        $name =~ s/&#39;/'/g;
+        $name =~ s/&amp;/&/g;
+        push(@artistSearchResults, $name);
     }
 }
 
