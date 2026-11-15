@@ -433,6 +433,7 @@ sub readRules() {
             my $ruleMatch="find";
             my @dates=();
             my @similarArtists=();
+            my @genres=(); # per read - a global would carry wildcard genres into the next rules file
             my $isInclude=1;
             my $currentRule="";
             my $maxAge=0;
