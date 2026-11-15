@@ -751,28 +751,24 @@ sub getSongs() {
         my @excludeSongs=();
         if (scalar(@excludeRules)>0) {
             # Get list of songs that should be removed from the song list...
-            my $mpdSong=0;
             foreach my $rule (@excludeRules) {
                 my @songs = &getEntries($rule, 'file');
-                foreach my $song (@songs) {
-                    $excludeSongs[$mpdSong]=$song;
-                    $mpdSong++;
-                }
+                push(@excludeSongs, @songs);
                 @excludeSongs=uniq(@excludeSongs);
             }
         }
 
         my %excludeSongSet = map { $_ => 1 } @excludeSongs;
 
+        # Note: append with push - uniq() shrinks the array, so a separate index would run past
+        # its end and leave undef gaps, which uniq() turns into an empty song ("add" of the whole library)
         @mpdSongs=();
-        my $mpdSong=0;
         if (scalar(@includeRules)>0) {
             foreach my $rule (@includeRules) {
                 my @songs = &getEntries($rule, 'file');
                 foreach my $song (@songs) {
                     if (! $excludeSongSet{$song}) {
-                        $mpdSongs[$mpdSong]=$song;
-                        $mpdSong++;
+                        push(@mpdSongs, $song);
                     }
                 }
                 @mpdSongs=uniq(@mpdSongs);
@@ -782,8 +778,7 @@ sub getSongs() {
             my @songs = &getRatedSongs();
             foreach my $song (@songs) {
                 if (! $excludeSongSet{$song}) {
-                    $mpdSongs[$mpdSong]=$song;
-                    $mpdSong++;
+                    push(@mpdSongs, $song);
                 }
             }
         } else {
@@ -795,8 +790,7 @@ sub getSongs() {
                 my @songs = &getEntries("find ${tag} \"${entry}\"", 'file');
                 foreach my $song (@songs) {
                     if (! $excludeSongSet{$song}) {
-                        $mpdSongs[$mpdSong]=$song;
-                        $mpdSong++;
+                        push(@mpdSongs, $song);
                     }
                 }
             }
