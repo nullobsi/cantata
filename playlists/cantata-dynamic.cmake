@@ -1487,7 +1487,7 @@ sub writeToClient() {
 }
 
 sub httpServer() {
-    my $server = new IO::Socket::IP(Proto => 'tcp', LocalPort => $httpPort, Listen => SOMAXCONN, Reuse => 1);
+    my $server = new IO::Socket::IP(Proto => 'tcp', LocalPort => $httpPort, Listen => SOMAXCONN, ReuseAddr => 1);
     $server or die "ERROR: Unable to create HTTP socket (${httpPort}): $!";
 
     print "Starting HTTP server on ${httpPort}\n";
