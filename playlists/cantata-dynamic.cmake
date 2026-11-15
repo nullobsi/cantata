@@ -28,7 +28,11 @@ use File::Basename;
 use Cwd 'abs_path';
 use Socket;
 use IO::Socket;
-use threads;
+# ithreads are only needed for the optional server-mode HTTP control page
+# (httpPort>0). Load them if available; this must happen at compile time,
+# before threads::shared, so that shared variables work when threads exist.
+our $haveThreads;
+BEGIN { $haveThreads = eval { require threads; threads->import(); 1 } ? 1 : 0; }
 use threads::shared;
 use URI::Escape;
 use Encode;
@@ -1131,6 +1135,11 @@ sub loadConfig() {
                 }
             }
         }
+    }
+
+    if ($httpPort>0 && !$haveThreads) {
+        print STDERR "WARNING: This perl was built without ithreads; ignoring httpPort=${httpPort}, HTTP control page disabled\n";
+        $httpPort=0;
     }
 
     # Create folders, if these do not already exist...
