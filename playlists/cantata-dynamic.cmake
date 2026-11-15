@@ -533,7 +533,9 @@ sub readRules() {
                             my @mpdGenres = &getEntries("list genre", 'Genre');
                             my $pos=0;
                             foreach my $genre (@mpdGenres) {
-                                if ($genre ne "" && $genre =~/$val/i) {
+                                # Case-insensitive substring match, as the rule editor describes ("rock*" matches
+                                # "Hard Rock"); an empty value ("*") matches every genre. Never treat it as a regex.
+                                if ($genre ne "" && ($val eq "" || $genre =~ /\Q$val\E/i)) {
                                     $genres[$pos]=$genre;
                                     $pos++;
                                 }
