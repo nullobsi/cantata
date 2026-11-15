@@ -1530,7 +1530,7 @@ sub httpServer() {
         }
         local $response="";
         local $responseType="text/plain";
-        $queryItems{statusTime}=0;
+        my %queryItems=(statusTime => 0); # per request - don't reuse a previous request's parameters
 
         if ($request{URL} =~ /(.*)\?(.*)/) {
             $request{URL} = $1;
