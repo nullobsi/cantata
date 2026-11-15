@@ -231,17 +231,22 @@ $api_key="5a854b839b10f8d46e630e8287c2299b";
 
 # Query LastFM for artists similar to supplied artist
 sub querySimilarArtists() {
-    my $artist=uri_escape(shift);
+    # last.fm expects UTF-8; uri_escape would send Latin-1 (and dies on characters above U+00FF)
+    my $artist=uri_escape_utf8(shift);
     if ($artist ne $lastArtistSearch) {
         @artistSearchResults=();
-        @artists=`wget "https://ws.audioscrobbler.com/2.0/?method=artist.getSimilar&api_key=${api_key}&artist=${artist}&format=xml&limit=50" -O - | grep "<artist><name>" | grep -v "similarartists artist"`;
-        foreach my $artist (@artists) {
-            $artist =~ s/<artist><name>//g;
-            $artist =~ s/<\/name>//g;
-            $artist =~ s/&amp;/&/g;
-            $artist =~ s/\n//g;
-            $artistSearchResults[$artistNum]=$artist;
-            $artistNum++;
+        my $xml=`wget "https://ws.audioscrobbler.com/2.0/?method=artist.getSimilar&api_key=${api_key}&artist=${artist}&format=xml&limit=50" -O -`;
+        $xml=decode_utf8($xml // '');
+        # Parse every <artist><name> - the first one shares its line with <similarartists ...>
+        while ($xml =~ m{<artist><name>(.*?)</name>}g) {
+            my $name=$1;
+            $name =~ s/&lt;/</g;
+            $name =~ s/&gt;/>/g;
+            $name =~ s/&quot;/"/g;
+            $name =~ s/&apos;/'/g;
+            $name =~ s/&#39;/'/g;
+            $name =~ s/&amp;/&/g;
+            push(@artistSearchResults, $name);
         }
     }
 }
@@ -549,7 +554,7 @@ sub readRules() {
                                 # Now check which last.fm artists MPD actually has...
                                 my $pos=0;
                                 foreach my $artist (@artistSearchResults) {
-                                    my @match = grep(/^$artist/i, @mpdArtists);
+                                    my @match = grep(/^\Q$artist\E/i, @mpdArtists);
                                     if (scalar(@match)>0) {
                                         $similarArtists[$pos]=$artist;
                                         $pos++;
