@@ -266,6 +266,7 @@ $ratingTo=0;
 $lastRatingFrom=0;
 $lastRatingTo=0;
 $includeUnrated=0;
+$lastIncludeUnrated=0;
 
 $minDuration=0;
 $maxDuration=0;
@@ -281,7 +282,9 @@ sub checkRulesChanged() {
         $rulesChanged=1;
     } elsif ($lastMinDuration!=$minDuration || $lastMaxDuration!=$maxDuration) {
         $rulesChanged=1;
-}   elsif ( scalar(@lastIncludeRules)!=scalar(@includeRules) ||
+    } elsif (($lastIncludeUnrated ? 1 : 0) != ($includeUnrated ? 1 : 0)) {
+        $rulesChanged=1;
+    } elsif ( scalar(@lastIncludeRules)!=scalar(@includeRules) ||
               scalar(@lastExcludeRules)!=scalar(@excludeRules)) { # Different number of rules
         $rulesChanged=1;
     } else { # Same number of rules, so need to check if the rules themselves have changed or not...
@@ -299,6 +302,11 @@ sub checkRulesChanged() {
     }
     @lastIncludeRules=@includeRules;
     @lastExcludeRules=@excludeRules;
+    $lastRatingFrom=$ratingFrom;
+    $lastRatingTo=$ratingTo;
+    $lastMinDuration=$minDuration;
+    $lastMaxDuration=$maxDuration;
+    $lastIncludeUnrated=$includeUnrated;
 }
 
 # Add a rule to the list of rules that will be used to query MPD
