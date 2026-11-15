@@ -82,15 +82,17 @@ sub readReply() {
     my $socketData;
     while ($sock->connected()) {
         $sock->recv($data, 1024);
-        if (! $data) {
+        if (!defined($data) || $data eq '') {
             return '';
         }
         $socketData="${socketData}${data}";
         $data="";
 
-        if (($socketData=~ m/(OK)$/) || ($socketData=~ m/^(OK)/)) {
+        # A reply is complete once its last line is "OK" (or the "OK MPD" greeting), or an "ACK"
+        # error. Only whole lines count - tag values may contain "OK" too (e.g. "Artist: KOTOKO").
+        if ($socketData=~ m/(?:\A|\n)OK(?: MPD [^\n]*)?\n\z/) {
             return $socketData;
-        } elsif ($socketData=~ m/^(ACK)/) {
+        } elsif ($socketData=~ m/(?:\A|\n)ACK [^\n]*\n\z/) {
             return '';
         }
     }
