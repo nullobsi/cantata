@@ -108,6 +108,27 @@ sub readReply() {
     return undef;
 }
 
+# Read the first line MPD sends on connecting ("OK MPD <version>"). Only that line: other
+# servers never send an "OK"/"ACK" line, and reading a full reply would wait forever.
+sub readGreeting() {
+    my $line='';
+    while ($sock->connected()) {
+        my $data;
+        my $rv = $sock->recv($data, 1024);
+        if (!defined($data) || $data eq '') {
+            if (!defined($rv) && $!{EINTR}) {
+                next;
+            }
+            return '';
+        }
+        $line="${line}${data}";
+        if ($line =~ m/\n/) {
+            return $line;
+        }
+    }
+    return '';
+}
+
 # Connect to MPD
 sub connectToMpd() {
     if ($testMode==1) { print "Connecting to MPD ${mpdHost}:${mpdPort}\n"; }
@@ -120,7 +141,7 @@ sub connectToMpd() {
         $connDetails="${mpdHost}:${mpdPort}";
     }
     if ($sock && $sock->connected()) {
-        if (&readReply($sock)) {
+        if (&readGreeting() =~ m/^OK MPD /) {
             if ($mpdPasswd) {
                 if ($testMode==1) { print "Send password\n"; }
                 $sock->send("password ${mpdPasswd} \n");
