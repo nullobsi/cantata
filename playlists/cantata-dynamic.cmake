@@ -81,9 +81,16 @@ sub readReply() {
     local $data;
     my $socketData;
     while ($sock->connected()) {
-        $sock->recv($data, 1024);
+        my $rv = $sock->recv($data, 1024);
         if (!defined($data) || $data eq '') {
-            return '';
+            if (!defined($rv) && $!{EINTR}) {
+                next;
+            }
+            # The connection was closed (or failed): there is no reply. Return undef, not an
+            # empty reply - '' means an empty result (or ACK), and would e.g. read as an empty
+            # play queue. Close the socket so that the next command reconnects.
+            eval { close $sock; };
+            return undef;
         }
         $socketData="${socketData}${data}";
         $data="";
@@ -96,6 +103,9 @@ sub readReply() {
             return '';
         }
     }
+    # Not connected (e.g. reset when the command was sent): no reply. Without this, Perl would
+    # return the loop condition's false value ('') - an empty reply.
+    return undef;
 }
 
 # Connect to MPD
