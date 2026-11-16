@@ -1011,7 +1011,10 @@ MainWindow::~MainWindow()
 	}
 	Settings::self()->save();
 	disconnect(MPDConnection::self(), nullptr, nullptr, nullptr);
-	if (Utils::isFlatpak()) {
+	// Stop our local dynamic playlist helper, unless the user wants it to keep running (it is always
+	// stopped for Flatpak). A server-side (remote) dynamizer is shared with other clients, so it is
+	// left alone - "Stop playback on exit" below still stops it.
+	if (Utils::isFlatpak() || (!Settings::self()->keepDynamicOnExit() && !DynamicPlaylists::self()->isRemote())) {
 		DynamicPlaylists::self()->stop();
 	}
 	if (Settings::self()->stopOnExit()) {
