@@ -117,6 +117,7 @@ sub connectToMpd() {
                 if (! &readReply($sock)) {
                     print "ERROR: Invalid password\n";
                     eval { close $sock; };undef $sock;
+                    &passwordRejected();
                 }
             }
             if ($isServerMode==1) {
@@ -131,6 +132,20 @@ sub connectToMpd() {
         print "ERROR: Failed to connect to MPD (${connDetails})\n";
     }
     return $sock;
+}
+
+# A rejected password can never succeed, so stop (exit status 1) instead of retrying. Clean up
+# as a stop request would: daemons remove their lock/pid file, and Cantata is told.
+sub passwordRejected() {
+    if (0==$testMode) {
+        if (0==$isServerMode) {
+            unlink(&lockFile());
+            &sendMessage("dynamicStatus", "stopped");
+        } else {
+            unlink($pidFile);
+        }
+    }
+    exit(1);
 }
 
 sub sendCommand() {
