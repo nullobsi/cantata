@@ -62,6 +62,19 @@ PlaybackSettings::PlaybackSettings(QWidget* p)
 #if defined Q_OS_WIN || (defined Q_OS_MAC && !defined IOKIT_FOUND)
 	REMOVE(inhibitSuspend)
 #endif
+#ifdef Q_OS_WIN
+	// No dynamic playlist helper on Windows
+	REMOVE(keepDynamicOnExit)
+#else
+	if (Utils::isFlatpak()) {
+		// The helper is always stopped on exit when running as a Flatpak
+		REMOVE(keepDynamicOnExit)
+	}
+	else {
+		// "Stop playback on exit" also stops the helper, so "keep running" would have no effect
+		connect(stopOnExit, &QCheckBox::toggled, keepDynamicOnExit, [this](bool on) { keepDynamicOnExit->setEnabled(!on); });
+	}
+#endif
 	outputsView->setVisible(outputsView->count() > 1);
 	outputsViewLabel->setVisible(outputsView->count() > 1);
 
@@ -74,6 +87,10 @@ PlaybackSettings::PlaybackSettings(QWidget* p)
 void PlaybackSettings::load()
 {
 	stopOnExit->setChecked(Settings::self()->stopOnExit());
+	if (keepDynamicOnExit) {
+		keepDynamicOnExit->setChecked(Settings::self()->keepDynamicOnExit());
+		keepDynamicOnExit->setEnabled(!stopOnExit->isChecked());
+	}
 	stopFadeDuration->setValue(Settings::self()->stopFadeDuration());
 	prevSeekDuration->setValue(Settings::self()->prevSeekDuration());
 #if (defined Q_OS_LINUX && defined QT_QTDBUS_FOUND) || (defined Q_OS_MAC && defined IOKIT_FOUND)
@@ -92,6 +109,9 @@ void PlaybackSettings::load()
 void PlaybackSettings::save()
 {
 	Settings::self()->saveStopOnExit(stopOnExit->isChecked());
+	if (keepDynamicOnExit) {
+		Settings::self()->saveKeepDynamicOnExit(keepDynamicOnExit->isChecked());
+	}
 	Settings::self()->saveStopFadeDuration(stopFadeDuration->value());
 	Settings::self()->savePrevSeekDuration(prevSeekDuration->value());
 #if (defined Q_OS_LINUX && defined QT_QTDBUS_FOUND) || (defined Q_OS_MAC && defined IOKIT_FOUND)

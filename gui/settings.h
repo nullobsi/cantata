@@ -58,6 +58,7 @@ public:
 	bool minimiseOnClose();
 	bool showPopups();
 	bool stopOnExit();
+	bool keepDynamicOnExit();
 	bool storeCoversInMpdDir();
 	bool storeLyricsInMpdDir();
 	QString coverFilename();
@@ -156,6 +157,7 @@ public:
 	void saveShowPlaylist(bool v);
 	void saveShowFullScreen(bool v);
 	void saveStopOnExit(bool v);
+	void saveKeepDynamicOnExit(bool v);
 	void saveHeaderState(const QString& key, const QByteArray& v);
 	void saveSplitterState(const QByteArray& v);
 	void saveSplitterAutoHide(bool v);

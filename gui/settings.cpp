@@ -281,6 +281,11 @@ bool Settings::stopOnExit()
 	return cfg.get("stopOnExit", false);
 }
 
+bool Settings::keepDynamicOnExit()
+{
+	return cfg.get("keepDynamicOnExit", false);
+}
+
 bool Settings::storeCoversInMpdDir()
 {
 	return cfg.get("storeCoversInMpdDir", false);
@@ -834,6 +839,11 @@ void Settings::saveShowPopups(bool v)
 void Settings::saveStopOnExit(bool v)
 {
 	cfg.set("stopOnExit", v);
+}
+
+void Settings::saveKeepDynamicOnExit(bool v)
+{
+	cfg.set("keepDynamicOnExit", v);
 }
 
 void Settings::saveStoreCoversInMpdDir(bool v)
